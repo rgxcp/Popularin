@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.fragments.AddFragment;
 import xyz.fairportstudios.popularin.fragments.HomeFragment;
 import xyz.fairportstudios.popularin.fragments.ProfileFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewFragment;
+import xyz.fairportstudios.popularin.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,12 +24,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView mBNV = findViewById(R.id.am_bottom_navigation);
+        BottomNavigationView mBNV = findViewById(R.id.bnm_am_main);
         mBNV.setOnNavigationItemSelectedListener(navListener);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.am_main_frame, new HomeFragment())
+                .replace(R.id.frm_am_main, new HomeFragment())
                 .commit();
     }
 
@@ -37,13 +39,19 @@ public class MainActivity extends AppCompatActivity {
             Fragment mSelectedFragment = null;
 
             switch (item.getItemId()) {
-                case R.id.bn_home:
+                case R.id.bnm_home:
                     mSelectedFragment = new HomeFragment();
                     break;
-                case R.id.bn_review:
+                case  R.id.bnm_search:
+                    mSelectedFragment = new SearchFragment();
+                    break;
+                case  R.id.bnm_add:
+                    mSelectedFragment = new AddFragment();
+                    break;
+                case R.id.bnm_review:
                     mSelectedFragment = new ReviewFragment();
                     break;
-                case R.id.bn_profile:
+                case R.id.bnm_profile:
                     mSelectedFragment = new ProfileFragment();
                     break;
             }
@@ -51,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             if (mSelectedFragment != null) {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.am_main_frame, mSelectedFragment)
+                        .replace(R.id.frm_am_main, mSelectedFragment)
                         .commit();
             }
 

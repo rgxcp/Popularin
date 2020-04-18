@@ -7,13 +7,13 @@
     tools:context=".activities.MainActivity">
     
     <FrameLayout
-        android:id="@+id/am_main_frame"
+        android:id="@+id/frm_am_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/am_bottom_navigation" />
+        android:layout_above="@id/bnm_am_main" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/am_bottom_navigation"
+        android:id="@+id/bnm_am_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
