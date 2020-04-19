@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,6 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmListActivity;
 
 public class HomeFragment extends Fragment {
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,7 +28,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mGotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                mGotoFilmList.putExtra("GENRE_ID", 28);
+                mGotoFilmList.putExtra("GENRE_ID", "28");
+                mGotoFilmList.putExtra("GENRE_TITLE", "Aksi");
                 startActivity(mGotoFilmList);
             }
         });
@@ -39,7 +38,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mGotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                mGotoFilmList.putExtra("GENRE_ID", 18);
+                mGotoFilmList.putExtra("GENRE_ID", "18");
+                mGotoFilmList.putExtra("GENRE_TITLE", "Drama");
                 startActivity(mGotoFilmList);
             }
         });
@@ -48,7 +48,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mGotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                mGotoFilmList.putExtra("GENRE_ID", 14);
+                mGotoFilmList.putExtra("GENRE_ID", "14");
+                mGotoFilmList.putExtra("GENRE_TITLE", "Fantasi");
                 startActivity(mGotoFilmList);
             }
         });
