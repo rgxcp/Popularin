@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis;
+package xyz.fairportstudios.popularin.apis.tmdb;
 
 public class TMDBRequestURL {
     private static String API_KEY = "0cdb7eb7a8102f652a6c74dddd692a2f";

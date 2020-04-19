@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis;
+package xyz.fairportstudios.popularin.apis.tmdb;
 
 import android.content.Context;
 
@@ -21,18 +21,16 @@ import java.util.List;
 import xyz.fairportstudios.popularin.adapters.FilmListAdapter;
 import xyz.fairportstudios.popularin.models.FilmList;
 
-public class SearchFilm {
+public class DiscoverFilm {
     private List<FilmList> filmLists;
     private RecyclerView recyclerView;
 
-    public SearchFilm(List<FilmList> filmLists, RecyclerView recyclerView) {
+    public DiscoverFilm(List<FilmList> filmLists, RecyclerView recyclerView) {
         this.filmLists = filmLists;
         this.recyclerView = recyclerView;
     }
 
     public void parseJSON(String requestURL, final Context context) {
-        filmLists.clear();
-
         JsonObjectRequest mJSONObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
