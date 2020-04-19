@@ -13,8 +13,8 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.FilmList;
-import xyz.fairportstudios.popularin.utilities.DiscoverFilm;
-import xyz.fairportstudios.popularin.utilities.TMDBRequestURL;
+import xyz.fairportstudios.popularin.apis.DiscoverFilm;
+import xyz.fairportstudios.popularin.apis.TMDBRequestURL;
 
 public class FilmListActivity extends AppCompatActivity {
     @Override

@@ -17,8 +17,8 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.FilmList;
-import xyz.fairportstudios.popularin.utilities.SearchFilm;
-import xyz.fairportstudios.popularin.utilities.TMDBRequestURL;
+import xyz.fairportstudios.popularin.apis.SearchFilm;
+import xyz.fairportstudios.popularin.apis.TMDBRequestURL;
 
 public class SearchFragment extends Fragment {
     private EditText mSearchText;

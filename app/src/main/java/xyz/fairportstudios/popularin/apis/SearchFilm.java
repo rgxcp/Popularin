@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.utilities;
+package xyz.fairportstudios.popularin.apis;
 
 import android.content.Context;
 
