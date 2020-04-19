@@ -22,34 +22,46 @@ import xyz.fairportstudios.popularin.adapters.FilmListAdapter;
 import xyz.fairportstudios.popularin.models.FilmList;
 
 public class SearchFilm {
+    private Context context;
     private List<FilmList> filmLists;
     private RecyclerView recyclerView;
 
-    public SearchFilm(List<FilmList> filmLists, RecyclerView recyclerView) {
+    public SearchFilm(Context context, List<FilmList> filmLists, RecyclerView recyclerView) {
+        this.context = context;
         this.filmLists = filmLists;
         this.recyclerView = recyclerView;
     }
 
-    public void parseJSON(String requestURL, final Context context) {
+    public String getRequestURL(String query, Integer page) {
+        return TMDB.BASE_REQUEST
+                + "/search/movie?api_key="
+                + TMDB.API_KEY
+                + "&query="
+                + query
+                + "&page="
+                + page;
+    }
+
+    public void parseJSON(String requestURL) {
         filmLists.clear();
 
-        JsonObjectRequest mJSONObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray mJSONArray = response.getJSONArray("results");
+                    JSONArray jsonArray = response.getJSONArray("results");
 
-                    for (int position = 0; position < mJSONArray.length(); position++) {
-                        JSONObject mJSONObject = mJSONArray.getJSONObject(position);
+                    for (int position = 0; position < jsonArray.length(); position++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(position);
 
-                        Integer mID = mJSONObject.getInt("id");
-                        String mOriginalTitle = mJSONObject.getString("original_title");
-                        String mPosterPath = mJSONObject.getString("poster_path");
+                        Integer filmID = jsonObject.getInt("id");
+                        String filmTitle = jsonObject.getString("original_title");
+                        String filmPoster = jsonObject.getString("poster_path");
 
-                        FilmList filmList = new FilmList(mID, mOriginalTitle, mPosterPath);
-                        filmList.setId(mID);
-                        filmList.setOriginal_title(mOriginalTitle);
-                        filmList.setPoster_path(mPosterPath);
+                        FilmList filmList = new FilmList(filmID, filmTitle, filmPoster);
+                        filmList.setId(filmID);
+                        filmList.setOriginal_title(filmTitle);
+                        filmList.setPoster_path(filmPoster);
 
                         filmLists.add(filmList);
                     }
@@ -57,8 +69,8 @@ public class SearchFilm {
                     e.printStackTrace();
                 }
 
-                FilmListAdapter mFilmListAdapter = new FilmListAdapter(context, filmLists);
-                recyclerView.setAdapter(mFilmListAdapter);
+                FilmListAdapter filmListAdapter = new FilmListAdapter(context, filmLists);
+                recyclerView.setAdapter(filmListAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             }
         }, new Response.ErrorListener() {
@@ -68,7 +80,7 @@ public class SearchFilm {
             }
         });
 
-        RequestQueue mRequestQueue = Volley.newRequestQueue(context);
-        mRequestQueue.add(mJSONObjectRequest);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(jsonObjectRequest);
     }
 }

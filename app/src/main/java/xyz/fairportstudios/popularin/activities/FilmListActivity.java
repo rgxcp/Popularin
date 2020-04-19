@@ -14,7 +14,6 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.FilmList;
 import xyz.fairportstudios.popularin.apis.tmdb.DiscoverFilm;
-import xyz.fairportstudios.popularin.apis.tmdb.TMDBRequestURL;
 
 public class FilmListActivity extends AppCompatActivity {
     @Override
@@ -22,26 +21,24 @@ public class FilmListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_list);
 
-        Bundle mBundle = getIntent().getExtras();
-        String mGenreID = Objects.requireNonNull(mBundle).getString("GENRE_ID");
-        String mGenreTitle = Objects.requireNonNull(mBundle).getString("GENRE_TITLE");
+        RecyclerView recyclerView = findViewById(R.id.rcv_afl_film);
+        Toolbar toolbar = findViewById(R.id.tbr_afl);
 
-        Toolbar mToolbar = findViewById(R.id.tbr_afl);
-        mToolbar.setTitle(mGenreTitle);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        Bundle bundle = getIntent().getExtras();
+        String genreID = Objects.requireNonNull(bundle).getString("GENRE_ID");
+        String genreTitle = Objects.requireNonNull(bundle).getString("GENRE_TITLE");
+
+        toolbar.setTitle(genreTitle);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
 
-        List<FilmList> mFilmList = new ArrayList<>();
-        RecyclerView mRecyclerView = findViewById(R.id.rcv_afl_film);
-
-        TMDBRequestURL mTMDBRequestURL = new TMDBRequestURL();
-        String mRequestURL = mTMDBRequestURL.getDiscoverFilmURL(mGenreID);
-
-        DiscoverFilm mDiscoverFilm = new DiscoverFilm(mFilmList, mRecyclerView);
-        mDiscoverFilm.parseJSON(mRequestURL, FilmListActivity.this);
+        List<FilmList> filmLists = new ArrayList<>();
+        DiscoverFilm discoverFilm = new DiscoverFilm(FilmListActivity.this, filmLists, recyclerView);
+        String requestURL = discoverFilm.getRequestURL(genreID, 1);
+        discoverFilm.parseJSON(requestURL);
     }
 }
