@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.apis.tmdb;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,13 +58,18 @@ public class SearchFilm {
                         Integer filmID = jsonObject.getInt("id");
                         String filmTitle = jsonObject.getString("original_title");
                         String filmPoster = jsonObject.getString("poster_path");
+                        String filmLanguage = jsonObject.getString("original_language");
 
-                        FilmList filmList = new FilmList(filmID, filmTitle, filmPoster);
-                        filmList.setId(filmID);
-                        filmList.setOriginal_title(filmTitle);
-                        filmList.setPoster_path(filmPoster);
+                        if (filmLanguage.equals("id")) {
+                            FilmList filmList = new FilmList(filmID, filmTitle, filmPoster);
+                            filmList.setId(filmID);
+                            filmList.setOriginal_title(filmTitle);
+                            filmList.setPoster_path(filmPoster);
 
-                        filmLists.add(filmList);
+                            filmLists.add(filmList);
+                        } else {
+                            Log.i("Skipped", filmTitle);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
