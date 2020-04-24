@@ -1,10 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.SignInActivity;
 import xyz.fairportstudios.popularin.activities.SignUpActivity;
 
 public class ProfileFragment extends Fragment {
