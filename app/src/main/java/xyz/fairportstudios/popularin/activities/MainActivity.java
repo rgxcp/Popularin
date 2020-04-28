@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(gotoSignUp);
                 break;
             case R.id.menu_nd_signin:
-                Log.i("TAG", "Sign In Clicked");
+                Intent gotoSignIn = new Intent(this, SignInActivity.class);
+                startActivity(gotoSignIn);
                 break;
             case R.id.menu_nd_signout:
                 Log.i("TAG", "Sign Out Clicked");
