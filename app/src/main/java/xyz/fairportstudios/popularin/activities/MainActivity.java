@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("TAG", "Profile Clicked");
                 break;
             case R.id.menu_nd_signup:
-                Log.i("TAG", "Sign Up Clicked");
+                Intent gotoSignUp = new Intent(this, SignUpActivity.class);
+                startActivity(gotoSignUp);
                 break;
             case R.id.menu_nd_signin:
                 Log.i("TAG", "Sign In Clicked");
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
