@@ -7,7 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -63,7 +65,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(gotoSignIn);
                 break;
             case R.id.menu_nd_signout:
-                Log.i("TAG", "Sign Out Clicked");
+                SharedPreferences sharedPreferences = getSharedPreferences("AUTH", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("UID");
+                editor.remove("TOKEN");
+                editor.apply();
+                drawer.closeDrawer(GravityCompat.START);
                 break;
         }
 
