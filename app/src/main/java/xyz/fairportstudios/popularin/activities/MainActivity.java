@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,12 +15,17 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.MainPagerAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.SignOutRequest;
+import xyz.fairportstudios.popularin.fragments.HomeFragment;
+import xyz.fairportstudios.popularin.fragments.AiringFragment;
+import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Binding
         drawer = findViewById(R.id.drawer_am_layout);
+        TabLayout tab = findViewById(R.id.tab_am_layout);
+        ViewPager viewPager = findViewById(R.id.view_pager_am_layout);
         NavigationView navigationView = findViewById(R.id.nav_view_am_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_am_layout);
 
@@ -49,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Navigation view
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Tab menu
+        MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager(), 0);
+        adapter.addFragment(new HomeFragment(), "HOME");
+        adapter.addFragment(new AiringFragment(), "TAYANG");
+        adapter.addFragment(new ReviewFragment(), "ULASAN");
+        viewPager.setAdapter(adapter);
+        tab.setupWithViewPager(viewPager);
     }
 
     @Override
