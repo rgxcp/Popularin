@@ -5,7 +5,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +20,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.SignUpRequest;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignUpActivity extends AppCompatActivity {
     private Context context;
@@ -79,11 +79,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 String id = String.valueOf(jsonObjectResult.getInt("id"));
                                 String token = jsonObjectResult.getString("token");
 
-                                SharedPreferences sharedPreferences = getSharedPreferences("AUTH", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("UID", id);
-                                editor.putString("TOKEN", token);
-                                editor.apply();
+                                Auth auth = new Auth(context);
+                                auth.setAuth(id, token);
 
                                 Intent gotoMain = new Intent(context, MainActivity.class);
                                 startActivity(gotoMain);

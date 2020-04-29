@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -65,11 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(gotoSignIn);
                 break;
             case R.id.menu_nd_signout:
-                SharedPreferences sharedPreferences = getSharedPreferences("AUTH", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("UID");
-                editor.remove("TOKEN");
-                editor.apply();
+                Auth auth = new Auth(this);
+                auth.delAuth();
                 drawer.closeDrawer(GravityCompat.START);
                 break;
         }
