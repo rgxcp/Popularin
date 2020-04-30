@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,18 +14,19 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.adapters.MainPagerAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.SignOutRequest;
 import xyz.fairportstudios.popularin.fragments.HomeFragment;
 import xyz.fairportstudios.popularin.fragments.AiringFragment;
+import xyz.fairportstudios.popularin.fragments.ProfileFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewFragment;
+import xyz.fairportstudios.popularin.fragments.SearchFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,15 +39,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Binding
         drawer = findViewById(R.id.drawer_am_layout);
-        TabLayout tab = findViewById(R.id.tab_am_layout);
-        ViewPager viewPager = findViewById(R.id.view_pager_am_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view_am_layout);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_am_layout);
+        NavigationView navigationView = findViewById(R.id.navigation_am_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_am_layout);
 
         // Toolbar
         setSupportActionBar(toolbar);
 
-        // Navigation drawer icon
+        // Navigation drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
                 drawer,
                 toolbar,
@@ -54,17 +54,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.close_navigation_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        // Navigation view
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Tab menu
-        MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager(), 0);
-        adapter.addFragment(new HomeFragment(), "HOME");
-        adapter.addFragment(new AiringFragment(), "TAYANG");
-        adapter.addFragment(new ReviewFragment(), "ULASAN");
-        viewPager.setAdapter(adapter);
-        tab.setupWithViewPager(viewPager);
+        // Bottom navigation
+        bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setOnNavigationItemSelectedListener(listener);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_am_container, new HomeFragment())
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -125,12 +132,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
+
+            switch (item.getItemId()) {
+                case R.id.menu_bn_home:
+                    selectedFragment = new HomeFragment();
+                    break;
+                case R.id.menu_bn_airing:
+                    selectedFragment = new AiringFragment();
+                    break;
+                case R.id.menu_bn_review:
+                    selectedFragment = new ReviewFragment();
+                    break;
+                case R.id.menu_bn_search:
+                    selectedFragment = new SearchFragment();
+                    break;
+                case R.id.menu_bn_profile:
+                    selectedFragment = new ProfileFragment();
+                    break;
+            }
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_am_container, selectedFragment)
+                        .commit();
+            }
+
+            return true;
         }
-    }
+    };
 }
