@@ -1,8 +1,415 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    android:orientation="vertical">
+    android:scrollbars="none">
 
-</LinearLayout>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:rowCount="5">
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_action"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Aksi"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_animation"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Animasi"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_drama"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Drama"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_fantasy"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Fantasi"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_fiction"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Fiksi"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_horror"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Horor"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_crime"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Kejahatan"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_family"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Keluarga"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_comedy"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Komedi"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_mystery"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Misteri"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_war"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Perang"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_adventure"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Petualang"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_romance"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Romansa"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_history"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Sejarah"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="16dp"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_fh_thriller"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Thriller"
+                android:textColor="#FFFFFF" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+    </GridLayout>
+
+</ScrollView>
