@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp">
+
+        <RelativeLayout
+            android:id="@+id/relative_frd_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/sov_frd_poster">
+
+            <com.github.florent37.shapeofview.shapes.CircleView
+                android:id="@+id/sov_frd_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/image_frd_profile"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@null"
+                    android:src="@color/colorPrimary" />
+            </com.github.florent37.shapeofview.shapes.CircleView>
+
+            <TextView
+                android:id="@+id/text_frd_first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/sov_frd_profile"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <com.github.florent37.shapeofview.shapes.RoundRectView
+            android:id="@+id/sov_frd_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:shape_roundRect_bottomLeftRadius="5dp"
+            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_topLeftRadius="5dp"
+            app:shape_roundRect_topRightRadius="5dp">
+
+            <ImageView
+                android:id="@+id/image_frd_poster"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:contentDescription="@null"
+                android:src="@color/colorPrimary" />
+        </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+        <RelativeLayout
+            android:id="@+id/relative_frd_film"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relative_frd_user"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/sov_frd_poster">
+
+            <TextView
+                android:id="@+id/text_frd_film_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_frd_film_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/text_frd_film_title"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/image_frd_star"
+            android:layout_width="70dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/relative_frd_film"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_star_50" />
+
+        <TextView
+            android:id="@+id/text_frd_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_frd_star"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/sov_frd_poster" />
+
+        <TextView
+            android:id="@+id/text_frd_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sov_frd_poster"
+            android:layout_marginTop="8dp"
+            android:textSize="15sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_frd_detail"
+            android:layout_marginTop="16dp">
+
+            <ImageView
+                android:id="@+id/icon_frd_like"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_favorite_blank" />
+
+            <TextView
+                android:id="@+id/text_frd_like_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/icon_frd_like"
+                android:text="SUKA?" />
+
+            <TextView
+                android:id="@+id/text_frd_total_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_frd_like_status"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="4dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>
