@@ -6,6 +6,7 @@ class PopularinBaseRequest {
     static final String ADD_FILM = "https://popularin.fairportstudios.xyz/api/film";
     static final String ADD_REVIEW = "https://popularin.fairportstudios.xyz/api/review";
     static final String ADD_WATCHLIST = "https://popularin.fairportstudios.xyz/api/watchlist";
+    static final String COMMENT = "https://popularin.fairportstudios.xyz/api/review/";
     static final String REVIEW = "https://popularin.fairportstudios.xyz/api/reviews";
     static final String REVIEW_DETAIL = "https://popularin.fairportstudios.xyz/api/review/";
     static final String SEARCH_USER = "https://popularin.fairportstudios.xyz/api/user/search";
