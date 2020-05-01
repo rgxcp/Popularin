@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress_bar_frc_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="168dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/text_frc_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:lineSpacingExtra="8dp"
+        android:text="UH OH! \n Seperti padang pasing disini"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_frc_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/text_input_frc_layout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_frc_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_frc_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan komen"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</RelativeLayout>
