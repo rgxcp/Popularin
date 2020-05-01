@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
@@ -67,11 +68,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 context.startActivity(gotoReviewDetail);
-                 */
             }
         });
 
