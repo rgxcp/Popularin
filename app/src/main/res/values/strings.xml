@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Popularin</string>
 
-    <string name="open_navigation_drawer">Buka Navigation Drawer</string>
-    <string name="close_navigation_drawer">Tutup Navigation Drawer</string>
-
     <string name="liked">DISUKAI</string>
 </resources>
