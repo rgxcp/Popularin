@@ -1,7 +1,334 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar_fp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="168dp" />
+
+    <ScrollView
+        android:id="@+id/scroll_view_fp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.github.florent37.shapeofview.shapes.CircleView
+                android:id="@+id/sov_fp_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:id="@+id/image_fp_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:contentDescription="@null"
+                    android:src="@color/colorPrimary" />
+            </com.github.florent37.shapeofview.shapes.CircleView>
+
+            <TextView
+                android:id="@+id/text_fp_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sov_fp_profile"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/text_fp_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_fp_full_name"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="center" />
+
+            <LinearLayout
+                android:id="@+id/linear_metadata_fp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_fp_username"
+                android:layout_marginTop="24dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_total_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Ulasan"
+                        android:textAlignment="center"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_total_follower"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Pengikut"
+                        android:textAlignment="center"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_total_following"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Mengikuti"
+                        android:textAlignment="center"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_total_favorite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Favorit"
+                        android:textAlignment="center"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_total_watchlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Watchlist"
+                        android:textAlignment="center"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_fp_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/linear_metadata_fp_layout"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/colorPrimary"
+                android:text="Ubah Profile"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/text_latest_favorite_fp_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_fp_edit_profile"
+                android:layout_marginTop="24dp"
+                android:text="FAVORIT TERBARU"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/text_fp_empty_top_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/text_latest_favorite_fp_layout"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8dp"
+                android:text="UH OH! \n Seperti padang pasir disini"
+                android:visibility="invisible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_top_favorite_fp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/text_latest_favorite_fp_layout"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/text_latest_review_fp_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recycler_view_top_favorite_fp_layout"
+                android:layout_marginTop="24dp"
+                android:text="REVIEW TERBARU"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/text_fp_empty_latest_review"
+                android:layout_width="match_parent"
+                android:layout_height="174dp"
+                android:layout_below="@id/text_latest_review_fp_layout"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8dp"
+                android:text="UH OH! \n Seperti padang pasir disini"
+                android:visibility="invisible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_latest_review_fp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="174dp"
+                android:layout_below="@id/text_latest_review_fp_layout"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/text_rating_fp_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recycler_view_latest_review_fp_layout"
+                android:layout_marginTop="24dp"
+                android:text="RATING"
+                android:textColor="#000000" />
+
+            <LinearLayout
+                android:id="@+id/linear_rate_fp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_rating_fp_layout"
+                android:layout_marginTop="16dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/text_fp_rate_05"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_15"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_25"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_30"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_35"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_40"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_45"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_fp_rate_50"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
