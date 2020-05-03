@@ -21,10 +21,10 @@ public class ParseGenre {
         genres.put(878, "Fiksi Ilmiah");
         genres.put(9648, "Misteri");
         genres.put(10402, "Musik");
-        genres.put(10749, "Romansa");
+        genres.put(10749, "Percintaan");
+        genres.put(10751, "Keluarga");
         genres.put(10752, "Perang");
         genres.put(10770, "Serial TV");
-        genres.put(10751, "Keluarga");
 
         return genres.get(id);
     }
