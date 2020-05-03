@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_am_layout);
 
         // Bottom navigation
-        bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(listener);
         getSupportFragmentManager()
                 .beginTransaction()
