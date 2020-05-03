@@ -18,6 +18,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
@@ -53,7 +54,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
         // Parsing
         Integer star = new ParseStar().getStar(reviewList.get(position).getRating());
-        String year  = new ParseDate().getYear(reviewList.get(position).getRelease_date());
+        String year = new ParseDate().getYear(reviewList.get(position).getRelease_date());
 
         // Mengisi data
         holder.filmTitle.setText(reviewList.get(position).getTitle());
@@ -77,11 +78,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
                 gotoUserDetail.putExtra("USER_ID", userID);
                 context.startActivity(gotoUserDetail);
-                 */
             }
         });
 

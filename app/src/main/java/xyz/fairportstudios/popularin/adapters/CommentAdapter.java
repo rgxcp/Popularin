@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.services.ParseDate;
 
@@ -59,11 +60,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
                 gotoUserDetail.putExtra("USER_ID", userID);
                 context.startActivity(gotoUserDetail);
-                 */
             }
         });
 
