@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.tmdb.AiringRequest;
+import xyz.fairportstudios.popularin.apis.tmdb.get.AiringFilm;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class AiringFragment extends Fragment {
@@ -31,8 +31,8 @@ public class AiringFragment extends Fragment {
         List<Film> filmList = new ArrayList<>();
 
         // Mendapatkan data
-        AiringRequest airingRequest = new AiringRequest(getActivity(), filmList, recyclerView);
-        airingRequest.sendRequest();
+        AiringFilm airingFilm = new AiringFilm(getActivity(), filmList, recyclerView);
+        airingFilm.sendRequest();
 
         return view;
     }

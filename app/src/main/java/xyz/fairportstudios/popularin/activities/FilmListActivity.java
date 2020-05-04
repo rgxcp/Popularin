@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.tmdb.DiscoverRequest;
+import xyz.fairportstudios.popularin.apis.tmdb.get.DiscoverGenre;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class FilmListActivity extends AppCompatActivity {
@@ -38,9 +38,9 @@ public class FilmListActivity extends AppCompatActivity {
         toolbar.setTitle(genreTitle);
 
         // Mendapatkan data
-        DiscoverRequest discoverRequest = new DiscoverRequest(this, filmList, recyclerView);
-        String requestURL = discoverRequest.getRequestURL(genreID, "1");
-        discoverRequest.sendRequest(requestURL);
+        DiscoverGenre discoverGenre = new DiscoverGenre(this, filmList, recyclerView);
+        String requestURL = discoverGenre.getRequestURL(genreID, "1");
+        discoverGenre.sendRequest(requestURL);
 
         // Activity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

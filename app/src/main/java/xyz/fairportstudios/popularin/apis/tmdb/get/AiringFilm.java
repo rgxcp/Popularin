@@ -1,7 +1,6 @@
-package xyz.fairportstudios.popularin.apis.tmdb;
+package xyz.fairportstudios.popularin.apis.tmdb.get;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,24 +19,25 @@ import org.json.JSONObject;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.adapters.FilmAdapter;
+import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Film;
 
-public class AiringRequest {
+public class AiringFilm {
     private Context context;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public AiringRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public AiringFilm(Context context, List<Film> filmList, RecyclerView recyclerView) {
         this.context = context;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
     }
 
     public void sendRequest() {
-        String requestURL = TMDBBaseRequest.AIRING
+        String requestURL = TMDbAPI.AIRING_FILM
                 + "?api_key="
-                + TMDBBaseRequest.API_KEY
-                + "&language=id-ID&page=1&region=id";
+                + TMDbAPI.API_KEY
+                + "&language=id&region=ID";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override

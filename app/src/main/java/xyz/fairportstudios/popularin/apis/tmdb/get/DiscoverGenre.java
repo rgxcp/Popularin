@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis.tmdb;
+package xyz.fairportstudios.popularin.apis.tmdb.get;
 
 import android.content.Context;
 
@@ -19,28 +19,29 @@ import org.json.JSONObject;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.adapters.FilmAdapter;
+import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Film;
 
-public class DiscoverRequest {
+public class DiscoverGenre {
     private Context context;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public DiscoverRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public DiscoverGenre(Context context, List<Film> filmList, RecyclerView recyclerView) {
         this.context = context;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
     }
 
-    public String getRequestURL(String genreID, String page) {
-        return TMDBBaseRequest.DISCOVER
+    public String getRequestURL(String genre, String page) {
+        return TMDbAPI.DISCOVER_GENRE
                 + "?api_key="
-                + TMDBBaseRequest.API_KEY
-                + "&sort_by=popularity.desc&page="
+                + TMDbAPI.API_KEY
+                + "&language=id&sort_by=popularity.desc&page="
                 + page
-                + "&release_date.gte=2000&with_genres="
-                + genreID
-                + "&with_runtime.gte=90&with_original_language=id";
+                + "&release_date.gte=2000-01-01&with_genres="
+                + genre
+                + "&with_runtime.gte=0&with_original_language=id";
     }
 
     public void sendRequest(String requestURL) {

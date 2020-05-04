@@ -1,9 +1,9 @@
 package xyz.fairportstudios.popularin.services;
 
-import xyz.fairportstudios.popularin.apis.tmdb.TMDBBaseRequest;
+import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
 
 public class ParseImage {
     public String getPoster(String path) {
-        return TMDBBaseRequest.IMAGE + path;
+        return TMDbAPI.IMAGE + path;
     }
 }
