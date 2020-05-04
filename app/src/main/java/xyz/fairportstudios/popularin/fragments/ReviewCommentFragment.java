@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.RetrieveComments;
+import xyz.fairportstudios.popularin.apis.popularin.get.RetrieveComments;
 import xyz.fairportstudios.popularin.models.Comment;
 
 public class ReviewCommentFragment extends Fragment {

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.RetrieveReviews;
+import xyz.fairportstudios.popularin.apis.popularin.get.RetrieveReviews;
 import xyz.fairportstudios.popularin.models.Review;
 
 public class ReviewFragment extends Fragment {

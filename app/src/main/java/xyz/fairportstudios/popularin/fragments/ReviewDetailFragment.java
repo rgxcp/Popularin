@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.apis.popularin.ReviewDetail;
+import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
