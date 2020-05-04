@@ -6,24 +6,23 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignOutRequest {
-    private Context context;
-    private String id;
-    private String token;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
-    public SignOutRequest(Context context, String id, String token) {
-        this.context = context;
+public class ReviewDetail {
+    private String id;
+    private Context context;
+
+    public ReviewDetail(String id, Context context) {
         this.id = id;
-        this.token = token;
+        this.context = context;
     }
 
     public interface JSONCallback {
@@ -31,17 +30,12 @@ public class SignOutRequest {
     }
 
     public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinBaseRequest.SIGN_OUT;
+        String requestURL = PopularinAPI.REVIEW + "/" + id;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    callback.onSuccess(jsonObject);
-                } catch (JSONException error) {
-                    error.printStackTrace();
-                }
+            public void onResponse(JSONObject response) {
+                callback.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -52,13 +46,12 @@ public class SignOutRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", id);
-                headers.put("auth_token", token);
+                headers.put("auth_uid", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        requestQueue.add(jsonObjectRequest);
     }
 }

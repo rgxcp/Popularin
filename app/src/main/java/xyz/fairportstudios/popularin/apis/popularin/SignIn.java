@@ -15,12 +15,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignInRequest {
+public class SignIn {
     private Context context;
     private String username;
     private String password;
 
-    public SignInRequest(Context context, String username, String password) {
+    public SignIn(Context context, String username, String password) {
         this.context = context;
         this.username = username;
         this.password = password;
@@ -31,7 +31,7 @@ public class SignInRequest {
     }
 
     public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinBaseRequest.SIGN_IN;
+        String requestURL = PopularinAPI.SIGN_IN;
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override

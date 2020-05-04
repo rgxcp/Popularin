@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignUpRequest {
+public class SignUp {
     private Context context;
     private String first_name;
     private String last_name;
@@ -23,7 +23,7 @@ public class SignUpRequest {
     private String email;
     private String password;
 
-    public SignUpRequest(Context context, String first_name, String last_name, String username, String email, String password) {
+    public SignUp(Context context, String first_name, String last_name, String username, String email, String password) {
         this.context = context;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -37,7 +37,7 @@ public class SignUpRequest {
     }
 
     public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinBaseRequest.SIGN_UP;
+        String requestURL = PopularinAPI.SIGN_UP;
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override

@@ -21,17 +21,17 @@ import java.util.List;
 import xyz.fairportstudios.popularin.adapters.CommentAdapter;
 import xyz.fairportstudios.popularin.models.Comment;
 
-public class CommentRequest {
+public class RetrieveComments {
+    private String id;
     private Context context;
     private List<Comment> commentList;
     private RecyclerView recyclerView;
-    private String reviewID;
 
-    public CommentRequest(Context context, List<Comment> commentList, RecyclerView recyclerView, String reviewID) {
+    public RetrieveComments(String id, Context context, List<Comment> commentList, RecyclerView recyclerView) {
+        this.id = id;
         this.context = context;
         this.commentList = commentList;
         this.recyclerView = recyclerView;
-        this.reviewID = reviewID;
     }
 
     public interface JSONCallback {
@@ -39,9 +39,7 @@ public class CommentRequest {
     }
 
     public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinBaseRequest.COMMENT
-                + reviewID
-                + "/comments";
+        String requestURL = PopularinAPI.REVIEW + "/" + id + "/comments";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override

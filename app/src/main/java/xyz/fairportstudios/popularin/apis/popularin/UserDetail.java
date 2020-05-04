@@ -16,24 +16,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import xyz.fairportstudios.popularin.adapters.LatestFavoriteAdapter;
 import xyz.fairportstudios.popularin.adapters.LatestReviewAdapter;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class ProfileRequest {
+public class UserDetail {
+    private String id;
     private Context context;
-    private String userID;
     private List<LatestFavorite> latestFavoriteList;
     private List<LatestReview> latestReviewList;
     private RecyclerView recyclerViewLatestFavorite;
     private RecyclerView recyclerViewLatestReview;
 
-    public ProfileRequest(Context context, String userID, List<LatestFavorite> latestFavoriteList, List<LatestReview> latestReviewList, RecyclerView recyclerViewLatestFavorite, RecyclerView recyclerViewLatestReview) {
+    public UserDetail(String id, Context context, List<LatestFavorite> latestFavoriteList, List<LatestReview> latestReviewList, RecyclerView recyclerViewLatestFavorite, RecyclerView recyclerViewLatestReview) {
+        this.id = id;
         this.context = context;
-        this.userID = userID;
         this.latestFavoriteList = latestFavoriteList;
         this.latestReviewList = latestReviewList;
         this.recyclerViewLatestFavorite = recyclerViewLatestFavorite;
@@ -46,8 +49,8 @@ public class ProfileRequest {
         void onEmptyReview(Integer review);
     }
 
-    public void getUserDetail(final JSONCallback callback) {
-        String requestURL = PopularinBaseRequest.USER_DETAIL + userID;
+    public void sendRequest(final JSONCallback callback) {
+        String requestURL = PopularinAPI.USER + "/" + id;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -82,7 +85,14 @@ public class ProfileRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("auth_uid", new Auth(context).getAuthID());
+                return headers;
+            }
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonObjectRequest);

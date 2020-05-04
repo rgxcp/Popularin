@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.SignInRequest;
+import xyz.fairportstudios.popularin.apis.popularin.SignIn;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
@@ -49,14 +49,14 @@ public class SignInActivity extends AppCompatActivity {
                 String password = Objects.requireNonNull(inputPassword.getText()).toString();
 
                 // Mengirim data
-                SignInRequest signInRequest = new SignInRequest(
+                SignIn signIn = new SignIn(
                         context,
                         username,
                         password
                 );
 
                 // Mendapatkan hasil
-                signInRequest.sendRequest(new SignInRequest.JSONCallback() {
+                signIn.sendRequest(new SignIn.JSONCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
                         try {

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.ReviewRequest;
+import xyz.fairportstudios.popularin.apis.popularin.RetrieveReviews;
 import xyz.fairportstudios.popularin.models.Review;
 
 public class ReviewFragment extends Fragment {
@@ -31,8 +31,8 @@ public class ReviewFragment extends Fragment {
         List<Review> reviewList = new ArrayList<>();
 
         // Mendapatkan data
-        ReviewRequest reviewRequest = new ReviewRequest(getActivity(), reviewList, recyclerView);
-        reviewRequest.sendRequest();
+        RetrieveReviews retrieveReviews = new RetrieveReviews(getActivity(), reviewList, recyclerView);
+        retrieveReviews.sendRequest();
 
         return view;
     }

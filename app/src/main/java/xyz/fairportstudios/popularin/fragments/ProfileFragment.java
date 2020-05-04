@@ -1,7 +1,6 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.ProfileRequest;
+import xyz.fairportstudios.popularin.apis.popularin.UserDetail;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -97,16 +96,16 @@ public class ProfileFragment extends Fragment {
         List<LatestReview> latestReviewList = new ArrayList<>();
 
         // Mendapatkan data
-        ProfileRequest profileRequest = new ProfileRequest(
-                context,
+        UserDetail userDetail = new UserDetail(
                 new Auth(context).getAuthID(),
+                context,
                 latestFavoriteList,
                 latestReviewList,
                 recyclerViewLatestFavorite,
                 recyclerViewLatestReview
         );
 
-        profileRequest.getUserDetail(new ProfileRequest.JSONCallback() {
+        userDetail.sendRequest(new UserDetail.JSONCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {

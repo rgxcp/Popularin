@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.CommentRequest;
+import xyz.fairportstudios.popularin.apis.popularin.RetrieveComments;
 import xyz.fairportstudios.popularin.models.Comment;
 
 public class ReviewCommentFragment extends Fragment {
@@ -49,8 +49,8 @@ public class ReviewCommentFragment extends Fragment {
         List<Comment> commentList = new ArrayList<>();
 
         // Mendapatkan data
-        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView, reviewID);
-        commentRequest.sendRequest(new CommentRequest.JSONCallback() {
+        RetrieveComments retrieveComments = new RetrieveComments(reviewID, context, commentList, recyclerView);
+        retrieveComments.sendRequest(new RetrieveComments.JSONCallback() {
             @Override
             public void onSuccess(Integer status) {
                 if (status == 101) {

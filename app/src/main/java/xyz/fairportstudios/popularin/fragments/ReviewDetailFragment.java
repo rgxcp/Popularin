@@ -3,7 +3,6 @@ package xyz.fairportstudios.popularin.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,8 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.ReviewDetailRequest;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.apis.popularin.ReviewDetail;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
@@ -54,15 +54,15 @@ public class ReviewDetailFragment extends Fragment {
         filmTitle = view.findViewById(R.id.text_frd_film_title);
         filmYear = view.findViewById(R.id.text_frd_film_year);
         reviewDate = view.findViewById(R.id.text_frd_date);
-        reviewDetail = view.findViewById(R.id.text_frd_detail);
+        this.reviewDetail = view.findViewById(R.id.text_frd_detail);
         likeStatus = view.findViewById(R.id.text_frd_like_status);
         totalLike = view.findViewById(R.id.text_frd_total_like);
 
         // Mengirim data
-        ReviewDetailRequest reviewDetailRequest = new ReviewDetailRequest(context, reviewID);
+        ReviewDetail reviewDetail = new ReviewDetail(reviewID, context);
 
         // Mendapatkan hasil
-        reviewDetailRequest.sendRequest(new ReviewDetailRequest.JSONCallback() {
+        reviewDetail.sendRequest(new ReviewDetail.JSONCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -92,11 +92,12 @@ public class ReviewDetailFragment extends Fragment {
                         }
 
                         // Detail
+                        userID = jsonObjectUser.getString("id");
                         userFirstName.setText(jsonObjectUser.getString("first_name"));
                         filmTitle.setText(jsonObjectFilm.getString("title"));
                         filmYear.setText(year);
                         reviewDate.setText(date);
-                        reviewDetail.setText(jsonObjectReview.getString("review_text"));
+                        ReviewDetailFragment.this.reviewDetail.setText(jsonObjectReview.getString("review_text"));
                         totalLike.setText(String.format("Total %s", String.valueOf(jsonObjectMetadata.getInt("likes"))));
                         reviewStar.setImageResource(star);
                         Glide.with(Objects.requireNonNull(context)).load(jsonObjectUser.getString("profile_picture")).apply(requestOptions).into(userProfile);
@@ -114,11 +115,9 @@ public class ReviewDetailFragment extends Fragment {
         userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
                 gotoUserDetail.putExtra("USER_ID", userID);
                 context.startActivity(gotoUserDetail);
-                 */
             }
         });
 

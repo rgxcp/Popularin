@@ -21,19 +21,19 @@ import java.util.List;
 import xyz.fairportstudios.popularin.adapters.ReviewAdapter;
 import xyz.fairportstudios.popularin.models.Review;
 
-public class ReviewRequest {
+public class RetrieveReviews {
     private Context context;
     private List<Review> reviewList;
     private RecyclerView recyclerView;
 
-    public ReviewRequest(Context context, List<Review> reviewList, RecyclerView recyclerView) {
+    public RetrieveReviews(Context context, List<Review> reviewList, RecyclerView recyclerView) {
         this.context = context;
         this.reviewList = reviewList;
         this.recyclerView = recyclerView;
     }
 
     public void sendRequest() {
-        String requestURL = PopularinBaseRequest.REVIEW;
+        String requestURL = PopularinAPI.REVIEWS;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override

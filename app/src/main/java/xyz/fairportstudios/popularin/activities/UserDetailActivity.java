@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.UserDetailRequest;
+import xyz.fairportstudios.popularin.apis.popularin.UserDetail;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
 
@@ -101,16 +101,16 @@ public class UserDetailActivity extends AppCompatActivity {
         String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
         // Mendapatkan data
-        UserDetailRequest userDetailRequest = new UserDetailRequest(
-                context,
+        UserDetail userDetail = new UserDetail(
                 userID,
+                context,
                 latestFavoriteList,
                 latestReviewList,
                 recyclerViewLatestFavorite,
                 recyclerViewLatestReview
         );
 
-        userDetailRequest.getUserDetail(new UserDetailRequest.JSONCallback() {
+        userDetail.sendRequest(new UserDetail.JSONCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
