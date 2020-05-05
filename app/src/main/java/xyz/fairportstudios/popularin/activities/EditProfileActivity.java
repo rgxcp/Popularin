@@ -109,10 +109,8 @@ public class EditProfileActivity extends AppCompatActivity {
         textEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent gotoEditPassword = new Intent(this, EditPasswordActivity.class);
+                Intent gotoEditPassword = new Intent(context, EditPasswordActivity.class);
                 startActivity(gotoEditPassword);
-                 */
             }
         });
     }
