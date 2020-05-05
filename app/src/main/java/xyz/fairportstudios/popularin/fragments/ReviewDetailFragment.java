@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.activities.UserListActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeComment;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeComment;
@@ -176,6 +177,15 @@ public class ReviewDetailFragment extends Fragment {
                         }
                     });
                 }
+            }
+        });
+
+        totalLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoUserList = new Intent(context, UserListActivity.class);
+                gotoUserList.putExtra("REVIEW_ID", reviewID);
+                startActivity(gotoUserList);
             }
         });
 
