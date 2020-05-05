@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.adapters.ReviewPagerAdapter;
+import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.fragments.ReviewCommentFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
 
@@ -33,7 +33,7 @@ public class ReviewActivity extends AppCompatActivity {
         String reviewID = Objects.requireNonNull(bundle).getString("REVIEW_ID");
 
         // Tabbed
-        ReviewPagerAdapter adapter = new ReviewPagerAdapter(getSupportFragmentManager(), 0);
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), 0);
         adapter.addFragment(new ReviewDetailFragment(reviewID), "Detail");
         adapter.addFragment(new ReviewCommentFragment(reviewID), "Komen");
         viewPager.setAdapter(adapter);

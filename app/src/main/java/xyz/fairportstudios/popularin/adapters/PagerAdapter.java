@@ -9,11 +9,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewPagerAdapter extends FragmentPagerAdapter {
+public class PagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragmentList = new ArrayList<>();
     private List<String> titleList = new ArrayList<>();
 
-    public ReviewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    public PagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
 
