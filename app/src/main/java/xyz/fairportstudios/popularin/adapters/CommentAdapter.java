@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +19,9 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteComment;
 import xyz.fairportstudios.popularin.models.Comment;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
@@ -69,6 +72,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.commentDetail.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                if (userID.equals(new Auth(context).getAuthID())) {
+                    DeleteComment deleteComment = new DeleteComment(commentID, context);
+                    deleteComment.sendRequest(new DeleteComment.JSONCallback() {
+                        @Override
+                        public void onSuccess(Integer status) {
+                            if (status == 404) {
+                                Toast.makeText(context, "Komen dihapus.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+
                 return true;
             }
         });
