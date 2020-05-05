@@ -24,7 +24,9 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeComment;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
+import xyz.fairportstudios.popularin.apis.popularin.post.LikeComment;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
@@ -32,8 +34,10 @@ public class ReviewDetailFragment extends Fragment {
     private Boolean isLiked;
     private Context context;
     private ImageView userProfile, filmPoster, reviewStar, iconLike;
+    private Integer currentLikes;
+    private Integer likes;
     private String userID, filmID, reviewID;
-    private TextView userFirstName, filmTitle, filmYear, reviewDate, reviewDetail, likeStatus, totalLike;
+    private TextView userFirstName, filmTitle, filmYear, reviewDate, reviewText, likeStatus, totalLike;
 
     public ReviewDetailFragment(String reviewID) {
         this.reviewID = reviewID;
@@ -54,7 +58,7 @@ public class ReviewDetailFragment extends Fragment {
         filmTitle = view.findViewById(R.id.text_frd_film_title);
         filmYear = view.findViewById(R.id.text_frd_film_year);
         reviewDate = view.findViewById(R.id.text_frd_date);
-        this.reviewDetail = view.findViewById(R.id.text_frd_detail);
+        reviewText = view.findViewById(R.id.text_frd_detail);
         likeStatus = view.findViewById(R.id.text_frd_like_status);
         totalLike = view.findViewById(R.id.text_frd_total_like);
 
@@ -86,19 +90,21 @@ public class ReviewDetailFragment extends Fragment {
 
                         // Like status
                         isLiked = jsonObjectMetadata.getBoolean("liked");
+
                         if (isLiked) {
                             iconLike.setImageResource(R.drawable.ic_favorite_filled);
                             likeStatus.setText(R.string.liked);
                         }
 
                         // Detail
+                        likes = jsonObjectMetadata.getInt("likes");
                         userID = jsonObjectUser.getString("id");
                         userFirstName.setText(jsonObjectUser.getString("first_name"));
                         filmTitle.setText(jsonObjectFilm.getString("title"));
                         filmYear.setText(year);
                         reviewDate.setText(date);
-                        ReviewDetailFragment.this.reviewDetail.setText(jsonObjectReview.getString("review_text"));
-                        totalLike.setText(String.format("Total %s", String.valueOf(jsonObjectMetadata.getInt("likes"))));
+                        reviewText.setText(jsonObjectReview.getString("review_text"));
+                        totalLike.setText(String.format("Total %s", String.valueOf(likes)));
                         reviewStar.setImageResource(star);
                         Glide.with(Objects.requireNonNull(context)).load(jsonObjectUser.getString("profile_picture")).apply(requestOptions).into(userProfile);
                         Glide.with(Objects.requireNonNull(context)).load(jsonObjectFilm.getString("poster")).apply(requestOptions).into(filmPoster);
@@ -135,15 +141,41 @@ public class ReviewDetailFragment extends Fragment {
         iconLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 if (isLiked) {
-                    // Like
-                    // Like + 1
+                    UnlikeComment unlikeComment = new UnlikeComment(context, reviewID);
+                    unlikeComment.sendRequest(new UnlikeComment.JSONCallback() {
+                        @Override
+                        public void onSuccess(Integer status) {
+                            if (status == 404) {
+                                iconLike.setImageResource(R.drawable.ic_favorite_blank);
+                                currentLikes = likes - 1;
+                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                isLiked = false;
+                                likes--;
+                                Toast.makeText(context, "Ulasan tidak disukai.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 } else {
-                    // Remove Like
-                    // Like - 1
+                    LikeComment likeComment = new LikeComment(context, reviewID);
+                    likeComment.sendRequest(new LikeComment.JSONCallback() {
+                        @Override
+                        public void onSuccess(Integer status) {
+                            if (status == 202) {
+                                iconLike.setImageResource(R.drawable.ic_favorite_filled);
+                                currentLikes = likes + 1;
+                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                isLiked = true;
+                                likes++;
+                                Toast.makeText(context, "Ulasan disukai.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
-                 */
             }
         });
 
