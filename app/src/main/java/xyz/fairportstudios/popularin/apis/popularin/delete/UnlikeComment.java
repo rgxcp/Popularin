@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis.popularin.post;
+package xyz.fairportstudios.popularin.apis.popularin.delete;
 
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 
