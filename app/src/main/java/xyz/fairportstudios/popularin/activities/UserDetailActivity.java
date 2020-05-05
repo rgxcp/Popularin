@@ -5,12 +5,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,7 +25,9 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUser;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
+import xyz.fairportstudios.popularin.apis.popularin.post.FollowUser;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
 
@@ -33,6 +37,8 @@ public class UserDetailActivity extends AppCompatActivity {
     private Button buttonFollow;
     private Context context;
     private ImageView profilePicture;
+    private Integer currentFollowers;
+    private Integer followers;
     private ProgressBar progressBar;
     private RecyclerView recyclerViewLatestFavorite;
     private RecyclerView recyclerViewLatestReview;
@@ -98,7 +104,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
-        String userID = Objects.requireNonNull(bundle).getString("USER_ID");
+        final String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
         // Mendapatkan data
         UserDetail userDetail = new UserDetail(
@@ -118,10 +124,11 @@ public class UserDetailActivity extends AppCompatActivity {
                     JSONObject jsonObjectUser = jsonObjectResult.getJSONObject("user");
                     JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
 
+                    followers = jsonObjectMetadata.getInt("followers");
                     fullName.setText(jsonObjectUser.getString("full_name"));
                     username.setText(String.format("@%s", jsonObjectUser.getString("username")));
                     totalReview.setText(String.valueOf(jsonObjectMetadata.getInt("reviews")));
-                    totalFollower.setText(String.valueOf(jsonObjectMetadata.getInt("followers")));
+                    totalFollower.setText(String.valueOf(followers));
                     totalFollowing.setText(String.valueOf(jsonObjectMetadata.getInt("followings")));
                     totalFavorite.setText(String.valueOf(jsonObjectMetadata.getInt("favorites")));
                     totalWatchlist.setText(String.valueOf(jsonObjectMetadata.getInt("watchlists")));
@@ -186,10 +193,45 @@ public class UserDetailActivity extends AppCompatActivity {
         buttonFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i("IS_FOLLOWING", String.valueOf(isFollower));
+                Log.i("IS_FOLLOWER", String.valueOf(isFollower));
+
                 if (isFollowing) {
-                    // Unfollow
+                    UnfollowUser unfollowUser = new UnfollowUser(context, userID);
+                    unfollowUser.sendRequest(new UnfollowUser.JSONCallback() {
+                        @Override
+                        public void onSuccess(Integer status) {
+                            if (status == 404) {
+                                buttonFollow.setText("Ikuti");
+                                currentFollowers = followers - 1;
+                                totalFollower.setText(String.valueOf(currentFollowers));
+                                isFollowing = false;
+                                followers--;
+                                Toast.makeText(context, "Berhenti mengikuti user.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 } else {
-                    // Follow
+                    FollowUser followUser = new FollowUser(context, userID);
+                    followUser.sendRequest(new FollowUser.JSONCallback() {
+                        @Override
+                        public void onSuccess(Integer status) {
+                            if (status == 202) {
+                                buttonFollow.setText("MENGIKUTI");
+                                currentFollowers = followers + 1;
+                                totalFollower.setText(String.valueOf(currentFollowers));
+                                isFollowing = true;
+                                followers++;
+                                Toast.makeText(context, "User diikuti.", Toast.LENGTH_SHORT).show();
+                            } else if (status == 636) {
+                                Toast.makeText(context, "Tidak bisa mengikuti diri sendiri.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
