@@ -23,15 +23,18 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserListActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeComment;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeComment;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class ReviewDetailFragment extends Fragment {
+    private Boolean isAuth;
     private Boolean isLiked;
     private Context context;
     private ImageView userProfile, filmPoster, reviewStar, iconLike;
@@ -62,6 +65,9 @@ public class ReviewDetailFragment extends Fragment {
         reviewText = view.findViewById(R.id.text_frd_detail);
         likeStatus = view.findViewById(R.id.text_frd_like_status);
         totalLike = view.findViewById(R.id.text_frd_total_like);
+
+        // Mengecek apakah sign in
+        isAuth = new Auth(context).isAuth();
 
         // Mengirim data
         ReviewDetail reviewDetail = new ReviewDetail(reviewID, context);
@@ -142,40 +148,45 @@ public class ReviewDetailFragment extends Fragment {
         iconLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLiked) {
-                    UnlikeComment unlikeComment = new UnlikeComment(context, reviewID);
-                    unlikeComment.sendRequest(new UnlikeComment.JSONCallback() {
-                        @Override
-                        public void onSuccess(Integer status) {
-                            if (status == 404) {
-                                iconLike.setImageResource(R.drawable.ic_favorite_blank);
-                                currentLikes = likes - 1;
-                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                isLiked = false;
-                                likes--;
-                                Toast.makeText(context, "Ulasan tidak disukai.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                if (isAuth) {
+                    if (isLiked) {
+                        UnlikeComment unlikeComment = new UnlikeComment(context, reviewID);
+                        unlikeComment.sendRequest(new UnlikeComment.JSONCallback() {
+                            @Override
+                            public void onSuccess(Integer status) {
+                                if (status == 404) {
+                                    iconLike.setImageResource(R.drawable.ic_favorite_blank);
+                                    currentLikes = likes - 1;
+                                    totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                    isLiked = false;
+                                    likes--;
+                                    Toast.makeText(context, "Ulasan tidak disukai.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        LikeComment likeComment = new LikeComment(context, reviewID);
+                        likeComment.sendRequest(new LikeComment.JSONCallback() {
+                            @Override
+                            public void onSuccess(Integer status) {
+                                if (status == 202) {
+                                    iconLike.setImageResource(R.drawable.ic_favorite_filled);
+                                    currentLikes = likes + 1;
+                                    totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                    isLiked = true;
+                                    likes++;
+                                    Toast.makeText(context, "Ulasan disukai.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
                 } else {
-                    LikeComment likeComment = new LikeComment(context, reviewID);
-                    likeComment.sendRequest(new LikeComment.JSONCallback() {
-                        @Override
-                        public void onSuccess(Integer status) {
-                            if (status == 202) {
-                                iconLike.setImageResource(R.drawable.ic_favorite_filled);
-                                currentLikes = likes + 1;
-                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                isLiked = true;
-                                likes++;
-                                Toast.makeText(context, "Ulasan disukai.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    startActivity(gotoEmptyUser);
                 }
             }
         });

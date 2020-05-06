@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EditProfileActivity;
@@ -92,6 +93,16 @@ public class ProfileFragment extends Fragment {
         emptyLatestFavorite = view.findViewById(R.id.text_fp_empty_top_favorite);
         emptyLatestReview = view.findViewById(R.id.text_fp_empty_latest_review);
         Button buttonEditProfile = view.findViewById(R.id.button_fp_edit_profile);
+
+        // Mengecek apakah sign in
+        boolean isAuth = new Auth(context).isAuth();
+
+        if (!isAuth) {
+            Objects.requireNonNull(getFragmentManager())
+                    .beginTransaction()
+                    .replace(R.id.fragment_am_container, new EmptyUserFragment())
+                    .commit();
+        }
 
         // Set-up list
         List<LatestFavorite> latestFavoriteList = new ArrayList<>();

@@ -1,11 +1,12 @@
 package xyz.fairportstudios.popularin.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,8 +31,10 @@ import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
 import xyz.fairportstudios.popularin.apis.popularin.post.FollowUser;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserDetailActivity extends AppCompatActivity {
+    private Boolean isAuth;
     private Boolean isFollowing;
     private Boolean isFollower;
     private Button buttonFollow;
@@ -97,6 +100,10 @@ public class UserDetailActivity extends AppCompatActivity {
         rate50 = findViewById(R.id.text_aud_rate_50);
         emptyLatestFavorite = findViewById(R.id.text_aud_empty_top_favorite);
         emptyLatestReview = findViewById(R.id.text_aud_empty_latest_review);
+        Toolbar toolbar = findViewById(R.id.toolbar_aud_layout);
+
+        // Mengecek apakah sign in
+        isAuth = new Auth(context).isAuth();
 
         // Set-up list
         List<LatestFavorite> latestFavoriteList = new ArrayList<>();
@@ -190,48 +197,57 @@ public class UserDetailActivity extends AppCompatActivity {
         });
 
         // Activity
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         buttonFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("IS_FOLLOWING", String.valueOf(isFollower));
-                Log.i("IS_FOLLOWER", String.valueOf(isFollower));
-
-                if (isFollowing) {
-                    UnfollowUser unfollowUser = new UnfollowUser(context, userID);
-                    unfollowUser.sendRequest(new UnfollowUser.JSONCallback() {
-                        @Override
-                        public void onSuccess(Integer status) {
-                            if (status == 404) {
-                                buttonFollow.setText("Ikuti");
-                                currentFollowers = followers - 1;
-                                totalFollower.setText(String.valueOf(currentFollowers));
-                                isFollowing = false;
-                                followers--;
-                                Toast.makeText(context, "Berhenti mengikuti user.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                if (isAuth) {
+                    if (isFollowing) {
+                        UnfollowUser unfollowUser = new UnfollowUser(context, userID);
+                        unfollowUser.sendRequest(new UnfollowUser.JSONCallback() {
+                            @Override
+                            public void onSuccess(Integer status) {
+                                if (status == 404) {
+                                    buttonFollow.setText("Ikuti");
+                                    currentFollowers = followers - 1;
+                                    totalFollower.setText(String.valueOf(currentFollowers));
+                                    isFollowing = false;
+                                    followers--;
+                                    Toast.makeText(context, "Berhenti mengikuti user.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        FollowUser followUser = new FollowUser(context, userID);
+                        followUser.sendRequest(new FollowUser.JSONCallback() {
+                            @Override
+                            public void onSuccess(Integer status) {
+                                if (status == 202) {
+                                    buttonFollow.setText("MENGIKUTI");
+                                    currentFollowers = followers + 1;
+                                    totalFollower.setText(String.valueOf(currentFollowers));
+                                    isFollowing = true;
+                                    followers++;
+                                    Toast.makeText(context, "User diikuti.", Toast.LENGTH_SHORT).show();
+                                } else if (status == 636) {
+                                    Toast.makeText(context, "Tidak bisa mengikuti diri sendiri.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
                 } else {
-                    FollowUser followUser = new FollowUser(context, userID);
-                    followUser.sendRequest(new FollowUser.JSONCallback() {
-                        @Override
-                        public void onSuccess(Integer status) {
-                            if (status == 202) {
-                                buttonFollow.setText("MENGIKUTI");
-                                currentFollowers = followers + 1;
-                                totalFollower.setText(String.valueOf(currentFollowers));
-                                isFollowing = true;
-                                followers++;
-                                Toast.makeText(context, "User diikuti.", Toast.LENGTH_SHORT).show();
-                            } else if (status == 636) {
-                                Toast.makeText(context, "Tidak bisa mengikuti diri sendiri.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    startActivity(gotoEmptyUser);
                 }
             }
         });
