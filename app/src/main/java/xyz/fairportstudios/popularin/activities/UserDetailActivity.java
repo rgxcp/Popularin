@@ -204,6 +204,43 @@ public class UserDetailActivity extends AppCompatActivity {
             }
         });
 
+        totalReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoReviewList = new Intent(context, UserReviewActivity.class);
+                gotoReviewList.putExtra("USER_ID", userID);
+                startActivity(gotoReviewList);
+            }
+        });
+
+        totalFollower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalWatchlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         buttonFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

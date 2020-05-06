@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EditProfileActivity;
+import xyz.fairportstudios.popularin.activities.UserReviewActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
@@ -179,6 +180,43 @@ public class ProfileFragment extends Fragment {
         });
 
         // Activity
+        totalReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoReviewList = new Intent(context, UserReviewActivity.class);
+                gotoReviewList.putExtra("USER_ID", new Auth(context).getAuthID());
+                startActivity(gotoReviewList);
+            }
+        });
+
+        totalFollower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        totalWatchlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         buttonEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
