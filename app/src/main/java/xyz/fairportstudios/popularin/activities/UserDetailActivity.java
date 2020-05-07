@@ -230,7 +230,9 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoFavoriteList = new Intent(context, FavoriteActivity.class);
+                gotoFavoriteList.putExtra("USER_ID", userID);
+                startActivity(gotoFavoriteList);
             }
         });
 

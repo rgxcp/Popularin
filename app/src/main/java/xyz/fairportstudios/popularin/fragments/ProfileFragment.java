@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EditProfileActivity;
+import xyz.fairportstudios.popularin.activities.FavoriteActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
@@ -206,7 +207,9 @@ public class ProfileFragment extends Fragment {
         totalFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoFavoriteList = new Intent(context, FavoriteActivity.class);
+                gotoFavoriteList.putExtra("USER_ID", new Auth(context).getAuthID());
+                startActivity(gotoFavoriteList);
             }
         });
 
