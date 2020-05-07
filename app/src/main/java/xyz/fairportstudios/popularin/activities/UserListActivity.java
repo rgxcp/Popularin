@@ -13,8 +13,8 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
-import xyz.fairportstudios.popularin.fragments.FromAllFragment;
-import xyz.fairportstudios.popularin.fragments.FromFollowingFragment;
+import xyz.fairportstudios.popularin.fragments.LikeFromAllFragment;
+import xyz.fairportstudios.popularin.fragments.LikeFromFollowingFragment;
 
 public class UserListActivity extends AppCompatActivity {
 
@@ -34,8 +34,8 @@ public class UserListActivity extends AppCompatActivity {
 
         // Tabbed
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new FromAllFragment(reviewID), "SEMUA");
-        pagerAdapter.addFragment(new FromFollowingFragment(reviewID), "MENGIKUTI");
+        pagerAdapter.addFragment(new LikeFromAllFragment(reviewID), "SEMUA");
+        pagerAdapter.addFragment(new LikeFromFollowingFragment(reviewID), "MENGIKUTI");
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

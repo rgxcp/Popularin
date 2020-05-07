@@ -21,13 +21,13 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.LikeFromAll;
 import xyz.fairportstudios.popularin.models.User;
 
-public class FromAllFragment extends Fragment {
+public class LikeFromAllFragment extends Fragment {
     private Context context;
     private ProgressBar progressBar;
     private TextView emptyUser;
     private String reviewID;
 
-    public FromAllFragment(String reviewID) {
+    public LikeFromAllFragment(String reviewID) {
         this.reviewID = reviewID;
     }
 
