@@ -6,6 +6,10 @@ public class User {
     private String username;
     private String profile_picture;
 
+    public User() {
+        // Empty constructor
+    }
+
     public User(Integer id, String full_name, String username, String profile_picture) {
         this.id = id;
         this.full_name = full_name;

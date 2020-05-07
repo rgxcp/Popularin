@@ -1,28 +1,28 @@
 package xyz.fairportstudios.popularin.models;
 
 public class UserReview {
-    private Double rating;
     private Integer id;
     private Integer tmdb_id;
+    private Double rating;
     private String poster;
     private String release_date;
     private String review_date;
     private String review_text;
     private String title;
 
-    public UserReview(Double rating, Integer id, Integer tmdb_id, String poster, String release_date, String review_date, String review_text, String title) {
-        this.rating = rating;
+    public UserReview() {
+        // Empty constructor
+    }
+
+    public UserReview(Integer id, Integer tmdb_id, Double rating, String poster, String release_date, String review_date, String review_text, String title) {
         this.id = id;
         this.tmdb_id = tmdb_id;
+        this.rating = rating;
         this.poster = poster;
         this.release_date = release_date;
         this.review_date = review_date;
         this.review_text = review_text;
         this.title = title;
-    }
-
-    public Double getRating() {
-        return rating;
     }
 
     public Integer getId() {
@@ -31,6 +31,10 @@ public class UserReview {
 
     public Integer getTmdb_id() {
         return tmdb_id;
+    }
+
+    public Double getRating() {
+        return rating;
     }
 
     public String getPoster() {
@@ -53,16 +57,16 @@ public class UserReview {
         return title;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
 
     public void setTmdb_id(Integer tmdb_id) {
         this.tmdb_id = tmdb_id;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public void setPoster(String poster) {

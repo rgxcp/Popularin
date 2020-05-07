@@ -58,24 +58,15 @@ public class UserReviewRequest {
                             JSONObject jsonObject = jsonArrayData.getJSONObject(index);
                             JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
-                            Double rating = jsonObject.getDouble("rating");
-                            Integer id = jsonObject.getInt("id");
-                            Integer filmID = jsonObjectFilm.getInt("tmdb_id");
-                            String poster = jsonObjectFilm.getString("poster");
-                            String releaseDate = jsonObjectFilm.getString("release_date");
-                            String reviewDate = jsonObject.getString("review_date");
-                            String reviewText = jsonObject.getString("review_text");
-                            String title = jsonObjectFilm.getString("title");
-
-                            UserReview userReview = new UserReview(rating, id, filmID, poster, releaseDate, reviewDate, reviewText, title);
-                            userReview.setRating(rating);
-                            userReview.setId(id);
-                            userReview.setTmdb_id(filmID);
-                            userReview.setPoster(poster);
-                            userReview.setRelease_date(releaseDate);
-                            userReview.setReview_date(reviewDate);
-                            userReview.setReview_text(reviewText);
-                            userReview.setTitle(title);
+                            UserReview userReview = new UserReview();
+                            userReview.setId(jsonObject.getInt("id"));
+                            userReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
+                            userReview.setRating(jsonObject.getDouble("rating"));
+                            userReview.setPoster(jsonObjectFilm.getString("poster"));
+                            userReview.setRelease_date(jsonObjectFilm.getString("release_date"));
+                            userReview.setReview_date(jsonObject.getString("review_date"));
+                            userReview.setReview_text(jsonObject.getString("review_text"));
+                            userReview.setTitle(jsonObjectFilm.getString("title"));
 
                             userReviewList.add(userReview);
                         }

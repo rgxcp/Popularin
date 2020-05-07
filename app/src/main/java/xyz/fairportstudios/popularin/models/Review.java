@@ -1,10 +1,10 @@
 package xyz.fairportstudios.popularin.models;
 
 public class Review {
-    private Double rating;
     private Integer id;
     private Integer tmdb_id;
     private Integer user_id;
+    private Double rating;
     private String first_name;
     private String poster;
     private String profile_picture;
@@ -12,7 +12,10 @@ public class Review {
     private String review_text;
     private String title;
 
-    public Review(Double rating, Integer id, Integer tmdb_id, Integer user_id, String first_name, String poster, String profile_picture, String release_date, String review_text, String title) {
+    public Review() {
+    }
+
+    public Review(Integer id, Integer tmdb_id, Integer user_id, Double rating, String first_name, String poster, String profile_picture, String release_date, String review_text, String title) {
         this.rating = rating;
         this.id = id;
         this.tmdb_id = tmdb_id;
@@ -25,10 +28,6 @@ public class Review {
         this.title = title;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -39,6 +38,10 @@ public class Review {
 
     public Integer getUser_id() {
         return user_id;
+    }
+
+    public Double getRating() {
+        return rating;
     }
 
     public String getFirst_name() {
@@ -65,10 +68,6 @@ public class Review {
         return title;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -79,6 +78,10 @@ public class Review {
 
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public void setFirst_name(String first_name) {

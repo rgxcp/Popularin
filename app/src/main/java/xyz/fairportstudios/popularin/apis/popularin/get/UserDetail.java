@@ -20,9 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import xyz.fairportstudios.popularin.adapters.FilmAdapter;
 import xyz.fairportstudios.popularin.adapters.LatestFavoriteAdapter;
 import xyz.fairportstudios.popularin.adapters.LatestReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -104,12 +106,10 @@ public class UserDetail {
             for (int index = 0; index < jsonArray.length(); index++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(index);
 
-                Integer tmdb_id = jsonObject.getJSONObject("film").getInt("tmdb_id");
-                String poster = jsonObject.getJSONObject("film").getString("poster");
+                LatestFavorite latestFavorite = new LatestFavorite();
+                latestFavorite.setTmdb_id(jsonObject.getJSONObject("film").getInt("tmdb_id"));
+                latestFavorite.setPoster(jsonObject.getJSONObject("film").getString("poster"));
 
-                LatestFavorite latestFavorite = new LatestFavorite(tmdb_id, poster);
-                latestFavorite.setTmdb_id(tmdb_id);
-                latestFavorite.setPoster(poster);
                 latestFavoriteList.add(latestFavorite);
             }
         } catch (JSONException error) {
@@ -126,14 +126,11 @@ public class UserDetail {
             for (int index = 0; index < jsonArray.length(); index++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(index);
 
-                Integer id = jsonObject.getInt("id");
-                Double rating = jsonObject.getDouble("rating");
-                String poster = jsonObject.getJSONObject("film").getString("poster");
+                LatestReview latestReview = new LatestReview();
+                latestReview.setId(jsonObject.getInt("id"));
+                latestReview.setRating(jsonObject.getDouble("rating"));
+                latestReview.setPoster(jsonObject.getJSONObject("film").getString("poster"));
 
-                LatestReview latestReview = new LatestReview(id, rating, poster);
-                latestReview.setId(id);
-                latestReview.setRating(rating);
-                latestReview.setPoster(poster);
                 latestReviewList.add(latestReview);
             }
         } catch (JSONException error) {

@@ -59,16 +59,11 @@ public class SearchUser {
                         for (int index = 0; index < jsonArrayData.length(); index++) {
                             JSONObject jsonObject = jsonArrayData.getJSONObject(index);
 
-                            Integer id = jsonObject.getInt("id");
-                            String fullName = jsonObject.getString("full_name");
-                            String username = jsonObject.getString("username");
-                            String profilePicture = jsonObject.getString("profile_picture");
-
-                            User user = new User(id, fullName, username, profilePicture);
-                            user.setId(id);
-                            user.setFull_name(fullName);
-                            user.setUsername(username);
-                            user.setProfile_picture(profilePicture);
+                            User user = new User();
+                            user.setId(jsonObject.getInt("id"));
+                            user.setFull_name(jsonObject.getString("full_name"));
+                            user.setUsername(jsonObject.getString("username"));
+                            user.setProfile_picture(jsonObject.getString("profile_picture"));
 
                             userList.add(user);
                         }

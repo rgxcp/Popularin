@@ -58,16 +58,11 @@ public class LikeFromFollowing {
                         for (int index = 0; index < jsonArrayData.length(); index++) {
                             JSONObject jsonObjectUser = jsonArrayData.getJSONObject(index).getJSONObject("user");
 
-                            Integer id = jsonObjectUser.getInt("id");
-                            String fullName = jsonObjectUser.getString("full_name");
-                            String username = jsonObjectUser.getString("username");
-                            String profilePicture = jsonObjectUser.getString("profile_picture");
-
-                            User user = new User(id, fullName, username, profilePicture);
-                            user.setId(id);
-                            user.setFull_name(fullName);
-                            user.setUsername(username);
-                            user.setProfile_picture(profilePicture);
+                            User user = new User();
+                            user.setId(jsonObjectUser.getInt("id"));
+                            user.setFull_name(jsonObjectUser.getString("full_name"));
+                            user.setUsername(jsonObjectUser.getString("username"));
+                            user.setProfile_picture(jsonObjectUser.getString("profile_picture"));
 
                             userList.add(user);
                         }

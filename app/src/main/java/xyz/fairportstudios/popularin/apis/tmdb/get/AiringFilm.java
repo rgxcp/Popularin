@@ -51,18 +51,12 @@ public class AiringFilm {
                         String language = jsonObject.getString("original_language");
 
                         if (language.equals("id")) {
-                            Integer id = jsonObject.getInt("id");
-                            Integer genre_ids = jsonObject.getJSONArray("genre_ids").getInt(0);
-                            String original_title = jsonObject.getString("original_title");
-                            String poster_path = jsonObject.getString("poster_path");
-                            String release_date = jsonObject.getString("release_date");
-
-                            Film film = new Film(id, genre_ids, original_title, poster_path, release_date);
-                            film.setId(id);
-                            film.setGenre_ids(genre_ids);
-                            film.setOriginal_title(original_title);
-                            film.setPoster_path(poster_path);
-                            film.setRelease_date(release_date);
+                            Film film = new Film();
+                            film.setId(jsonObject.getInt("id"));
+                            film.setGenre_ids(jsonObject.getJSONArray("genre_ids").getInt(0));
+                            film.setOriginal_title(jsonObject.getString("original_title"));
+                            film.setPoster_path(jsonObject.getString("poster_path"));
+                            film.setRelease_date(jsonObject.getString("release_date"));
 
                             filmList.add(film);
                         }

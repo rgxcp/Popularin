@@ -7,6 +7,10 @@ public class Film {
     private String poster_path;
     private String release_date;
 
+    public Film() {
+        // Empty constructor
+    }
+
     public Film(Integer id, Integer genre_ids, String original_title, String poster_path, String release_date) {
         this.id = id;
         this.genre_ids = genre_ids;

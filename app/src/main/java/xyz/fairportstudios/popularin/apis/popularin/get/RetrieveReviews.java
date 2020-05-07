@@ -45,28 +45,17 @@ public class RetrieveReviews {
                     for (int index = 0; index < jsonArrayData.length(); index++) {
                         JSONObject jsonObject = jsonArrayData.getJSONObject(index);
 
-                        Double rating = jsonObject.getDouble("rating");
-                        Integer id = jsonObject.getInt("id");
-                        Integer tmdb_id = jsonObject.getJSONObject("film").getInt("tmdb_id");
-                        Integer user_id = jsonObject.getJSONObject("user").getInt("id");
-                        String first_name = jsonObject.getJSONObject("user").getString("first_name");
-                        String poster = jsonObject.getJSONObject("film").getString("poster");
-                        String profile_picture = jsonObject.getJSONObject("user").getString("profile_picture");
-                        String release_date = jsonObject.getJSONObject("film").getString("release_date");
-                        String review_text = jsonObject.getString("review_text");
-                        String title = jsonObject.getJSONObject("film").getString("title");
-
-                        Review review = new Review(rating, id, tmdb_id, user_id, first_name, poster, profile_picture, release_date, review_text, title);
-                        review.setRating(rating);
-                        review.setId(id);
-                        review.setTmdb_id(tmdb_id);
-                        review.setUser_id(user_id);
-                        review.setFirst_name(first_name);
-                        review.setPoster(poster);
-                        review.setProfile_picture(profile_picture);
-                        review.setRelease_date(release_date);
-                        review.setReview_text(review_text);
-                        review.setTitle(title);
+                        Review review = new Review();
+                        review.setId(jsonObject.getInt("id"));
+                        review.setTmdb_id(jsonObject.getJSONObject("film").getInt("tmdb_id"));
+                        review.setUser_id(jsonObject.getJSONObject("user").getInt("id"));
+                        review.setRating(jsonObject.getDouble("rating"));
+                        review.setFirst_name(jsonObject.getJSONObject("user").getString("first_name"));
+                        review.setPoster(jsonObject.getJSONObject("film").getString("poster"));
+                        review.setProfile_picture(jsonObject.getJSONObject("user").getString("profile_picture"));
+                        review.setRelease_date(jsonObject.getJSONObject("film").getString("release_date"));
+                        review.setReview_text(jsonObject.getString("review_text"));
+                        review.setTitle(jsonObject.getJSONObject("film").getString("title"));
 
                         reviewList.add(review);
                     }

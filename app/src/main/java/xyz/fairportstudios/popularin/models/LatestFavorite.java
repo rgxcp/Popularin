@@ -4,6 +4,10 @@ public class LatestFavorite {
     private Integer tmdb_id;
     private String poster;
 
+    public LatestFavorite() {
+        // Empty constructor
+    }
+
     public LatestFavorite(Integer tmdb_id, String poster) {
         this.tmdb_id = tmdb_id;
         this.poster = poster;

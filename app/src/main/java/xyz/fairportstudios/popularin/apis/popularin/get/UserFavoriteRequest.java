@@ -57,18 +57,12 @@ public class UserFavoriteRequest {
                             JSONObject jsonObject = jsonArrayData.getJSONObject(index);
                             JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
-                            Integer id = jsonObjectFilm.getInt("tmdb_id");
-                            Integer genreID = jsonObjectFilm.getInt("genre_id");
-                            String title = jsonObjectFilm.getString("title");
-                            String poster = jsonObjectFilm.getString("poster");
-                            String releaseDate = jsonObjectFilm.getString("release_date");
-
-                            Film film = new Film(id, genreID, title, poster, releaseDate);
-                            film.setId(id);
-                            film.setGenre_ids(genreID);
-                            film.setOriginal_title(title);
-                            film.setPoster_path(poster);
-                            film.setRelease_date(releaseDate);
+                            Film film = new Film();
+                            film.setId(jsonObjectFilm.getInt("tmdb_id"));
+                            film.setGenre_ids(jsonObjectFilm.getInt("genre_id"));
+                            film.setOriginal_title(jsonObjectFilm.getString("title"));
+                            film.setPoster_path(jsonObjectFilm.getString("poster"));
+                            film.setRelease_date(jsonObjectFilm.getString("release_date"));
 
                             filmList.add(film);
                         }

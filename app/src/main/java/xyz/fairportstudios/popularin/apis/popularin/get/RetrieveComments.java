@@ -55,20 +55,13 @@ public class RetrieveComments {
                         for (int index = 0; index < jsonArrayData.length(); index++) {
                             JSONObject jsonObject = jsonArrayData.getJSONObject(index);
 
-                            Integer id = jsonObject.getInt("id");
-                            Integer user_id = jsonObject.getJSONObject("user").getInt("id");
-                            String comment_date = jsonObject.getString("comment_date");
-                            String comment_text = jsonObject.getString("comment_text");
-                            String first_name = jsonObject.getJSONObject("user").getString("first_name");
-                            String profile_picture = jsonObject.getJSONObject("user").getString("profile_picture");
-
-                            Comment comment = new Comment(id, user_id, comment_date, comment_text, first_name, profile_picture);
-                            comment.setId(id);
-                            comment.setUser_id(user_id);
-                            comment.setComment_date(comment_date);
-                            comment.setComment_text(comment_text);
-                            comment.setFirst_name(first_name);
-                            comment.setProfile_picture(profile_picture);
+                            Comment comment = new Comment();
+                            comment.setId(jsonObject.getInt("id"));
+                            comment.setUser_id(jsonObject.getJSONObject("user").getInt("id"));
+                            comment.setComment_date(jsonObject.getString("comment_date"));
+                            comment.setComment_text(jsonObject.getString("comment_text"));
+                            comment.setFirst_name(jsonObject.getJSONObject("user").getString("first_name"));
+                            comment.setProfile_picture(jsonObject.getJSONObject("user").getString("profile_picture"));
 
                             commentList.add(comment);
                         }

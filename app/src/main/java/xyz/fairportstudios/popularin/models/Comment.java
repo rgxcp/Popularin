@@ -8,6 +8,10 @@ public class Comment {
     private String first_name;
     private String profile_picture;
 
+    public Comment() {
+        // Empty constructor
+    }
+
     public Comment(Integer id, Integer user_id, String comment_date, String comment_text, String first_name, String profile_picture) {
         this.id = id;
         this.user_id = user_id;

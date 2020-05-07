@@ -5,6 +5,10 @@ public class LatestReview {
     private Double rating;
     private String poster;
 
+    public LatestReview() {
+        // Empty constructor
+    }
+
     public LatestReview(Integer id, Double rating, String poster) {
         this.id = id;
         this.rating = rating;
