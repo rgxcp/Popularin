@@ -20,6 +20,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.services.ParseDate;
+import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.UserReviewViewHolder> {
@@ -52,6 +53,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         Integer star = new ParseStar().getStar(userReviewList.get(position).getRating());
         String year = new ParseDate().getYear(userReviewList.get(position).getRelease_date());
         String date = new ParseDate().getDate(userReviewList.get(position).getReview_date());
+        String poster = new ParseImage().getPoster(userReviewList.get(position).getPoster());
 
         // Mengisi data
         holder.filmTitle.setText(userReviewList.get(position).getTitle());
@@ -59,7 +61,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         holder.reviewDate.setText(date);
         holder.reviewDetail.setText(userReviewList.get(position).getReview_text());
         holder.reviewStar.setImageResource(star);
-        Glide.with(context).load(userReviewList.get(position).getPoster()).apply(requestOptions).into(holder.filmPoster);
+        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {

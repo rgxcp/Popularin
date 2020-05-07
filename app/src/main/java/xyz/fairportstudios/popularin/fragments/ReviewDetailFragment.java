@@ -31,6 +31,7 @@ import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeComment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
+import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class ReviewDetailFragment extends Fragment {
@@ -103,6 +104,9 @@ public class ReviewDetailFragment extends Fragment {
                             likeStatus.setText(R.string.liked);
                         }
 
+                        // Parsing
+                        String poster = new ParseImage().getPoster(jsonObjectFilm.getString("poster"));
+
                         // Detail
                         likes = jsonObjectMetadata.getInt("likes");
                         userID = jsonObjectUser.getString("id");
@@ -114,7 +118,7 @@ public class ReviewDetailFragment extends Fragment {
                         totalLike.setText(String.format("Total %s", String.valueOf(likes)));
                         reviewStar.setImageResource(star);
                         Glide.with(Objects.requireNonNull(context)).load(jsonObjectUser.getString("profile_picture")).apply(requestOptions).into(userProfile);
-                        Glide.with(Objects.requireNonNull(context)).load(jsonObjectFilm.getString("poster")).apply(requestOptions).into(filmPoster);
+                        Glide.with(Objects.requireNonNull(context)).load(poster).apply(requestOptions).into(filmPoster);
                     } else {
                         Toast.makeText(getActivity(), "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
                     }

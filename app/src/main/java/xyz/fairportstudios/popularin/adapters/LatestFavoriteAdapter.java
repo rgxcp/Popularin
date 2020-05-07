@@ -17,6 +17,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
+import xyz.fairportstudios.popularin.services.ParseImage;
 
 public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAdapter.LatestFavoriteViewHolder> {
     private Context context;
@@ -41,8 +42,11 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
+        // Parsing
+        String poster = new ParseImage().getPoster(latestFavoriteList.get(position).getPoster());
+
         // Mengisi data
-        Glide.with(context).load(latestFavoriteList.get(position).getPoster()).apply(requestOptions).into(holder.filmPoster);
+        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {

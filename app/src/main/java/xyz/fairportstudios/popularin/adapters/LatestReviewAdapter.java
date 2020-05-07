@@ -18,6 +18,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapter.LatestReviewViewHolder> {
@@ -45,10 +46,11 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
 
         // Parsing
         Integer star = new ParseStar().getStar(latestReviewList.get(position).getRating());
+        String poster = new ParseImage().getPoster(latestReviewList.get(position).getPoster());
 
         // Mengisi data
         holder.reviewStar.setImageResource(star);
-        Glide.with(context).load(latestReviewList.get(position).getPoster()).apply(requestOptions).into(holder.filmPoster);
+        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
