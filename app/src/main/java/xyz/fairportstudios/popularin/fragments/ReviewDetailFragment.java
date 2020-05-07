@@ -149,6 +149,13 @@ public class ReviewDetailFragment extends Fragment {
             }
         });
 
+        filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
+
         iconLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

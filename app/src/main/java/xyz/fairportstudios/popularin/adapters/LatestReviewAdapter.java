@@ -61,6 +61,13 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
                 context.startActivity(gotoReviewDetail);
             }
         });
+
+        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
     @Override

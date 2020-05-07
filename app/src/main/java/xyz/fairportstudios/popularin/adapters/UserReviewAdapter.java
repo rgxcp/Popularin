@@ -83,6 +83,13 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
                  */
             }
         });
+
+        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
     @Override

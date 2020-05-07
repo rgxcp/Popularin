@@ -59,6 +59,13 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
                  */
             }
         });
+
+        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
     @Override

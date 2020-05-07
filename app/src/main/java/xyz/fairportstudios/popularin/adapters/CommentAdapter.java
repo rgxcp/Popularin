@@ -47,6 +47,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         // User ID
         final String userID = String.valueOf(commentList.get(position).getUser_id());
 
+        // Auth ID
+        final String authID = new Auth(context).getAuthID();
+
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
@@ -69,10 +72,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         });
 
-        holder.commentDetail.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (userID.equals(new Auth(context).getAuthID())) {
+                if (userID.equals(authID)) {
                     DeleteComment deleteComment = new DeleteComment(commentID, context);
                     deleteComment.sendRequest(new DeleteComment.JSONCallback() {
                         @Override
