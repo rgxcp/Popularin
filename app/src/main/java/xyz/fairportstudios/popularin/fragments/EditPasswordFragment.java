@@ -1,13 +1,17 @@
-package xyz.fairportstudios.popularin.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -19,27 +23,28 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePassword;
 
-public class EditPasswordActivity extends AppCompatActivity {
+public class EditPasswordFragment extends Fragment {
     private Context context;
     private CoordinatorLayout layout;
     private TextInputEditText inputCurrentPassword;
     private TextInputEditText inputNewPassword;
     private TextInputEditText inputConfirmPassword;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_password);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_edit_password, container, false);
 
         // Binding
-        context = EditPasswordActivity.this;
-        layout = findViewById(R.id.coordinator_aepw_layout);
-        inputCurrentPassword = findViewById(R.id.text_aepw_current_password);
-        inputNewPassword = findViewById(R.id.text_aepw_new_password);
-        inputConfirmPassword = findViewById(R.id.text_aepw_confirm_password);
-        Button buttonSave = findViewById(R.id.button_aepw_save);
+        context = getActivity();
+        layout = view.findViewById(R.id.coordinator_aepw_layout);
+        inputCurrentPassword = view.findViewById(R.id.text_aepw_current_password);
+        inputNewPassword = view.findViewById(R.id.text_aepw_new_password);
+        inputConfirmPassword = view.findViewById(R.id.text_aepw_confirm_password);
+        Button buttonSave = view.findViewById(R.id.button_aepw_save);
 
         // Activity
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -66,9 +71,7 @@ public class EditPasswordActivity extends AppCompatActivity {
                             int status = response.getInt("status");
 
                             if (status == 303) {
-                                Intent gotoMain = new Intent(context, MainActivity.class);
-                                startActivity(gotoMain);
-                                finishAffinity();
+                                Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             } else if (status == 616) {
                                 Snackbar.make(layout, "Password lama tidak sesuai.", Snackbar.LENGTH_SHORT).show();
                             } else if (status == 626) {
@@ -85,5 +88,7 @@ public class EditPasswordActivity extends AppCompatActivity {
                 });
             }
         });
+
+        return view;
     }
 }

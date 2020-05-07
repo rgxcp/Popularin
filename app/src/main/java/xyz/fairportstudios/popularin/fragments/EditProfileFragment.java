@@ -1,14 +1,20 @@
-package xyz.fairportstudios.popularin.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,7 +29,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserSelf;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfile;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileFragment extends Fragment {
     private Context context;
     private CoordinatorLayout layout;
     private TextInputEditText inputFirstName;
@@ -31,20 +37,20 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputEditText inputUsername;
     private TextInputEditText inputEmail;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_edit_profile, container, false);
 
         // Binding
-        context = EditProfileActivity.this;
-        layout = findViewById(R.id.coordinator_aep_layout);
-        inputFirstName = findViewById(R.id.text_aep_first_name);
-        inputLastName = findViewById(R.id.text_aep_last_name);
-        inputUsername = findViewById(R.id.text_aep_username);
-        inputEmail = findViewById(R.id.text_aep_email);
-        Button buttonSave = findViewById(R.id.button_aep_save);
-        TextView textEditPassword = findViewById(R.id.text_aep_edit_password);
+        context = getActivity();
+        layout = view.findViewById(R.id.coordinator_aep_layout);
+        inputFirstName = view.findViewById(R.id.text_aep_first_name);
+        inputLastName = view.findViewById(R.id.text_aep_last_name);
+        inputUsername = view.findViewById(R.id.text_aep_username);
+        inputEmail = view.findViewById(R.id.text_aep_email);
+        Button buttonSave = view.findViewById(R.id.button_aep_save);
+        TextView textEditPassword = view.findViewById(R.id.text_aep_edit_password);
 
         // Mendapatkan data
         UserSelf userSelf = new UserSelf(context);
@@ -90,7 +96,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             int status = response.getInt("status");
 
                             if (status == 303) {
-                                onBackPressed();
+                                Objects.requireNonNull(getFragmentManager()).popBackStack();
                             } else if (status == 626) {
                                 JSONArray jsonArrayResult = response.getJSONArray("result");
                                 String errorMessage = jsonArrayResult.get(0).toString();
@@ -109,9 +115,15 @@ public class EditProfileActivity extends AppCompatActivity {
         textEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoEditPassword = new Intent(context, EditPasswordActivity.class);
-                startActivity(gotoEditPassword);
+                if (getFragmentManager() != null) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_am_container, new EditPasswordFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
+
+        return view;
     }
 }

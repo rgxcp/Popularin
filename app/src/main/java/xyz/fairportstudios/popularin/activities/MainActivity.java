@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -58,8 +59,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (selectedFragment != null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                // Menghapus semua stack
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                // Memuat fragment
+                fragmentManager.beginTransaction()
                         .replace(R.id.fragment_am_container, selectedFragment)
                         .commit();
             }

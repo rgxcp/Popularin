@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EditProfileActivity;
 import xyz.fairportstudios.popularin.activities.FavoriteActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
@@ -223,8 +222,12 @@ public class ProfileFragment extends Fragment {
         buttonEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoEditProfile = new Intent(context, EditProfileActivity.class);
-                startActivity(gotoEditProfile);
+                if (getFragmentManager() != null) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_am_container, new EditProfileFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

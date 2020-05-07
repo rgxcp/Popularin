@@ -15,8 +15,6 @@
         <activity android:name=".activities.UserReviewActivity" />
         <activity android:name=".activities.EmptyUserActivity" />
         <activity android:name=".activities.UserListActivity" />
-        <activity android:name=".activities.EditPasswordActivity" />
-        <activity android:name=".activities.EditProfileActivity" />
         <activity android:name=".activities.UserDetailActivity" />
         <activity android:name=".activities.ReviewActivity" />
         <activity android:name=".activities.FilmListActivity" />
