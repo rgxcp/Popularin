@@ -32,20 +32,18 @@ public class FavoriteListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
-        // Set-up list
-        List<Film> filmList = new ArrayList<>();
-
         // Bundle
         Bundle bundle = getIntent().getExtras();
         String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
-        // Mendapatkan data
-        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(userID,
-                this,
-                filmList,
-                recyclerView
-        );
+        // Toolbar
+        toolbar.setTitle("Favorit");
 
+        // List
+        List<Film> filmList = new ArrayList<>();
+
+        // GET
+        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(userID, this, filmList, recyclerView);
         userFavoriteRequest.sendRequest(new UserFavoriteRequest.JSONCallback() {
             @Override
             public void onSuccess() {
