@@ -11,12 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.FavoriteActivity" />
-        <activity android:name=".activities.UserReviewActivity" />
+        <activity android:name=".activities.FavoriteListActivity" />
+        <activity android:name=".activities.UserReviewListActivity" />
         <activity android:name=".activities.EmptyUserActivity" />
-        <activity android:name=".activities.UserListActivity" />
+        <activity android:name=".activities.LikeListActivity" />
         <activity android:name=".activities.UserDetailActivity" />
-        <activity android:name=".activities.ReviewActivity" />
+        <activity android:name=".activities.ReviewDetailActivity" />
         <activity android:name=".activities.FilmListActivity" />
         <activity android:name=".activities.SignInActivity" />
         <activity android:name=".activities.SignUpActivity" />

@@ -16,7 +16,7 @@
         app:shape_roundRect_topRightRadius="5dp">
 
         <ImageView
-            android:id="@+id/image_rvf_poster"
+            android:id="@+id/image_rf_poster"
             android:layout_width="100dp"
             android:layout_height="150dp"
             android:contentDescription="@null"
@@ -31,7 +31,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_rvf_title"
+            android:id="@+id/text_rf_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -40,14 +40,14 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/text_rvf_genre"
+            android:id="@+id/text_rf_genre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/text_rvf_release_date"
+            android:id="@+id/text_rf_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

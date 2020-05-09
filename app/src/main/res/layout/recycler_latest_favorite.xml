@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
     app:shape_roundRect_bottomLeftRadius="5dp"
     app:shape_roundRect_bottomRightRadius="25dp"
     app:shape_roundRect_topLeftRadius="5dp"
     app:shape_roundRect_topRightRadius="5dp">
 
     <ImageView
-        android:id="@+id/image_rvlf_poster"
+        android:id="@+id/image_rlf_poster"
         android:layout_width="100dp"
         android:layout_height="150dp"
         android:contentDescription="@null"

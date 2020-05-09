@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_fsf_anchor"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ProgressBar
-        android:id="@+id/progress_bar_fsf_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="168dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/text_fsf_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:lineSpacingExtra="8dp"
-        android:text="UH OH! \n Seperti padang pasir disini"
-        android:visibility="gone" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_fsf_layout"
@@ -27,10 +12,28 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        app:queryHint="Cari film apa?" />
+        app:queryHint="@string/search_film_hint" />
+
+    <ProgressBar
+        android:id="@+id/pbr_fsf_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_fsf_layout"
+        android:padding="168dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text_fsf_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_fsf_layout"
+        android:gravity="center"
+        android:lineSpacingExtra="8dp"
+        android:text="@string/empty_result"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_fsf_layout"
+        android:id="@+id/recycler_fsf_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_fsf_layout"

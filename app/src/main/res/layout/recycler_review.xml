@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/text_rvr_title"
+            android:id="@+id/text_rr_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -24,21 +24,21 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/text_rvr_year"
+            android:id="@+id/text_rr_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/text_rvr_title"
+            android:layout_toEndOf="@id/text_rr_title"
             android:textSize="13sp" />
 
         <TextView
-            android:id="@+id/text_rvr_first_name"
+            android:id="@+id/text_rr_first_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@id/sov_rvr_profile"
+            android:layout_toStartOf="@id/sov_rr_profile_anchor"
             android:ellipsize="end"
             android:maxWidth="100dp"
             android:maxLines="1"
@@ -46,13 +46,13 @@
             tools:ignore="RelativeOverlap" />
 
         <com.github.florent37.shapeofview.shapes.CircleView
-            android:id="@+id/sov_rvr_profile"
+            android:id="@+id/sov_rr_profile_anchor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true">
 
             <ImageView
-                android:id="@+id/image_rvr_profile"
+                android:id="@+id/image_rr_profile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@null"
@@ -61,19 +61,19 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/image_rvr_star"
+        android:id="@+id/image_rr_star"
         android:layout_width="70dp"
         android:layout_height="20dp"
         android:contentDescription="@null"
         android:src="@drawable/ic_star_50" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
 
         <com.github.florent37.shapeofview.shapes.RoundRectView
-            android:id="@+id/sov_rvr_poster"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:shape_roundRect_bottomLeftRadius="5dp"
@@ -82,7 +82,7 @@
             app:shape_roundRect_topRightRadius="5dp">
 
             <ImageView
-                android:id="@+id/image_rvr_poster"
+                android:id="@+id/image_rr_poster"
                 android:layout_width="100dp"
                 android:layout_height="150dp"
                 android:contentDescription="@null"
@@ -90,14 +90,20 @@
         </com.github.florent37.shapeofview.shapes.RoundRectView>
 
         <TextView
-            android:id="@+id/text_rvr_review"
+            android:id="@+id/text_rr_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_toEndOf="@id/sov_rvr_poster"
             android:ellipsize="end"
             android:maxLines="7"
             android:textSize="15sp" />
-    </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/border_rr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorPrimary" />
 
 </LinearLayout>

@@ -1,66 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_fp_anchor"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/progress_bar_fp_layout"
+        android:id="@+id/pbr_fp_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="168dp" />
 
-    <ScrollView
-        android:id="@+id/scroll_view_fp_layout"
+    <TextView
+        android:id="@+id/text_fp_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:gravity="center"
+        android:lineSpacingExtra="8dp"
+        android:text="@string/empty_result"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/scroll_fp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
-
-            <com.github.florent37.shapeofview.shapes.CircleView
-                android:id="@+id/sov_fp_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-
-                <ImageView
-                    android:id="@+id/image_fp_profile"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:contentDescription="@null"
-                    android:src="@color/colorPrimary" />
-            </com.github.florent37.shapeofview.shapes.CircleView>
-
-            <TextView
-                android:id="@+id/text_fp_full_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sov_fp_profile"
-                android:layout_marginTop="16dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/text_fp_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_fp_full_name"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAlignment="center" />
+            android:paddingVertical="16dp">
 
             <LinearLayout
-                android:id="@+id/linear_metadata_fp_layout"
+                android:id="@+id/linear_profile_fp_anchor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_fp_username"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.github.florent37.shapeofview.shapes.CircleView
+                    android:id="@+id/sov_fp_anchor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/image_fp_profile"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:contentDescription="@null"
+                        android:src="@color/colorPrimary" />
+                </com.github.florent37.shapeofview.shapes.CircleView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_fp_full_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/text_fp_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_metadata_fp_anchor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linear_profile_fp_anchor"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
@@ -83,7 +106,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Ulasan"
+                        android:text="@string/review"
                         android:textAlignment="center"
                         android:textColor="#000000" />
                 </LinearLayout>
@@ -104,7 +127,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Pengikut"
+                        android:text="@string/follower"
                         android:textAlignment="center"
                         android:textColor="#000000" />
                 </LinearLayout>
@@ -125,7 +148,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Mengikuti"
+                        android:text="@string/following"
                         android:textAlignment="center"
                         android:textColor="#000000" />
                 </LinearLayout>
@@ -146,7 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Favorit"
+                        android:text="@string/favorite"
                         android:textAlignment="center"
                         android:textColor="#000000" />
                 </LinearLayout>
@@ -167,7 +190,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Watchlist"
+                        android:text="@string/watchlist"
                         android:textAlignment="center"
                         android:textColor="#000000" />
                 </LinearLayout>
@@ -177,82 +200,86 @@
                 android:id="@+id/button_fp_edit_profile"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@+id/linear_metadata_fp_layout"
+                android:layout_below="@+id/linear_metadata_fp_anchor"
                 android:layout_marginHorizontal="80dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/colorPrimary"
-                android:text="Ubah Profile"
-                android:textAllCaps="false"
+                android:text="@string/edit_profile"
                 android:textColor="#FFFFFF" />
 
             <TextView
-                android:id="@+id/text_latest_favorite_fp_layout"
+                android:id="@+id/text_latest_favorite_fp_anchor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/button_fp_edit_profile"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="FAVORIT TERBARU"
+                android:text="@string/latest_favorite"
                 android:textColor="#000000" />
 
             <TextView
-                android:id="@+id/text_fp_empty_top_favorite"
+                android:id="@+id/text_empty_latest_favorite_fp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_below="@id/text_latest_favorite_fp_layout"
+                android:layout_below="@id/text_latest_favorite_fp_anchor"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:lineSpacingExtra="8dp"
-                android:text="UH OH! \n Seperti padang pasir disini"
-                android:visibility="invisible" />
+                android:text="@string/empty_result"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_top_favorite_fp_layout"
+                android:id="@+id/recycler_latest_favorite_fp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_below="@id/text_latest_favorite_fp_layout"
-                android:layout_marginTop="8dp" />
+                android:layout_below="@id/text_latest_favorite_fp_anchor"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible" />
 
             <TextView
-                android:id="@+id/text_latest_review_fp_layout"
+                android:id="@+id/text_latest_review_fp_anchor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_view_top_favorite_fp_layout"
+                android:layout_below="@id/recycler_latest_favorite_fp_layout"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="REVIEW TERBARU"
+                android:text="@string/latest_review"
                 android:textColor="#000000" />
 
             <TextView
-                android:id="@+id/text_fp_empty_latest_review"
+                android:id="@+id/text_empty_latest_review_fp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="174dp"
-                android:layout_below="@id/text_latest_review_fp_layout"
+                android:layout_below="@id/text_latest_review_fp_anchor"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:lineSpacingExtra="8dp"
-                android:text="UH OH! \n Seperti padang pasir disini"
-                android:visibility="invisible" />
+                android:text="@string/empty_result"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_latest_review_fp_layout"
+                android:id="@+id/recycler_latest_review_fp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="174dp"
-                android:layout_below="@id/text_latest_review_fp_layout"
-                android:layout_marginTop="8dp" />
+                android:layout_below="@id/text_latest_review_fp_anchor"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible" />
 
             <TextView
-                android:id="@+id/text_rating_fp_layout"
+                android:id="@+id/text_rating_fp_anchor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_view_latest_review_fp_layout"
+                android:layout_below="@id/recycler_latest_review_fp_layout"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="RATING"
+                android:text="@string/rating"
                 android:textColor="#000000" />
 
             <LinearLayout
-                android:id="@+id/linear_rate_fp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_rating_fp_layout"
+                android:layout_below="@id/text_rating_fp_anchor"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"

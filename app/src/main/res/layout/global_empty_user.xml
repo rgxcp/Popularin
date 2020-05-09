@@ -7,20 +7,20 @@
     android:padding="64dp">
 
     <Button
-        android:id="@+id/button_aeu_signin"
+        android:id="@+id/button_geu_signin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="MASUK"
+        android:text="@string/signin"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/button_aeu_signup"
+        android:id="@+id/button_geu_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@color/colorPrimary"
-        android:text="DAFTAR"
+        android:text="@string/signup"
         android:textColor="#FFFFFF" />
 
 </LinearLayout>

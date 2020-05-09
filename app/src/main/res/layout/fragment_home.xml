@@ -1,415 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:columnCount="3"
+    android:padding="16dp"
+    android:rowCount="5"
+    tools:context=".activities.MainActivity">
 
-    <GridLayout
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_action"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:rowCount="5">
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_action"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Aksi"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_animation"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_drama"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Animasi"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_drama"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_fantasy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Drama"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_fantasy"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_fiction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Fantasi"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_fiction"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_horror"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Fiksi"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_horror"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_crime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Horor"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_crime"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_comedy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Kejahatan"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_family"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_family"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Keluarga"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_comedy"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_mystery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_rowWeight="1"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Komedi"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_mystery"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_war"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_rowWeight="1"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Misteri"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_war"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_adventure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_rowWeight="1"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Perang"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_adventure"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_romance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_rowWeight="1"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Petualang"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_romance"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_rowWeight="1"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Romansa"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_history"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fh_thriller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_rowWeight="1"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Sejarah"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-
-        <com.github.florent37.shapeofview.shapes.RoundRectView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="16dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/genre_action"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/image_fh_thriller"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Thriller"
-                android:textColor="#FFFFFF" />
-        </com.github.florent37.shapeofview.shapes.RoundRectView>
-    </GridLayout>
-
-</ScrollView>
+</GridLayout>

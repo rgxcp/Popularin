@@ -15,7 +15,7 @@
         app:shape_roundRect_topRightRadius="5dp">
 
         <ImageView
-            android:id="@+id/image_rvlr_poster"
+            android:id="@+id/image_rlr_poster"
             android:layout_width="100dp"
             android:layout_height="150dp"
             android:contentDescription="@null"
@@ -23,7 +23,7 @@
     </com.github.florent37.shapeofview.shapes.RoundRectView>
 
     <ImageView
-        android:id="@+id/image_rvlr_star"
+        android:id="@+id/image_rlr_star"
         android:layout_width="70dp"
         android:layout_height="20dp"
         android:layout_marginTop="4dp"
