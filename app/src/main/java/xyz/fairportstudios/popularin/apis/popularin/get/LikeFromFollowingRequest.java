@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -17,53 +16,57 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class SearchUser {
+public class LikeFromFollowingRequest {
     private Context context;
     private List<User> userList;
     private RecyclerView recyclerView;
 
-    public SearchUser(Context context, List<User> userList, RecyclerView recyclerView) {
+    public LikeFromFollowingRequest(Context context, List<User> userList, RecyclerView recyclerView) {
         this.context = context;
         this.userList = userList;
         this.recyclerView = recyclerView;
     }
 
-    public interface JSONCallback {
+    public interface APICallback {
         void onSuccess();
-        void onEmpytResult();
+
+        void onEmpty();
+
+        void onError();
     }
 
-    public String getRequestURL(String query) {
-        return PopularinAPI.SEARCH_USER + query;
+    public String getRequestURL(String reviewID) {
+        return PopularinAPI.REVIEW + "/" + reviewID + "/likes/from/following";
     }
 
-    public void sendRequest(String requestURL, final JSONCallback callback) {
-        // Membersihkan sebelum mencari
-        userList.clear();
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+    public void sendRequest(String requestURL, final APICallback callback) {
+        JsonObjectRequest followingLikeRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    int total = response.getJSONObject("result").getInt("total");
+                    int status = response.getInt("status");
 
-                    if (total > 0) {
+                    if (status == 101) {
                         JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
 
                         for (int index = 0; index < jsonArrayData.length(); index++) {
                             JSONObject jsonObject = jsonArrayData.getJSONObject(index);
+                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
 
                             User user = new User();
-                            user.setId(jsonObject.getInt("id"));
-                            user.setFull_name(jsonObject.getString("full_name"));
-                            user.setUsername(jsonObject.getString("username"));
-                            user.setProfile_picture(jsonObject.getString("profile_picture"));
+                            user.setId(jsonObjectUser.getInt("id"));
+                            user.setFull_name(jsonObjectUser.getString("full_name"));
+                            user.setUsername(jsonObjectUser.getString("username"));
+                            user.setProfile_picture(jsonObjectUser.getString("profile_picture"));
 
                             userList.add(user);
                         }
@@ -74,20 +77,28 @@ public class SearchUser {
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
                     } else {
-                        callback.onEmpytResult();
+                        callback.onEmpty();
                     }
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("auth_uid", new Auth(context).getAuthID());
+                return headers;
+            }
+        };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonObjectRequest);
+        Volley.newRequestQueue(context).add(followingLikeRequest);
     }
 }

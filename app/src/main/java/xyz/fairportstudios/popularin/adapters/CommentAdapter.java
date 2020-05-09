@@ -5,21 +5,23 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteComment;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -33,22 +35,31 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         this.commentList = commentList;
     }
 
+    private Integer dpToPx() {
+        float px = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CommentViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_comment, parent, false));
+        return new CommentViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_comment, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CommentViewHolder holder, final int position) {
         // Comment ID
         final String commentID = String.valueOf(commentList.get(position).getId());
 
         // User ID
         final String userID = String.valueOf(commentList.get(position).getUser_id());
 
-        // Auth ID
+        // Auth
         final String authID = new Auth(context).getAuthID();
+
+        if (userID.equals(authID)) {
+            holder.buttonDelete.setVisibility(View.VISIBLE);
+        }
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
@@ -62,6 +73,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.commentDetail.setText(commentList.get(position).getComment_text());
         Glide.with(context).load(commentList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
 
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == commentList.size() - 1) {
+            layoutParams.bottomMargin = dpToPx();
+            holder.border.setVisibility(View.GONE);
+        }
+        holder.itemView.setLayoutParams(layoutParams);
+
         // Activity
         holder.userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,24 +91,26 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                if (userID.equals(authID)) {
-                    DeleteComment deleteComment = new DeleteComment(commentID, context);
-                    deleteComment.sendRequest(new DeleteComment.JSONCallback() {
-                        @Override
-                        public void onSuccess(Integer status) {
-                            if (status == 404) {
-                                Toast.makeText(context, "Komen dihapus.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
+            public void onClick(View view) {
+                DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(context, position, commentList, commentID);
+                deleteCommentRequest.sendRequest(new DeleteCommentRequest.APICallback() {
+                    @Override
+                    public void onSuccess() {
+                        Snackbar.make(holder.layout, R.string.comment_deleted, Snackbar.LENGTH_SHORT).show();
+                    }
 
-                return true;
+                    @Override
+                    public void onFailed() {
+                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -100,18 +121,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {
+        Button buttonDelete;
         ImageView userProfile;
+        LinearLayout layout;
         TextView userFirstName;
         TextView commentDate;
         TextView commentDetail;
+        View border;
 
         CommentViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userProfile = itemView.findViewById(R.id.image_rvc_profile);
-            userFirstName = itemView.findViewById(R.id.text_rvc_first_name);
-            commentDate = itemView.findViewById(R.id.text_rvc_date);
-            commentDetail = itemView.findViewById(R.id.text_rvc_comment);
+            buttonDelete = itemView.findViewById(R.id.button_rc_delete);
+            userProfile = itemView.findViewById(R.id.image_rc_profile);
+            layout = itemView.findViewById(R.id.layout_rc_anchor);
+            userFirstName = itemView.findViewById(R.id.text_rc_first_name);
+            commentDate = itemView.findViewById(R.id.text_rc_date);
+            commentDetail = itemView.findViewById(R.id.text_rc_comment);
+            border = itemView.findViewById(R.id.border_rc_layout);
         }
     }
 }

@@ -7,42 +7,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.activities.LikeListActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.activities.UserListActivity;
-import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeComment;
-import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetail;
-import xyz.fairportstudios.popularin.apis.popularin.post.LikeComment;
+import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
+import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
+import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
-import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class ReviewDetailFragment extends Fragment {
     private Boolean isAuth;
     private Boolean isLiked;
     private Context context;
-    private ImageView userProfile, filmPoster, reviewStar, iconLike;
+    private CoordinatorLayout layout;
+    private ImageView userProfile, filmPoster, star, like;
     private Integer currentLikes;
     private Integer likes;
+    private ProgressBar progressBar;
+    private ScrollView scrollView;
     private String userID, filmID, reviewID;
-    private TextView userFirstName, filmTitle, filmYear, reviewDate, reviewText, likeStatus, totalLike;
+    private TextView userFirstName, filmTitle, filmYear, reviewDate, reviewText, likeStatus, totalLike, emptyResult;
 
     public ReviewDetailFragment(String reviewID) {
         this.reviewID = reviewID;
@@ -55,76 +56,63 @@ public class ReviewDetailFragment extends Fragment {
 
         // Binding
         context = getActivity();
+        layout = view.findViewById(R.id.layout_frd_anchor);
         userProfile = view.findViewById(R.id.image_frd_profile);
         filmPoster = view.findViewById(R.id.image_frd_poster);
-        reviewStar = view.findViewById(R.id.image_frd_star);
-        iconLike = view.findViewById(R.id.icon_frd_like);
+        star = view.findViewById(R.id.image_frd_star);
+        like = view.findViewById(R.id.icon_frd_like);
+        progressBar = view.findViewById(R.id.pbr_frd_layout);
+        scrollView = view.findViewById(R.id.scroll_frd_anchor);
         userFirstName = view.findViewById(R.id.text_frd_first_name);
-        filmTitle = view.findViewById(R.id.text_frd_film_title);
-        filmYear = view.findViewById(R.id.text_frd_film_year);
+        filmTitle = view.findViewById(R.id.text_frd_title);
+        filmYear = view.findViewById(R.id.text_frd_year);
         reviewDate = view.findViewById(R.id.text_frd_date);
         reviewText = view.findViewById(R.id.text_frd_detail);
         likeStatus = view.findViewById(R.id.text_frd_like_status);
         totalLike = view.findViewById(R.id.text_frd_total_like);
+        emptyResult = view.findViewById(R.id.text_frd_empty);
 
-        // Mengecek apakah sign in
+        // Auth
         isAuth = new Auth(context).isAuth();
 
-        // Mengirim data
-        ReviewDetail reviewDetail = new ReviewDetail(reviewID, context);
-
-        // Mendapatkan hasil
-        reviewDetail.sendRequest(new ReviewDetail.JSONCallback() {
+        // GET
+        ReviewDetailRequest reviewDetailRequest = new ReviewDetailRequest(context, reviewID);
+        reviewDetailRequest.sendRequest(new ReviewDetailRequest.APICallback() {
             @Override
-            public void onSuccess(JSONObject response) {
-                try {
-                    int status = response.getInt("status");
+            public void onSuccess(ReviewDetail reviewDetail) {
+                // Like status
+                isLiked = reviewDetail.getLikeStatus();
 
-                    if (status == 101) {
-                        // JSON
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONObject jsonObjectReview = jsonObjectResult.getJSONObject("review");
-                        JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
-                        JSONObject jsonObjectFilm = jsonObjectReview.getJSONObject("film");
-                        JSONObject jsonObjectUser = jsonObjectReview.getJSONObject("user");
-
-                        // Request gambar
-                        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
-
-                        // Parsing
-                        Integer star = new ParseStar().getStar(jsonObjectReview.getDouble("rating"));
-                        String year = new ParseDate().getYear(jsonObjectFilm.getString("release_date"));
-                        String date = new ParseDate().getDate(jsonObjectReview.getString("review_date"));
-
-                        // Like status
-                        isLiked = jsonObjectMetadata.getBoolean("liked");
-
-                        if (isLiked) {
-                            iconLike.setImageResource(R.drawable.ic_favorite_filled);
-                            likeStatus.setText(R.string.liked);
-                        }
-
-                        // Parsing
-                        String poster = new ParseImage().getPoster(jsonObjectFilm.getString("poster"));
-
-                        // Detail
-                        likes = jsonObjectMetadata.getInt("likes");
-                        userID = jsonObjectUser.getString("id");
-                        userFirstName.setText(jsonObjectUser.getString("first_name"));
-                        filmTitle.setText(jsonObjectFilm.getString("title"));
-                        filmYear.setText(year);
-                        reviewDate.setText(date);
-                        reviewText.setText(jsonObjectReview.getString("review_text"));
-                        totalLike.setText(String.format("Total %s", String.valueOf(likes)));
-                        reviewStar.setImageResource(star);
-                        Glide.with(Objects.requireNonNull(context)).load(jsonObjectUser.getString("profile_picture")).apply(requestOptions).into(userProfile);
-                        Glide.with(Objects.requireNonNull(context)).load(poster).apply(requestOptions).into(filmPoster);
-                    } else {
-                        Toast.makeText(getActivity(), "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (isLiked) {
+                    like.setImageResource(R.drawable.ic_favorite_filled);
+                    likeStatus.setText(R.string.liked);
                 }
+
+                // Request gambar
+                RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+
+                // Mengisi data
+                likes = reviewDetail.getLike();
+                userID = reviewDetail.getUserID();
+                userFirstName.setText(reviewDetail.getUserFirstName());
+                filmTitle.setText(reviewDetail.getFilmTitle());
+                filmYear.setText(reviewDetail.getFilmYear());
+                reviewDate.setText(reviewDetail.getReviewDate());
+                reviewText.setText(reviewDetail.getReviewText());
+                totalLike.setText(String.format("Total %s", String.valueOf(likes)));
+                star.setImageResource(reviewDetail.getStar());
+                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getUserProfilePicture()).apply(requestOptions).into(userProfile);
+                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getFilmPoster()).apply(requestOptions).into(filmPoster);
+
+                progressBar.setVisibility(View.GONE);
+                scrollView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -156,42 +144,44 @@ public class ReviewDetailFragment extends Fragment {
             }
         });
 
-        iconLike.setOnClickListener(new View.OnClickListener() {
+        like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    if (isLiked) {
-                        UnlikeComment unlikeComment = new UnlikeComment(context, reviewID);
-                        unlikeComment.sendRequest(new UnlikeComment.JSONCallback() {
+                    if (!isLiked) {
+                        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
+                        likeReviewRequest.sendRequest(new LikeReviewRequest.APICallback() {
                             @Override
-                            public void onSuccess(Integer status) {
-                                if (status == 404) {
-                                    iconLike.setImageResource(R.drawable.ic_favorite_blank);
-                                    currentLikes = likes - 1;
-                                    totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                    isLiked = false;
-                                    likes--;
-                                    Toast.makeText(context, "Ulasan tidak disukai.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onSuccess() {
+                                like.setImageResource(R.drawable.ic_favorite_filled);
+                                currentLikes = likes + 1;
+                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                isLiked = true;
+                                likes++;
+                                Snackbar.make(layout, R.string.review_liked, Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError() {
+                                Snackbar.make(layout, R.string.like_error, Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     } else {
-                        LikeComment likeComment = new LikeComment(context, reviewID);
-                        likeComment.sendRequest(new LikeComment.JSONCallback() {
+                        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
+                        unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.APICallback() {
                             @Override
-                            public void onSuccess(Integer status) {
-                                if (status == 202) {
-                                    iconLike.setImageResource(R.drawable.ic_favorite_filled);
-                                    currentLikes = likes + 1;
-                                    totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                    isLiked = true;
-                                    likes++;
-                                    Toast.makeText(context, "Ulasan disukai.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onSuccess() {
+                                like.setImageResource(R.drawable.ic_favorite_blank);
+                                currentLikes = likes - 1;
+                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
+                                isLiked = false;
+                                likes--;
+                                Snackbar.make(layout, R.string.review_unliked, Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError() {
+                                Snackbar.make(layout, R.string.unlike_error, Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -205,7 +195,7 @@ public class ReviewDetailFragment extends Fragment {
         totalLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserList = new Intent(context, UserListActivity.class);
+                Intent gotoUserList = new Intent(context, LikeListActivity.class);
                 gotoUserList.putExtra("REVIEW_ID", reviewID);
                 startActivity(gotoUserList);
             }

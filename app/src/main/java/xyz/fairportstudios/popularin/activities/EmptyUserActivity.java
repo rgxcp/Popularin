@@ -14,11 +14,11 @@ public class EmptyUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_empty_user);
+        setContentView(R.layout.global_empty_user);
 
         // Binding
-        Button buttonSignIn = findViewById(R.id.button_aeu_signin);
-        Button buttonSignUp = findViewById(R.id.button_aeu_signup);
+        Button buttonSignIn = findViewById(R.id.button_geu_signin);
+        Button buttonSignUp = findViewById(R.id.button_geu_signup);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {

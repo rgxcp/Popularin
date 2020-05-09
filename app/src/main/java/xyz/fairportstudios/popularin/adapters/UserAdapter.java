@@ -29,10 +29,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.userList = userList;
     }
 
+    private Integer dpToPx() {
+        float px = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_user, parent, false));
+        return new UserViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_user, parent, false));
     }
 
     @Override
@@ -47,6 +52,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.fullName.setText(userList.get(position).getFull_name());
         holder.username.setText(String.format("@%s", userList.get(position).getUsername()));
         Glide.with(context).load(userList.get(position).getProfile_picture()).apply(requestOptions).into(holder.profile);
+
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == userList.size() - 1) {
+            layoutParams.bottomMargin = dpToPx();
+        }
+        holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -72,9 +84,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profile = itemView.findViewById(R.id.image_rvu_profile);
-            fullName = itemView.findViewById(R.id.text_rvu_full_name);
-            username = itemView.findViewById(R.id.text_rvu_username);
+            profile = itemView.findViewById(R.id.image_ru_profile);
+            fullName = itemView.findViewById(R.id.text_ru_full_name);
+            username = itemView.findViewById(R.id.text_ru_username);
         }
     }
 }

@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,46 +20,52 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserReviewRequest;
 import xyz.fairportstudios.popularin.models.UserReview;
 
-public class UserReviewActivity extends AppCompatActivity {
+public class UserReviewListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
-    private TextView emptyReview;
+    private RelativeLayout layout;
+    private TextView emptyResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_review);
+        setContentView(R.layout.global_toolbar_recycler);
 
         // Binding
-        progressBar = findViewById(R.id.progress_bar_aur_layout);
-        emptyReview = findViewById(R.id.text_aur_empty);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_aur_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_aur_layout);
-
-        // Set-up list
-        List<UserReview> userReviewList = new ArrayList<>();
+        progressBar = findViewById(R.id.pbr_gtr_layout);
+        layout = findViewById(R.id.layout_gtr_anchor);
+        emptyResult = findViewById(R.id.text_fp_empty);
+        RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
         String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
-        // Mendapatkan data
-        UserReviewRequest userReviewRequest = new UserReviewRequest(
-                userID,
-                this,
-                userReviewList,
-                recyclerView
-        );
+        // Toolbar
+        toolbar.setTitle("Ulasan");
 
-        userReviewRequest.sendRequest(new UserReviewRequest.JSONCallback() {
+        // List
+        List<UserReview> userReviewList = new ArrayList<>();
+
+        // GET
+        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView, userID);
+        userReviewRequest.sendRequest(new UserReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onEmptyReview() {
+            public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyReview.setVisibility(View.VISIBLE);
+                emptyResult.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
             }
         });
 

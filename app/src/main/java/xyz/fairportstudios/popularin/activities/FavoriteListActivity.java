@@ -17,20 +17,20 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserFavoriteRequest;
 import xyz.fairportstudios.popularin.models.Film;
 
-public class FavoriteActivity extends AppCompatActivity {
+public class FavoriteListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView emptyFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite);
+        setContentView(R.layout.global_toolbar_recycler);
 
         // Binding
-        progressBar = findViewById(R.id.progress_bar_af_layout);
-        emptyFavorite = findViewById(R.id.text_af_empty);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_af_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_af_layout);
+        progressBar = findViewById(R.id.pbr_gtr_layout);
+        emptyFavorite = findViewById(R.id.text_fp_empty);
+        RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
         // Set-up list
         List<Film> filmList = new ArrayList<>();

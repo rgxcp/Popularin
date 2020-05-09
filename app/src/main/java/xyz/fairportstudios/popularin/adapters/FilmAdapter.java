@@ -1,7 +1,6 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +30,15 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         this.filmList = filmList;
     }
 
+    private Integer dpToPx() {
+        float px = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public FilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FilmViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_film, parent, false));
+        return new FilmViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_film, parent, false));
     }
 
     @Override
@@ -55,6 +59,13 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         holder.filmGenre.setText(genre);
         holder.filmReleaseDate.setText(date);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == filmList.size() - 1) {
+            layoutParams.bottomMargin = dpToPx();
+        }
+        holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -90,10 +101,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         FilmViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rvf_poster);
-            filmTitle = itemView.findViewById(R.id.text_rvf_title);
-            filmGenre = itemView.findViewById(R.id.text_rvf_genre);
-            filmReleaseDate = itemView.findViewById(R.id.text_rvf_release_date);
+            filmPoster = itemView.findViewById(R.id.image_rf_poster);
+            filmTitle = itemView.findViewById(R.id.text_rf_title);
+            filmGenre = itemView.findViewById(R.id.text_rf_genre);
+            filmReleaseDate = itemView.findViewById(R.id.text_rf_date);
         }
     }
 }

@@ -1,9 +1,5 @@
 package xyz.fairportstudios.popularin.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,26 +7,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUser;
-import xyz.fairportstudios.popularin.apis.popularin.get.UserDetail;
-import xyz.fairportstudios.popularin.apis.popularin.post.FollowUser;
+import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUserRequest;
+import xyz.fairportstudios.popularin.apis.popularin.get.UserDetailRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.FollowUserRequest;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserDetailActivity extends AppCompatActivity {
@@ -43,10 +42,8 @@ public class UserDetailActivity extends AppCompatActivity {
     private Integer currentFollowers;
     private Integer followers;
     private ProgressBar progressBar;
-    private RecyclerView recyclerViewLatestFavorite;
-    private RecyclerView recyclerViewLatestReview;
+    private RelativeLayout layout;
     private ScrollView scrollView;
-    private TextView followerStatus;
     private TextView fullName;
     private TextView username;
     private TextView totalReview;
@@ -54,6 +51,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private TextView totalFollowing;
     private TextView totalFavorite;
     private TextView totalWatchlist;
+    private TextView followMe;
     private TextView rate05;
     private TextView rate10;
     private TextView rate15;
@@ -66,6 +64,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private TextView rate50;
     private TextView emptyLatestFavorite;
     private TextView emptyLatestReview;
+    private TextView userDeleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +72,12 @@ public class UserDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_detail);
 
         // Binding
-        buttonFollow = findViewById(R.id.button_aud_follow);
         context = UserDetailActivity.this;
+        buttonFollow = findViewById(R.id.button_aud_follow);
         profilePicture = findViewById(R.id.image_aud_profile);
-        progressBar = findViewById(R.id.progress_bar_aud_layout);
-        recyclerViewLatestFavorite = findViewById(R.id.recycler_view_top_favorite_aud_layout);
-        recyclerViewLatestReview = findViewById(R.id.recycler_view_latest_review_aud_layout);
-        scrollView = findViewById(R.id.scroll_view_aud_layout);
-        followerStatus = findViewById(R.id.text_aud_follower);
+        progressBar = findViewById(R.id.pbr_aud_layout);
+        layout = findViewById(R.id.layout_aud_anchor);
+        scrollView = findViewById(R.id.scroll_aud_layout);
         fullName = findViewById(R.id.text_aud_full_name);
         username = findViewById(R.id.text_aud_username);
         totalReview = findViewById(R.id.text_aud_total_review);
@@ -88,6 +85,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFollowing = findViewById(R.id.text_aud_total_following);
         totalFavorite = findViewById(R.id.text_aud_total_favorite);
         totalWatchlist = findViewById(R.id.text_aud_total_watchlist);
+        followMe = findViewById(R.id.text_aud_follow_me);
         rate05 = findViewById(R.id.text_aud_rate_05);
         rate10 = findViewById(R.id.text_aud_rate_10);
         rate15 = findViewById(R.id.text_aud_rate_15);
@@ -98,101 +96,87 @@ public class UserDetailActivity extends AppCompatActivity {
         rate40 = findViewById(R.id.text_aud_rate_40);
         rate45 = findViewById(R.id.text_aud_rate_45);
         rate50 = findViewById(R.id.text_aud_rate_50);
-        emptyLatestFavorite = findViewById(R.id.text_aud_empty_top_favorite);
-        emptyLatestReview = findViewById(R.id.text_aud_empty_latest_review);
+        emptyLatestFavorite = findViewById(R.id.text_empty_latest_favorite_aud_layout);
+        emptyLatestReview = findViewById(R.id.text_empty_latest_review_aud_layout);
+        userDeleted = findViewById(R.id.text_aud_empty);
+        RecyclerView recyclerViewLatestFavorite = findViewById(R.id.recycler_latest_favorite_aud_layout);
+        RecyclerView recyclerViewLatestReview = findViewById(R.id.recycler_latest_review_aud_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_aud_layout);
-
-        // Mengecek apakah sign in
-        isAuth = new Auth(context).isAuth();
-
-        // Set-up list
-        List<LatestFavorite> latestFavoriteList = new ArrayList<>();
-        List<LatestReview> latestReviewList = new ArrayList<>();
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
         final String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
-        // Mendapatkan data
-        UserDetail userDetail = new UserDetail(
-                userID,
-                context,
-                latestFavoriteList,
-                latestReviewList,
-                recyclerViewLatestFavorite,
-                recyclerViewLatestReview
-        );
+        // Auth
+        isAuth = new Auth(context).isAuth();
 
-        userDetail.sendRequest(new UserDetail.JSONCallback() {
+        // List
+        List<LatestFavorite> latestFavoriteList = new ArrayList<>();
+        List<LatestReview> latestReviewList = new ArrayList<>();
+
+        // GET
+        UserDetailRequest userDetailRequest = new UserDetailRequest(context, latestFavoriteList, latestReviewList, recyclerViewLatestFavorite, recyclerViewLatestReview, userID);
+        userDetailRequest.sendRequest(new UserDetailRequest.APICallback() {
             @Override
-            public void onSuccess(JSONObject response) {
-                try {
-                    JSONObject jsonObjectResult = response.getJSONObject("result");
-                    JSONObject jsonObjectUser = jsonObjectResult.getJSONObject("user");
-                    JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
+            public void onSuccess(UserDetail userDetail) {
+                fullName.setText(userDetail.getFullName());
+                rate05.setText(userDetail.getRate05());
+                rate10.setText(userDetail.getRate10());
+                rate15.setText(userDetail.getRate15());
+                rate20.setText(userDetail.getRate20());
+                rate25.setText(userDetail.getRate25());
+                rate30.setText(userDetail.getRate30());
+                rate35.setText(userDetail.getRate35());
+                rate40.setText(userDetail.getRate40());
+                rate45.setText(userDetail.getRate45());
+                rate50.setText(userDetail.getRate50());
+                totalFavorite.setText(userDetail.getTotalFavorite());
+                totalFollower.setText(userDetail.getTotalFollower());
+                totalFollowing.setText(userDetail.getTotalFollowing());
+                totalReview.setText(userDetail.getTotalReview());
+                totalWatchlist.setText(userDetail.getTotalWatchlist());
+                username.setText(userDetail.getUsername());
+                Glide.with(context).load(userDetail.getProfilePicture()).apply(new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary)).into(profilePicture);
 
-                    followers = jsonObjectMetadata.getInt("followers");
-                    fullName.setText(jsonObjectUser.getString("full_name"));
-                    username.setText(String.format("@%s", jsonObjectUser.getString("username")));
-                    totalReview.setText(String.valueOf(jsonObjectMetadata.getInt("reviews")));
-                    totalFollower.setText(String.valueOf(followers));
-                    totalFollowing.setText(String.valueOf(jsonObjectMetadata.getInt("followings")));
-                    totalFavorite.setText(String.valueOf(jsonObjectMetadata.getInt("favorites")));
-                    totalWatchlist.setText(String.valueOf(jsonObjectMetadata.getInt("watchlists")));
-                    rate05.setText(String.valueOf(jsonObjectMetadata.getInt("rate_0.5")));
-                    rate10.setText(String.valueOf(jsonObjectMetadata.getInt("rate_1.0")));
-                    rate15.setText(String.valueOf(jsonObjectMetadata.getInt("rate_1.5")));
-                    rate20.setText(String.valueOf(jsonObjectMetadata.getInt("rate_2.0")));
-                    rate25.setText(String.valueOf(jsonObjectMetadata.getInt("rate_2.5")));
-                    rate30.setText(String.valueOf(jsonObjectMetadata.getInt("rate_3.0")));
-                    rate35.setText(String.valueOf(jsonObjectMetadata.getInt("rate_3.5")));
-                    rate40.setText(String.valueOf(jsonObjectMetadata.getInt("rate_4.0")));
-                    rate45.setText(String.valueOf(jsonObjectMetadata.getInt("rate_4.5")));
-                    rate50.setText(String.valueOf(jsonObjectMetadata.getInt("rate_5.0")));
+                // Follow Status
+                followers = Integer.valueOf(userDetail.getTotalFollower());
+                isFollowing = userDetail.getFollowingStatus();
+                isFollower = userDetail.getFollowerStatus();
 
-                    // Following follower status
-                    isFollowing = jsonObjectMetadata.getBoolean("is_following");
-                    isFollower = jsonObjectMetadata.getBoolean("is_follower");
-
-                    if (isFollowing) {
-                        buttonFollow.setText("MENGIKUTI");
-                    }
-
-                    if (isFollower) {
-                        followerStatus.setVisibility(View.VISIBLE);
-                    }
-
-                    RequestOptions requestOptions = new RequestOptions()
-                            .centerCrop()
-                            .placeholder(R.color.colorPrimary)
-                            .error(R.color.colorPrimary);
-
-                    Glide.with(context)
-                            .load(jsonObjectUser.getString("profile_picture"))
-                            .apply(requestOptions)
-                            .into(profilePicture);
-                } catch (JSONException error) {
-                    error.printStackTrace();
-                } finally {
-                    progressBar.setVisibility(View.GONE);
-                    scrollView.setVisibility(View.VISIBLE);
+                if (isFollowing) {
+                    buttonFollow.setText(R.string.followed);
                 }
+
+                if (isFollower) {
+                    followMe.setVisibility(View.VISIBLE);
+                }
+
+                progressBar.setVisibility(View.GONE);
+                scrollView.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onEmptyFavorite(Integer favorite) {
-                if (favorite == 0) {
-                    emptyLatestFavorite.setVisibility(View.VISIBLE);
-                    recyclerViewLatestFavorite.setVisibility(View.INVISIBLE);
-                }
+            public void onEmptyFavorite() {
+                emptyLatestFavorite.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onEmptyReview(Integer review) {
-                if (review == 0) {
-                    emptyLatestReview.setVisibility(View.VISIBLE);
-                    recyclerViewLatestReview.setVisibility(View.INVISIBLE);
-                }
+            public void onEmptyReview() {
+                emptyLatestReview.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onDeleted() {
+                progressBar.setVisibility(View.GONE);
+                userDeleted.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.user_deleted, Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                userDeleted.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -207,7 +191,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewList = new Intent(context, UserReviewActivity.class);
+                Intent gotoReviewList = new Intent(context, UserReviewListActivity.class);
                 gotoReviewList.putExtra("USER_ID", userID);
                 startActivity(gotoReviewList);
             }
@@ -230,7 +214,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFavoriteList = new Intent(context, FavoriteActivity.class);
+                Intent gotoFavoriteList = new Intent(context, FavoriteListActivity.class);
                 gotoFavoriteList.putExtra("USER_ID", userID);
                 startActivity(gotoFavoriteList);
             }
@@ -247,40 +231,45 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    if (isFollowing) {
-                        UnfollowUser unfollowUser = new UnfollowUser(context, userID);
-                        unfollowUser.sendRequest(new UnfollowUser.JSONCallback() {
+                    if (!isFollowing) {
+                        FollowUserRequest followUserRequest = new FollowUserRequest(context, userID);
+                        followUserRequest.sendRequest(new FollowUserRequest.APICallback() {
                             @Override
-                            public void onSuccess(Integer status) {
-                                if (status == 404) {
-                                    buttonFollow.setText("Ikuti");
-                                    currentFollowers = followers - 1;
-                                    totalFollower.setText(String.valueOf(currentFollowers));
-                                    isFollowing = false;
-                                    followers--;
-                                    Toast.makeText(context, "Berhenti mengikuti user.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onSuccess() {
+                                buttonFollow.setText(R.string.followed);
+                                currentFollowers = followers + 1;
+                                totalFollower.setText(String.valueOf(currentFollowers));
+                                isFollowing = true;
+                                followers++;
+                                Snackbar.make(layout, R.string.user_followed, Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailed() {
+                                Snackbar.make(layout, R.string.follow_self, Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError() {
+                                Snackbar.make(layout, R.string.follow_error, Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     } else {
-                        FollowUser followUser = new FollowUser(context, userID);
-                        followUser.sendRequest(new FollowUser.JSONCallback() {
+                        UnfollowUserRequest unfollowUserRequest = new UnfollowUserRequest(context, userID);
+                        unfollowUserRequest.sendRequest(new UnfollowUserRequest.APICallback() {
                             @Override
-                            public void onSuccess(Integer status) {
-                                if (status == 202) {
-                                    buttonFollow.setText("MENGIKUTI");
-                                    currentFollowers = followers + 1;
-                                    totalFollower.setText(String.valueOf(currentFollowers));
-                                    isFollowing = true;
-                                    followers++;
-                                    Toast.makeText(context, "User diikuti.", Toast.LENGTH_SHORT).show();
-                                } else if (status == 636) {
-                                    Toast.makeText(context, "Tidak bisa mengikuti diri sendiri.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onSuccess() {
+                                buttonFollow.setText(R.string.follow);
+                                currentFollowers = followers - 1;
+                                totalFollower.setText(String.valueOf(currentFollowers));
+                                isFollowing = false;
+                                followers--;
+                                Snackbar.make(layout, R.string.user_unfollowed, Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError() {
+                                Snackbar.make(layout, R.string.unfollow_error, Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     }

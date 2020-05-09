@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -33,10 +33,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         this.reviewList = reviewList;
     }
 
+    private Integer dpToPx() {
+        float px = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_review, parent, false));
+        return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_review, parent, false));
     }
 
     @Override
@@ -67,11 +72,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         Glide.with(context).load(reviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == reviewList.size() - 1) {
+            layoutParams.bottomMargin = dpToPx();
+            holder.border.setVisibility(View.GONE);
+        }
+        holder.itemView.setLayoutParams(layoutParams);
+
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 context.startActivity(gotoReviewDetail);
             }
@@ -118,17 +131,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         TextView filmYear;
         TextView userFirstName;
         TextView reviewDetail;
+        View border;
 
         ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userProfile = itemView.findViewById(R.id.image_rvr_profile);
-            reviewStar = itemView.findViewById(R.id.image_rvr_star);
-            filmPoster = itemView.findViewById(R.id.image_rvr_poster);
-            filmTitle = itemView.findViewById(R.id.text_rvr_title);
-            filmYear = itemView.findViewById(R.id.text_rvr_year);
-            userFirstName = itemView.findViewById(R.id.text_rvr_first_name);
-            reviewDetail = itemView.findViewById(R.id.text_rvr_review);
+            userProfile = itemView.findViewById(R.id.image_rr_profile);
+            reviewStar = itemView.findViewById(R.id.image_rr_star);
+            filmPoster = itemView.findViewById(R.id.image_rr_poster);
+            filmTitle = itemView.findViewById(R.id.text_rr_title);
+            filmYear = itemView.findViewById(R.id.text_rr_year);
+            userFirstName = itemView.findViewById(R.id.text_rr_first_name);
+            reviewDetail = itemView.findViewById(R.id.text_rr_review);
+            border = itemView.findViewById(R.id.border_rr_layout);
         }
     }
 }

@@ -35,7 +35,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // Binding
         context = SignInActivity.this;
-        layout = findViewById(R.id.coordinator_asi_layout);
+        layout = findViewById(R.id.layout_asi_anchor);
         inputUsername = findViewById(R.id.text_asi_username);
         inputPassword = findViewById(R.id.text_asi_password);
         Button buttonSignIn = findViewById(R.id.button_asi_signin);

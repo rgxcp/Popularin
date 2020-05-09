@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -23,24 +22,26 @@ import xyz.fairportstudios.popularin.adapters.FilmAdapter;
 import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Film;
 
-public class SearchFilm {
+public class SearchFilmRequest {
     private Context context;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public SearchFilm(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public SearchFilmRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
         this.context = context;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
     }
 
-    public interface JSONCallback {
+    public interface APICallback {
         void onSuccess();
-        void onEmptyResult();
-        void onEmptyIndonesian();
+
+        void onEmpty();
+
+        void onError();
     }
 
-    public String getRequestURL(String query, String page) {
+    public String getRequestURL(String query, Integer page) {
         return TMDbAPI.SEARCH_FILM
                 + "?api_key="
                 + TMDbAPI.API_KEY
@@ -50,17 +51,17 @@ public class SearchFilm {
                 + page;
     }
 
-    public void sendRequest(String requestURL, final JSONCallback callback) {
-        // Membersihkan sebelum mencari
+    public void sendRequest(String requestURL, final APICallback callback) {
+        // Membersihkan array
         filmList.clear();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest searchFilmRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    int totalResults = response.getInt("total_results");
+                    int total = response.getInt("total_results");
 
-                    if (totalResults > 0) {
+                    if (total > 0) {
                         JSONArray jsonArrayResults = response.getJSONArray("results");
 
                         for (int index = 0; index < jsonArrayResults.length(); index++) {
@@ -77,7 +78,7 @@ public class SearchFilm {
 
                                 filmList.add(film);
                             } else {
-                                callback.onEmptyIndonesian();
+                                callback.onEmpty();
                             }
                         }
 
@@ -87,20 +88,21 @@ public class SearchFilm {
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
                     } else {
-                        callback.onEmptyResult();
+                        callback.onEmpty();
                     }
                 } catch (JSONException error) {
                     error.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonObjectRequest);
+        Volley.newRequestQueue(context).add(searchFilmRequest);
     }
 }

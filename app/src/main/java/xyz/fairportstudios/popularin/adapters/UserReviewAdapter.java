@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
@@ -32,10 +32,15 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         this.userReviewList = userReviewList;
     }
 
+    private Integer dpToPx() {
+        float px = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public UserReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_user_review, parent, false));
+        return new UserReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_user_review, parent, false));
     }
 
     @Override
@@ -63,11 +68,19 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         holder.reviewStar.setImageResource(star);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == userReviewList.size() - 1) {
+            layoutParams.bottomMargin = dpToPx();
+            holder.border.setVisibility(View.GONE);
+        }
+        holder.itemView.setLayoutParams(layoutParams);
+
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 context.startActivity(gotoReviewDetail);
             }
@@ -104,16 +117,18 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         TextView filmYear;
         TextView reviewDate;
         TextView reviewDetail;
+        View border;
 
         UserReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            reviewStar = itemView.findViewById(R.id.image_rvur_star);
-            filmPoster = itemView.findViewById(R.id.image_rvur_poster);
-            filmTitle = itemView.findViewById(R.id.text_rvur_title);
-            filmYear = itemView.findViewById(R.id.text_rvur_year);
-            reviewDate = itemView.findViewById(R.id.text_rvur_date);
-            reviewDetail = itemView.findViewById(R.id.text_rvur_review);
+            reviewStar = itemView.findViewById(R.id.image_rur_star);
+            filmPoster = itemView.findViewById(R.id.image_rur_poster);
+            filmTitle = itemView.findViewById(R.id.text_rur_title);
+            filmYear = itemView.findViewById(R.id.text_rur_year);
+            reviewDate = itemView.findViewById(R.id.text_rur_date);
+            reviewDetail = itemView.findViewById(R.id.text_rur_review);
+            border = itemView.findViewById(R.id.border_rur_layout);
         }
     }
 }

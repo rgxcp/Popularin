@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import androidx.cardview.widget.CardView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,22 +21,24 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ImageView genreAction = view.findViewById(R.id.image_fh_action);
-        ImageView genreAnimation = view.findViewById(R.id.image_fh_animation);
-        ImageView genreDrama = view.findViewById(R.id.image_fh_drama);
-        ImageView genreFantasy = view.findViewById(R.id.image_fh_fantasy);
-        ImageView genreFiction = view.findViewById(R.id.image_fh_fiction);
-        ImageView genreHorror = view.findViewById(R.id.image_fh_horror);
-        ImageView genreCrime = view.findViewById(R.id.image_fh_crime);
-        ImageView genreFamily = view.findViewById(R.id.image_fh_family);
-        ImageView genreComedy = view.findViewById(R.id.image_fh_comedy);
-        ImageView genreMystery = view.findViewById(R.id.image_fh_mystery);
-        ImageView genreWar = view.findViewById(R.id.image_fh_war);
-        ImageView genreAdventure = view.findViewById(R.id.image_fh_adventure);
-        ImageView genreRomance = view.findViewById(R.id.image_fh_romance);
-        ImageView genreHistory = view.findViewById(R.id.image_fh_history);
-        ImageView genreThriller = view.findViewById(R.id.image_fh_thriller);
+        // Binding
+        CardView genreAction = view.findViewById(R.id.card_fh_action);
+        CardView genreAnimation = view.findViewById(R.id.card_fh_animation);
+        CardView genreDrama = view.findViewById(R.id.card_fh_drama);
+        CardView genreFantasy = view.findViewById(R.id.card_fh_fantasy);
+        CardView genreFiction = view.findViewById(R.id.card_fh_fiction);
+        CardView genreHorror = view.findViewById(R.id.card_fh_horror);
+        CardView genreCrime = view.findViewById(R.id.card_fh_crime);
+        CardView genreFamily = view.findViewById(R.id.card_fh_family);
+        CardView genreComedy = view.findViewById(R.id.card_fh_comedy);
+        CardView genreMystery = view.findViewById(R.id.card_fh_mystery);
+        CardView genreWar = view.findViewById(R.id.card_fh_war);
+        CardView genreAdventure = view.findViewById(R.id.card_fh_adventure);
+        CardView genreRomance = view.findViewById(R.id.card_fh_romance);
+        CardView genreHistory = view.findViewById(R.id.card_fh_history);
+        CardView genreThriller = view.findViewById(R.id.card_fh_thriller);
 
+        // Activity
         genreAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

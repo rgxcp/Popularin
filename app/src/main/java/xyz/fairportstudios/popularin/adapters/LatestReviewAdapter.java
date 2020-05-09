@@ -16,7 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.models.LatestReview;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
@@ -30,10 +30,15 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         this.latestReviewList = latestReviewList;
     }
 
+    private Integer dpToPx(Integer dp) {
+        float px = dp * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public LatestReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LatestReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_latest_review, parent, false));
+        return new LatestReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_review, parent, false));
     }
 
     @Override
@@ -52,11 +57,23 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         holder.reviewStar.setImageResource(star);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == 0 ) {
+            layoutParams.leftMargin = dpToPx(16);
+            layoutParams.rightMargin = dpToPx(8);
+        } else if (position == latestReviewList.size() - 1) {
+            layoutParams.rightMargin = dpToPx(16);
+        } else {
+            layoutParams.rightMargin = dpToPx(8);
+        }
+        holder.itemView.setLayoutParams(layoutParams);
+
         // Activity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 context.startActivity(gotoReviewDetail);
             }
@@ -82,8 +99,8 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         LatestReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rvlr_poster);
-            reviewStar = itemView.findViewById(R.id.image_rvlr_star);
+            filmPoster = itemView.findViewById(R.id.image_rlr_poster);
+            reviewStar = itemView.findViewById(R.id.image_rlr_star);
         }
     }
 }

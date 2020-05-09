@@ -13,29 +13,32 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
-import xyz.fairportstudios.popularin.fragments.LikeFromAllFragment;
-import xyz.fairportstudios.popularin.fragments.LikeFromFollowingFragment;
+import xyz.fairportstudios.popularin.fragments.ReviewCommentFragment;
+import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
 
-public class UserListActivity extends AppCompatActivity {
+public class ReviewDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list);
+        setContentView(R.layout.global_toolbar_pager);
 
         // Binding
-        TabLayout tabLayout = findViewById(R.id.tab_aul_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_aul_layout);
-        ViewPager viewPager = findViewById(R.id.pager_aul_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_gtp_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_gtp_layout);
+        ViewPager viewPager = findViewById(R.id.pager_gtp_layout);
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
         String reviewID = Objects.requireNonNull(bundle).getString("REVIEW_ID");
 
-        // Tabbed
+        // Toolbar
+        toolbar.setTitle("Ulasan");
+
+        // Tab
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new LikeFromAllFragment(reviewID), "SEMUA");
-        pagerAdapter.addFragment(new LikeFromFollowingFragment(reviewID), "MENGIKUTI");
+        pagerAdapter.addFragment(new ReviewDetailFragment(reviewID), "DETAIL");
+        pagerAdapter.addFragment(new ReviewCommentFragment(reviewID), "KOMEN");
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

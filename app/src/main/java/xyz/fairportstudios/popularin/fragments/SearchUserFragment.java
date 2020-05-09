@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,18 +15,21 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.SearchUser;
+import xyz.fairportstudios.popularin.apis.popularin.get.SearchUserRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class SearchUserFragment extends Fragment {
     private Context context;
-    private ProgressBar progressBar;
     private List<User> userList;
+    private ProgressBar progressBar;
     private RecyclerView recyclerView;
+    private RelativeLayout layout;
     private TextView emptyResult;
 
     @Nullable
@@ -35,12 +39,13 @@ public class SearchUserFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        progressBar = view.findViewById(R.id.progress_bar_fsu_layout);
-        recyclerView = view.findViewById(R.id.recycler_view_fsu_layout);
+        progressBar = view.findViewById(R.id.pbr_fsu_layout);
+        recyclerView = view.findViewById(R.id.recycler_fsu_layout);
+        layout = view.findViewById(R.id.layout_fsu_anchor);
         emptyResult = view.findViewById(R.id.text_fsu_empty);
         SearchView searchView = view.findViewById(R.id.search_fsu_layout);
 
-        // Set-up list
+        // List
         userList = new ArrayList<>();
 
         // Activity
@@ -50,18 +55,25 @@ public class SearchUserFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 emptyResult.setVisibility(View.GONE);
 
-                SearchUser searchUser = new SearchUser(context, userList, recyclerView);
-                String requestURL = searchUser.getRequestURL(query);
-                searchUser.sendRequest(requestURL, new SearchUser.JSONCallback() {
+                // GET
+                SearchUserRequest searchUserRequest = new SearchUserRequest(context, userList, query, recyclerView);
+                searchUserRequest.sendRequest(new SearchUserRequest.APICallback() {
                     @Override
                     public void onSuccess() {
                         progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onEmpytResult() {
+                    public void onEmpty() {
                         progressBar.setVisibility(View.GONE);
                         emptyResult.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        progressBar.setVisibility(View.GONE);
+                        emptyResult.setVisibility(View.VISIBLE);
+                        Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
                     }
                 });
                 return true;

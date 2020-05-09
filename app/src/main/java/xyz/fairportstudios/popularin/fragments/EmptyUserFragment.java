@@ -20,11 +20,11 @@ public class EmptyUserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_empty_user, container, false);
+        View view = inflater.inflate(R.layout.global_empty_user, container, false);
 
         // Binding
-        Button buttonSignIn = view.findViewById(R.id.button_feu_signin);
-        Button buttonSignUp = view.findViewById(R.id.button_feu_signup);
+        Button buttonSignIn = view.findViewById(R.id.button_geu_signin);
+        Button buttonSignUp = view.findViewById(R.id.button_geu_signup);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {

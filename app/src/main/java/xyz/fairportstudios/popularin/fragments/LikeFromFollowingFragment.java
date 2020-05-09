@@ -7,24 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.LikeFromFollowing;
+import xyz.fairportstudios.popularin.apis.popularin.get.LikeFromFollowingRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class LikeFromFollowingFragment extends Fragment {
-    private Context context;
+    private CoordinatorLayout layout;
     private ProgressBar progressBar;
-    private TextView emptyUser;
+    private TextView emptyResult;
     private String reviewID;
 
     public LikeFromFollowingFragment(String reviewID) {
@@ -34,30 +36,38 @@ public class LikeFromFollowingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
+        View view = inflater.inflate(R.layout.global_recycler, container, false);
 
         // Binding
-        context = getActivity();
-        progressBar = view.findViewById(R.id.progress_bar_ful_layout);
-        emptyUser = view.findViewById(R.id.text_ful_empty);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_ful_layout);
+        layout = view.findViewById(R.id.layout_gr_anchor);
+        progressBar = view.findViewById(R.id.pbr_gr_layout);
+        emptyResult = view.findViewById(R.id.text_gr_empty);
+        Context context = getActivity();
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_gr_layout);
 
-        // Set-up list
+        // List
         List<User> userList = new ArrayList<>();
 
-        // Mendapatkan data
-        LikeFromFollowing likeFromFollowing = new LikeFromFollowing(reviewID, context, userList, recyclerView);
-        likeFromFollowing.sendRequest(new LikeFromFollowing.JSONCallback() {
+        // GET
+        LikeFromFollowingRequest likeFromFollowingRequest = new LikeFromFollowingRequest(context, userList, recyclerView);
+        String requestURL = likeFromFollowingRequest.getRequestURL(reviewID);
+        likeFromFollowingRequest.sendRequest(requestURL, new LikeFromFollowingRequest.APICallback() {
             @Override
-            public void onSuccess(Integer status) {
-                if (status == 101) {
-                    progressBar.setVisibility(View.GONE);
-                } else if (status == 606) {
-                    progressBar.setVisibility(View.GONE);
-                    emptyUser.setVisibility(View.VISIBLE);
-                } else {
-                    Toast.makeText(context, "Ada kesalahan dalam database.", Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onEmpty() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
             }
         });
 

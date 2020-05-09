@@ -1,10 +1,11 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -28,10 +29,15 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         this.latestFavoriteList = latestFavoriteList;
     }
 
+    private Integer dpToPx(Integer dp) {
+        float px = dp * context.getResources().getDisplayMetrics().density;
+        return (int) px;
+    }
+
     @NonNull
     @Override
     public LatestFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LatestFavoriteViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_latest_favorite, parent, false));
+        return new LatestFavoriteViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_favorite, parent, false));
     }
 
     @Override
@@ -47,6 +53,18 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
 
         // Mengisi data
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+
+        // Margin
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == 0 ) {
+            layoutParams.leftMargin = dpToPx(16);
+            layoutParams.rightMargin = dpToPx(8);
+        } else if (position == latestFavoriteList.size() - 1) {
+            layoutParams.rightMargin = dpToPx(16);
+        } else {
+            layoutParams.rightMargin = dpToPx(8);
+        }
+        holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +97,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         LatestFavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rvlf_poster);
+            filmPoster = itemView.findViewById(R.id.image_rlf_poster);
         }
     }
 }

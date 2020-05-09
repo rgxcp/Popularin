@@ -3,7 +3,6 @@ package xyz.fairportstudios.popularin.apis.popularin.post;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -18,48 +17,60 @@ import java.util.Map;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class LikeComment {
+public class FollowUserRequest {
     private Context context;
     private String id;
 
-    public LikeComment(Context context, String id) {
+    public FollowUserRequest(Context context, String id) {
         this.context = context;
         this.id = id;
     }
 
-    public interface JSONCallback {
-        void onSuccess(Integer status);
+    public interface APICallback {
+        void onSuccess();
+
+        void onFailed();
+
+        void onError();
     }
 
-    public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinAPI.REVIEW + "/" + id + "/like";
+    public void sendRequest(final APICallback callback) {
+        final Auth auth = new Auth(context);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
+        String requestURL = PopularinAPI.USER + "/" + id + "/follow";
+
+        JsonObjectRequest followUserRequest = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
-                    callback.onSuccess(status);
-                } catch (JSONException error) {
-                    error.printStackTrace();
+
+                    if (status == 202) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onFailed();
+                    }
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
-                headers.put("auth_token", new Auth(context).getAuthToken());
+                headers.put("auth_uid", auth.getAuthID());
+                headers.put("auth_token", auth.getAuthToken());
                 return headers;
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonObjectRequest);
+        Volley.newRequestQueue(context).add(followUserRequest);
     }
 }

@@ -38,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Binding
         context = SignUpActivity.this;
-        layout = findViewById(R.id.coordinator_asu_layout);
+        layout = findViewById(R.id.layout_asu_anchor);
         inputFirstName = findViewById(R.id.text_asu_first_name);
         inputLastName = findViewById(R.id.text_asu_last_name);
         inputUsername = findViewById(R.id.text_asu_username);

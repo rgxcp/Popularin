@@ -6,28 +6,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.tmdb.get.DiscoverGenre;
+import xyz.fairportstudios.popularin.apis.tmdb.get.DiscoverFilmRequest;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class FilmListActivity extends AppCompatActivity {
+    private ProgressBar progressBar;
+    private RelativeLayout layout;
+    private TextView emptyResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_film_list);
+        setContentView(R.layout.global_toolbar_recycler);
 
         // Binding
-        Toolbar toolbar = findViewById(R.id.toolbar_afl_layout);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_afl_layout);
-
-        // Set-up list
-        List<Film> filmList = new ArrayList<>();
+        progressBar = findViewById(R.id.pbr_gtr_layout);
+        layout = findViewById(R.id.layout_gtr_anchor);
+        emptyResult = findViewById(R.id.text_fp_empty);
+        RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
@@ -37,10 +45,31 @@ public class FilmListActivity extends AppCompatActivity {
         // Toolbar
         toolbar.setTitle(genreTitle);
 
-        // Mendapatkan data
-        DiscoverGenre discoverGenre = new DiscoverGenre(this, filmList, recyclerView);
-        String requestURL = discoverGenre.getRequestURL(genreID, "1");
-        discoverGenre.sendRequest(requestURL);
+        // List
+        List<Film> filmList = new ArrayList<>();
+
+        // GET
+        DiscoverFilmRequest discoverFilmRequest = new DiscoverFilmRequest(this, filmList, recyclerView);
+        String requestURL = discoverFilmRequest.getRequestURL(genreID, 1);
+        discoverFilmRequest.sendRequest(requestURL, new DiscoverFilmRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onEmpty() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
         // Activity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

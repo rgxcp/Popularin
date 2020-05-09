@@ -3,7 +3,6 @@ package xyz.fairportstudios.popularin.apis.popularin.delete;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -18,36 +17,45 @@ import java.util.Map;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class UnfollowUser {
+public class UnlikeReviewRequest {
     private Context context;
     private String id;
 
-    public UnfollowUser(Context context, String id) {
+    public UnlikeReviewRequest(Context context, String id) {
         this.context = context;
         this.id = id;
     }
 
-    public interface JSONCallback {
-        void onSuccess(Integer status);
+    public interface APICallback {
+        void onSuccess();
+
+        void onError();
     }
 
-    public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinAPI.USER + "/" + id + "/unfollow";
+    public void sendRequest(final APICallback callback) {
+        String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest unlikeReviewRequest = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
-                    callback.onSuccess(status);
-                } catch (JSONException error) {
-                    error.printStackTrace();
+
+                    if (status == 404) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onError();
+                    }
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         }) {
             @Override
@@ -59,7 +67,6 @@ public class UnfollowUser {
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonObjectRequest);
+        Volley.newRequestQueue(context).add(unlikeReviewRequest);
     }
 }

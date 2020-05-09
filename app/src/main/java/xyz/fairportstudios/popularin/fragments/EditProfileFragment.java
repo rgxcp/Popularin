@@ -1,20 +1,16 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -40,17 +36,17 @@ public class EditProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_edit_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
         // Binding
         context = getActivity();
-        layout = view.findViewById(R.id.coordinator_aep_layout);
-        inputFirstName = view.findViewById(R.id.text_aep_first_name);
-        inputLastName = view.findViewById(R.id.text_aep_last_name);
-        inputUsername = view.findViewById(R.id.text_aep_username);
-        inputEmail = view.findViewById(R.id.text_aep_email);
-        Button buttonSave = view.findViewById(R.id.button_aep_save);
-        TextView textEditPassword = view.findViewById(R.id.text_aep_edit_password);
+        layout = view.findViewById(R.id.layout_fep_anchor);
+        inputFirstName = view.findViewById(R.id.text_fep_first_name);
+        inputLastName = view.findViewById(R.id.text_fep_last_name);
+        inputUsername = view.findViewById(R.id.text_fep_username);
+        inputEmail = view.findViewById(R.id.text_fep_email);
+        Button buttonSave = view.findViewById(R.id.button_fep_save);
+        Button buttonEditPassword = view.findViewById(R.id.button_fep_edit_password);
 
         // Mendapatkan data
         UserSelf userSelf = new UserSelf(context);
@@ -112,7 +108,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-        textEditPassword.setOnClickListener(new View.OnClickListener() {
+        buttonEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (getFragmentManager() != null) {

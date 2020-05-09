@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePassword;
 
 public class EditPasswordFragment extends Fragment {
@@ -36,15 +35,15 @@ public class EditPasswordFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_edit_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_password, container, false);
 
         // Binding
         context = getActivity();
-        layout = view.findViewById(R.id.coordinator_aepw_layout);
-        inputCurrentPassword = view.findViewById(R.id.text_aepw_current_password);
-        inputNewPassword = view.findViewById(R.id.text_aepw_new_password);
-        inputConfirmPassword = view.findViewById(R.id.text_aepw_confirm_password);
-        Button buttonSave = view.findViewById(R.id.button_aepw_save);
+        layout = view.findViewById(R.id.layout_fepw_anchor);
+        inputCurrentPassword = view.findViewById(R.id.text_fepw_current_password);
+        inputNewPassword = view.findViewById(R.id.text_fepw_new_password);
+        inputConfirmPassword = view.findViewById(R.id.text_fepw_confirm_password);
+        Button buttonSave = view.findViewById(R.id.button_fepw_save);
 
         // Activity
         buttonSave.setOnClickListener(new View.OnClickListener() {
