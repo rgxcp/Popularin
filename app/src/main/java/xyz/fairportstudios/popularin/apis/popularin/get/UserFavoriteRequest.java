@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -24,13 +23,11 @@ import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class UserFavoriteRequest {
-    private String id;
     private Context context;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public UserFavoriteRequest(String id, Context context, List<Film> filmList, RecyclerView recyclerView) {
-        this.id = id;
+    public UserFavoriteRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
         this.context = context;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
@@ -38,13 +35,22 @@ public class UserFavoriteRequest {
 
     public interface JSONCallback {
         void onSuccess();
-        void onEmptyFavorite();
+
+        void onEmpty();
+
+        void onError();
     }
 
-    public void sendRequest(final JSONCallback callback) {
-        String requestURL = PopularinAPI.USER + "/" + id + "/favorites";
+    public String getRequestURL(String id, Integer page) {
+        return PopularinAPI.USER
+                + "/"
+                + id
+                + "/favorites?page="
+                + page;
+    }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+    public void sendRequest(String requestURL, final JSONCallback callback) {
+        JsonObjectRequest userFavoriteRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -74,20 +80,21 @@ public class UserFavoriteRequest {
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
                     } else {
-                        callback.onEmptyFavorite();
+                        callback.onEmpty();
                     }
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonObjectRequest);
+        Volley.newRequestQueue(context).add(userFavoriteRequest);
     }
 }

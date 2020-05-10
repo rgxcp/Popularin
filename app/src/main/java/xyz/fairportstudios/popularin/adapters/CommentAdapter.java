@@ -94,7 +94,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(context, position, commentList, commentID);
+                // DELETE
+                DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(position, context, commentList, commentID);
                 deleteCommentRequest.sendRequest(new DeleteCommentRequest.APICallback() {
                     @Override
                     public void onSuccess() {
@@ -102,13 +103,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                     }
 
                     @Override
-                    public void onFailed() {
-                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
                     public void onError() {
-                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }

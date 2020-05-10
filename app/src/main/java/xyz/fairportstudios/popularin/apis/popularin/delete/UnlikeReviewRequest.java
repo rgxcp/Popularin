@@ -33,6 +33,8 @@ public class UnlikeReviewRequest {
     }
 
     public void sendRequest(final APICallback callback) {
+        final Auth auth = new Auth(context);
+
         String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
 
         JsonObjectRequest unlikeReviewRequest = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
@@ -61,8 +63,8 @@ public class UnlikeReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
-                headers.put("auth_token", new Auth(context).getAuthToken());
+                headers.put("auth_uid", auth.getAuthID());
+                headers.put("auth_token", auth.getAuthToken());
                 return headers;
             }
         };

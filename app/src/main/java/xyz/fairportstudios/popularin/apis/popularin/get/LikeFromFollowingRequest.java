@@ -44,12 +44,16 @@ public class LikeFromFollowingRequest {
         void onError();
     }
 
-    public String getRequestURL(String reviewID) {
-        return PopularinAPI.REVIEW + "/" + reviewID + "/likes/from/following";
+    public String getRequestURL(String id, Integer page) {
+        return PopularinAPI.REVIEW
+                + "/"
+                + id
+                + "/likes/from/following?page="
+                + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest followingLikeRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest likeFromFollowingRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -99,6 +103,6 @@ public class LikeFromFollowingRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(followingLikeRequest);
+        Volley.newRequestQueue(context).add(likeFromFollowingRequest);
     }
 }

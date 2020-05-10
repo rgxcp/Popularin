@@ -26,13 +26,11 @@ public class UserReviewRequest {
     private Context context;
     private List<UserReview> userReviewList;
     private RecyclerView recyclerView;
-    private String id;
 
-    public UserReviewRequest(Context context, List<UserReview> userReviewList, RecyclerView recyclerView, String id) {
+    public UserReviewRequest(Context context, List<UserReview> userReviewList, RecyclerView recyclerView) {
         this.context = context;
         this.userReviewList = userReviewList;
         this.recyclerView = recyclerView;
-        this.id = id;
     }
 
     public interface APICallback {
@@ -43,9 +41,15 @@ public class UserReviewRequest {
         void onError();
     }
 
-    public void sendRequest(final APICallback callback) {
-        String requestURL = PopularinAPI.USER + "/" + id + "/reviews";
+    public String getRequestURL(String id, Integer page) {
+        return PopularinAPI.USER
+                + "/"
+                + id
+                + "/reviews?page="
+                + page;
+    }
 
+    public void sendRequest(String requestURL, final APICallback callback) {
         JsonObjectRequest userReviewRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

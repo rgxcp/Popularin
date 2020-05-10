@@ -3,12 +3,12 @@ package xyz.fairportstudios.popularin.apis.popularin.post;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,38 +17,61 @@ import java.util.Map;
 
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 
-public class SignIn {
+public class SignInRequest {
     private Context context;
     private String username;
     private String password;
 
-    public SignIn(Context context, String username, String password) {
+    public SignInRequest(Context context, String username, String password) {
         this.context = context;
         this.username = username;
         this.password = password;
     }
 
-    public interface JSONCallback {
-        void onSuccess(JSONObject response);
+    public interface APICallback {
+        void onSuccess(String id, String token);
+
+        void onInvalid();
+
+        void onFailed(String message);
+
+        void onError();
     }
 
-    public void sendRequest(final JSONCallback callback) {
+    public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.SIGN_IN;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        StringRequest signInRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    callback.onSuccess(jsonObject);
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                    int status = jsonObject.getInt("status");
+
+                    if (status == 515) {
+                        JSONObject jsonObjectResult = jsonObject.getJSONObject("result");
+                        String id = String.valueOf(jsonObjectResult.getInt("id"));
+                        String token = jsonObjectResult.getString("token");
+                        callback.onSuccess(id, token);
+                    } else if (status == 616) {
+                        callback.onInvalid();
+                    } else if (status == 626) {
+                        JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
+                        String message = jsonArrayResult.get(0).toString();
+                        callback.onFailed(message);
+                    } else {
+                        callback.onError();
+                    }
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         }) {
             @Override
@@ -67,7 +90,6 @@ public class SignIn {
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        Volley.newRequestQueue(context).add(signInRequest);
     }
 }

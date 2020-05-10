@@ -12,14 +12,10 @@ import android.widget.Button;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.post.SignIn;
+import xyz.fairportstudios.popularin.apis.popularin.post.SignInRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
@@ -48,44 +44,32 @@ public class SignInActivity extends AppCompatActivity {
                 String username = Objects.requireNonNull(inputUsername.getText()).toString();
                 String password = Objects.requireNonNull(inputPassword.getText()).toString();
 
-                // Mengirim data
-                SignIn signIn = new SignIn(
-                        context,
-                        username,
-                        password
-                );
-
-                // Mendapatkan hasil
-                signIn.sendRequest(new SignIn.JSONCallback() {
+                // POST
+                SignInRequest signInRequest = new SignInRequest(context, username, password);
+                signInRequest.sendRequest(new SignInRequest.APICallback() {
                     @Override
-                    public void onSuccess(JSONObject response) {
-                        try {
-                            int status = response.getInt("status");
+                    public void onSuccess(String id, String token) {
+                        Auth auth = new Auth(context);
+                        auth.setAuth(id, token);
 
-                            if (status == 515) {
-                                JSONObject jsonObjectResult = response.getJSONObject("result");
-                                String id = String.valueOf(jsonObjectResult.getInt("id"));
-                                String token = jsonObjectResult.getString("token");
+                        Intent gotoMain = new Intent(context, MainActivity.class);
+                        startActivity(gotoMain);
+                        finishAffinity();
+                    }
 
-                                Auth auth = new Auth(context);
-                                auth.setAuth(id, token);
+                    @Override
+                    public void onInvalid() {
+                        Snackbar.make(layout, R.string.invalid_credentials, Snackbar.LENGTH_LONG).show();
+                    }
 
-                                Intent gotoMain = new Intent(context, MainActivity.class);
-                                startActivity(gotoMain);
-                                finishAffinity();
-                            } else if (status == 616) {
-                                String errorMessage = response.getString("message");
-                                Snackbar.make(layout, errorMessage, Snackbar.LENGTH_SHORT).show();
-                            } else if (status == 626) {
-                                JSONArray jsonArrayResult = response.getJSONArray("result");
-                                String errorMessage = jsonArrayResult.get(0).toString();
-                                Snackbar.make(layout, errorMessage, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(layout, "Ada kesalahan dalam database", Snackbar.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException error) {
-                            error.printStackTrace();
-                        }
+                    @Override
+                    public void onFailed(String message) {
+                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Snackbar.make(layout, R.string.failed_sign_in, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }

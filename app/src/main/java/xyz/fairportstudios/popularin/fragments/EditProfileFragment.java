@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserSelf;
-import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfile;
+import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
 
 public class EditProfileFragment extends Fragment {
     private Context context;
@@ -75,34 +74,22 @@ public class EditProfileFragment extends Fragment {
                 String username = Objects.requireNonNull(inputUsername.getText()).toString();
                 String email = Objects.requireNonNull(inputEmail.getText()).toString();
 
-                // Mengirim data
-                UpdateProfile updateProfile = new UpdateProfile(
-                        context,
-                        firstName,
-                        lastName,
-                        username,
-                        email
-                );
-
-                // Mendapatkan hasil
-                updateProfile.sendRequest(new UpdateProfile.JSONCallback() {
+                // PUT
+                UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, firstName, lastName, username, email);
+                updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
                     @Override
-                    public void onSuccess(JSONObject response) {
-                        try {
-                            int status = response.getInt("status");
+                    public void onSuccess() {
+                        Objects.requireNonNull(getFragmentManager()).popBackStack();
+                    }
 
-                            if (status == 303) {
-                                Objects.requireNonNull(getFragmentManager()).popBackStack();
-                            } else if (status == 626) {
-                                JSONArray jsonArrayResult = response.getJSONArray("result");
-                                String errorMessage = jsonArrayResult.get(0).toString();
-                                Snackbar.make(layout, errorMessage, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(layout, "Ada kesalahan dalam database.", Snackbar.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException error) {
-                            error.printStackTrace();
-                        }
+                    @Override
+                    public void onFailed(String message) {
+                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Snackbar.make(layout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }

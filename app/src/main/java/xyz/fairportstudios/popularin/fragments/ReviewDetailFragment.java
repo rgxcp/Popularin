@@ -112,7 +112,7 @@ public class ReviewDetailFragment extends Fragment {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -149,6 +149,7 @@ public class ReviewDetailFragment extends Fragment {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!isLiked) {
+                        // POST
                         LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
                         likeReviewRequest.sendRequest(new LikeReviewRequest.APICallback() {
                             @Override
@@ -163,10 +164,11 @@ public class ReviewDetailFragment extends Fragment {
 
                             @Override
                             public void onError() {
-                                Snackbar.make(layout, R.string.like_error, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(layout, R.string.like_error, Snackbar.LENGTH_LONG).show();
                             }
                         });
                     } else {
+                        // DELETE
                         UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
                         unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.APICallback() {
                             @Override
@@ -181,7 +183,7 @@ public class ReviewDetailFragment extends Fragment {
 
                             @Override
                             public void onError() {
-                                Snackbar.make(layout, R.string.unlike_error, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(layout, R.string.unlike_error, Snackbar.LENGTH_LONG).show();
                             }
                         });
                     }

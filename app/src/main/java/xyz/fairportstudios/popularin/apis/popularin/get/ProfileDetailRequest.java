@@ -55,7 +55,7 @@ public class ProfileDetailRequest {
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.USER + "/" + id;
 
-        JsonObjectRequest userDetailRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest profileDetailRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -114,7 +114,7 @@ public class ProfileDetailRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(userDetailRequest);
+        Volley.newRequestQueue(context).add(profileDetailRequest);
     }
 
     private void getUserLatestFavorite(JSONArray jsonArrayFavorites) {

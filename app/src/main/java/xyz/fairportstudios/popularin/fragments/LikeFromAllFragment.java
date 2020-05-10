@@ -50,7 +50,7 @@ public class LikeFromAllFragment extends Fragment {
 
         // GET
         LikeFromAllRequest likeFromAllRequest = new LikeFromAllRequest(context, userList, recyclerView);
-        String requestURL = likeFromAllRequest.getRequestURL(reviewID);
+        String requestURL = likeFromAllRequest.getRequestURL(reviewID, 1);
         likeFromAllRequest.sendRequest(requestURL, new LikeFromAllRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -67,7 +67,7 @@ public class LikeFromAllFragment extends Fragment {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

@@ -169,14 +169,14 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onDeleted() {
                 progressBar.setVisibility(View.GONE);
                 userDeleted.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.user_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.user_deleted, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 userDeleted.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -232,6 +232,7 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!isFollowing) {
+                        // POST
                         FollowUserRequest followUserRequest = new FollowUserRequest(context, userID);
                         followUserRequest.sendRequest(new FollowUserRequest.APICallback() {
                             @Override
@@ -245,16 +246,12 @@ public class UserDetailActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailed() {
-                                Snackbar.make(layout, R.string.follow_self, Snackbar.LENGTH_SHORT).show();
-                            }
-
-                            @Override
                             public void onError() {
-                                Snackbar.make(layout, R.string.follow_error, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(layout, R.string.follow_error, Snackbar.LENGTH_LONG).show();
                             }
                         });
                     } else {
+                        // DELETE
                         UnfollowUserRequest unfollowUserRequest = new UnfollowUserRequest(context, userID);
                         unfollowUserRequest.sendRequest(new UnfollowUserRequest.APICallback() {
                             @Override
@@ -269,7 +266,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
                             @Override
                             public void onError() {
-                                Snackbar.make(layout, R.string.unfollow_error, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(layout, R.string.unfollow_error, Snackbar.LENGTH_LONG).show();
                             }
                         });
                     }

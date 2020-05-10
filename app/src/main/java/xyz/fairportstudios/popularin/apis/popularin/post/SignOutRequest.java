@@ -3,10 +3,9 @@ package xyz.fairportstudios.popularin.apis.popularin.post;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -17,38 +16,47 @@ import java.util.Map;
 
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 
-public class SignOut {
+public class SignOutRequest {
     private Context context;
     private String id;
     private String token;
 
-    public SignOut(Context context, String id, String token) {
+    public SignOutRequest(Context context, String id, String token) {
         this.context = context;
         this.id = id;
         this.token = token;
     }
 
-    public interface JSONCallback {
-        void onSuccess(JSONObject response);
+    public interface APICallback {
+        void onSuccess();
+
+        void onError();
     }
 
-    public void sendRequest(final JSONCallback callback) {
+    public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.SIGN_OUT;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        JsonObjectRequest signOutRequest = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    callback.onSuccess(jsonObject);
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                    int status = response.getInt("status");
+
+                    if (status == 525) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onError();
+                    }
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
+                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                callback.onError();
             }
         }) {
             @Override
@@ -60,7 +68,6 @@ public class SignOut {
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        Volley.newRequestQueue(context).add(signOutRequest);
     }
 }

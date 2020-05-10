@@ -74,7 +74,7 @@ public class SearchFilmFragment extends Fragment {
                     public void onError() {
                         progressBar.setVisibility(View.GONE);
                         emptyResult.setVisibility(View.VISIBLE);
-                        Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
                     }
                 });
 

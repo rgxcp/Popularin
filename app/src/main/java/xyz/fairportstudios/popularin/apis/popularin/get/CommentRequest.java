@@ -41,8 +41,12 @@ public class CommentRequest {
         void onError();
     }
 
-    public String getRequestURL(String reviewID) {
-        return PopularinAPI.REVIEW + "/" + reviewID + "/comments";
+    public String getRequestURL(String id, Integer page) {
+        return PopularinAPI.REVIEW
+                + "/"
+                + id
+                + "/comments?page="
+                + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {

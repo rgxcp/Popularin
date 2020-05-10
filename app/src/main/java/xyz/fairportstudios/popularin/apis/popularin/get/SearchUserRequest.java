@@ -79,8 +79,8 @@ public class SearchUserRequest {
                     } else {
                         callback.onEmpty();
                     }
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
                     callback.onError();
                 }
             }

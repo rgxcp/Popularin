@@ -12,14 +12,10 @@ import android.widget.Button;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.post.SignUp;
+import xyz.fairportstudios.popularin.apis.popularin.post.SignUpRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -57,44 +53,27 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = Objects.requireNonNull(inputEmail.getText()).toString();
                 String password = Objects.requireNonNull(inputPassword.getText()).toString();
 
-                // Mengirim data
-                SignUp signUp = new SignUp(
-                        context,
-                        firstName,
-                        lastName,
-                        username,
-                        email,
-                        password
-                );
-
-                // Mendapatkan hasil
-                signUp.sendRequest(new SignUp.JSONCallback() {
+                // POST
+                SignUpRequest signUpRequest = new SignUpRequest(context, firstName, lastName, username, email, password);
+                signUpRequest.sendRequest(new SignUpRequest.APICallback() {
                     @Override
-                    public void onSuccess(JSONObject response) {
-                        try {
-                            int status = response.getInt("status");
+                    public void onSuccess(String id, String token) {
+                        Auth auth = new Auth(context);
+                        auth.setAuth(id, token);
 
-                            if (status == 505) {
-                                JSONObject jsonObjectResult = response.getJSONObject("result");
-                                String id = String.valueOf(jsonObjectResult.getInt("id"));
-                                String token = jsonObjectResult.getString("token");
+                        Intent gotoMain = new Intent(context, MainActivity.class);
+                        startActivity(gotoMain);
+                        finishAffinity();
+                    }
 
-                                Auth auth = new Auth(context);
-                                auth.setAuth(id, token);
+                    @Override
+                    public void onFailed(String message) {
+                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+                    }
 
-                                Intent gotoMain = new Intent(context, MainActivity.class);
-                                startActivity(gotoMain);
-                                finishAffinity();
-                            } else if (status == 626) {
-                                JSONArray jsonArrayResult = response.getJSONArray("result");
-                                String errorMessage = jsonArrayResult.get(0).toString();
-                                Snackbar.make(layout, errorMessage, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(layout, "Ada kesalahan dalam database", Snackbar.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException error) {
-                            error.printStackTrace();
-                        }
+                    @Override
+                    public void onError() {
+                        Snackbar.make(layout, R.string.failed_sign_up, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }

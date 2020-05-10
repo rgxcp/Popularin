@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -21,35 +21,32 @@ import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class DeleteCommentRequest {
-    private Context context;
     private int position;
+    private Context context;
     private List<Comment> commentList;
-    private String commentID;
+    private String id;
 
-    public DeleteCommentRequest(Context context, Integer position, List<Comment> commentList, String commentID) {
-        this.context = context;
+    public DeleteCommentRequest(int position, Context context, List<Comment> commentList, String id) {
         this.position = position;
+        this.context = context;
         this.commentList = commentList;
-        this.commentID = commentID;
+        this.id = id;
     }
 
     public interface APICallback {
         void onSuccess();
 
-        void onFailed();
-
         void onError();
     }
 
     public void sendRequest(final APICallback callback) {
-        String requestURL = PopularinAPI.COMMENT + "/" + commentID;
+        String requestURL = PopularinAPI.COMMENT + "/" + id;
 
-        StringRequest deleteCommentRequest = new StringRequest(Request.Method.DELETE, requestURL, new Response.Listener<String>() {
+        JsonObjectRequest deleteCommentRequest = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    int status = response.getInt("status");
 
                     if (status == 404) {
                         CommentAdapter commentAdapter = new CommentAdapter(context, commentList);
@@ -57,7 +54,7 @@ public class DeleteCommentRequest {
                         commentAdapter.notifyItemRemoved(position);
                         callback.onSuccess();
                     } else {
-                        callback.onFailed();
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();

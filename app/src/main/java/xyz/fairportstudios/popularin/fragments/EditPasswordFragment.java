@@ -11,19 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePassword;
+import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePasswordRequest;
 
 public class EditPasswordFragment extends Fragment {
     private Context context;
@@ -54,35 +49,27 @@ public class EditPasswordFragment extends Fragment {
                 String newPassword = Objects.requireNonNull(inputNewPassword.getText()).toString();
                 String confirmPassword = Objects.requireNonNull(inputConfirmPassword.getText()).toString();
 
-                // Mengirim data
-                UpdatePassword updatePassword = new UpdatePassword(
-                        context,
-                        currentPassword,
-                        newPassword,
-                        confirmPassword
-                );
-
-                // Mendapatkan hasil
-                updatePassword.sendRequest(new UpdatePassword.JSONCallback() {
+                // PUT
+                UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest(context, currentPassword, newPassword, confirmPassword);
+                updatePasswordRequest.sendRequest(new UpdatePasswordRequest.APICallback() {
                     @Override
-                    public void onSuccess(JSONObject response) {
-                        try {
-                            int status = response.getInt("status");
+                    public void onSuccess() {
+                        Objects.requireNonNull(getFragmentManager()).popBackStack();
+                    }
 
-                            if (status == 303) {
-                                Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            } else if (status == 616) {
-                                Snackbar.make(layout, "Password lama tidak sesuai.", Snackbar.LENGTH_SHORT).show();
-                            } else if (status == 626) {
-                                JSONArray jsonArrayResult = response.getJSONArray("result");
-                                String errorMessage = jsonArrayResult.get(0).toString();
-                                Snackbar.make(layout, errorMessage, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(layout, "Ada kesalahan dalam database.", Snackbar.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException error) {
-                            error.printStackTrace();
-                        }
+                    @Override
+                    public void onInvalid() {
+                        Snackbar.make(layout, R.string.invalid_password, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Snackbar.make(layout, R.string.failed_update_password, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }

@@ -66,7 +66,7 @@ public class ReviewCommentFragment extends Fragment {
 
         // GET
         CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView);
-        String requestURL = commentRequest.getRequestURL(reviewID);
+        String requestURL = commentRequest.getRequestURL(reviewID, 1);
         commentRequest.sendRequest(requestURL, new CommentRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -83,7 +83,7 @@ public class ReviewCommentFragment extends Fragment {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyComment.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -103,12 +103,12 @@ public class ReviewCommentFragment extends Fragment {
 
                         @Override
                         public void onFailed(String message) {
-                            Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onError() {
-                            Snackbar.make(layout, R.string.post_comment_error, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(layout, R.string.post_comment_error, Snackbar.LENGTH_LONG).show();
                         }
                     });
                 } else {

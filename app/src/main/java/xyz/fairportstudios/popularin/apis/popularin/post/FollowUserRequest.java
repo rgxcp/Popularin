@@ -29,8 +29,6 @@ public class FollowUserRequest {
     public interface APICallback {
         void onSuccess();
 
-        void onFailed();
-
         void onError();
     }
 
@@ -48,7 +46,7 @@ public class FollowUserRequest {
                     if (status == 202) {
                         callback.onSuccess();
                     } else {
-                        callback.onFailed();
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();

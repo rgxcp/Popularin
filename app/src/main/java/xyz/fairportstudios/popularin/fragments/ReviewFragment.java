@@ -45,23 +45,18 @@ public class ReviewFragment extends Fragment {
 
         // GET
         ReviewRequest reviewRequest = new ReviewRequest(context, reviewList, recyclerView);
-        reviewRequest.sendRequest(new ReviewRequest.APICallback() {
+        String requestURL = reviewRequest.getRequestURL(1);
+        reviewRequest.sendRequest(requestURL, new ReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onEmpty() {
-                progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-            }
-
-            @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

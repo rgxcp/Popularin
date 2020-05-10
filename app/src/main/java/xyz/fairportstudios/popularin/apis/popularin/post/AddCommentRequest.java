@@ -103,6 +103,7 @@ public class AddCommentRequest {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("auth_uid", auth.getAuthID());
                 headers.put("auth_token", auth.getAuthToken());
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };

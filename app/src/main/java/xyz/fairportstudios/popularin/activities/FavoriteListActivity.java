@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,8 @@ import xyz.fairportstudios.popularin.models.Film;
 
 public class FavoriteListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
-    private TextView emptyFavorite;
+    private RelativeLayout layout;
+    private TextView emptyResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,8 @@ public class FavoriteListActivity extends AppCompatActivity {
 
         // Binding
         progressBar = findViewById(R.id.pbr_gtr_layout);
-        emptyFavorite = findViewById(R.id.text_fp_empty);
+        layout = findViewById(R.id.layout_gtr_anchor);
+        emptyResult = findViewById(R.id.text_fp_empty);
         RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
@@ -43,17 +48,25 @@ public class FavoriteListActivity extends AppCompatActivity {
         List<Film> filmList = new ArrayList<>();
 
         // GET
-        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(userID, this, filmList, recyclerView);
-        userFavoriteRequest.sendRequest(new UserFavoriteRequest.JSONCallback() {
+        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(this, filmList, recyclerView);
+        String requestURL = userFavoriteRequest.getRequestURL(userID, 1);
+        userFavoriteRequest.sendRequest(requestURL, new UserFavoriteRequest.JSONCallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onEmptyFavorite() {
+            public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyFavorite.setVisibility(View.VISIBLE);
+                emptyResult.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                emptyResult.setVisibility(View.VISIBLE);
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

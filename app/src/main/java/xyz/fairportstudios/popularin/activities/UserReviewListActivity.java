@@ -48,8 +48,9 @@ public class UserReviewListActivity extends AppCompatActivity {
         List<UserReview> userReviewList = new ArrayList<>();
 
         // GET
-        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView, userID);
-        userReviewRequest.sendRequest(new UserReviewRequest.APICallback() {
+        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView);
+        String requestURL = userReviewRequest.getRequestURL(userID, 1);
+        userReviewRequest.sendRequest(requestURL, new UserReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);
@@ -65,7 +66,7 @@ public class UserReviewListActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

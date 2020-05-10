@@ -154,7 +154,7 @@ public class ProfileFragment extends Fragment {
                 public void onError() {
                     progressBar.setVisibility(View.GONE);
                     userDeleted.setVisibility(View.VISIBLE);
-                    Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
                 }
             });
 
