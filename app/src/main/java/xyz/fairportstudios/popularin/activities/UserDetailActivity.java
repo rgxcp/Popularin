@@ -223,7 +223,9 @@ public class UserDetailActivity extends AppCompatActivity {
         totalWatchlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoWatchList = new Intent(context, WatchListActivity.class);
+                gotoWatchList.putExtra("USER_ID", userID);
+                startActivity(gotoWatchList);
             }
         });
 

@@ -29,6 +29,7 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FavoriteListActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewListActivity;
+import xyz.fairportstudios.popularin.activities.WatchListActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.ProfileDetailRequest;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
@@ -194,7 +195,9 @@ public class ProfileFragment extends Fragment {
             totalWatchlist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent gotoWatchList = new Intent(context, WatchListActivity.class);
+                    gotoWatchList.putExtra("USER_ID", auth.getAuthID());
+                    startActivity(gotoWatchList);
                 }
             });
 
