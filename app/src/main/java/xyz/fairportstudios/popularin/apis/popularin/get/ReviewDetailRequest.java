@@ -54,12 +54,13 @@ public class ReviewDetailRequest {
 
                         // Parsing
                         Integer star = new ParseStar().getStar(jsonObjectReview.getDouble("rating"));
-                        String poster = new ParseImage().getPoster(jsonObjectFilm.getString("poster"));
+                        String poster = new ParseImage().getImage(jsonObjectFilm.getString("poster"));
                         String year = new ParseDate().getYear(jsonObjectFilm.getString("release_date"));
                         String date = new ParseDate().getDate(jsonObjectReview.getString("review_date"));
 
                         ReviewDetail reviewDetail = new ReviewDetail();
                         reviewDetail.setLikeStatus(jsonObjectMetadata.getBoolean("liked"));
+                        reviewDetail.setFilmID(jsonObjectFilm.getInt("tmdb_id"));
                         reviewDetail.setStar(star);
                         reviewDetail.setLike(jsonObjectMetadata.getInt("likes"));
                         reviewDetail.setFilmPoster(poster);
