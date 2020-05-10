@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.LikeListActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
@@ -93,6 +94,7 @@ public class ReviewDetailFragment extends Fragment {
 
                 // Mengisi data
                 likes = reviewDetail.getLike();
+                filmID = String.valueOf(reviewDetail.getFilmID());
                 userID = reviewDetail.getUserID();
                 userFirstName.setText(reviewDetail.getUserFirstName());
                 filmTitle.setText(reviewDetail.getFilmTitle());
@@ -129,11 +131,9 @@ public class ReviewDetailFragment extends Fragment {
         filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
                 gotoFilmDetail.putExtra("FILM_ID", filmID);
                 context.startActivity(gotoFilmDetail);
-                 */
             }
         });
 

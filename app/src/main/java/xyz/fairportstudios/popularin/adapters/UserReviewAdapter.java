@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -58,7 +59,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         Integer star = new ParseStar().getStar(userReviewList.get(position).getRating());
         String year = new ParseDate().getYear(userReviewList.get(position).getRelease_date());
         String date = new ParseDate().getDate(userReviewList.get(position).getReview_date());
-        String poster = new ParseImage().getPoster(userReviewList.get(position).getPoster());
+        String poster = new ParseImage().getImage(userReviewList.get(position).getPoster());
 
         // Mengisi data
         holder.filmTitle.setText(userReviewList.get(position).getTitle());
@@ -89,11 +90,9 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
                 gotoFilmDetail.putExtra("FILM_ID", filmID);
                 context.startActivity(gotoFilmDetail);
-                 */
             }
         });
 

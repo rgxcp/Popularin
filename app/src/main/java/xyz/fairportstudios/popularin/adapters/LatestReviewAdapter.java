@@ -51,7 +51,7 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
 
         // Parsing
         Integer star = new ParseStar().getStar(latestReviewList.get(position).getRating());
-        String poster = new ParseImage().getPoster(latestReviewList.get(position).getPoster());
+        String poster = new ParseImage().getImage(latestReviewList.get(position).getPoster());
 
         // Mengisi data
         holder.reviewStar.setImageResource(star);

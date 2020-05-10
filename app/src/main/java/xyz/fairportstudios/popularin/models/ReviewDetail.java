@@ -2,6 +2,7 @@ package xyz.fairportstudios.popularin.models;
 
 public class ReviewDetail {
     private Boolean likeStatus;
+    private Integer filmID;
     private Integer star;
     private Integer like;
     private String filmPoster;
@@ -17,8 +18,9 @@ public class ReviewDetail {
         // Empty constructor
     }
 
-    public ReviewDetail(Boolean likeStatus, Integer star, Integer like, String filmPoster, String filmTitle, String filmYear, String reviewDate, String reviewText, String userID, String userFirstName, String userProfilePicture) {
+    public ReviewDetail(Boolean likeStatus, Integer filmID, Integer star, Integer like, String filmPoster, String filmTitle, String filmYear, String reviewDate, String reviewText, String userID, String userFirstName, String userProfilePicture) {
         this.likeStatus = likeStatus;
+        this.filmID = filmID;
         this.star = star;
         this.like = like;
         this.filmPoster = filmPoster;
@@ -33,6 +35,10 @@ public class ReviewDetail {
 
     public Boolean getLikeStatus() {
         return likeStatus;
+    }
+
+    public Integer getFilmID() {
+        return filmID;
     }
 
     public Integer getStar() {
@@ -77,6 +83,10 @@ public class ReviewDetail {
 
     public void setLikeStatus(Boolean likeStatus) {
         this.likeStatus = likeStatus;
+    }
+
+    public void setFilmID(Integer filmID) {
+        this.filmID = filmID;
     }
 
     public void setStar(Integer star) {

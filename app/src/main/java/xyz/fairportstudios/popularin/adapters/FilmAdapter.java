@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseGenre;
@@ -52,7 +54,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         // Parsing
         String date = new ParseDate().getDate(filmList.get(position).getRelease_date());
         String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_ids());
-        String poster = new ParseImage().getPoster(filmList.get(position).getPoster_path());
+        String poster = new ParseImage().getImage(filmList.get(position).getPoster_path());
 
         // Mengisi data
         holder.filmTitle.setText(filmList.get(position).getOriginal_title());
@@ -71,11 +73,9 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
                 gotoFilmDetail.putExtra("FILM_ID", filmID);
                 context.startActivity(gotoFilmDetail);
-                 */
             }
         });
 

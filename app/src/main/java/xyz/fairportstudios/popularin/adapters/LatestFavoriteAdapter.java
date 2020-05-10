@@ -1,11 +1,10 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.services.ParseImage;
 
@@ -49,7 +49,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
         // Parsing
-        String poster = new ParseImage().getPoster(latestFavoriteList.get(position).getPoster());
+        String poster = new ParseImage().getImage(latestFavoriteList.get(position).getPoster());
 
         // Mengisi data
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
@@ -70,11 +70,9 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
                 Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
                 gotoFilmDetail.putExtra("FILM_ID", filmID);
                 context.startActivity(gotoFilmDetail);
-                 */
             }
         });
 
