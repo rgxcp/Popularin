@@ -58,7 +58,12 @@
     <string name="follow_me">Mengikuti Anda</string>
     <string name="user_followed">Mengikuti pengguna</string>
     <string name="user_unfollowed">Berhenti mengikuti pengguna</string>
-    <string name="follow_self">Tidak bisa mengikuti diri sendiri</string>
     <string name="follow_error">Gagal mengikuti pengguna</string>
     <string name="unfollow_error">Gagal berhenti mengikuti pengguna</string>
+    <string name="failed_update_profile">Gagal mengubah profile</string>
+    <string name="failed_update_password">Gagal mengubah kata sandi</string>
+    <string name="invalid_password">Kata sandi lama salah</string>
+    <string name="invalid_credentials">Username atau kata sandi salah</string>
+    <string name="failed_sign_in">Gagal untuk masuk</string>
+    <string name="failed_sign_up">Gagal untuk daftar</string>
 </resources>
