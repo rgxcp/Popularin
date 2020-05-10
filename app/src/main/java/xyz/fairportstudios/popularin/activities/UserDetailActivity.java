@@ -34,6 +34,7 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserDetailActivity extends AppCompatActivity {
     private Boolean isAuth;
+    private Boolean isSelf;
     private Boolean isFollowing;
     private Boolean isFollower;
     private Button buttonFollow;
@@ -108,7 +109,9 @@ public class UserDetailActivity extends AppCompatActivity {
         final String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
         // Auth
-        isAuth = new Auth(context).isAuth();
+        Auth auth = new Auth(context);
+        isAuth = auth.isAuth();
+        isSelf = Objects.requireNonNull(userID).equals(auth.getAuthID());
 
         // List
         List<LatestFavorite> latestFavoriteList = new ArrayList<>();
@@ -200,14 +203,28 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFollower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoSocial = new Intent(context, SocialActivity.class);
+                gotoSocial.putExtra("USER_ID", userID);
+                if (isSelf) {
+                    gotoSocial.putExtra("IS_SELF", true);
+                } else {
+                    gotoSocial.putExtra("IS_SELF", false);
+                }
+                startActivity(gotoSocial);
             }
         });
 
         totalFollowing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoSocial = new Intent(context, SocialActivity.class);
+                gotoSocial.putExtra("USER_ID", userID);
+                if (isSelf) {
+                    gotoSocial.putExtra("IS_SELF", true);
+                } else {
+                    gotoSocial.putExtra("IS_SELF", false);
+                }
+                startActivity(gotoSocial);
             }
         });
 

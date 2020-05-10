@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FavoriteListActivity;
+import xyz.fairportstudios.popularin.activities.SocialActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewListActivity;
 import xyz.fairportstudios.popularin.activities.WatchListActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.ProfileDetailRequest;
@@ -172,14 +173,20 @@ public class ProfileFragment extends Fragment {
             totalFollower.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent gotoSocial = new Intent(context, SocialActivity.class);
+                    gotoSocial.putExtra("USER_ID", auth.getAuthID());
+                    gotoSocial.putExtra("IS_SELF", true);
+                    startActivity(gotoSocial);
                 }
             });
 
             totalFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent gotoSocial = new Intent(context, SocialActivity.class);
+                    gotoSocial.putExtra("USER_ID", auth.getAuthID());
+                    gotoSocial.putExtra("IS_SELF", true);
+                    startActivity(gotoSocial);
                 }
             });
 
