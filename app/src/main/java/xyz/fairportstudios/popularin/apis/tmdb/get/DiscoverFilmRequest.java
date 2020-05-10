@@ -33,6 +33,12 @@ public class DiscoverFilmRequest {
         this.recyclerView = recyclerView;
     }
 
+    public interface APICallback {
+        void onSuccess();
+
+        void onError();
+    }
+
     public String getRequestURL(String genre, Integer page) {
         return TMDbAPI.DISCOVER_GENRE
                 + "?api_key="
@@ -44,49 +50,34 @@ public class DiscoverFilmRequest {
                 + "&with_runtime.gte=0&with_original_language=id";
     }
 
-    public interface APICallback {
-        void onSuccess();
-
-        void onEmpty();
-
-        void onError();
-    }
-
     public void sendRequest(String requestURL, final APICallback callback) {
         JsonObjectRequest discoverFilmRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    int total = response.getInt("total_results");
+                    JSONArray jsonArrayResult = response.getJSONArray("results");
 
-                    if (total > 0) {
-                        JSONArray jsonArrayResult = response.getJSONArray("results");
+                    for (int index = 0; index < jsonArrayResult.length(); index++) {
+                        JSONObject jsonObject = jsonArrayResult.getJSONObject(index);
+                        String language = jsonObject.getString("original_language");
 
-                        for (int index = 0; index < jsonArrayResult.length(); index++) {
-                            JSONObject jsonObject = jsonArrayResult.getJSONObject(index);
+                        if (language.equals("id")) {
+                            Film film = new Film();
+                            film.setId(jsonObject.getInt("id"));
+                            film.setGenre_ids(jsonObject.getJSONArray("genre_ids").getInt(0));
+                            film.setOriginal_title(jsonObject.getString("original_title"));
+                            film.setPoster_path(jsonObject.getString("poster_path"));
+                            film.setRelease_date(jsonObject.getString("release_date"));
 
-                            String language = jsonObject.getString("original_language");
-
-                            if (language.equals("id")) {
-                                Film film = new Film();
-                                film.setId(jsonObject.getInt("id"));
-                                film.setGenre_ids(jsonObject.getJSONArray("genre_ids").getInt(0));
-                                film.setOriginal_title(jsonObject.getString("original_title"));
-                                film.setPoster_path(jsonObject.getString("poster_path"));
-                                film.setRelease_date(jsonObject.getString("release_date"));
-
-                                filmList.add(film);
-                            }
+                            filmList.add(film);
                         }
-
-                        FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
-                        recyclerView.setAdapter(filmAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
-                    } else {
-                        callback.onEmpty();
                     }
+
+                    FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
+                    recyclerView.setAdapter(filmAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerView.setVisibility(View.VISIBLE);
+                    callback.onSuccess();
                 } catch (JSONException exception) {
                     exception.printStackTrace();
                     callback.onError();

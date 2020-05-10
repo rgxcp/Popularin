@@ -58,12 +58,6 @@ public class FilmListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEmpty() {
-                progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-            }
-
-            @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);

@@ -47,7 +47,7 @@ public class AiringFilmRequest {
                 + TMDbAPI.API_KEY
                 + "&language=id&region=ID";
 
-        JsonObjectRequest airingRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest airingFilmRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -72,13 +72,15 @@ public class AiringFilmRequest {
                             }
                         }
 
-                        FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
-                        recyclerView.setAdapter(filmAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
-                    } else {
-                        callback.onEmpty();
+                        if (filmList.size() > 0) {
+                            FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
+                            recyclerView.setAdapter(filmAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                            recyclerView.setVisibility(View.VISIBLE);
+                            callback.onSuccess();
+                        } else {
+                            callback.onEmpty();
+                        }
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -93,6 +95,6 @@ public class AiringFilmRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(airingRequest);
+        Volley.newRequestQueue(context).add(airingFilmRequest);
     }
 }

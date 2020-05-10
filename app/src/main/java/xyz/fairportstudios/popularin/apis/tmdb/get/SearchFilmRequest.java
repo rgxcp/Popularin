@@ -77,21 +77,23 @@ public class SearchFilmRequest {
                                 film.setRelease_date(jsonObject.getString("release_date"));
 
                                 filmList.add(film);
-                            } else {
-                                callback.onEmpty();
                             }
                         }
 
-                        FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
-                        recyclerView.setAdapter(filmAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
+                        if (filmList.size() > 0) {
+                            FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
+                            recyclerView.setAdapter(filmAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                            recyclerView.setVisibility(View.VISIBLE);
+                            callback.onSuccess();
+                        } else {
+                            callback.onEmpty();
+                        }
                     } else {
                         callback.onEmpty();
                     }
-                } catch (JSONException error) {
-                    error.printStackTrace();
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
                     callback.onError();
                 }
             }
