@@ -25,14 +25,14 @@ import xyz.fairportstudios.popularin.models.User;
 public class SearchUserRequest {
     private Context context;
     private List<User> userList;
-    private String query;
     private RecyclerView recyclerView;
+    private String query;
 
-    public SearchUserRequest(Context context, List<User> userList, String query, RecyclerView recyclerView) {
+    public SearchUserRequest(Context context, List<User> userList, RecyclerView recyclerView, String query) {
         this.context = context;
         this.userList = userList;
-        this.query = query;
         this.recyclerView = recyclerView;
+        this.query = query;
     }
 
     public interface APICallback {

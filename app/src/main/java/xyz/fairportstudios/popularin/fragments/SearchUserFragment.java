@@ -56,7 +56,7 @@ public class SearchUserFragment extends Fragment {
                 emptyResult.setVisibility(View.GONE);
 
                 // GET
-                SearchUserRequest searchUserRequest = new SearchUserRequest(context, userList, query, recyclerView);
+                SearchUserRequest searchUserRequest = new SearchUserRequest(context, userList, recyclerView, query);
                 searchUserRequest.sendRequest(new SearchUserRequest.APICallback() {
                     @Override
                     public void onSuccess() {
