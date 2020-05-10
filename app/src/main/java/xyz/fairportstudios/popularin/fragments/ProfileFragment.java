@@ -107,109 +107,109 @@ public class ProfileFragment extends Fragment {
                     .beginTransaction()
                     .replace(R.id.fragment_am_container, new EmptyUserFragment())
                     .commit();
-        }
+        } else {
+            // List
+            List<LatestFavorite> latestFavoriteList = new ArrayList<>();
+            List<LatestReview> latestReviewList = new ArrayList<>();
 
-        // List
-        List<LatestFavorite> latestFavoriteList = new ArrayList<>();
-        List<LatestReview> latestReviewList = new ArrayList<>();
+            // GET
+            ProfileDetailRequest profileDetailRequest = new ProfileDetailRequest(context, latestFavoriteList, latestReviewList, recyclerViewLatestFavorite, recyclerViewLatestReview, auth.getAuthID());
+            profileDetailRequest.sendRequest(new ProfileDetailRequest.APICallback() {
+                @Override
+                public void onSuccess(ProfileDetail profileDetail) {
+                    fullName.setText(profileDetail.getFullName());
+                    rate05.setText(profileDetail.getRate05());
+                    rate10.setText(profileDetail.getRate10());
+                    rate15.setText(profileDetail.getRate15());
+                    rate20.setText(profileDetail.getRate20());
+                    rate25.setText(profileDetail.getRate25());
+                    rate30.setText(profileDetail.getRate30());
+                    rate35.setText(profileDetail.getRate35());
+                    rate40.setText(profileDetail.getRate40());
+                    rate45.setText(profileDetail.getRate45());
+                    rate50.setText(profileDetail.getRate50());
+                    totalFavorite.setText(profileDetail.getTotalFavorite());
+                    totalFollower.setText(profileDetail.getTotalFollower());
+                    totalFollowing.setText(profileDetail.getTotalFollowing());
+                    totalReview.setText(profileDetail.getTotalReview());
+                    totalWatchlist.setText(profileDetail.getTotalWatchlist());
+                    username.setText(profileDetail.getUsername());
+                    Glide.with(context).load(profileDetail.getProfilePicture()).apply(new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary)).into(profilePicture);
 
-        // GET
-        ProfileDetailRequest profileDetailRequest = new ProfileDetailRequest(context, latestFavoriteList, latestReviewList, recyclerViewLatestFavorite, recyclerViewLatestReview, auth.getAuthID());
-        profileDetailRequest.sendRequest(new ProfileDetailRequest.APICallback() {
-            @Override
-            public void onSuccess(ProfileDetail profileDetail) {
-                fullName.setText(profileDetail.getFullName());
-                rate05.setText(profileDetail.getRate05());
-                rate10.setText(profileDetail.getRate10());
-                rate15.setText(profileDetail.getRate15());
-                rate20.setText(profileDetail.getRate20());
-                rate25.setText(profileDetail.getRate25());
-                rate30.setText(profileDetail.getRate30());
-                rate35.setText(profileDetail.getRate35());
-                rate40.setText(profileDetail.getRate40());
-                rate45.setText(profileDetail.getRate45());
-                rate50.setText(profileDetail.getRate50());
-                totalFavorite.setText(profileDetail.getTotalFavorite());
-                totalFollower.setText(profileDetail.getTotalFollower());
-                totalFollowing.setText(profileDetail.getTotalFollowing());
-                totalReview.setText(profileDetail.getTotalReview());
-                totalWatchlist.setText(profileDetail.getTotalWatchlist());
-                username.setText(profileDetail.getUsername());
-                Glide.with(context).load(profileDetail.getProfilePicture()).apply(new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary)).into(profilePicture);
-
-                progressBar.setVisibility(View.GONE);
-                scrollView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onEmptyFavorite() {
-                emptyLatestFavorite.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onEmptyReview() {
-                emptyLatestReview.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                userDeleted.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        // Activity
-        totalReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoReviewList = new Intent(context, UserReviewListActivity.class);
-                gotoReviewList.putExtra("USER_ID", auth.getAuthID());
-                startActivity(gotoReviewList);
-            }
-        });
-
-        totalFollower.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        totalFollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        totalFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFavoriteList = new Intent(context, FavoriteListActivity.class);
-                gotoFavoriteList.putExtra("USER_ID", auth.getAuthID());
-                startActivity(gotoFavoriteList);
-            }
-        });
-
-        totalWatchlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        buttonEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getFragmentManager() != null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_am_container, new EditProfileFragment())
-                            .addToBackStack(null)
-                            .commit();
+                    progressBar.setVisibility(View.GONE);
+                    scrollView.setVisibility(View.VISIBLE);
                 }
-            }
-        });
+
+                @Override
+                public void onEmptyFavorite() {
+                    emptyLatestFavorite.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onEmptyReview() {
+                    emptyLatestReview.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onError() {
+                    progressBar.setVisibility(View.GONE);
+                    userDeleted.setVisibility(View.VISIBLE);
+                    Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+            // Activity
+            totalReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent gotoReviewList = new Intent(context, UserReviewListActivity.class);
+                    gotoReviewList.putExtra("USER_ID", auth.getAuthID());
+                    startActivity(gotoReviewList);
+                }
+            });
+
+            totalFollower.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            totalFollowing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            totalFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent gotoFavoriteList = new Intent(context, FavoriteListActivity.class);
+                    gotoFavoriteList.putExtra("USER_ID", auth.getAuthID());
+                    startActivity(gotoFavoriteList);
+                }
+            });
+
+            totalWatchlist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            buttonEditProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (getFragmentManager() != null) {
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_am_container, new EditProfileFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }
+            });
+        }
 
         return view;
     }
