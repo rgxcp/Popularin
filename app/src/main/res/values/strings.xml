@@ -66,4 +66,7 @@
     <string name="invalid_credentials">Username atau kata sandi salah</string>
     <string name="failed_sign_in">Gagal untuk masuk</string>
     <string name="failed_sign_up">Gagal untuk daftar</string>
+    <string name="overview">SINOPSIS</string>
+    <string name="cast">PEMAIN</string>
+    <string name="crew">KRU</string>
 </resources>
