@@ -206,7 +206,9 @@ public class FilmDetailActivity extends AppCompatActivity {
         watchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoWatchlistedBy = new Intent(context, WatchlistedByActivity.class);
+                gotoWatchlistedBy.putExtra("FILM_ID", filmID);
+                startActivity(gotoWatchlistedBy);
             }
         });
 
