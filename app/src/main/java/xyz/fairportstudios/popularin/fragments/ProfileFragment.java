@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.FavoriteListActivity;
+import xyz.fairportstudios.popularin.activities.UserFavoriteActivity;
 import xyz.fairportstudios.popularin.activities.SocialActivity;
-import xyz.fairportstudios.popularin.activities.UserReviewListActivity;
-import xyz.fairportstudios.popularin.activities.WatchListActivity;
+import xyz.fairportstudios.popularin.activities.UserReviewActivity;
+import xyz.fairportstudios.popularin.activities.UserWatchlistActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.ProfileDetailRequest;
 import xyz.fairportstudios.popularin.models.LatestFavorite;
 import xyz.fairportstudios.popularin.models.LatestReview;
@@ -164,7 +164,7 @@ public class ProfileFragment extends Fragment {
             totalReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent gotoReviewList = new Intent(context, UserReviewListActivity.class);
+                    Intent gotoReviewList = new Intent(context, UserReviewActivity.class);
                     gotoReviewList.putExtra("USER_ID", auth.getAuthID());
                     startActivity(gotoReviewList);
                 }
@@ -193,7 +193,7 @@ public class ProfileFragment extends Fragment {
             totalFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent gotoFavoriteList = new Intent(context, FavoriteListActivity.class);
+                    Intent gotoFavoriteList = new Intent(context, UserFavoriteActivity.class);
                     gotoFavoriteList.putExtra("USER_ID", auth.getAuthID());
                     startActivity(gotoFavoriteList);
                 }
@@ -202,7 +202,7 @@ public class ProfileFragment extends Fragment {
             totalWatchlist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent gotoWatchList = new Intent(context, WatchListActivity.class);
+                    Intent gotoWatchList = new Intent(context, UserWatchlistActivity.class);
                     gotoWatchList.putExtra("USER_ID", auth.getAuthID());
                     startActivity(gotoWatchList);
                 }

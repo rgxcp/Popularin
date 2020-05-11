@@ -16,7 +16,7 @@ import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.fragments.LikeFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.LikeFromFollowingFragment;
 
-public class LikeListActivity extends AppCompatActivity {
+public class LikedByActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

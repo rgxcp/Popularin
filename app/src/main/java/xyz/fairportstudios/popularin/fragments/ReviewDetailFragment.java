@@ -25,7 +25,7 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
-import xyz.fairportstudios.popularin.activities.LikeListActivity;
+import xyz.fairportstudios.popularin.activities.LikedByActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
@@ -197,7 +197,7 @@ public class ReviewDetailFragment extends Fragment {
         totalLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserList = new Intent(context, LikeListActivity.class);
+                Intent gotoUserList = new Intent(context, LikedByActivity.class);
                 gotoUserList.putExtra("REVIEW_ID", reviewID);
                 startActivity(gotoUserList);
             }

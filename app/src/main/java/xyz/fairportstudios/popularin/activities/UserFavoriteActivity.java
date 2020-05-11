@@ -20,7 +20,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserFavoriteRequest;
 import xyz.fairportstudios.popularin.models.Film;
 
-public class FavoriteListActivity extends AppCompatActivity {
+public class UserFavoriteActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RelativeLayout layout;
     private TextView emptyResult;

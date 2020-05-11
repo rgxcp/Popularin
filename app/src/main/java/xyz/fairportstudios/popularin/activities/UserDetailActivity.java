@@ -194,7 +194,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewList = new Intent(context, UserReviewListActivity.class);
+                Intent gotoReviewList = new Intent(context, UserReviewActivity.class);
                 gotoReviewList.putExtra("USER_ID", userID);
                 startActivity(gotoReviewList);
             }
@@ -231,7 +231,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFavoriteList = new Intent(context, FavoriteListActivity.class);
+                Intent gotoFavoriteList = new Intent(context, UserFavoriteActivity.class);
                 gotoFavoriteList.putExtra("USER_ID", userID);
                 startActivity(gotoFavoriteList);
             }
@@ -240,7 +240,7 @@ public class UserDetailActivity extends AppCompatActivity {
         totalWatchlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoWatchList = new Intent(context, WatchListActivity.class);
+                Intent gotoWatchList = new Intent(context, UserWatchlistActivity.class);
                 gotoWatchList.putExtra("USER_ID", userID);
                 startActivity(gotoWatchList);
             }

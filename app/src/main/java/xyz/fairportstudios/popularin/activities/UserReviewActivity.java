@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.UserWatchlistRequest;
-import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.apis.popularin.get.UserReviewRequest;
+import xyz.fairportstudios.popularin.models.UserReview;
 
-public class WatchListActivity extends AppCompatActivity {
+public class UserReviewActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RelativeLayout layout;
     private TextView emptyResult;
@@ -42,15 +42,15 @@ public class WatchListActivity extends AppCompatActivity {
         String userID = Objects.requireNonNull(bundle).getString("USER_ID");
 
         // Toolbar
-        toolbar.setTitle("Watchlist");
+        toolbar.setTitle("Ulasan");
 
         // List
-        List<Film> filmList = new ArrayList<>();
+        List<UserReview> userReviewList = new ArrayList<>();
 
         // GET
-        UserWatchlistRequest userWatchlistRequest = new UserWatchlistRequest(this, filmList, recyclerView);
-        String requestURL = userWatchlistRequest.getRequestURL(userID, 1);
-        userWatchlistRequest.sendRequest(requestURL, new UserWatchlistRequest.APICallback() {
+        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView);
+        String requestURL = userReviewRequest.getRequestURL(userID, 1);
+        userReviewRequest.sendRequest(requestURL, new UserReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);

@@ -13,11 +13,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.FilmDetailActivity" />
         <activity android:name=".activities.SocialActivity" />
-        <activity android:name=".activities.WatchListActivity" />
-        <activity android:name=".activities.FavoriteListActivity" />
-        <activity android:name=".activities.UserReviewListActivity" />
+        <activity android:name=".activities.UserWatchlistActivity" />
+        <activity android:name=".activities.UserFavoriteActivity" />
+        <activity android:name=".activities.UserReviewActivity" />
         <activity android:name=".activities.EmptyUserActivity" />
-        <activity android:name=".activities.LikeListActivity" />
+        <activity android:name=".activities.LikedByActivity" />
         <activity android:name=".activities.UserDetailActivity" />
         <activity android:name=".activities.ReviewDetailActivity" />
         <activity android:name=".activities.FilmListActivity" />
