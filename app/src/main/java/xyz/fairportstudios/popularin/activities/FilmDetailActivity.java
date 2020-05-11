@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -105,7 +106,7 @@ public class FilmDetailActivity extends AppCompatActivity {
 
         // Bundle
         Bundle bundle = getIntent().getExtras();
-        String filmID = Objects.requireNonNull(bundle).getString("FILM_ID");
+        final String filmID = Objects.requireNonNull(bundle).getString("FILM_ID");
 
         // List
         List<Cast> castList = new ArrayList<>();
@@ -196,7 +197,9 @@ public class FilmDetailActivity extends AppCompatActivity {
         favoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoFavoritedBy = new Intent(context, FavoritedByActivity.class);
+                gotoFavoritedBy.putExtra("FILM_ID", filmID);
+                startActivity(gotoFavoritedBy);
             }
         });
 
