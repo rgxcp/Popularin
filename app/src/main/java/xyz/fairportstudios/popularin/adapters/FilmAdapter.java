@@ -79,6 +79,15 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             }
         });
 
+        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
+                gotoFilmDetail.putExtra("FILM_ID", filmID);
+                context.startActivity(gotoFilmDetail);
+            }
+        });
+
         holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {

@@ -67,7 +67,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
