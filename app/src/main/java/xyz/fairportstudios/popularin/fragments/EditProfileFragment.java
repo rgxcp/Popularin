@@ -15,14 +15,12 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.UserSelf;
+import xyz.fairportstudios.popularin.apis.popularin.get.UserSelfRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
+import xyz.fairportstudios.popularin.models.UserSelf;
 
 public class EditProfileFragment extends Fragment {
     private Context context;
@@ -48,19 +46,19 @@ public class EditProfileFragment extends Fragment {
         Button buttonEditPassword = view.findViewById(R.id.button_fep_edit_password);
 
         // Mendapatkan data
-        UserSelf userSelf = new UserSelf(context);
-        userSelf.sendRequest(new UserSelf.JSONCallback() {
+        UserSelfRequest userSelfRequest = new UserSelfRequest(context);
+        userSelfRequest.sendRequest(new UserSelfRequest.APICallback() {
             @Override
-            public void onSuccess(JSONObject response) {
-                try {
-                    JSONObject jsonObjectResult = response.getJSONObject("result");
-                    inputFirstName.setText(jsonObjectResult.getString("first_name"));
-                    inputLastName.setText(jsonObjectResult.getString("last_name"));
-                    inputUsername.setText(jsonObjectResult.getString("username"));
-                    inputEmail.setText(jsonObjectResult.getString("email"));
-                } catch (JSONException error) {
-                    error.printStackTrace();
-                }
+            public void onSuccess(UserSelf userSelf) {
+                inputFirstName.setText(userSelf.getFirst_name());
+                inputLastName.setText(userSelf.getLast_name());
+                inputUsername.setText(userSelf.getUsername());
+                inputEmail.setText(userSelf.getEmail());
+            }
+
+            @Override
+            public void onError() {
+                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
