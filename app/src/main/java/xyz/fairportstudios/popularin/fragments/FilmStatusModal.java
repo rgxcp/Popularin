@@ -122,12 +122,14 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                         addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(context, title + R.string.watchlist_added, Toast.LENGTH_SHORT).show();
+                                String message = title + " " + context.getString(R.string.watchlist_added);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onError() {
-                                Toast.makeText(context, R.string.add_watchlist_error, Toast.LENGTH_SHORT).show();
+                                String message = title + " " + context.getString(R.string.add_watchlist_error);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
                         });
                     } else {

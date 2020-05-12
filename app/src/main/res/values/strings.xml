@@ -69,6 +69,8 @@
     <string name="overview">SINOPSIS</string>
     <string name="cast">PEMAIN</string>
     <string name="crew">KRU</string>
-    <string name="watchlist_added"> ditambahkan ke dalam watchlist</string>
+    <string name="watchlist_added">ditambahkan ke dalam watchlist</string>
     <string name="add_watchlist_error">Gagal menambahkan ke dalam watchlist</string>
+    <string name="watchlist_removed">dihapus dari watchlist</string>
+    <string name="remove_watchlist_error">Gagal menghapus dari watchlist</string>
 </resources>
