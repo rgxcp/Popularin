@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.FilmReviewActivity" />
         <activity android:name=".activities.WatchlistedByActivity" />
         <activity android:name=".activities.FavoritedByActivity" />
         <activity android:name=".activities.FilmDetailActivity" />
