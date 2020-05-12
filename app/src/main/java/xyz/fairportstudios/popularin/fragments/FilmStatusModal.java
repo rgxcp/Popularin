@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmSelfRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.AddWatchlistRequest;
 import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
@@ -112,7 +115,27 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
         watchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isAuth) {
+                    if (!inWatchlist) {
+                        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, filmID);
+                        addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(context, title + R.string.watchlist_added, Toast.LENGTH_SHORT).show();
+                            }
 
+                            @Override
+                            public void onError() {
+                                Toast.makeText(context, R.string.add_watchlist_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    startActivity(gotoEmptyUser);
+                }
+
+                dismiss();
             }
         });
 
