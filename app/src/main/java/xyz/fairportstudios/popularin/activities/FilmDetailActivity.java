@@ -190,7 +190,9 @@ public class FilmDetailActivity extends AppCompatActivity {
         reviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent gotoFilmReview = new Intent(context, FilmReviewActivity.class);
+                gotoFilmReview.putExtra("FILM_ID", filmID);
+                startActivity(gotoFilmReview);
             }
         });
 
