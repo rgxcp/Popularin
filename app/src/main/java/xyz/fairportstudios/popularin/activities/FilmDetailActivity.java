@@ -27,6 +27,7 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmMetadataRequest;
 import xyz.fairportstudios.popularin.apis.tmdb.get.FilmDetailRequest;
+import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
@@ -42,6 +43,7 @@ public class FilmDetailActivity extends AppCompatActivity {
     private RelativeLayout layout;
     private ScrollView scroll;
     private String title;
+    private String year;
     private TextView filmTitle;
     private TextView filmGenre;
     private TextView filmDate;
@@ -119,6 +121,7 @@ public class FilmDetailActivity extends AppCompatActivity {
             public void onSuccess(FilmDetail filmDetail) {
                 // Parsing
                 title = filmDetail.getOriginal_title();
+                year = new ParseDate().getYear(filmDetail.getRelease_date());
                 String date = new ParseDate().getDate(filmDetail.getRelease_date());
                 String backdrop = new ParseImage().getImage(filmDetail.getBackdrop_path());
                 String poster = new ParseImage().getImage(filmDetail.getPoster_path());
@@ -217,7 +220,8 @@ public class FilmDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                filmStatusModal.show(getSupportFragmentManager(), "FILM_STATUS_MODAL");
             }
         });
     }

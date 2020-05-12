@@ -121,10 +121,13 @@ public class ProfileDetailRequest {
         try {
             for (int index = 0; index < jsonArrayFavorites.length(); index++) {
                 JSONObject jsonObject = jsonArrayFavorites.getJSONObject(index);
+                JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
                 LatestFavorite latestFavorite = new LatestFavorite();
-                latestFavorite.setTmdb_id(jsonObject.getJSONObject("film").getInt("tmdb_id"));
-                latestFavorite.setPoster(jsonObject.getJSONObject("film").getString("poster"));
+                latestFavorite.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
+                latestFavorite.setPoster(jsonObjectFilm.getString("poster"));
+                latestFavorite.setRelease_date(jsonObjectFilm.getString("release_date"));
+                latestFavorite.setTitle(jsonObjectFilm.getString("title"));
 
                 latestFavoriteList.add(latestFavorite);
             }
@@ -142,11 +145,15 @@ public class ProfileDetailRequest {
         try {
             for (int index = 0; index < jsonArrayReviews.length(); index++) {
                 JSONObject jsonObject = jsonArrayReviews.getJSONObject(index);
+                JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
                 LatestReview latestReview = new LatestReview();
                 latestReview.setId(jsonObject.getInt("id"));
+                latestReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
                 latestReview.setRating(jsonObject.getDouble("rating"));
-                latestReview.setPoster(jsonObject.getJSONObject("film").getString("poster"));
+                latestReview.setPoster(jsonObjectFilm.getString("poster"));
+                latestReview.setRelease_date(jsonObjectFilm.getString("release_date"));
+                latestReview.setTitle(jsonObjectFilm.getString("title"));
 
                 latestReviewList.add(latestReview);
             }

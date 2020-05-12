@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -38,13 +40,27 @@ public class ReviewDetailFragment extends Fragment {
     private Boolean isLiked;
     private Context context;
     private CoordinatorLayout layout;
-    private ImageView userProfile, filmPoster, star, like;
+    private ImageView userProfile;
+    private ImageView filmPoster;
+    private ImageView star;
+    private ImageView like;
     private Integer currentLikes;
     private Integer likes;
     private ProgressBar progressBar;
     private ScrollView scrollView;
-    private String userID, filmID, reviewID;
-    private TextView userFirstName, filmTitle, filmYear, reviewDate, reviewText, likeStatus, totalLike, emptyResult;
+    private String userID;
+    private String filmID;
+    private String reviewID;
+    private String title;
+    private String year;
+    private TextView userFirstName;
+    private TextView filmTitle;
+    private TextView filmYear;
+    private TextView reviewDate;
+    private TextView reviewText;
+    private TextView likeStatus;
+    private TextView totalLike;
+    private TextView emptyResult;
 
     public ReviewDetailFragment(String reviewID) {
         this.reviewID = reviewID;
@@ -89,6 +105,10 @@ public class ReviewDetailFragment extends Fragment {
                     likeStatus.setText(R.string.liked);
                 }
 
+                // Parsing
+                title = reviewDetail.getFilmTitle();
+                year = reviewDetail.getFilmYear();
+
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
@@ -97,8 +117,8 @@ public class ReviewDetailFragment extends Fragment {
                 filmID = String.valueOf(reviewDetail.getFilmID());
                 userID = reviewDetail.getUserID();
                 userFirstName.setText(reviewDetail.getUserFirstName());
-                filmTitle.setText(reviewDetail.getFilmTitle());
-                filmYear.setText(reviewDetail.getFilmYear());
+                filmTitle.setText(title);
+                filmYear.setText(year);
                 reviewDate.setText(reviewDetail.getReviewDate());
                 reviewText.setText(reviewDetail.getReviewText());
                 totalLike.setText(String.format("Total %s", String.valueOf(likes)));
@@ -140,6 +160,9 @@ public class ReviewDetailFragment extends Fragment {
         filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }
         });

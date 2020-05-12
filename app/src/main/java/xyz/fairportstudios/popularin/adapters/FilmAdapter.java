@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +20,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
+import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseGenre;
@@ -52,12 +55,14 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
         // Parsing
-        String date = new ParseDate().getDate(filmList.get(position).getRelease_date());
+        final String title = filmList.get(position).getOriginal_title();
+        final String date = new ParseDate().getDate(filmList.get(position).getRelease_date());
+        final String year = new ParseDate().getYear(filmList.get(position).getRelease_date());
         String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_ids());
         String poster = new ParseImage().getImage(filmList.get(position).getPoster_path());
 
         // Mengisi data
-        holder.filmTitle.setText(filmList.get(position).getOriginal_title());
+        holder.filmTitle.setText(title);
         holder.filmGenre.setText(genre);
         holder.filmReleaseDate.setText(date);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
@@ -91,6 +96,9 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }
         });

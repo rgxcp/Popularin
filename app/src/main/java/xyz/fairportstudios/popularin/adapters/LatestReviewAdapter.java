@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,7 +19,9 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
+import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
@@ -50,6 +54,9 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
         // Parsing
+        final String filmID = String.valueOf(latestReviewList.get(position).getTmdb_id());
+        final String title = latestReviewList.get(position).getTitle();
+        final String year = new ParseDate().getYear(latestReviewList.get(position).getRelease_date());
         Integer star = new ParseStar().getStar(latestReviewList.get(position).getRating());
         String poster = new ParseImage().getImage(latestReviewList.get(position).getPoster());
 
@@ -82,6 +89,9 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }
         });
