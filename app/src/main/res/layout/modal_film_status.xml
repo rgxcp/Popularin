@@ -46,10 +46,11 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/image_mfs_review"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/ic_review"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
             <TextView
@@ -70,10 +71,11 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/image_mfs_favorite"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/ic_favorite_filled"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
             <TextView
@@ -94,10 +96,11 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/image_mfs_watchlist"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/ic_watchlist"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
             <TextView
