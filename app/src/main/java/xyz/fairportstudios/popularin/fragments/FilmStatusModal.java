@@ -36,6 +36,7 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
     private ImageView imageReview;
     private ImageView imageFavorite;
     private ImageView imageWatchlist;
+    private RatingBar ratingBar;
     private String filmID;
     private String title;
     private String year;
@@ -56,10 +57,10 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
         imageReview = view.findViewById(R.id.image_mfs_review);
         imageFavorite = view.findViewById(R.id.image_mfs_favorite);
         imageWatchlist = view.findViewById(R.id.image_mfs_watchlist);
+        ratingBar = view.findViewById(R.id.rbr_mfs_layout);
         LinearLayout reviewLayout = view.findViewById(R.id.review_mfs_layout);
         LinearLayout favoriteLayout = view.findViewById(R.id.favorite_mfs_layout);
         LinearLayout watchlistLayout = view.findViewById(R.id.watchlist_mfs_layout);
-        RatingBar ratingBar = view.findViewById(R.id.rbr_mfs_layout);
         TextView filmTitle = view.findViewById(R.id.text_mfs_title);
         TextView filmYear = view.findViewById(R.id.text_mfs_year);
 
@@ -76,6 +77,8 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
             filmSelfRequest.sendRequest(new FilmSelfRequest.APICallback() {
                 @Override
                 public void onSuccess(FilmSelf filmSelf) {
+                    double lastRate = filmSelf.getLast_rate();
+                    ratingBar.setRating((float) lastRate);
                     inReview = filmSelf.getIn_review();
                     inFavorite = filmSelf.getIn_favorite();
                     inWatchlist = filmSelf.getIn_watchlist();
