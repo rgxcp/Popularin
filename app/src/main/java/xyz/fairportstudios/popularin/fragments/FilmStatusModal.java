@@ -21,6 +21,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteWatchlistRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmSelfRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.AddFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddWatchlistRequest;
 import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -109,7 +110,29 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
         favoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isAuth) {
+                    if (!inFavorite) {
+                        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, filmID);
+                        addFavoriteRequest.sendRequest(new AddFavoriteRequest.APICallback() {
+                            @Override
+                            public void onSuccess() {
+                                String message = title + " " + context.getString(R.string.favorite_added);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            }
 
+                            @Override
+                            public void onError() {
+                                String message = title + " " + context.getString(R.string.add_favorite_error);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    startActivity(gotoEmptyUser);
+                }
+
+                dismiss();
             }
         });
 
