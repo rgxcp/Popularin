@@ -75,4 +75,6 @@
     <string name="remove_watchlist_error">Gagal menghapus dari watchlist</string>
     <string name="favorite_added">ditambahkan ke dalam favorit</string>
     <string name="add_favorite_error">Gagal menambahkan ke dalam favorit</string>
+    <string name="favorite_removed">dihapus dari favorit</string>
+    <string name="remove_favorite_error">Gagal menghapus dari favorit</string>
 </resources>

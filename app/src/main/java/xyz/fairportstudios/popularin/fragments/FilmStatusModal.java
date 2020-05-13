@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteWatchlistRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmSelfRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddFavoriteRequest;
@@ -123,6 +124,21 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                             @Override
                             public void onError() {
                                 String message = title + " " + context.getString(R.string.add_favorite_error);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, filmID);
+                        deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.APICallback() {
+                            @Override
+                            public void onSuccess() {
+                                String message = title + " " + context.getString(R.string.favorite_removed);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError() {
+                                String message = title + " " + context.getString(R.string.remove_favorite_error);
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
                         });
