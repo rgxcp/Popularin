@@ -176,12 +176,14 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                         deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.APICallback() {
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(context, title + R.string.watchlist_removed, Toast.LENGTH_SHORT).show();
+                                String message = title + " " + context.getString(R.string.watchlist_removed);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onError() {
-                                Toast.makeText(context, R.string.remove_watchlist_error, Toast.LENGTH_SHORT).show();
+                                String message = title + " " + context.getString(R.string.remove_watchlist_error);
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
