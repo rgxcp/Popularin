@@ -77,4 +77,8 @@
     <string name="add_favorite_error">Gagal menambahkan ke dalam favorit</string>
     <string name="favorite_removed">dihapus dari favorit</string>
     <string name="remove_favorite_error">Gagal menghapus dari favorit</string>
+    <string name="add_review">Buat Ulasan</string>
+    <string name="watch_date">Tanggal Tonton</string>
+    <string name="rate">Bintang</string>
+    <string name="input_review">Masukkan ulasan</string>
 </resources>

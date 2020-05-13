@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_adr_anchor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AddReviewActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_adr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:menu="@menu/add_review"
+        app:navigationIcon="@drawable/ic_close"
+        app:title="@string/add_review"
+        app:titleTextColor="#FFFFFF" />
+
+    <ProgressBar
+        android:id="@+id/pbr_adr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_adr_layout"
+        android:padding="168dp" />
+
+    <TextView
+        android:id="@+id/text_adr_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_adr_layout"
+        android:gravity="center"
+        android:lineSpacingExtra="8dp"
+        android:text="@string/empty_result"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/review_adr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_adr_layout"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_adr_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_toStartOf="@+id/sov_adr_anchor"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/text_adr_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_adr_title"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_toStartOf="@id/sov_adr_anchor" />
+
+            <com.github.florent37.shapeofview.shapes.RoundRectView
+                android:id="@+id/sov_adr_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                app:shape_roundRect_bottomLeftRadius="5dp"
+                app:shape_roundRect_bottomRightRadius="25dp"
+                app:shape_roundRect_topLeftRadius="5dp"
+                app:shape_roundRect_topRightRadius="5dp">
+
+                <ImageView
+                    android:id="@+id/image_adr_poster"
+                    android:layout_width="40dp"
+                    android:layout_height="60dp"
+                    android:contentDescription="@null"
+                    android:src="@color/colorPrimary" />
+            </com.github.florent37.shapeofview.shapes.RoundRectView>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/watch_date"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_adr_watch_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textSize="15sp"
+                tools:ignore="RelativeOverlap" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:text="@string/rate"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                tools:ignore="RelativeOverlap" />
+
+            <RatingBar
+                android:id="@+id/rbr_adr_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:progressTint="@color/colorPrimary"
+                android:stepSize="0.5" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimary" />
+
+        <EditText
+            android:id="@+id/input_adr_review"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="@null"
+            android:hint="@string/input_review"
+            android:inputType="textMultiLine"
+            android:isScrollContainer="true"
+            android:padding="16dp" />
+    </LinearLayout>
+
+</RelativeLayout>
