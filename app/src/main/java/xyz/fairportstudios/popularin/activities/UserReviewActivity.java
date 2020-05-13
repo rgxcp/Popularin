@@ -1,20 +1,20 @@
 package xyz.fairportstudios.popularin.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserReviewRequest;
@@ -37,9 +37,9 @@ public class UserReviewActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
-        // Bundle
-        Bundle bundle = getIntent().getExtras();
-        String userID = Objects.requireNonNull(bundle).getString("USER_ID");
+        // Extra
+        Intent intent = getIntent();
+        String userID = intent.getStringExtra("USER_ID");
 
         // Toolbar
         toolbar.setTitle("Ulasan");

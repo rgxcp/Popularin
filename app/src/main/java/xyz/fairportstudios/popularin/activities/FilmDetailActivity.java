@@ -1,9 +1,5 @@
 package xyz.fairportstudios.popularin.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +11,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmMetadataRequest;
@@ -106,9 +105,9 @@ public class FilmDetailActivity extends AppCompatActivity {
         RecyclerView recyclerCast = findViewById(R.id.recycler_cast_afd_layout);
         RecyclerView recyclerCrew = findViewById(R.id.recycler_crew_afd_layout);
 
-        // Bundle
-        Bundle bundle = getIntent().getExtras();
-        final String filmID = Objects.requireNonNull(bundle).getString("FILM_ID");
+        // Extra
+        Intent intent = getIntent();
+        final String filmID = intent.getStringExtra("FILM_ID");
 
         // List
         List<Cast> castList = new ArrayList<>();

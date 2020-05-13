@@ -104,9 +104,9 @@ public class UserDetailActivity extends AppCompatActivity {
         RecyclerView recyclerViewLatestReview = findViewById(R.id.recycler_latest_review_aud_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_aud_layout);
 
-        // Bundle
-        Bundle bundle = getIntent().getExtras();
-        final String userID = Objects.requireNonNull(bundle).getString("USER_ID");
+        // Extra
+        Intent intent = getIntent();
+        final String userID = intent.getStringExtra("USER_ID");
 
         // Auth
         Auth auth = new Auth(context);

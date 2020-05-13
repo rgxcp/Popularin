@@ -1,15 +1,14 @@
 package xyz.fairportstudios.popularin.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
-import android.os.Bundle;
-import android.view.View;
-
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
@@ -28,9 +27,9 @@ public class LikedByActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_gtp_layout);
         ViewPager viewPager = findViewById(R.id.pager_gtp_layout);
 
-        // Bundle
-        Bundle bundle = getIntent().getExtras();
-        String reviewID = Objects.requireNonNull(bundle).getString("REVIEW_ID");
+        // Extra
+        Intent intent = getIntent();
+        String reviewID = intent.getStringExtra("REVIEW_ID");
 
         // Toolbar
         toolbar.setTitle("Suka");

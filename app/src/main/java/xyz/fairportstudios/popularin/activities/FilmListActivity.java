@@ -1,20 +1,20 @@
 package xyz.fairportstudios.popularin.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.tmdb.get.DiscoverFilmRequest;
@@ -37,10 +37,10 @@ public class FilmListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
 
-        // Bundle
-        Bundle bundle = getIntent().getExtras();
-        String genreID = Objects.requireNonNull(bundle).getString("GENRE_ID");
-        String genreTitle = Objects.requireNonNull(bundle).getString("GENRE_TITLE");
+        // Extra
+        Intent intent = getIntent();
+        String genreID = intent.getStringExtra("GENRE_ID");
+        String genreTitle = intent.getStringExtra("GENRE_TITLE");
 
         // Toolbar
         toolbar.setTitle(genreTitle);
