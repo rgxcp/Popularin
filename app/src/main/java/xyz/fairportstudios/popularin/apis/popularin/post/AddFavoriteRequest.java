@@ -46,11 +46,6 @@ public class AddFavoriteRequest {
 
                     if (status == 202) {
                         callback.onSuccess();
-                        boolean filmExist = jsonObject.getBoolean("film_exist");
-
-                        if (!filmExist) {
-                            addFilmToDatabase();
-                        }
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -82,9 +77,5 @@ public class AddFavoriteRequest {
         };
 
         Volley.newRequestQueue(context).add(addFavorite);
-    }
-
-    private void addFilmToDatabase() {
-        //
     }
 }

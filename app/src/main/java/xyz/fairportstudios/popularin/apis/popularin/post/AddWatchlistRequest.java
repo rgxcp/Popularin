@@ -46,11 +46,6 @@ public class AddWatchlistRequest {
 
                     if (status == 202) {
                         callback.onSuccess();
-                        boolean filmExist = jsonObject.getBoolean("film_exist");
-
-                        if (!filmExist) {
-                            addFilmToDatabase();
-                        }
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -82,9 +77,5 @@ public class AddWatchlistRequest {
         };
 
         Volley.newRequestQueue(context).add(addWatchlist);
-    }
-
-    private void addFilmToDatabase() {
-        //
     }
 }
