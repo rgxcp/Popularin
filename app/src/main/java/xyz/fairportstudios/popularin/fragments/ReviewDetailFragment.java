@@ -53,6 +53,7 @@ public class ReviewDetailFragment extends Fragment {
     private String reviewID;
     private String title;
     private String year;
+    private String poster;
     private TextView userFirstName;
     private TextView filmTitle;
     private TextView filmYear;
@@ -108,6 +109,7 @@ public class ReviewDetailFragment extends Fragment {
                 // Parsing
                 title = reviewDetail.getFilmTitle();
                 year = reviewDetail.getFilmYear();
+                poster = reviewDetail.getFilmPoster();
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
@@ -124,7 +126,7 @@ public class ReviewDetailFragment extends Fragment {
                 totalLike.setText(String.format("Total %s", String.valueOf(likes)));
                 star.setImageResource(reviewDetail.getStar());
                 Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getUserProfilePicture()).apply(requestOptions).into(userProfile);
-                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getFilmPoster()).apply(requestOptions).into(filmPoster);
+                Glide.with(Objects.requireNonNull(context)).load(poster).apply(requestOptions).into(filmPoster);
 
                 progressBar.setVisibility(View.GONE);
                 scrollView.setVisibility(View.VISIBLE);
@@ -161,7 +163,7 @@ public class ReviewDetailFragment extends Fragment {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
                 filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }

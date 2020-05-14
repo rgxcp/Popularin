@@ -43,6 +43,7 @@ public class FilmDetailActivity extends AppCompatActivity {
     private ScrollView scroll;
     private String title;
     private String year;
+    private String poster;
     private TextView filmTitle;
     private TextView filmGenre;
     private TextView filmDate;
@@ -121,9 +122,9 @@ public class FilmDetailActivity extends AppCompatActivity {
                 // Parsing
                 title = filmDetail.getOriginal_title();
                 year = new ParseDate().getYear(filmDetail.getRelease_date());
+                poster = new ParseImage().getImage(filmDetail.getPoster_path());
                 String date = new ParseDate().getDate(filmDetail.getRelease_date());
                 String backdrop = new ParseImage().getImage(filmDetail.getBackdrop_path());
-                String poster = new ParseImage().getImage(filmDetail.getPoster_path());
 
                 // Toolbar
                 toolbar.setTitle(title);
@@ -219,7 +220,7 @@ public class FilmDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
                 filmStatusModal.show(getSupportFragmentManager(), "FILM_STATUS_MODAL");
             }
         });

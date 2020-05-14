@@ -57,8 +57,8 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
         final String filmID = String.valueOf(latestReviewList.get(position).getTmdb_id());
         final String title = latestReviewList.get(position).getTitle();
         final String year = new ParseDate().getYear(latestReviewList.get(position).getRelease_date());
+        final String poster = new ParseImage().getImage(latestReviewList.get(position).getPoster());
         Integer star = new ParseStar().getStar(latestReviewList.get(position).getRating());
-        String poster = new ParseImage().getImage(latestReviewList.get(position).getPoster());
 
         // Mengisi data
         holder.reviewStar.setImageResource(star);
@@ -90,7 +90,7 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
                 filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }

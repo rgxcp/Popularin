@@ -81,4 +81,6 @@
     <string name="watch_date">Tanggal Tonton</string>
     <string name="rate">Bintang</string>
     <string name="input_review">Masukkan ulasan</string>
+    <string name="review_added">Ulasan dibuat</string>
+    <string name="add_review_error">Gagal membuat ulasan</string>
 </resources>

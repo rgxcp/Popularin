@@ -55,7 +55,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         // Parsing
         final String title = latestFavoriteList.get(position).getTitle();
         final String year = new ParseDate().getYear(latestFavoriteList.get(position).getRelease_date());
-        String poster = new ParseImage().getImage(latestFavoriteList.get(position).getPoster());
+        final String poster = new ParseImage().getImage(latestFavoriteList.get(position).getPoster());
 
         // Mengisi data
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
@@ -86,7 +86,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
                 filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }

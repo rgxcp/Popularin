@@ -58,8 +58,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         final String title = filmList.get(position).getOriginal_title();
         final String date = new ParseDate().getDate(filmList.get(position).getRelease_date());
         final String year = new ParseDate().getYear(filmList.get(position).getRelease_date());
+        final String poster = new ParseImage().getImage(filmList.get(position).getPoster_path());
         String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_ids());
-        String poster = new ParseImage().getImage(filmList.get(position).getPoster_path());
 
         // Mengisi data
         holder.filmTitle.setText(title);
@@ -97,7 +97,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
                 filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }

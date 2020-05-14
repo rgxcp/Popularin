@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.AddReviewActivity;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteWatchlistRequest;
@@ -40,11 +41,13 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
     private String filmID;
     private String title;
     private String year;
+    private String poster;
 
-    public FilmStatusModal(String filmID, String title, String year) {
+    public FilmStatusModal(String filmID, String title, String year, String poster) {
         this.filmID = filmID;
         this.title = title;
         this.year = year;
+        this.poster = poster;
     }
 
     @Nullable
@@ -107,7 +110,19 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
         reviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isAuth) {
+                    Intent gotoAddReview = new Intent(context, AddReviewActivity.class);
+                    gotoAddReview.putExtra("FILM_ID", filmID);
+                    gotoAddReview.putExtra("FILM_TITLE", title);
+                    gotoAddReview.putExtra("FILM_YEAR", year);
+                    gotoAddReview.putExtra("FILM_POSTER", poster);
+                    startActivity(gotoAddReview);
+                } else {
+                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    startActivity(gotoEmptyUser);
+                }
 
+                dismiss();
             }
         });
 
