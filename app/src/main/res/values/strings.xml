@@ -85,4 +85,6 @@
     <string name="add_review_error">Gagal membuat ulasan</string>
     <string name="review_updated">Ulasan di ubah</string>
     <string name="failed_update_review">Gagal mengubah ulasan</string>
+    <string name="review_removed">Ulasan di hapus</string>
+    <string name="failed_remove_review">Gagal menghapus ulasan</string>
 </resources>

@@ -24,7 +24,7 @@
         android:id="@+id/scroll_frd_anchor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -142,6 +142,18 @@
                 android:layout_below="@+id/text_frd_detail"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/ic_edit"
+                android:backgroundTint="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_frd_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_below="@+id/text_frd_detail"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toEndOf="@id/button_frd_edit"
+                android:background="@drawable/ic_delete"
                 android:backgroundTint="@color/colorPrimary"
                 android:visibility="gone" />
 
