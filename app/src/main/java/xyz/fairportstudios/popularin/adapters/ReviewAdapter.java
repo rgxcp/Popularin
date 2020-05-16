@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -24,6 +26,7 @@ import xyz.fairportstudios.popularin.activities.EditReviewActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteReviewRequest;
 import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -65,9 +68,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         // Auth ID
         final String authID = new Auth(context).getAuthID();
         if (userID.equals(authID)) {
-            holder.editReview.setVisibility(View.VISIBLE);
+            holder.authLayout.setVisibility(View.VISIBLE);
         } else {
-            holder.editReview.setVisibility(View.GONE);
+            holder.authLayout.setVisibility(View.GONE);
         }
 
         // Request gambar
@@ -142,6 +145,24 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
                 context.startActivity(gotoEditReview);
             }
         });
+
+        holder.deleteReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, reviewID);
+                deleteReviewRequest.sendRequest(new DeleteReviewRequest.APICallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(context, R.string.review_removed, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Toast.makeText(context, R.string.failed_remove_review, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -151,9 +172,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     static class ReviewViewHolder extends RecyclerView.ViewHolder {
         Button editReview;
+        Button deleteReview;
         ImageView userProfile;
         ImageView reviewStar;
         ImageView filmPoster;
+        RelativeLayout authLayout;
         TextView filmTitle;
         TextView filmYear;
         TextView userFirstName;
@@ -164,9 +187,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             super(itemView);
 
             editReview = itemView.findViewById(R.id.button_rr_edit);
+            deleteReview = itemView.findViewById(R.id.button_rr_delete);
             userProfile = itemView.findViewById(R.id.image_rr_profile);
             reviewStar = itemView.findViewById(R.id.image_rr_star);
             filmPoster = itemView.findViewById(R.id.image_rr_poster);
+            authLayout = itemView.findViewById(R.id.auth_rr_layout);
             filmTitle = itemView.findViewById(R.id.text_rr_title);
             filmYear = itemView.findViewById(R.id.text_rr_year);
             userFirstName = itemView.findViewById(R.id.text_rr_first_name);

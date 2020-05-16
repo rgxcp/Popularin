@@ -31,6 +31,7 @@ import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.LikedByActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
@@ -44,6 +45,7 @@ public class ReviewDetailFragment extends Fragment {
     private Boolean isAuth;
     private Boolean isLiked;
     private Button editReview;
+    private Button deleteReview;
     private Context context;
     private CoordinatorLayout layout;
     private ImageView userProfile;
@@ -82,6 +84,7 @@ public class ReviewDetailFragment extends Fragment {
         // Binding
         context = getActivity();
         editReview = view.findViewById(R.id.button_frd_edit);
+        deleteReview = view.findViewById(R.id.button_frd_delete);
         layout = view.findViewById(R.id.layout_frd_anchor);
         userProfile = view.findViewById(R.id.image_frd_profile);
         filmPoster = view.findViewById(R.id.image_frd_poster);
@@ -112,6 +115,7 @@ public class ReviewDetailFragment extends Fragment {
                 userID = String.valueOf(reviewDetail.getUser_id());
                 if (userID.equals(authID)) {
                     editReview.setVisibility(View.VISIBLE);
+                    deleteReview.setVisibility(View.VISIBLE);
                 }
 
                 // Like
@@ -241,6 +245,24 @@ public class ReviewDetailFragment extends Fragment {
                 Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
                 gotoEditReview.putExtra("REVIEW_ID", reviewID);
                 startActivity(gotoEditReview);
+            }
+        });
+
+        deleteReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, reviewID);
+                deleteReviewRequest.sendRequest(new DeleteReviewRequest.APICallback() {
+                    @Override
+                    public void onSuccess() {
+                        Snackbar.make(layout, R.string.review_removed, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Snackbar.make(layout, R.string.failed_remove_review, Snackbar.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
