@@ -83,4 +83,6 @@
     <string name="input_review">Masukkan ulasan</string>
     <string name="review_added">Ulasan dibuat</string>
     <string name="add_review_error">Gagal membuat ulasan</string>
+    <string name="review_updated">Ulasan di ubah</string>
+    <string name="failed_update_review">Gagal mengubah ulasan</string>
 </resources>

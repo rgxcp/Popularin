@@ -62,6 +62,16 @@
         android:ellipsize="end"
         android:maxLines="7" />
 
+    <Button
+        android:id="@+id/button_rfr_edit"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/ic_edit"
+        android:backgroundTint="@color/colorPrimary"
+        android:visibility="gone" />
+
     <View
         android:id="@+id/border_rfr_layout"
         android:layout_width="match_parent"
