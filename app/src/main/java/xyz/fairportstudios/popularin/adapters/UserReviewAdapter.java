@@ -23,16 +23,19 @@ import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.UserReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.UserReviewViewHolder> {
     private Context context;
+    private String userID;
     private List<UserReview> userReviewList;
 
-    public UserReviewAdapter(Context context, List<UserReview> userReviewList) {
+    public UserReviewAdapter(Context context, String userID, List<UserReview> userReviewList) {
         this.context = context;
+        this.userID = userID;
         this.userReviewList = userReviewList;
     }
 
@@ -54,6 +57,10 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
 
         // Film ID
         final String filmID = String.valueOf(userReviewList.get(position).getTmdb_id());
+
+        // Auth
+        final String authID = new Auth(context).getAuthID();
+        final boolean isSelf = userID.equals(authID);
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
@@ -87,6 +94,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
             public void onClick(View view) {
                 Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
+                gotoReviewDetail.putExtra("IS_SELF", isSelf);
                 context.startActivity(gotoReviewDetail);
             }
         });

@@ -158,7 +158,7 @@ public class ProfileDetailRequest {
                 latestReviewList.add(latestReview);
             }
 
-            LatestReviewAdapter latestReviewAdapter = new LatestReviewAdapter(context, latestReviewList);
+            LatestReviewAdapter latestReviewAdapter = new LatestReviewAdapter(context, id, latestReviewList);
             recyclerViewLatestReview.setAdapter(latestReviewAdapter);
             recyclerViewLatestReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
             recyclerViewLatestReview.setVisibility(View.VISIBLE);

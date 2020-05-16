@@ -21,16 +21,19 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapter.LatestReviewViewHolder> {
     private Context context;
+    private String userID;
     private List<LatestReview> latestReviewList;
 
-    public LatestReviewAdapter(Context context, List<LatestReview> latestReviewList) {
+    public LatestReviewAdapter(Context context, String userID, List<LatestReview> latestReviewList) {
         this.context = context;
+        this.userID = userID;
         this.latestReviewList = latestReviewList;
     }
 
@@ -49,6 +52,10 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
     public void onBindViewHolder(@NonNull LatestReviewViewHolder holder, int position) {
         // Review ID
         final String reviewID = String.valueOf(latestReviewList.get(position).getId());
+
+        // Auth
+        final String authID = new Auth(context).getAuthID();
+        final boolean isSelf = userID.equals(authID);
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
@@ -82,6 +89,7 @@ public class LatestReviewAdapter extends RecyclerView.Adapter<LatestReviewAdapte
             public void onClick(View view) {
                 Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
+                gotoReviewDetail.putExtra("IS_SELF", isSelf);
                 context.startActivity(gotoReviewDetail);
             }
         });

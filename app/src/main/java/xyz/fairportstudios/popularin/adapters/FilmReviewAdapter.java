@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +17,8 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EditReviewActivity;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteReviewRequest;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -57,13 +52,9 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         // User ID
         final String userID = String.valueOf(filmReviewList.get(position).getUser_id());
 
-        // Auth ID
+        // Auth
         final String authID = new Auth(context).getAuthID();
-        if (userID.equals(authID)) {
-            holder.authLayout.setVisibility(View.VISIBLE);
-        } else {
-            holder.authLayout.setVisibility(View.GONE);
-        }
+        final boolean isSelf = userID.equals(authID);
 
         // Parsing
         String date = new ParseDate().getDate(filmReviewList.get(position).getReview_date());
@@ -93,6 +84,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
             public void onClick(View view) {
                 Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
+                gotoReviewDetail.putExtra("IS_SELF", isSelf);
                 context.startActivity(gotoReviewDetail);
             }
         });
@@ -105,33 +97,6 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
                 context.startActivity(gotoUserDetail);
             }
         });
-
-        holder.editReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
-                gotoEditReview.putExtra("REVIEW_ID", reviewID);
-                context.startActivity(gotoEditReview);
-            }
-        });
-
-        holder.deleteReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, reviewID);
-                deleteReviewRequest.sendRequest(new DeleteReviewRequest.APICallback() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(context, R.string.review_removed, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Toast.makeText(context, R.string.failed_remove_review, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
     }
 
     @Override
@@ -140,11 +105,8 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     }
 
     static class FilmReviewViewHolder extends RecyclerView.ViewHolder {
-        Button editReview;
-        Button deleteReview;
         ImageView userProfile;
         ImageView reviewStar;
-        RelativeLayout authLayout;
         TextView userFirstName;
         TextView reviewDate;
         TextView reviewDetail;
@@ -153,11 +115,8 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         FilmReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            editReview = itemView.findViewById(R.id.button_rfr_edit);
-            deleteReview = itemView.findViewById(R.id.button_rfr_delete);
             userProfile = itemView.findViewById(R.id.image_rfr_profile);
             reviewStar = itemView.findViewById(R.id.image_rfr_star);
-            authLayout = itemView.findViewById(R.id.auth_rfr_layout);
             userFirstName = itemView.findViewById(R.id.text_rfr_first_name);
             reviewDate = itemView.findViewById(R.id.text_rfr_date);
             reviewDetail = itemView.findViewById(R.id.text_rfr_review);

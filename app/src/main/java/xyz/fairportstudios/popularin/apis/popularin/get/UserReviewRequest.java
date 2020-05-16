@@ -26,11 +26,13 @@ public class UserReviewRequest {
     private Context context;
     private List<UserReview> userReviewList;
     private RecyclerView recyclerView;
+    private String id;
 
-    public UserReviewRequest(Context context, List<UserReview> userReviewList, RecyclerView recyclerView) {
+    public UserReviewRequest(Context context, List<UserReview> userReviewList, RecyclerView recyclerView, String id) {
         this.context = context;
         this.userReviewList = userReviewList;
         this.recyclerView = recyclerView;
+        this.id = id;
     }
 
     public interface APICallback {
@@ -41,7 +43,7 @@ public class UserReviewRequest {
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
+    public String getRequestURL(Integer page) {
         return PopularinAPI.USER
                 + "/"
                 + id
@@ -76,7 +78,7 @@ public class UserReviewRequest {
                             userReviewList.add(userReview);
                         }
 
-                        UserReviewAdapter userReviewAdapter = new UserReviewAdapter(context, userReviewList);
+                        UserReviewAdapter userReviewAdapter = new UserReviewAdapter(context, id, userReviewList);
                         recyclerView.setAdapter(userReviewAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);

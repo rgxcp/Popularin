@@ -48,8 +48,8 @@ public class UserReviewActivity extends AppCompatActivity {
         List<UserReview> userReviewList = new ArrayList<>();
 
         // GET
-        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView);
-        String requestURL = userReviewRequest.getRequestURL(userID, 1);
+        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView, userID);
+        String requestURL = userReviewRequest.getRequestURL(1);
         userReviewRequest.sendRequest(requestURL, new UserReviewRequest.APICallback() {
             @Override
             public void onSuccess() {

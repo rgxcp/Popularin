@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -26,12 +25,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EditReviewActivity;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.LikedByActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
@@ -44,8 +41,6 @@ import xyz.fairportstudios.popularin.services.ParseStar;
 public class ReviewDetailFragment extends Fragment {
     private Boolean isAuth;
     private Boolean isLiked;
-    private Button editReview;
-    private Button deleteReview;
     private Context context;
     private CoordinatorLayout layout;
     private ImageView userProfile;
@@ -56,7 +51,6 @@ public class ReviewDetailFragment extends Fragment {
     private Integer likes;
     private ProgressBar progressBar;
     private ScrollView scrollView;
-    private String authID;
     private String userID;
     private String filmID;
     private String reviewID;
@@ -83,8 +77,6 @@ public class ReviewDetailFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        editReview = view.findViewById(R.id.button_frd_edit);
-        deleteReview = view.findViewById(R.id.button_frd_delete);
         layout = view.findViewById(R.id.layout_frd_anchor);
         userProfile = view.findViewById(R.id.image_frd_profile);
         filmPoster = view.findViewById(R.id.image_frd_poster);
@@ -102,22 +94,13 @@ public class ReviewDetailFragment extends Fragment {
         emptyResult = view.findViewById(R.id.text_frd_empty);
 
         // Auth
-        Auth auth = new Auth(context);
-        isAuth = auth.isAuth();
-        authID = auth.getAuthID();
+        isAuth = new Auth(context).isAuth();
 
         // GET
         ReviewDetailRequest reviewDetailRequest = new ReviewDetailRequest(context, reviewID);
         reviewDetailRequest.sendRequest(new ReviewDetailRequest.APICallback() {
             @Override
             public void onSuccess(ReviewDetail reviewDetail) {
-                // Auth
-                userID = String.valueOf(reviewDetail.getUser_id());
-                if (userID.equals(authID)) {
-                    editReview.setVisibility(View.VISIBLE);
-                    deleteReview.setVisibility(View.VISIBLE);
-                }
-
                 // Like
                 isLiked = reviewDetail.getLiked();
                 if (isLiked) {
@@ -136,6 +119,7 @@ public class ReviewDetailFragment extends Fragment {
                 RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
                 // Mengisi data
+                userID = String.valueOf(reviewDetail.getUser_id());
                 likes = reviewDetail.getLikes();
                 filmID = String.valueOf(reviewDetail.getFilm_id());
                 userFirstName.setText(reviewDetail.getFirst_name());
@@ -236,33 +220,6 @@ public class ReviewDetailFragment extends Fragment {
                     Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
                     startActivity(gotoEmptyUser);
                 }
-            }
-        });
-
-        editReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
-                gotoEditReview.putExtra("REVIEW_ID", reviewID);
-                startActivity(gotoEditReview);
-            }
-        });
-
-        deleteReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, reviewID);
-                deleteReviewRequest.sendRequest(new DeleteReviewRequest.APICallback() {
-                    @Override
-                    public void onSuccess() {
-                        Snackbar.make(layout, R.string.review_removed, Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Snackbar.make(layout, R.string.failed_remove_review, Snackbar.LENGTH_SHORT).show();
-                    }
-                });
             }
         });
 
