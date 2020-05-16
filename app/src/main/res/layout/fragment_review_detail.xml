@@ -135,32 +135,10 @@
                 android:layout_marginTop="8dp"
                 android:textSize="15sp" />
 
-            <Button
-                android:id="@+id/button_frd_edit"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_below="@+id/text_frd_detail"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/ic_edit"
-                android:backgroundTint="@color/colorPrimary"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/button_frd_delete"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_below="@+id/text_frd_detail"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_toEndOf="@id/button_frd_edit"
-                android:background="@drawable/ic_delete"
-                android:backgroundTint="@color/colorPrimary"
-                android:visibility="gone" />
-
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/button_frd_edit"
+                android:layout_below="@id/text_frd_detail"
                 android:layout_marginTop="16dp">
 
                 <ImageView
