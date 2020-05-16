@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,9 +18,11 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.EditReviewActivity;
 import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.FilmReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
 
@@ -50,6 +53,14 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
 
         // User ID
         final String userID = String.valueOf(filmReviewList.get(position).getUser_id());
+
+        // Auth ID
+        final String authID = new Auth(context).getAuthID();
+        if (userID.equals(authID)) {
+            holder.editReview.setVisibility(View.VISIBLE);
+        } else {
+            holder.editReview.setVisibility(View.GONE);
+        }
 
         // Parsing
         String date = new ParseDate().getDate(filmReviewList.get(position).getReview_date());
@@ -91,6 +102,15 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
                 context.startActivity(gotoUserDetail);
             }
         });
+
+        holder.editReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
+                gotoEditReview.putExtra("REVIEW_ID", reviewID);
+                context.startActivity(gotoEditReview);
+            }
+        });
     }
 
     @Override
@@ -99,6 +119,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     }
 
     static class FilmReviewViewHolder extends RecyclerView.ViewHolder {
+        Button editReview;
         ImageView userProfile;
         ImageView reviewStar;
         TextView userFirstName;
@@ -109,6 +130,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         FilmReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            editReview = itemView.findViewById(R.id.button_rfr_edit);
             userProfile = itemView.findViewById(R.id.image_rfr_profile);
             reviewStar = itemView.findViewById(R.id.image_rfr_star);
             userFirstName = itemView.findViewById(R.id.text_rfr_first_name);

@@ -52,25 +52,20 @@ public class ReviewDetailRequest {
                         JSONObject jsonObjectFilm = jsonObjectReview.getJSONObject("film");
                         JSONObject jsonObjectUser = jsonObjectReview.getJSONObject("user");
 
-                        // Parsing
-                        Integer star = new ParseStar().getStar(jsonObjectReview.getDouble("rating"));
-                        String poster = new ParseImage().getImage(jsonObjectFilm.getString("poster"));
-                        String year = new ParseDate().getYear(jsonObjectFilm.getString("release_date"));
-                        String date = new ParseDate().getDate(jsonObjectReview.getString("review_date"));
-
                         ReviewDetail reviewDetail = new ReviewDetail();
-                        reviewDetail.setLikeStatus(jsonObjectMetadata.getBoolean("liked"));
-                        reviewDetail.setFilmID(jsonObjectFilm.getInt("tmdb_id"));
-                        reviewDetail.setStar(star);
-                        reviewDetail.setLike(jsonObjectMetadata.getInt("likes"));
-                        reviewDetail.setFilmPoster(poster);
-                        reviewDetail.setFilmTitle(jsonObjectFilm.getString("title"));
-                        reviewDetail.setFilmYear(year);
-                        reviewDetail.setReviewDate(date);
-                        reviewDetail.setReviewText(jsonObjectReview.getString("review_text"));
-                        reviewDetail.setUserID(jsonObjectUser.getString("id"));
-                        reviewDetail.setUserFirstName(jsonObjectUser.getString("first_name"));
-                        reviewDetail.setUserProfilePicture(jsonObjectUser.getString("profile_picture"));
+                        reviewDetail.setFilm_id(jsonObjectFilm.getInt("tmdb_id"));
+                        reviewDetail.setUser_id(jsonObjectUser.getInt("id"));
+                        reviewDetail.setLiked(jsonObjectMetadata.getBoolean("liked"));
+                        reviewDetail.setRating(jsonObjectReview.getDouble("rating"));
+                        reviewDetail.setLikes(jsonObjectMetadata.getInt("likes"));
+                        reviewDetail.setPoster(jsonObjectFilm.getString("poster"));
+                        reviewDetail.setTitle(jsonObjectFilm.getString("title"));
+                        reviewDetail.setRelease_date(jsonObjectFilm.getString("release_date"));
+                        reviewDetail.setReview_date(jsonObjectReview.getString("review_date"));
+                        reviewDetail.setWatch_date(jsonObjectReview.getString("watch_date"));
+                        reviewDetail.setReview_text(jsonObjectReview.getString("review_text"));
+                        reviewDetail.setFirst_name(jsonObjectUser.getString("first_name"));
+                        reviewDetail.setProfile_picture(jsonObjectUser.getString("profile_picture"));
                         callback.onSuccess(reviewDetail);
                     } else {
                         callback.onError();

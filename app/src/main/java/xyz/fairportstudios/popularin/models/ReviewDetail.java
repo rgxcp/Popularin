@@ -1,131 +1,141 @@
 package xyz.fairportstudios.popularin.models;
 
 public class ReviewDetail {
-    private Boolean likeStatus;
-    private Integer filmID;
-    private Integer star;
-    private Integer like;
-    private String filmPoster;
-    private String filmTitle;
-    private String filmYear;
-    private String reviewDate;
-    private String reviewText;
-    private String userID;
-    private String userFirstName;
-    private String userProfilePicture;
+    private Integer film_id;
+    private Integer user_id;
+    private Boolean liked;
+    private Double rating;
+    private Integer likes;
+    private String poster;
+    private String title;
+    private String release_date;
+    private String review_date;
+    private String watch_date;
+    private String review_text;
+    private String first_name;
+    private String profile_picture;
 
     public ReviewDetail() {
         // Empty constructor
     }
 
-    public ReviewDetail(Boolean likeStatus, Integer filmID, Integer star, Integer like, String filmPoster, String filmTitle, String filmYear, String reviewDate, String reviewText, String userID, String userFirstName, String userProfilePicture) {
-        this.likeStatus = likeStatus;
-        this.filmID = filmID;
-        this.star = star;
-        this.like = like;
-        this.filmPoster = filmPoster;
-        this.filmTitle = filmTitle;
-        this.filmYear = filmYear;
-        this.reviewDate = reviewDate;
-        this.reviewText = reviewText;
-        this.userID = userID;
-        this.userFirstName = userFirstName;
-        this.userProfilePicture = userProfilePicture;
+    public ReviewDetail(Integer film_id, Integer user_id, Boolean liked, Double rating, Integer likes, String poster, String title, String release_date, String review_date, String watch_date, String review_text, String first_name, String profile_picture) {
+        this.film_id = film_id;
+        this.user_id = user_id;
+        this.liked = liked;
+        this.rating = rating;
+        this.likes = likes;
+        this.poster = poster;
+        this.title = title;
+        this.release_date = release_date;
+        this.review_date = review_date;
+        this.watch_date = watch_date;
+        this.review_text = review_text;
+        this.first_name = first_name;
+        this.profile_picture = profile_picture;
     }
 
-    public Boolean getLikeStatus() {
-        return likeStatus;
+    public Integer getFilm_id() {
+        return film_id;
     }
 
-    public Integer getFilmID() {
-        return filmID;
+    public Integer getUser_id() {
+        return user_id;
     }
 
-    public Integer getStar() {
-        return star;
+    public Boolean getLiked() {
+        return liked;
     }
 
-    public Integer getLike() {
-        return like;
+    public Double getRating() {
+        return rating;
     }
 
-    public String getFilmPoster() {
-        return filmPoster;
+    public Integer getLikes() {
+        return likes;
     }
 
-    public String getFilmTitle() {
-        return filmTitle;
+    public String getPoster() {
+        return poster;
     }
 
-    public String getFilmYear() {
-        return filmYear;
+    public String getTitle() {
+        return title;
     }
 
-    public String getReviewDate() {
-        return reviewDate;
+    public String getRelease_date() {
+        return release_date;
     }
 
-    public String getReviewText() {
-        return reviewText;
+    public String getReview_date() {
+        return review_date;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getWatch_date() {
+        return watch_date;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
+    public String getReview_text() {
+        return review_text;
     }
 
-    public String getUserProfilePicture() {
-        return userProfilePicture;
+    public String getFirst_name() {
+        return first_name;
     }
 
-    public void setLikeStatus(Boolean likeStatus) {
-        this.likeStatus = likeStatus;
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
-    public void setFilmID(Integer filmID) {
-        this.filmID = filmID;
+    public void setFilm_id(Integer film_id) {
+        this.film_id = film_id;
     }
 
-    public void setStar(Integer star) {
-        this.star = star;
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
-    public void setLike(Integer like) {
-        this.like = like;
+    public void setLiked(Boolean liked) {
+        this.liked = liked;
     }
 
-    public void setFilmPoster(String filmPoster) {
-        this.filmPoster = filmPoster;
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
-    public void setFilmTitle(String filmTitle) {
-        this.filmTitle = filmTitle;
+    public void setLikes(Integer likes) {
+        this.likes = likes;
     }
 
-    public void setFilmYear(String filmYear) {
-        this.filmYear = filmYear;
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 
-    public void setReviewDate(String reviewDate) {
-        this.reviewDate = reviewDate;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setReview_date(String review_date) {
+        this.review_date = review_date;
     }
 
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
+    public void setWatch_date(String watch_date) {
+        this.watch_date = watch_date;
     }
 
-    public void setUserProfilePicture(String userProfilePicture) {
-        this.userProfilePicture = userProfilePicture;
+    public void setReview_text(String review_text) {
+        this.review_text = review_text;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 }

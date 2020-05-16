@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -25,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.EditReviewActivity;
 import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.LikedByActivity;
@@ -34,10 +36,14 @@ import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.ParseDate;
+import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class ReviewDetailFragment extends Fragment {
     private Boolean isAuth;
     private Boolean isLiked;
+    private Button editReview;
     private Context context;
     private CoordinatorLayout layout;
     private ImageView userProfile;
@@ -48,6 +54,7 @@ public class ReviewDetailFragment extends Fragment {
     private Integer likes;
     private ProgressBar progressBar;
     private ScrollView scrollView;
+    private String authID;
     private String userID;
     private String filmID;
     private String reviewID;
@@ -74,6 +81,7 @@ public class ReviewDetailFragment extends Fragment {
 
         // Binding
         context = getActivity();
+        editReview = view.findViewById(R.id.button_frd_edit);
         layout = view.findViewById(R.id.layout_frd_anchor);
         userProfile = view.findViewById(R.id.image_frd_profile);
         filmPoster = view.findViewById(R.id.image_frd_poster);
@@ -91,41 +99,49 @@ public class ReviewDetailFragment extends Fragment {
         emptyResult = view.findViewById(R.id.text_frd_empty);
 
         // Auth
-        isAuth = new Auth(context).isAuth();
+        Auth auth = new Auth(context);
+        isAuth = auth.isAuth();
+        authID = auth.getAuthID();
 
         // GET
         ReviewDetailRequest reviewDetailRequest = new ReviewDetailRequest(context, reviewID);
         reviewDetailRequest.sendRequest(new ReviewDetailRequest.APICallback() {
             @Override
             public void onSuccess(ReviewDetail reviewDetail) {
-                // Like status
-                isLiked = reviewDetail.getLikeStatus();
+                // Auth
+                userID = String.valueOf(reviewDetail.getUser_id());
+                if (userID.equals(authID)) {
+                    editReview.setVisibility(View.VISIBLE);
+                }
 
+                // Like
+                isLiked = reviewDetail.getLiked();
                 if (isLiked) {
                     like.setImageResource(R.drawable.ic_favorite_filled);
                     likeStatus.setText(R.string.liked);
                 }
 
                 // Parsing
-                title = reviewDetail.getFilmTitle();
-                year = reviewDetail.getFilmYear();
-                poster = reviewDetail.getFilmPoster();
+                Integer rating = new ParseStar().getStar(reviewDetail.getRating());
+                String date = new ParseDate().getDate(reviewDetail.getReview_date());
+                title = reviewDetail.getTitle();
+                year = new ParseDate().getYear(reviewDetail.getRelease_date());
+                poster = new ParseImage().getImage(reviewDetail.getPoster());
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
                 // Mengisi data
-                likes = reviewDetail.getLike();
-                filmID = String.valueOf(reviewDetail.getFilmID());
-                userID = reviewDetail.getUserID();
-                userFirstName.setText(reviewDetail.getUserFirstName());
+                likes = reviewDetail.getLikes();
+                filmID = String.valueOf(reviewDetail.getFilm_id());
+                userFirstName.setText(reviewDetail.getFirst_name());
                 filmTitle.setText(title);
                 filmYear.setText(year);
-                reviewDate.setText(reviewDetail.getReviewDate());
-                reviewText.setText(reviewDetail.getReviewText());
+                reviewDate.setText(date);
+                reviewText.setText(reviewDetail.getReview_text());
                 totalLike.setText(String.format("Total %s", String.valueOf(likes)));
-                star.setImageResource(reviewDetail.getStar());
-                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getUserProfilePicture()).apply(requestOptions).into(userProfile);
+                star.setImageResource(rating);
+                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getProfile_picture()).apply(requestOptions).into(userProfile);
                 Glide.with(Objects.requireNonNull(context)).load(poster).apply(requestOptions).into(filmPoster);
 
                 progressBar.setVisibility(View.GONE);
@@ -216,6 +232,15 @@ public class ReviewDetailFragment extends Fragment {
                     Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
                     startActivity(gotoEmptyUser);
                 }
+            }
+        });
+
+        editReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
+                gotoEditReview.putExtra("REVIEW_ID", reviewID);
+                startActivity(gotoEditReview);
             }
         });
 

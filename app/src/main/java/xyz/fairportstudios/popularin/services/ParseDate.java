@@ -26,6 +26,14 @@ public class ParseDate {
         return date + " " + months.get(month) + " " + year;
     }
 
+    public String getDay(String releaseDate) {
+        return releaseDate.substring(8,10);
+    }
+
+    public String getMonth(String releaseDate) {
+        return releaseDate.substring(5,7);
+    }
+
     public String getYear(String releaseDate) {
         return releaseDate.substring(0,4);
     }
