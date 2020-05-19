@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,11 +19,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.UserSelfRequest;
+import xyz.fairportstudios.popularin.apis.popularin.get.SelfDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
-import xyz.fairportstudios.popularin.models.UserSelf;
+import xyz.fairportstudios.popularin.models.SelfDetail;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditProfileFragment extends Fragment {
+    private Button buttonSave;
     private Context context;
     private CoordinatorLayout layout;
     private TextInputEditText inputFirstName;
@@ -37,59 +40,24 @@ public class EditProfileFragment extends Fragment {
 
         // Binding
         context = getActivity();
+        buttonSave = view.findViewById(R.id.button_fep_save);
         layout = view.findViewById(R.id.layout_fep_anchor);
-        inputFirstName = view.findViewById(R.id.text_fep_first_name);
-        inputLastName = view.findViewById(R.id.text_fep_last_name);
+        inputFirstName = view.findViewById(R.id.input_fep_first_name);
+        inputLastName = view.findViewById(R.id.input_fep_last_name);
         inputUsername = view.findViewById(R.id.text_fep_username);
-        inputEmail = view.findViewById(R.id.text_fep_email);
-        Button buttonSave = view.findViewById(R.id.button_fep_save);
+        inputEmail = view.findViewById(R.id.input_fep_email);
         Button buttonEditPassword = view.findViewById(R.id.button_fep_edit_password);
 
-        // Mendapatkan data
-        UserSelfRequest userSelfRequest = new UserSelfRequest(context);
-        userSelfRequest.sendRequest(new UserSelfRequest.APICallback() {
-            @Override
-            public void onSuccess(UserSelf userSelf) {
-                inputFirstName.setText(userSelf.getFirst_name());
-                inputLastName.setText(userSelf.getLast_name());
-                inputUsername.setText(userSelf.getUsername());
-                inputEmail.setText(userSelf.getEmail());
-            }
-
-            @Override
-            public void onError() {
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
-            }
-        });
+        // Mendapatkan data awal
+        getSelf();
 
         // Activity
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Menyimpan data
-                String firstName = Objects.requireNonNull(inputFirstName.getText()).toString();
-                String lastName = Objects.requireNonNull(inputLastName.getText()).toString();
-                String username = Objects.requireNonNull(inputUsername.getText()).toString();
-                String email = Objects.requireNonNull(inputEmail.getText()).toString();
-
-                // PUT
-                UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, firstName, lastName, username, email);
-                updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
-                    @Override
-                    public void onSuccess() {
-                        Objects.requireNonNull(getFragmentManager()).popBackStack();
-                    }
-
-                    @Override
-                    public void onFailed(String message) {
-                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Snackbar.make(layout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                saveProfile();
+                buttonSave.setEnabled(false);
+                buttonSave.setText(R.string.loading);
             }
         });
 
@@ -99,6 +67,7 @@ public class EditProfileFragment extends Fragment {
                 if (getFragmentManager() != null) {
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_am_container, new EditPasswordFragment())
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .addToBackStack(null)
                             .commit();
                 }
@@ -106,5 +75,66 @@ public class EditProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void getSelf() {
+        // Membuat objek
+        SelfDetailRequest selfDetailRequest = new SelfDetailRequest(context);
+
+        // Mengirim request
+        selfDetailRequest.sendRequest(new SelfDetailRequest.APICallback() {
+            @Override
+            public void onSuccess(SelfDetail selfDetail) {
+                inputFirstName.setText(selfDetail.getFirst_name());
+                inputLastName.setText(selfDetail.getLast_name());
+                inputUsername.setText(selfDetail.getUsername());
+                inputEmail.setText(selfDetail.getEmail());
+                buttonSave.setEnabled(true);
+            }
+
+            @Override
+            public void onError() {
+                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveProfile() {
+        // Menyimpan data
+        String firstName = Objects.requireNonNull(inputFirstName.getText()).toString();
+        String lastName = Objects.requireNonNull(inputLastName.getText()).toString();
+        String username = Objects.requireNonNull(inputUsername.getText()).toString();
+        String email = Objects.requireNonNull(inputEmail.getText()).toString();
+
+        // Membuat objek
+        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(
+                context,
+                firstName,
+                lastName,
+                username,
+                email
+        );
+
+        // Mengirim request
+        updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                if (getFragmentManager() != null) {
+                    getFragmentManager().popBackStack();
+                }
+            }
+
+            @Override
+            public void onFailed(String message) {
+                buttonSave.setText(R.string.save_profile);
+                Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError() {
+                buttonSave.setText(R.string.save_profile);
+                Snackbar.make(layout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }
