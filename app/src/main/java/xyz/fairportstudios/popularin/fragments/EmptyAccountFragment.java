@@ -23,8 +23,8 @@ public class EmptyAccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_empty_account, container, false);
 
         // Binding
-        Button buttonSignIn = view.findViewById(R.id.button_rea_signin);
-        Button buttonSignUp = view.findViewById(R.id.button_rea_signup);
+        Button buttonSignIn = view.findViewById(R.id.button_rea_sign_in);
+        Button buttonSignUp = view.findViewById(R.id.button_rea_sign_up);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {

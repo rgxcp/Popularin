@@ -24,13 +24,13 @@
         android:textSize="17sp" />
 
     <Button
-        android:id="@+id/button_rea_signin"
+        android:id="@+id/button_rea_sign_in"
         style="@style/ButtonPrimary"
         android:layout_marginTop="48dp"
         android:text="@string/signin" />
 
     <Button
-        android:id="@+id/button_rea_signup"
+        android:id="@+id/button_rea_sign_up"
         style="@style/ButtonPrimary"
         android:layout_marginTop="24dp"
         android:text="@string/signup" />

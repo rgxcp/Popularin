@@ -17,8 +17,8 @@ public class EmptyAccountActivity extends AppCompatActivity {
         setContentView(R.layout.reusable_empty_account);
 
         // Binding
-        Button buttonSignIn = findViewById(R.id.button_rea_signin);
-        Button buttonSignUp = findViewById(R.id.button_rea_signup);
+        Button buttonSignIn = findViewById(R.id.button_rea_sign_in);
+        Button buttonSignUp = findViewById(R.id.button_rea_sign_up);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
