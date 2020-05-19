@@ -15,18 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
-import xyz.fairportstudios.popularin.models.UserSelf;
+import xyz.fairportstudios.popularin.models.SelfDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class UserSelfRequest {
+public class SelfDetailRequest {
     private Context context;
 
-    public UserSelfRequest(Context context) {
+    public SelfDetailRequest(Context context) {
         this.context = context;
     }
 
     public interface APICallback {
-        void onSuccess(UserSelf userSelf);
+        void onSuccess(SelfDetail selfDetail);
 
         void onError();
     }
@@ -36,18 +36,24 @@ public class UserSelfRequest {
 
         String requestURL = PopularinAPI.USER_SELF;
 
-        JsonObjectRequest userSelf = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest selfDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONObject jsonObjectResult = response.getJSONObject("result");
+                    int status = response.getInt("status");
 
-                    UserSelf userSelf = new UserSelf();
-                    userSelf.setFirst_name(jsonObjectResult.getString("first_name"));
-                    userSelf.setLast_name(jsonObjectResult.getString("last_name"));
-                    userSelf.setUsername(jsonObjectResult.getString("username"));
-                    userSelf.setEmail(jsonObjectResult.getString("email"));
-                    callback.onSuccess(userSelf);
+                    if (status == 101) {
+                        JSONObject result = response.getJSONObject("result");
+
+                        SelfDetail selfDetail = new SelfDetail();
+                        selfDetail.setFirst_name(result.getString("first_name"));
+                        selfDetail.setLast_name(result.getString("last_name"));
+                        selfDetail.setUsername(result.getString("username"));
+                        selfDetail.setEmail(result.getString("email"));
+                        callback.onSuccess(selfDetail);
+                    } else {
+                        callback.onError();
+                    }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
                     callback.onError();
@@ -63,12 +69,12 @@ public class UserSelfRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(userSelf);
+        Volley.newRequestQueue(context).add(selfDetail);
     }
 }
