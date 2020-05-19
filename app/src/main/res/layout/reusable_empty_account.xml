@@ -2,25 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blackPrimary"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="64dp">
+    android:paddingHorizontal="48dp">
 
-    <Button
-        android:id="@+id/button_geu_signin"
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:contentDescription="@null"
+        android:src="@drawable/vc_empty_account" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="@string/signin"
-        android:textColor="#FFFFFF" />
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/jost_regular"
+        android:text="@string/empty_account"
+        android:textAlignment="center"
+        android:textColor="@color/whitePrimary"
+        android:textSize="17sp" />
 
     <Button
-        android:id="@+id/button_geu_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/signup"
-        android:textColor="#FFFFFF" />
+        android:id="@+id/button_rea_signin"
+        style="@style/ButtonPrimary"
+        android:layout_marginTop="48dp"
+        android:text="@string/signin" />
+
+    <Button
+        android:id="@+id/button_rea_signup"
+        style="@style/ButtonPrimary"
+        android:layout_marginTop="24dp"
+        android:text="@string/signup" />
 
 </LinearLayout>
