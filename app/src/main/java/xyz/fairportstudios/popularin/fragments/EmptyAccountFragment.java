@@ -20,26 +20,26 @@ public class EmptyAccountFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.global_empty_user, container, false);
+        View view = inflater.inflate(R.layout.reusable_empty_account, container, false);
 
         // Binding
-        Button buttonSignIn = view.findViewById(R.id.button_geu_signin);
-        Button buttonSignUp = view.findViewById(R.id.button_geu_signup);
+        Button buttonSignIn = view.findViewById(R.id.button_rea_signin);
+        Button buttonSignUp = view.findViewById(R.id.button_rea_signup);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoSignIn = new Intent(getActivity(), SignInActivity.class);
-                startActivity(gotoSignIn);
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                startActivity(intent);
             }
         });
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoSignUp = new Intent(getActivity(), SignUpActivity.class);
-                startActivity(gotoSignUp);
+                Intent intent = new Intent(getActivity(), SignUpActivity.class);
+                startActivity(intent);
             }
         });
 
