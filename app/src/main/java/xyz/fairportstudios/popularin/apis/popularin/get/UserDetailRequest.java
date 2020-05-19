@@ -20,26 +20,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xyz.fairportstudios.popularin.adapters.LatestFavoriteAdapter;
-import xyz.fairportstudios.popularin.adapters.LatestReviewAdapter;
+import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
+import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
-import xyz.fairportstudios.popularin.models.LatestFavorite;
-import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.models.RecentFavorite;
+import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserDetailRequest {
     private Context context;
-    private List<LatestFavorite> latestFavoriteList;
-    private List<LatestReview> latestReviewList;
+    private List<RecentFavorite> recentFavoriteList;
+    private List<RecentReview> recentReviewList;
     private RecyclerView recyclerViewLatestFavorite;
     private RecyclerView recyclerViewLatestReview;
     private String id;
 
-    public UserDetailRequest(Context context, List<LatestFavorite> latestFavoriteList, List<LatestReview> latestReviewList, RecyclerView recyclerViewLatestFavorite, RecyclerView recyclerViewLatestReview, String id) {
+    public UserDetailRequest(Context context, List<RecentFavorite> recentFavoriteList, List<RecentReview> recentReviewList, RecyclerView recyclerViewLatestFavorite, RecyclerView recyclerViewLatestReview, String id) {
         this.context = context;
-        this.latestFavoriteList = latestFavoriteList;
-        this.latestReviewList = latestReviewList;
+        this.recentFavoriteList = recentFavoriteList;
+        this.recentReviewList = recentReviewList;
         this.recyclerViewLatestFavorite = recyclerViewLatestFavorite;
         this.recyclerViewLatestReview = recyclerViewLatestReview;
         this.id = id;
@@ -143,17 +143,17 @@ public class UserDetailRequest {
                 JSONObject jsonObject = jsonArrayFavorites.getJSONObject(index);
                 JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
-                LatestFavorite latestFavorite = new LatestFavorite();
-                latestFavorite.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                latestFavorite.setPoster(jsonObjectFilm.getString("poster"));
-                latestFavorite.setRelease_date(jsonObjectFilm.getString("release_date"));
-                latestFavorite.setTitle(jsonObjectFilm.getString("title"));
+                RecentFavorite recentFavorite = new RecentFavorite();
+                recentFavorite.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
+                recentFavorite.setPoster(jsonObjectFilm.getString("poster"));
+                recentFavorite.setRelease_date(jsonObjectFilm.getString("release_date"));
+                recentFavorite.setTitle(jsonObjectFilm.getString("title"));
 
-                latestFavoriteList.add(latestFavorite);
+                recentFavoriteList.add(recentFavorite);
             }
 
-            LatestFavoriteAdapter latestFavoriteAdapter = new LatestFavoriteAdapter(context, latestFavoriteList);
-            recyclerViewLatestFavorite.setAdapter(latestFavoriteAdapter);
+            RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavoriteList);
+            recyclerViewLatestFavorite.setAdapter(recentFavoriteAdapter);
             recyclerViewLatestFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
             recyclerViewLatestFavorite.setVisibility(View.VISIBLE);
         } catch (JSONException exception) {
@@ -167,19 +167,19 @@ public class UserDetailRequest {
                 JSONObject jsonObject = jsonArrayReviews.getJSONObject(index);
                 JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
 
-                LatestReview latestReview = new LatestReview();
-                latestReview.setId(jsonObject.getInt("id"));
-                latestReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                latestReview.setRating(jsonObject.getDouble("rating"));
-                latestReview.setPoster(jsonObjectFilm.getString("poster"));
-                latestReview.setRelease_date(jsonObjectFilm.getString("release_date"));
-                latestReview.setTitle(jsonObjectFilm.getString("title"));
+                RecentReview recentReview = new RecentReview();
+                recentReview.setId(jsonObject.getInt("id"));
+                recentReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
+                recentReview.setRating(jsonObject.getDouble("rating"));
+                recentReview.setPoster(jsonObjectFilm.getString("poster"));
+                recentReview.setRelease_date(jsonObjectFilm.getString("release_date"));
+                recentReview.setTitle(jsonObjectFilm.getString("title"));
 
-                latestReviewList.add(latestReview);
+                recentReviewList.add(recentReview);
             }
 
-            LatestReviewAdapter latestReviewAdapter = new LatestReviewAdapter(context, id, latestReviewList);
-            recyclerViewLatestReview.setAdapter(latestReviewAdapter);
+            RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, id, recentReviewList);
+            recyclerViewLatestReview.setAdapter(recentReviewAdapter);
             recyclerViewLatestReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
             recyclerViewLatestReview.setVisibility(View.VISIBLE);
         } catch (JSONException exception) {

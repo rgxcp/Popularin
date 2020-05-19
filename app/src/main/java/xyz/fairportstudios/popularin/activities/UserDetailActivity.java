@@ -27,8 +27,8 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUserRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.FollowUserRequest;
-import xyz.fairportstudios.popularin.models.LatestFavorite;
-import xyz.fairportstudios.popularin.models.LatestReview;
+import xyz.fairportstudios.popularin.models.RecentFavorite;
+import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
@@ -114,11 +114,11 @@ public class UserDetailActivity extends AppCompatActivity {
         isSelf = Objects.requireNonNull(userID).equals(auth.getAuthID());
 
         // List
-        List<LatestFavorite> latestFavoriteList = new ArrayList<>();
-        List<LatestReview> latestReviewList = new ArrayList<>();
+        List<RecentFavorite> recentFavoriteList = new ArrayList<>();
+        List<RecentReview> recentReviewList = new ArrayList<>();
 
         // GET
-        UserDetailRequest userDetailRequest = new UserDetailRequest(context, latestFavoriteList, latestReviewList, recyclerViewLatestFavorite, recyclerViewLatestReview, userID);
+        UserDetailRequest userDetailRequest = new UserDetailRequest(context, recentFavoriteList, recentReviewList, recyclerViewLatestFavorite, recyclerViewLatestReview, userID);
         userDetailRequest.sendRequest(new UserDetailRequest.APICallback() {
             @Override
             public void onSuccess(UserDetail userDetail) {

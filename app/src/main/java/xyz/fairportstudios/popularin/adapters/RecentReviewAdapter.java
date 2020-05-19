@@ -18,19 +18,23 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
+import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
 import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
-import xyz.fairportstudios.popularin.models.LatestFavorite;
+import xyz.fairportstudios.popularin.models.RecentReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.services.ParseStar;
 
-public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAdapter.LatestFavoriteViewHolder> {
+public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapter.LatestReviewViewHolder> {
     private Context context;
-    private List<LatestFavorite> latestFavoriteList;
+    private String userID;
+    private List<RecentReview> recentReviewList;
 
-    public LatestFavoriteAdapter(Context context, List<LatestFavorite> latestFavoriteList) {
+    public RecentReviewAdapter(Context context, String userID, List<RecentReview> recentReviewList) {
         this.context = context;
-        this.latestFavoriteList = latestFavoriteList;
+        this.userID = userID;
+        this.recentReviewList = recentReviewList;
     }
 
     private Integer dpToPx(Integer dp) {
@@ -40,24 +44,31 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
 
     @NonNull
     @Override
-    public LatestFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LatestFavoriteViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_favorite, parent, false));
+    public LatestReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new LatestReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_review, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LatestFavoriteViewHolder holder, int position) {
-        // Film ID
-        final String filmID = String.valueOf(latestFavoriteList.get(position).getTmdb_id());
+    public void onBindViewHolder(@NonNull LatestReviewViewHolder holder, int position) {
+        // Review ID
+        final String reviewID = String.valueOf(recentReviewList.get(position).getId());
+
+        // Auth
+        final String authID = new Auth(context).getAuthID();
+        final boolean isSelf = userID.equals(authID);
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
         // Parsing
-        final String title = latestFavoriteList.get(position).getTitle();
-        final String year = new ParseDate().getYear(latestFavoriteList.get(position).getRelease_date());
-        final String poster = new ParseImage().getImage(latestFavoriteList.get(position).getPoster());
+        final String filmID = String.valueOf(recentReviewList.get(position).getTmdb_id());
+        final String title = recentReviewList.get(position).getTitle();
+        final String year = new ParseDate().getYear(recentReviewList.get(position).getRelease_date());
+        final String poster = new ParseImage().getImage(recentReviewList.get(position).getPoster());
+        Integer star = new ParseStar().getStar(recentReviewList.get(position).getRating());
 
         // Mengisi data
+        holder.reviewStar.setImageResource(star);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Margin
@@ -65,7 +76,7 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         if (position == 0 ) {
             layoutParams.leftMargin = dpToPx(16);
             layoutParams.rightMargin = dpToPx(8);
-        } else if (position == latestFavoriteList.size() - 1) {
+        } else if (position == recentReviewList.size() - 1) {
             layoutParams.rightMargin = dpToPx(16);
         } else {
             layoutParams.rightMargin = dpToPx(8);
@@ -76,9 +87,10 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
         holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
+                gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
+                gotoReviewDetail.putExtra("IS_SELF", isSelf);
+                context.startActivity(gotoReviewDetail);
             }
         });
 
@@ -95,16 +107,18 @@ public class LatestFavoriteAdapter extends RecyclerView.Adapter<LatestFavoriteAd
 
     @Override
     public int getItemCount() {
-        return latestFavoriteList.size();
+        return recentReviewList.size();
     }
 
-    static class LatestFavoriteViewHolder extends RecyclerView.ViewHolder {
+    static class LatestReviewViewHolder extends RecyclerView.ViewHolder {
         ImageView filmPoster;
+        ImageView reviewStar;
 
-        LatestFavoriteViewHolder(@NonNull View itemView) {
+        LatestReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rlf_poster);
+            filmPoster = itemView.findViewById(R.id.image_rlr_poster);
+            reviewStar = itemView.findViewById(R.id.image_rlr_star);
         }
     }
 }

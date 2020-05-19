@@ -17,11 +17,12 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.fragments.AiringFragment;
 import xyz.fairportstudios.popularin.fragments.EmptyAccountFragment;
 import xyz.fairportstudios.popularin.fragments.GenreFragment;
-import xyz.fairportstudios.popularin.fragments.ProfileFragment;
+import xyz.fairportstudios.popularin.fragments.AccountFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.fragments.SearchFragment;
 import xyz.fairportstudios.popularin.fragments.TimelineFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class MainActivity extends AppCompatActivity {
     private static final int TIME_INTERVAL = 2000;
@@ -60,12 +61,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+        Fragment backStack = getSupportFragmentManager().findFragmentByTag(Popularin.EDIT_PROFILE);
+
+        if (backStack != null) {
             super.onBackPressed();
         } else {
-            Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+            if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+                super.onBackPressed();
+            } else {
+                Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+            }
+            TIME_BACK_PRESSED = System.currentTimeMillis();
         }
-        TIME_BACK_PRESSED = System.currentTimeMillis();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -90,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.menu_bn_profile:
                     if (isAuth) {
-                        selectedFragment = new ProfileFragment();
+                        selectedFragment = new AccountFragment();
                     } else {
                         selectedFragment = new EmptyAccountFragment();
                     }
