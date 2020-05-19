@@ -23,8 +23,9 @@ import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.services.Popularin;
 
-public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAdapter.LatestFavoriteViewHolder> {
+public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAdapter.RecentFavoriteViewHolder> {
     private Context context;
     private List<RecentFavorite> recentFavoriteList;
 
@@ -40,29 +41,30 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
 
     @NonNull
     @Override
-    public LatestFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LatestFavoriteViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_favorite, parent, false));
+    public RecentFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new RecentFavoriteViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_recent_favorite, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LatestFavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecentFavoriteViewHolder holder, int position) {
         // Film ID
         final String filmID = String.valueOf(recentFavoriteList.get(position).getTmdb_id());
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorPrimary)
+                .error(R.color.colorPrimary);
 
-        // Parsing
+        // Mendapatkan data
         final String title = recentFavoriteList.get(position).getTitle();
         final String year = new ParseDate().getYear(recentFavoriteList.get(position).getRelease_date());
         final String poster = new ParseImage().getImage(recentFavoriteList.get(position).getPoster());
-
-        // Mengisi data
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0 ) {
+        if (position == 0) {
             layoutParams.leftMargin = dpToPx(16);
             layoutParams.rightMargin = dpToPx(8);
         } else if (position == recentFavoriteList.size() - 1) {
@@ -76,9 +78,9 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+                Intent intent = new Intent(context, FilmDetailActivity.class);
+                intent.putExtra(Popularin.FILM_ID, filmID);
+                context.startActivity(intent);
             }
         });
 
@@ -87,7 +89,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
                 FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
+                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });
@@ -98,13 +100,13 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         return recentFavoriteList.size();
     }
 
-    static class LatestFavoriteViewHolder extends RecyclerView.ViewHolder {
+    static class RecentFavoriteViewHolder extends RecyclerView.ViewHolder {
         ImageView filmPoster;
 
-        LatestFavoriteViewHolder(@NonNull View itemView) {
+        RecentFavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rlf_poster);
+            filmPoster = itemView.findViewById(R.id.image_rrf_poster);
         }
     }
 }

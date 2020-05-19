@@ -25,8 +25,9 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.Popularin;
 
-public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapter.LatestReviewViewHolder> {
+public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapter.RecentReviewViewHolder> {
     private Context context;
     private String userID;
     private List<RecentReview> recentReviewList;
@@ -44,36 +45,39 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
 
     @NonNull
     @Override
-    public LatestReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LatestReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_latest_review, parent, false));
+    public RecentReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new RecentReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_recent_review, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LatestReviewViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecentReviewViewHolder holder, int position) {
         // Review ID
         final String reviewID = String.valueOf(recentReviewList.get(position).getId());
+
+        // Film ID
+        final String filmID = String.valueOf(recentReviewList.get(position).getTmdb_id());
 
         // Auth
         final String authID = new Auth(context).getAuthID();
         final boolean isSelf = userID.equals(authID);
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorPrimary)
+                .error(R.color.colorPrimary);
 
-        // Parsing
-        final String filmID = String.valueOf(recentReviewList.get(position).getTmdb_id());
+        // Mendapatkan data
         final String title = recentReviewList.get(position).getTitle();
         final String year = new ParseDate().getYear(recentReviewList.get(position).getRelease_date());
         final String poster = new ParseImage().getImage(recentReviewList.get(position).getPoster());
         Integer star = new ParseStar().getStar(recentReviewList.get(position).getRating());
-
-        // Mengisi data
         holder.reviewStar.setImageResource(star);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0 ) {
+        if (position == 0) {
             layoutParams.leftMargin = dpToPx(16);
             layoutParams.rightMargin = dpToPx(8);
         } else if (position == recentReviewList.size() - 1) {
@@ -88,8 +92,8 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
             @Override
             public void onClick(View view) {
                 Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
-                gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
-                gotoReviewDetail.putExtra("IS_SELF", isSelf);
+                gotoReviewDetail.putExtra(Popularin.REVIEW_ID, reviewID);
+                gotoReviewDetail.putExtra(Popularin.IS_SELF, isSelf);
                 context.startActivity(gotoReviewDetail);
             }
         });
@@ -99,7 +103,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
                 FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
+                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });
@@ -110,15 +114,15 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         return recentReviewList.size();
     }
 
-    static class LatestReviewViewHolder extends RecyclerView.ViewHolder {
+    static class RecentReviewViewHolder extends RecyclerView.ViewHolder {
         ImageView filmPoster;
         ImageView reviewStar;
 
-        LatestReviewViewHolder(@NonNull View itemView) {
+        RecentReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rlr_poster);
-            reviewStar = itemView.findViewById(R.id.image_rlr_star);
+            filmPoster = itemView.findViewById(R.id.image_rrr_poster);
+            reviewStar = itemView.findViewById(R.id.image_rrr_star);
         }
     }
 }
