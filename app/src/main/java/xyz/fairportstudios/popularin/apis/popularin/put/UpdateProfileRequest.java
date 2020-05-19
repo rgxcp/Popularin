@@ -25,7 +25,13 @@ public class UpdateProfileRequest {
     private String username;
     private String email;
 
-    public UpdateProfileRequest(Context context, String firstName, String lastName, String username, String email) {
+    public UpdateProfileRequest(
+            Context context,
+            String firstName,
+            String lastName,
+            String username,
+            String email
+    ) {
         this.context = context;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -46,18 +52,22 @@ public class UpdateProfileRequest {
 
         String requestURL = PopularinAPI.USER + "/" + auth.getAuthID();
 
-        StringRequest updateProfileRequest = new StringRequest(Request.Method.PUT, requestURL, new Response.Listener<String>() {
+        StringRequest updateProfile = new StringRequest(Request.Method.PUT, requestURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    JSONObject responseObject = new JSONObject(response);
+                    int status = responseObject.getInt("status");
 
                     if (status == 303) {
+                        JSONObject resultObject = responseObject.getJSONObject("result");
+                        String uid = String.valueOf(resultObject.getInt("id"));
+                        String token = resultObject.getString("token");
+                        auth.setAuth(uid, token);
                         callback.onSuccess();
                     } else if (status == 626) {
-                        JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
-                        String message = jsonArrayResult.get(0).toString();
+                        JSONArray resultArray = responseObject.getJSONArray("result");
+                        String message = resultArray.get(0).toString();
                         callback.onFailed(message);
                     } else {
                         callback.onError();
@@ -87,12 +97,12 @@ public class UpdateProfileRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-Token", auth.getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(updateProfileRequest);
+        Volley.newRequestQueue(context).add(updateProfile);
     }
 }
