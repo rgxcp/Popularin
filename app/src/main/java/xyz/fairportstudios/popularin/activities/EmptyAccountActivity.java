@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import xyz.fairportstudios.popularin.R;
 
-public class EmptyUserActivity extends AppCompatActivity {
+public class EmptyAccountActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,23 +17,23 @@ public class EmptyUserActivity extends AppCompatActivity {
         setContentView(R.layout.reusable_empty_account);
 
         // Binding
-        Button buttonSignIn = findViewById(R.id.button_geu_signin);
-        Button buttonSignUp = findViewById(R.id.button_geu_signup);
+        Button buttonSignIn = findViewById(R.id.button_rea_signin);
+        Button buttonSignUp = findViewById(R.id.button_rea_signup);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoSignIn = new Intent(EmptyUserActivity.this, SignInActivity.class);
-                startActivity(gotoSignIn);
+                Intent intent = new Intent(EmptyAccountActivity.this, SignInActivity.class);
+                startActivity(intent);
             }
         });
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoSignUp = new Intent(EmptyUserActivity.this, SignUpActivity.class);
-                startActivity(gotoSignUp);
+                Intent intent = new Intent(EmptyAccountActivity.this, SignUpActivity.class);
+                startActivity(intent);
             }
         });
     }

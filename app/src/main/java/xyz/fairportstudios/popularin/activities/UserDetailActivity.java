@@ -290,7 +290,7 @@ public class UserDetailActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
             }

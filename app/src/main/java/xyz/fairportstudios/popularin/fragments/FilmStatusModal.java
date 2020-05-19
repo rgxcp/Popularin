@@ -19,7 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.AddReviewActivity;
-import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteWatchlistRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmSelfRequest;
@@ -118,7 +118,7 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                     gotoAddReview.putExtra("FILM_POSTER", poster);
                     startActivity(gotoAddReview);
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
 
@@ -162,7 +162,7 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                         });
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
 
@@ -206,7 +206,7 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
                         });
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
 

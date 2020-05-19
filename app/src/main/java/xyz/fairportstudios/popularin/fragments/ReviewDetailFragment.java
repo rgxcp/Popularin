@@ -25,7 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.LikedByActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
@@ -217,7 +217,7 @@ public class ReviewDetailFragment extends Fragment {
                         });
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
             }

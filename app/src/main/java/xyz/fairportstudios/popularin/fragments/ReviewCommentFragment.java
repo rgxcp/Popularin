@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EmptyUserActivity;
+import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.CommentRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
@@ -112,7 +112,7 @@ public class ReviewCommentFragment extends Fragment {
                         }
                     });
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyUserActivity.class);
+                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
                     startActivity(gotoEmptyUser);
                 }
             }
