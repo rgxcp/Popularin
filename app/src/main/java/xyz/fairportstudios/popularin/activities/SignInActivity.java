@@ -1,13 +1,13 @@
 package xyz.fairportstudios.popularin.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -20,7 +20,7 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
     private Context context;
-    private CoordinatorLayout layout;
+    private LinearLayout layout;
     private TextInputEditText inputUsername;
     private TextInputEditText inputPassword;
 
@@ -32,46 +32,57 @@ public class SignInActivity extends AppCompatActivity {
         // Binding
         context = SignInActivity.this;
         layout = findViewById(R.id.layout_asi_anchor);
-        inputUsername = findViewById(R.id.text_asi_username);
-        inputPassword = findViewById(R.id.text_asi_password);
+        inputUsername = findViewById(R.id.input_asi_username);
+        inputPassword = findViewById(R.id.input_asi_password);
         Button buttonSignIn = findViewById(R.id.button_asi_signin);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Menyimpan data
-                String username = Objects.requireNonNull(inputUsername.getText()).toString();
-                String password = Objects.requireNonNull(inputPassword.getText()).toString();
+                signIn();
+            }
+        });
+    }
 
-                // POST
-                SignInRequest signInRequest = new SignInRequest(context, username, password);
-                signInRequest.sendRequest(new SignInRequest.APICallback() {
-                    @Override
-                    public void onSuccess(String id, String token) {
-                        Auth auth = new Auth(context);
-                        auth.setAuth(id, token);
+    private void signIn() {
+        // Menyimpan input
+        String username = Objects.requireNonNull(inputUsername.getText()).toString();
+        String password = Objects.requireNonNull(inputPassword.getText()).toString();
 
-                        Intent gotoMain = new Intent(context, MainActivity.class);
-                        startActivity(gotoMain);
-                        finishAffinity();
-                    }
+        // Membuat objek
+        SignInRequest signInRequest = new SignInRequest(
+                context,
+                username,
+                password
+        );
 
-                    @Override
-                    public void onInvalid() {
-                        Snackbar.make(layout, R.string.invalid_credentials, Snackbar.LENGTH_LONG).show();
-                    }
+        // Mengirim request
+        signInRequest.sendRequest(new SignInRequest.APICallback() {
+            @Override
+            public void onSuccess(String id, String token) {
+                // Menyimpan pref dalam storage lokal
+                Auth auth = new Auth(context);
+                auth.setAuth(id, token);
 
-                    @Override
-                    public void onFailed(String message) {
-                        Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
-                    }
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                finishAffinity();
+            }
 
-                    @Override
-                    public void onError() {
-                        Snackbar.make(layout, R.string.failed_sign_in, Snackbar.LENGTH_LONG).show();
-                    }
-                });
+            @Override
+            public void onInvalid() {
+                Snackbar.make(layout, R.string.invalid_credentials, Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailed(String message) {
+                Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError() {
+                Snackbar.make(layout, R.string.sign_in_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
