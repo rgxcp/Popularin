@@ -14,7 +14,7 @@ public class EmptyUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.global_empty_user);
+        setContentView(R.layout.reusable_empty_account);
 
         // Binding
         Button buttonSignIn = findViewById(R.id.button_geu_signin);
