@@ -1,23 +1,34 @@
 package xyz.fairportstudios.popularin.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.fragments.AiringFragment;
-import xyz.fairportstudios.popularin.fragments.HomeFragment;
+import xyz.fairportstudios.popularin.fragments.EmptyAccountFragment;
+import xyz.fairportstudios.popularin.fragments.GenreFragment;
 import xyz.fairportstudios.popularin.fragments.ProfileFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.fragments.SearchFragment;
+import xyz.fairportstudios.popularin.fragments.TimelineFragment;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int TIME_INTERVAL = 2000;
+    private static long TIME_BACK_PRESSED;
+    private Boolean isAuth;
+    private Context context;
+    private Fragment selectedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,24 +36,48 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Binding
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_am_layout);
+        context = MainActivity.this;
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation_am_layout);
+
+        // Auth
+        isAuth = new Auth(context).isAuth();
 
         // Bottom navigation
-        bottomNavigationView.setOnNavigationItemSelectedListener(listener);
+        bottomNavigation.setOnNavigationItemSelectedListener(listener);
+
+        // Menampilkan fragment otomatis sesuai kondisi
+        if (isAuth) {
+            selectedFragment = new TimelineFragment();
+        } else {
+            selectedFragment = new GenreFragment();
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_am_container, new HomeFragment())
+                .replace(R.id.fragment_am_container, selectedFragment)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+        }
+        TIME_BACK_PRESSED = System.currentTimeMillis();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
-
             switch (item.getItemId()) {
                 case R.id.menu_bn_home:
-                    selectedFragment = new HomeFragment();
+                    if (isAuth) {
+                        selectedFragment = new TimelineFragment();
+                    } else {
+                        selectedFragment = new GenreFragment();
+                    }
                     break;
                 case R.id.menu_bn_airing:
                     selectedFragment = new AiringFragment();
@@ -54,19 +89,23 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new SearchFragment();
                     break;
                 case R.id.menu_bn_profile:
-                    selectedFragment = new ProfileFragment();
+                    if (isAuth) {
+                        selectedFragment = new ProfileFragment();
+                    } else {
+                        selectedFragment = new EmptyAccountFragment();
+                    }
                     break;
             }
 
             if (selectedFragment != null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-
                 // Menghapus semua stack
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-                // Memuat fragment
-                fragmentManager.beginTransaction()
+                // Menampilkan fragment
+                getSupportFragmentManager()
+                        .beginTransaction()
                         .replace(R.id.fragment_am_container, selectedFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
             }
 
