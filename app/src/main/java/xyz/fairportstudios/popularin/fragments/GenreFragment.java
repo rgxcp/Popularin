@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmListActivity;
 
-public class HomeFragment extends Fragment {
+public class GenreFragment extends Fragment {
 
     @Nullable
     @Override
