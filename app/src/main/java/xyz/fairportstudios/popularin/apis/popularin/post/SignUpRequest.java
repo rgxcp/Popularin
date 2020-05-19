@@ -45,7 +45,7 @@ public class SignUpRequest {
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.SIGN_UP;
 
-        StringRequest singUpRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        StringRequest signUp = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -61,8 +61,6 @@ public class SignUpRequest {
                         JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
                         String message = jsonArrayResult.get(0).toString();
                         callback.onFailed(message);
-                    } else {
-                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -95,6 +93,6 @@ public class SignUpRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(singUpRequest);
+        Volley.newRequestQueue(context).add(signUp);
     }
 }
