@@ -107,7 +107,7 @@ public class ProfileFragment extends Fragment {
         if (!isAuth) {
             Objects.requireNonNull(getFragmentManager())
                     .beginTransaction()
-                    .replace(R.id.fragment_am_container, new EmptyUserFragment())
+                    .replace(R.id.fragment_am_container, new EmptyAccountFragment())
                     .commit();
         } else {
             // List

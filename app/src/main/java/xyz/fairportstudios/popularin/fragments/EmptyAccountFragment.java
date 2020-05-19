@@ -15,7 +15,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.SignInActivity;
 import xyz.fairportstudios.popularin.activities.SignUpActivity;
 
-public class EmptyUserFragment extends Fragment {
+public class EmptyAccountFragment extends Fragment {
 
     @Nullable
     @Override
