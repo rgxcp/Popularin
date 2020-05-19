@@ -41,7 +41,7 @@ public class SignInRequest {
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.SIGN_IN;
 
-        StringRequest signInRequest = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        StringRequest signIn = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -55,12 +55,10 @@ public class SignInRequest {
                         callback.onSuccess(id, token);
                     } else if (status == 616) {
                         callback.onInvalid();
-                    } else if (status == 626) {
+                    } else {
                         JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
                         String message = jsonArrayResult.get(0).toString();
                         callback.onFailed(message);
-                    } else {
-                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -90,6 +88,6 @@ public class SignInRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(signInRequest);
+        Volley.newRequestQueue(context).add(signIn);
     }
 }
