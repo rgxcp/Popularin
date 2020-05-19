@@ -19,6 +19,7 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignInRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
+    private Button buttonSignIn;
     private Context context;
     private LinearLayout layout;
     private TextInputEditText inputUsername;
@@ -31,15 +32,17 @@ public class SignInActivity extends AppCompatActivity {
 
         // Binding
         context = SignInActivity.this;
+        buttonSignIn = findViewById(R.id.button_asi_signin);
         layout = findViewById(R.id.layout_asi_anchor);
         inputUsername = findViewById(R.id.input_asi_username);
         inputPassword = findViewById(R.id.input_asi_password);
-        Button buttonSignIn = findViewById(R.id.button_asi_signin);
 
         // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttonSignIn.setEnabled(false);
+                buttonSignIn.setText(R.string.loading);
                 signIn();
             }
         });
@@ -72,16 +75,23 @@ public class SignInActivity extends AppCompatActivity {
 
             @Override
             public void onInvalid() {
+                buttonSignIn.setEnabled(true);
+                buttonSignIn.setText(R.string.sign_in);
                 Snackbar.make(layout, R.string.invalid_credentials, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailed(String message) {
+                buttonSignIn.setEnabled(true);
+                buttonSignIn.setText(R.string.sign_in);
                 Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
+
             }
 
             @Override
             public void onError() {
+                buttonSignIn.setEnabled(true);
+                buttonSignIn.setText(R.string.sign_in);
                 Snackbar.make(layout, R.string.sign_in_error, Snackbar.LENGTH_LONG).show();
             }
         });

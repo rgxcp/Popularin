@@ -19,6 +19,7 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignUpRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignUpActivity extends AppCompatActivity {
+    private Button buttonSignUp;
     private Context context;
     private LinearLayout layout;
     private TextInputEditText inputFirstName;
@@ -34,18 +35,20 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Binding
         context = SignUpActivity.this;
+        buttonSignUp = findViewById(R.id.button_asu_sign_up);
         layout = findViewById(R.id.layout_asu_anchor);
         inputFirstName = findViewById(R.id.input_asu_first_name);
         inputLastName = findViewById(R.id.input_asu_last_name);
         inputUsername = findViewById(R.id.input_asu_username);
         inputEmail = findViewById(R.id.input_asu_email);
         inputPassword = findViewById(R.id.input_asu_password);
-        Button buttonSignUp = findViewById(R.id.button_asu_sign_up);
 
         // Activity
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttonSignUp.setEnabled(false);
+                buttonSignUp.setText(R.string.loading);
                 signUp();
             }
         });
@@ -84,11 +87,15 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onFailed(String message) {
+                buttonSignUp.setEnabled(true);
+                buttonSignUp.setText(R.string.sign_up);
                 Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onError() {
+                buttonSignUp.setEnabled(true);
+                buttonSignUp.setText(R.string.sign_up);
                 Snackbar.make(layout, R.string.sign_up_error, Snackbar.LENGTH_LONG).show();
             }
         });
