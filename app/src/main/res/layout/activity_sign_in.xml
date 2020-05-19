@@ -1,54 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_asi_anchor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blackPrimary"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingHorizontal="32dp"
     tools:context=".activities.SignInActivity">
 
-    <LinearLayout
+    <TextView
+        style="@style/TextSignWelcome"
+        android:text="@string/sign_welcome" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingHorizontal="32dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="@string/username"
+        app:startIconDrawable="@drawable/ic_username">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_asi_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_asi_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/username"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/password"
+        app:passwordToggleEnabled="true"
+        app:startIconDrawable="@drawable/ic_password">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_asi_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:passwordToggleEnabled="true">
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_asi_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:id="@+id/button_asi_signin"
+        style="@style/ButtonPrimary"
+        android:layout_marginTop="24dp"
+        android:text="@string/sign_in" />
 
-        <Button
-            android:id="@+id/button_asi_signin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@color/colorPrimary"
-            android:text="@string/signin"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
