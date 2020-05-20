@@ -1,64 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="start"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
-        <TextView
-            android:id="@+id/text_rr_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxWidth="200dp"
-            android:maxLines="1"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            android:layout_weight="2"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_rr_year"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/text_rr_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/jost_medium"
+                android:maxLength="25"
+                android:textColor="@color/whitePrimary"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/text_rr_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/jost_light"
+                android:textColor="@color/whitePrimary"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/text_rr_title"
-            android:textSize="13sp" />
+            android:layout_weight="1"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_rr_first_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@id/sov_rr_profile_anchor"
-            android:ellipsize="end"
-            android:maxWidth="100dp"
-            android:maxLines="1"
-            android:textSize="15sp"
-            tools:ignore="RelativeOverlap" />
+            <TextView
+                android:id="@+id/text_rr_first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/jost_regular"
+                android:maxLength="10"
+                android:textColor="@color/whitePrimary"
+                android:textSize="15sp" />
 
-        <com.github.florent37.shapeofview.shapes.CircleView
-            android:id="@+id/sov_rr_profile_anchor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true">
+            <com.github.florent37.shapeofview.shapes.CircleView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/image_rr_profile"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
-        </com.github.florent37.shapeofview.shapes.CircleView>
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/image_rr_profile"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@null"
+                    android:src="@color/colorPrimary" />
+            </com.github.florent37.shapeofview.shapes.CircleView>
+        </LinearLayout>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/image_rr_star"
@@ -76,8 +91,10 @@
         <com.github.florent37.shapeofview.shapes.RoundRectView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:shape_roundRect_borderColor="@color/colorPrimary"
+            app:shape_roundRect_borderWidth="0.1dp"
             app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="25dp"
+            app:shape_roundRect_bottomRightRadius="5dp"
             app:shape_roundRect_topLeftRadius="5dp"
             app:shape_roundRect_topRightRadius="5dp">
 
@@ -95,9 +112,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:ellipsize="end"
+            android:fontFamily="@font/jost_regular"
             android:maxLines="7"
+            android:textColor="@color/whitePrimary"
             android:textSize="15sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_rr_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/jost_extra_light"
+        android:textColor="@color/whitePrimary"
+        android:textSize="13sp" />
 
     <View
         android:id="@+id/border_rr_layout"
