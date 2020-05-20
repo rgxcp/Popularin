@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_rr_anchor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blackPrimary">
+
+    <ProgressBar
+        android:id="@+id/pbr_rr_layout"
+        style="@style/ProgressBarPrimary" />
+
+    <include
+        android:id="@+id/layout_rr_not_found"
+        layout="@layout/reusable_not_found"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_rr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

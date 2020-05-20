@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +25,6 @@ import xyz.fairportstudios.popularin.models.User;
 public class MutualFragment extends Fragment {
     private CoordinatorLayout layout;
     private ProgressBar progressBar;
-    private TextView emptyResult;
     private String userID;
 
     public MutualFragment(String userID) {
@@ -37,14 +34,13 @@ public class MutualFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.global_recycler, container, false);
+        View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        progressBar = view.findViewById(R.id.pbr_gr_layout);
-        layout = view.findViewById(R.id.layout_gr_anchor);
-        emptyResult = view.findViewById(R.id.text_gr_empty);
+        progressBar = view.findViewById(R.id.pbr_rr_layout);
+        layout = view.findViewById(R.id.layout_rr_anchor);
         Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_gr_layout);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
 
         // List
         List<User> userList = new ArrayList<>();
@@ -61,13 +57,11 @@ public class MutualFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
                 Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,19 +25,17 @@ import xyz.fairportstudios.popularin.models.Film;
 public class AiringFragment extends Fragment {
     private CoordinatorLayout layout;
     private ProgressBar progressBar;
-    private TextView emptyResult;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.global_recycler, container, false);
+        View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.layout_gr_anchor);
-        progressBar = view.findViewById(R.id.pbr_gr_layout);
-        emptyResult = view.findViewById(R.id.text_gr_empty);
+        layout = view.findViewById(R.id.layout_rr_anchor);
+        progressBar = view.findViewById(R.id.pbr_rr_layout);
         Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_gr_layout);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
 
         // List
         List<Film> filmList = new ArrayList<>();
@@ -54,13 +51,11 @@ public class AiringFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
                 Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });

@@ -31,14 +31,13 @@ public class ReviewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.global_recycler, container, false);
+        View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.layout_gr_anchor);
-        progressBar = view.findViewById(R.id.pbr_gr_layout);
-        emptyResult = view.findViewById(R.id.text_gr_empty);
+        layout = view.findViewById(R.id.layout_rr_anchor);
+        progressBar = view.findViewById(R.id.pbr_rr_layout);
         Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_gr_layout);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
 
         // List
         List<Review> reviewList = new ArrayList<>();
