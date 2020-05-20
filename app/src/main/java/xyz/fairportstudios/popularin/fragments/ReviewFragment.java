@@ -1,12 +1,11 @@
 package xyz.fairportstudios.popularin.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +24,8 @@ import xyz.fairportstudios.popularin.models.Review;
 
 public class ReviewFragment extends Fragment {
     private CoordinatorLayout layout;
+    private LinearLayout layoutNotFound;
     private ProgressBar progressBar;
-    private TextView emptyResult;
 
     @Nullable
     @Override
@@ -35,15 +34,15 @@ public class ReviewFragment extends Fragment {
 
         // Binding
         layout = view.findViewById(R.id.layout_rr_anchor);
+        layoutNotFound = view.findViewById(R.id.layout_rr_not_found);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
         RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
 
         // List
         List<Review> reviewList = new ArrayList<>();
 
         // GET
-        ReviewRequest reviewRequest = new ReviewRequest(context, reviewList, recyclerView);
+        ReviewRequest reviewRequest = new ReviewRequest(getActivity(), reviewList, recyclerView);
         String requestURL = reviewRequest.getRequestURL(1);
         reviewRequest.sendRequest(requestURL, new ReviewRequest.APICallback() {
             @Override
@@ -52,9 +51,15 @@ public class ReviewFragment extends Fragment {
             }
 
             @Override
+            public void onEmpty() {
+                progressBar.setVisibility(View.GONE);
+                layoutNotFound.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
+                layoutNotFound.setVisibility(View.VISIBLE);
                 Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
