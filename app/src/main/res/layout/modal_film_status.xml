@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/grayPrimary"
     android:orientation="vertical">
 
     <TextView
@@ -11,8 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:lineSpacingExtra="4dp"
-        android:textColor="#000000"
+        android:ellipsize="end"
+        android:fontFamily="@font/jost_medium"
+        android:maxLines="1"
+        android:textColor="@color/whitePrimary"
         android:textSize="17sp" />
 
     <TextView
@@ -20,11 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/jost_regular"
+        android:textColor="@color/whitePrimary"
+        android:textSize="15sp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.1dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorPrimary" />
 
@@ -49,7 +55,7 @@
                 android:id="@+id/image_mfs_review"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_review"
+                android:background="@drawable/ic_review_outline"
                 android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
@@ -57,8 +63,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:fontFamily="@font/jost_regular"
                 android:text="@string/review"
-                android:textAllCaps="true" />
+                android:textColor="@color/whitePrimary"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +82,7 @@
                 android:id="@+id/image_mfs_favorite"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_favorite_filled"
+                android:background="@drawable/ic_favorite_outline"
                 android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
@@ -82,8 +90,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:fontFamily="@font/jost_regular"
                 android:text="@string/favorite"
-                android:textAllCaps="true" />
+                android:textColor="@color/whitePrimary"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -99,7 +109,7 @@
                 android:id="@+id/image_mfs_watchlist"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_watchlist"
+                android:background="@drawable/ic_watchlist_outline"
                 android:backgroundTint="@color/colorPrimary"
                 android:contentDescription="@null" />
 
@@ -107,14 +117,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:fontFamily="@font/jost_regular"
                 android:text="@string/watchlist"
-                android:textAllCaps="true" />
+                android:textColor="@color/whitePrimary"
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.1dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorPrimary" />
 
@@ -124,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
-        android:isIndicator="false"
+        android:isIndicator="true"
         android:numStars="5"
         android:progressTint="@color/colorPrimary"
         android:stepSize="0.5" />
@@ -134,6 +146,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
-        android:text="@string/rating" />
+        android:fontFamily="@font/jost_regular"
+        android:text="@string/rating"
+        android:textColor="@color/whitePrimary"
+        android:textSize="15sp" />
 
 </LinearLayout>
