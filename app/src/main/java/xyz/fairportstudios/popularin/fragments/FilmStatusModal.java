@@ -27,24 +27,27 @@ import xyz.fairportstudios.popularin.apis.popularin.post.AddFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddWatchlistRequest;
 import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class FilmStatusModal extends BottomSheetDialogFragment {
+    private Boolean isAuth;
     private Boolean inReview;
     private Boolean inFavorite;
     private Boolean inWatchlist;
-    private Boolean isAuth;
     private Context context;
     private ImageView imageReview;
     private ImageView imageFavorite;
     private ImageView imageWatchlist;
     private RatingBar ratingBar;
-    private String filmID;
+
+    // Constructor
+    private String id;
     private String title;
     private String year;
     private String poster;
 
-    public FilmStatusModal(String filmID, String title, String year, String poster) {
-        this.filmID = filmID;
+    public FilmStatusModal(String id, String title, String year, String poster) {
+        this.id = id;
         this.title = title;
         this.year = year;
         this.poster = poster;
@@ -64,46 +67,19 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
         LinearLayout reviewLayout = view.findViewById(R.id.review_mfs_layout);
         LinearLayout favoriteLayout = view.findViewById(R.id.favorite_mfs_layout);
         LinearLayout watchlistLayout = view.findViewById(R.id.watchlist_mfs_layout);
-        TextView filmTitle = view.findViewById(R.id.text_mfs_title);
-        TextView filmYear = view.findViewById(R.id.text_mfs_year);
+        TextView textTitle = view.findViewById(R.id.text_mfs_title);
+        TextView textYear = view.findViewById(R.id.text_mfs_year);
 
         // Auth
         isAuth = new Auth(context).isAuth();
 
         // Isi
-        filmTitle.setText(title);
-        filmYear.setText(year);
+        textTitle.setText(title);
+        textYear.setText(year);
 
         // GET
         if (isAuth) {
-            FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, filmID);
-            filmSelfRequest.sendRequest(new FilmSelfRequest.APICallback() {
-                @Override
-                public void onSuccess(FilmSelf filmSelf) {
-                    double lastRate = filmSelf.getLast_rate();
-                    ratingBar.setRating((float) lastRate);
-                    inReview = filmSelf.getIn_review();
-                    inFavorite = filmSelf.getIn_favorite();
-                    inWatchlist = filmSelf.getIn_watchlist();
-
-                    if (inReview) {
-                        imageReview.setBackgroundResource(R.drawable.ic_check);
-                    }
-
-                    if (inFavorite) {
-                        imageFavorite.setBackgroundResource(R.drawable.ic_check);
-                    }
-
-                    if (inWatchlist) {
-                        imageWatchlist.setBackgroundResource(R.drawable.ic_check);
-                    }
-                }
-
-                @Override
-                public void onError() {
-                    Toast.makeText(context, R.string.get_error, Toast.LENGTH_SHORT).show();
-                }
-            });
+            getFilmSelf();
         }
 
         // Activity
@@ -111,17 +87,10 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    Intent gotoAddReview = new Intent(context, AddReviewActivity.class);
-                    gotoAddReview.putExtra("FILM_ID", filmID);
-                    gotoAddReview.putExtra("FILM_TITLE", title);
-                    gotoAddReview.putExtra("FILM_YEAR", year);
-                    gotoAddReview.putExtra("FILM_POSTER", poster);
-                    startActivity(gotoAddReview);
+                    addReview();
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(gotoEmptyUser);
+                    gotoEmptyAccount();
                 }
-
                 dismiss();
             }
         });
@@ -131,41 +100,13 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!inFavorite) {
-                        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, filmID);
-                        addFavoriteRequest.sendRequest(new AddFavoriteRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                String message = title + " " + context.getString(R.string.favorite_added);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                String message = title + " " + context.getString(R.string.add_favorite_error);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        addToFavorite();
                     } else {
-                        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, filmID);
-                        deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                String message = title + " " + context.getString(R.string.favorite_removed);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                String message = title + " " + context.getString(R.string.remove_favorite_error);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        removeFromFavorite();
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(gotoEmptyUser);
+                    gotoEmptyAccount();
                 }
-
                 dismiss();
             }
         });
@@ -175,52 +116,117 @@ public class FilmStatusModal extends BottomSheetDialogFragment {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!inWatchlist) {
-                        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, filmID);
-                        addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                String message = title + " " + context.getString(R.string.watchlist_added);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                String message = title + " " + context.getString(R.string.add_watchlist_error);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        addToWatchlist();
                     } else {
-                        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, filmID);
-                        deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                String message = title + " " + context.getString(R.string.watchlist_removed);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                String message = title + " " + context.getString(R.string.remove_watchlist_error);
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        removeFromWatchlist();
                     }
                 } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(gotoEmptyUser);
+                    gotoEmptyAccount();
                 }
-
                 dismiss();
             }
         });
 
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+        return view;
+    }
 
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(context, EmptyAccountActivity.class);
+        startActivity(intent);
+    }
+
+    private void getFilmSelf() {
+        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, id);
+        filmSelfRequest.sendRequest(new FilmSelfRequest.APICallback() {
+            @Override
+            public void onSuccess(FilmSelf filmSelf) {
+                double lastRate = filmSelf.getLast_rate();
+                ratingBar.setRating((float) lastRate);
+                inReview = filmSelf.getIn_review();
+                inFavorite = filmSelf.getIn_favorite();
+                inWatchlist = filmSelf.getIn_watchlist();
+
+                if (inReview) {
+                    imageReview.setBackgroundResource(R.drawable.ic_review_fill);
+                }
+
+                if (inFavorite) {
+                    imageFavorite.setBackgroundResource(R.drawable.ic_favorite_fill);
+                }
+
+                if (inWatchlist) {
+                    imageWatchlist.setBackgroundResource(R.drawable.ic_watchlist_fill);
+                }
             }
         });
+    }
 
-        return view;
+    private void addReview() {
+        Intent intent = new Intent(context, AddReviewActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
+        intent.putExtra(Popularin.FILM_TITLE, title);
+        intent.putExtra(Popularin.FILM_YEAR, year);
+        intent.putExtra(Popularin.FILM_POSTER, poster);
+        startActivity(intent);
+    }
+
+    private void addToFavorite() {
+        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, id);
+        addFavoriteRequest.sendRequest(new AddFavoriteRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(context, R.string.failed_add_to_favorite, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void removeFromFavorite() {
+        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, id);
+        deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(context, R.string.failed_remove_from_favorite, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addToWatchlist() {
+        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, id);
+        addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, R.string.added_to_watchlist, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(context, R.string.failed_add_to_watchlist, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void removeFromWatchlist() {
+        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, id);
+        deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, R.string.removed_from_watchlist, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(context, R.string.failed_remove_from_watchlist, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
