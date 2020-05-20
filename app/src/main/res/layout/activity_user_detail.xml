@@ -1,103 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_aud_anchor"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/blackPrimary"
+    tools:context=".activities.UserDetailActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_aud_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/blackPrimary"
         app:navigationIcon="@drawable/ic_back"
-        app:title="Profile"
-        app:titleTextColor="#FFFFFF" />
+        app:title="@string/profile"
+        app:titleTextColor="@color/whitePrimary" />
 
     <ProgressBar
         android:id="@+id/pbr_aud_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_aud_layout"
-        android:padding="168dp" />
+        style="@style/ProgressBarPrimary"
+        android:layout_below="@id/toolbar_aud_layout" />
 
-    <TextView
-        android:id="@+id/text_aud_empty"
+    <include
+        android:id="@+id/layout_aud_not_found"
+        layout="@layout/reusable_not_found"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_aud_layout"
-        android:gravity="center"
-        android:lineSpacingExtra="8dp"
-        android:text="@string/empty_result"
+        android:layout_below="@id/toolbar_aud_layout"
         android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/scroll_aud_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_aud_layout"
+        android:layout_below="@id/toolbar_aud_layout"
+        android:scrollbars="none"
         android:visibility="gone">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="16dp">
+            android:orientation="vertical">
+
+            <com.github.florent37.shapeofview.shapes.CircleView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp">
+
+                <ImageView
+                    android:id="@+id/image_aud_profile"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:background="@color/colorPrimary"
+                    android:contentDescription="@null" />
+            </com.github.florent37.shapeofview.shapes.CircleView>
+
+            <TextView
+                android:id="@+id/text_aud_full_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/jost_medium"
+                android:textColor="@color/whitePrimary"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/text_aud_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:fontFamily="@font/jost_light"
+                android:textColor="@color/whitePrimary"
+                android:textSize="15sp" />
 
             <LinearLayout
-                android:id="@+id/linear_profile_aud_anchor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.github.florent37.shapeofview.shapes.CircleView
-                    android:id="@+id/sov_aud_anchor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/image_aud_profile"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@null"
-                        android:src="@color/colorPrimary" />
-                </com.github.florent37.shapeofview.shapes.CircleView>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_aud_full_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textAlignment="center"
-                        android:textColor="#000000"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/text_aud_username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:ellipsize="end"
-                        android:maxLines="1" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linear_metadata_aud_anchor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/linear_profile_aud_anchor"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
                 android:weightSum="5">
@@ -105,281 +90,214 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/text_aud_total_review"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:fontFamily="@font/jost_medium"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/jost_regular"
                         android:text="@string/review"
-                        android:textAlignment="center"
-                        android:textColor="#000000" />
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_aud_total_follower"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/follower"
-                        android:textAlignment="center"
-                        android:textColor="#000000" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_aud_total_following"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/following"
-                        android:textAlignment="center"
-                        android:textColor="#000000" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/text_aud_total_favorite"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:fontFamily="@font/jost_medium"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/jost_regular"
                         android:text="@string/favorite"
-                        android:textAlignment="center"
-                        android:textColor="#000000" />
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/text_aud_total_watchlist"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:fontFamily="@font/jost_medium"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/jost_regular"
                         android:text="@string/watchlist"
-                        android:textAlignment="center"
-                        android:textColor="#000000" />
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_aud_total_follower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/jost_medium"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/jost_regular"
+                        android:text="@string/follower"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_aud_total_following"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/jost_medium"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/jost_regular"
+                        android:text="@string/following"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_aud_follow_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/linear_metadata_aud_anchor"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:text="@string/follow_me"
-                android:textColor="@color/colorPrimaryDark"
-                android:visibility="gone" />
-
             <Button
                 android:id="@+id/button_aud_follow"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@+id/text_aud_follow_me"
-                android:layout_marginHorizontal="80dp"
-                android:layout_marginTop="24dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/follow"
-                android:textColor="#FFFFFF" />
-
-            <TextView
-                android:id="@+id/text_latest_favorite_aud_anchor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/button_aud_follow"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/latest_favorite"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/text_empty_latest_favorite_aud_layout"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@id/text_latest_favorite_aud_anchor"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:lineSpacingExtra="8dp"
-                android:text="@string/empty_result"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_latest_favorite_aud_layout"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@id/text_latest_favorite_aud_anchor"
-                android:layout_marginTop="8dp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/text_latest_review_aud_anchor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_latest_favorite_aud_layout"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/latest_review"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/text_empty_latest_review_aud_layout"
-                android:layout_width="match_parent"
-                android:layout_height="174dp"
-                android:layout_below="@id/text_latest_review_aud_anchor"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:lineSpacingExtra="8dp"
-                android:text="@string/empty_result"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_latest_review_aud_layout"
-                android:layout_width="match_parent"
-                android:layout_height="174dp"
-                android:layout_below="@id/text_latest_review_aud_anchor"
-                android:layout_marginTop="8dp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/text_rating_aud_anchor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_latest_review_aud_layout"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/rating"
-                android:textColor="#000000" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_rating_aud_anchor"
+                style="@style/ButtonPrimary"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:weightSum="10">
+                android:text="@string/follow" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/text_aud_rate_05"
-                    android:layout_width="0dp"
+                    android:id="@+id/recent_favorite_aud_anchor"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/jost_medium"
+                    android:text="@string/recent_favorite"
+                    android:textColor="@color/whitePrimary"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:id="@+id/image_aud_empty_recent_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/recent_favorite_aud_anchor"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_rounded_gray"
+                    android:contentDescription="@null"
+                    android:src="@drawable/vc_not_found"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_aud_recent_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/recent_favorite_aud_anchor"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/text_aud_rate_10"
-                    android:layout_width="0dp"
+                    android:id="@+id/recent_review_aud_anchor"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_below="@+id/recent_favorite_aud_anchor"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="182dp"
+                    android:fontFamily="@font/jost_medium"
+                    android:text="@string/recent_review"
+                    android:textColor="@color/whitePrimary"
+                    android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/text_aud_rate_15"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                <ImageView
+                    android:id="@+id/image_aud_empty_recent_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/recent_review_aud_anchor"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_rounded_gray"
+                    android:contentDescription="@null"
+                    android:src="@drawable/vc_not_found"
+                    android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/text_aud_rate_20"
-                    android:layout_width="0dp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_aud_recent_review"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_25"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_30"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_35"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_40"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_45"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/text_aud_rate_50"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-            </LinearLayout>
-        </RelativeLayout>
+                    android:layout_below="@+id/recent_review_aud_anchor"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>
