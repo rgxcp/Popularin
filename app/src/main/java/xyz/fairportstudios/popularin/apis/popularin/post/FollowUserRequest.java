@@ -37,7 +37,7 @@ public class FollowUserRequest {
 
         String requestURL = PopularinAPI.USER + "/" + id + "/follow";
 
-        JsonObjectRequest followUserRequest = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest followUser = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -63,12 +63,12 @@ public class FollowUserRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(followUserRequest);
+        Volley.newRequestQueue(context).add(followUser);
     }
 }
