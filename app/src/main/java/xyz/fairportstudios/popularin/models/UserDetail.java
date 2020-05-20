@@ -1,211 +1,122 @@
 package xyz.fairportstudios.popularin.models;
 
 public class UserDetail {
-    private Boolean followingStatus;
-    private Boolean followerStatus;
-    private String fullName;
-    private String profilePicture;
-    private String rate05;
-    private String rate10;
-    private String rate15;
-    private String rate20;
-    private String rate25;
-    private String rate30;
-    private String rate35;
-    private String rate40;
-    private String rate45;
-    private String rate50;
-    private String totalFavorite;
-    private String totalFollower;
-    private String totalFollowing;
-    private String totalReview;
-    private String totalWatchlist;
+    private Boolean is_following;
+    private Boolean is_follower;
+    private Integer total_following;
+    private Integer total_follower;
+    private Integer total_favorite;
+    private Integer total_review;
+    private Integer total_watchlist;
+    private String full_name;
     private String username;
+    private String profile_picture;
 
     public UserDetail() {
         // Empty constructor
     }
 
-    public UserDetail(Boolean followingStatus, Boolean followerStatus, String fullName, String profilePicture, String rate05, String rate10, String rate15, String rate20, String rate25, String rate30, String rate35, String rate40, String rate45, String rate50, String totalFavorite, String totalFollower, String totalFollowing, String totalReview, String totalWatchlist, String username) {
-        this.followingStatus = followingStatus;
-        this.followerStatus = followerStatus;
-        this.fullName = fullName;
-        this.profilePicture = profilePicture;
-        this.rate05 = rate05;
-        this.rate10 = rate10;
-        this.rate15 = rate15;
-        this.rate20 = rate20;
-        this.rate25 = rate25;
-        this.rate30 = rate30;
-        this.rate35 = rate35;
-        this.rate40 = rate40;
-        this.rate45 = rate45;
-        this.rate50 = rate50;
-        this.totalFavorite = totalFavorite;
-        this.totalFollower = totalFollower;
-        this.totalFollowing = totalFollowing;
-        this.totalReview = totalReview;
-        this.totalWatchlist = totalWatchlist;
+    public UserDetail(
+            Boolean is_following,
+            Boolean is_follower,
+            Integer total_following,
+            Integer total_follower,
+            Integer total_favorite,
+            Integer total_review,
+            Integer total_watchlist,
+            String full_name,
+            String username,
+            String profile_picture
+    ) {
+        this.is_following = is_following;
+        this.is_follower = is_follower;
+        this.total_following = total_following;
+        this.total_follower = total_follower;
+        this.total_favorite = total_favorite;
+        this.total_review = total_review;
+        this.total_watchlist = total_watchlist;
+        this.full_name = full_name;
         this.username = username;
+        this.profile_picture = profile_picture;
     }
 
-    public Boolean getFollowingStatus() {
-        return followingStatus;
+    public Boolean getIs_following() {
+        return is_following;
     }
 
-    public Boolean getFollowerStatus() {
-        return followerStatus;
+    public void setIs_following(Boolean is_following) {
+        this.is_following = is_following;
     }
 
-    public String getFullName() {
-        return fullName;
+    public Boolean getIs_follower() {
+        return is_follower;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public void setIs_follower(Boolean is_follower) {
+        this.is_follower = is_follower;
     }
 
-    public String getRate05() {
-        return rate05;
+    public Integer getTotal_following() {
+        return total_following;
     }
 
-    public String getRate10() {
-        return rate10;
+    public void setTotal_following(Integer total_following) {
+        this.total_following = total_following;
     }
 
-    public String getRate15() {
-        return rate15;
+    public Integer getTotal_follower() {
+        return total_follower;
     }
 
-    public String getRate20() {
-        return rate20;
+    public void setTotal_follower(Integer total_follower) {
+        this.total_follower = total_follower;
     }
 
-    public String getRate25() {
-        return rate25;
+    public Integer getTotal_favorite() {
+        return total_favorite;
     }
 
-    public String getRate30() {
-        return rate30;
+    public void setTotal_favorite(Integer total_favorite) {
+        this.total_favorite = total_favorite;
     }
 
-    public String getRate35() {
-        return rate35;
+    public Integer getTotal_review() {
+        return total_review;
     }
 
-    public String getRate40() {
-        return rate40;
+    public void setTotal_review(Integer total_review) {
+        this.total_review = total_review;
     }
 
-    public String getRate45() {
-        return rate45;
+    public Integer getTotal_watchlist() {
+        return total_watchlist;
     }
 
-    public String getRate50() {
-        return rate50;
+    public void setTotal_watchlist(Integer total_watchlist) {
+        this.total_watchlist = total_watchlist;
     }
 
-    public String getTotalFavorite() {
-        return totalFavorite;
+    public String getFull_name() {
+        return full_name;
     }
 
-    public String getTotalFollower() {
-        return totalFollower;
-    }
-
-    public String getTotalFollowing() {
-        return totalFollowing;
-    }
-
-    public String getTotalReview() {
-        return totalReview;
-    }
-
-    public String getTotalWatchlist() {
-        return totalWatchlist;
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setFollowingStatus(Boolean followingStatus) {
-        this.followingStatus = followingStatus;
-    }
-
-    public void setFollowerStatus(Boolean followerStatus) {
-        this.followerStatus = followerStatus;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public void setRate05(String rate05) {
-        this.rate05 = rate05;
-    }
-
-    public void setRate10(String rate10) {
-        this.rate10 = rate10;
-    }
-
-    public void setRate15(String rate15) {
-        this.rate15 = rate15;
-    }
-
-    public void setRate20(String rate20) {
-        this.rate20 = rate20;
-    }
-
-    public void setRate25(String rate25) {
-        this.rate25 = rate25;
-    }
-
-    public void setRate30(String rate30) {
-        this.rate30 = rate30;
-    }
-
-    public void setRate35(String rate35) {
-        this.rate35 = rate35;
-    }
-
-    public void setRate40(String rate40) {
-        this.rate40 = rate40;
-    }
-
-    public void setRate45(String rate45) {
-        this.rate45 = rate45;
-    }
-
-    public void setRate50(String rate50) {
-        this.rate50 = rate50;
-    }
-
-    public void setTotalFavorite(String totalFavorite) {
-        this.totalFavorite = totalFavorite;
-    }
-
-    public void setTotalFollower(String totalFollower) {
-        this.totalFollower = totalFollower;
-    }
-
-    public void setTotalFollowing(String totalFollowing) {
-        this.totalFollowing = totalFollowing;
-    }
-
-    public void setTotalReview(String totalReview) {
-        this.totalReview = totalReview;
-    }
-
-    public void setTotalWatchlist(String totalWatchlist) {
-        this.totalWatchlist = totalWatchlist;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
+    }
+
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 }
