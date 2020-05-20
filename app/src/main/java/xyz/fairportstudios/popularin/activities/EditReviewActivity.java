@@ -81,6 +81,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
             @Override
             public void onSuccess(ReviewDetail reviewDetail) {
                 // Date
+                /*
                 ParseDate parseDate = new ParseDate();
                 Calendar calendar = Calendar.getInstance();
                 year = Integer.valueOf(parseDate.getYear(reviewDetail.getWatch_date()));
@@ -107,6 +108,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
                 Glide.with(context).load(poster).apply(requestOptions).into(filmPoster);
                 progressBar.setVisibility(View.GONE);
                 linearLayout.setVisibility(View.VISIBLE);
+                 */
             }
 
             @Override

@@ -7,9 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,27 +18,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.CommentRequest;
-import xyz.fairportstudios.popularin.apis.popularin.post.AddCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class ReviewCommentFragment extends Fragment {
+    // Member
     private Boolean isAuth;
+    private Button buttonComment;
     private Context context;
-    private RelativeLayout layout;
-    private List<Comment> commentList;
+    private EditText inputComment;
+    private LinearLayout notFoundLayout;
+    private RelativeLayout anchorLayout;
     private ProgressBar progressBar;
-    private TextInputEditText inputComment;
-    private TextView emptyComment;
+    private RecyclerView recyclerView;
+
+    // Constructor
     private String reviewID;
 
     public ReviewCommentFragment(String reviewID) {
@@ -51,19 +53,34 @@ public class ReviewCommentFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        layout = view.findViewById(R.id.layout_frc_anchor);
+        buttonComment = view.findViewById(R.id.button_frc_comment);
+        inputComment = view.findViewById(R.id.input_frc_comment);
+        notFoundLayout = view.findViewById(R.id.layout_frc_not_found);
+        anchorLayout = view.findViewById(R.id.layout_frc_anchor);
         progressBar = view.findViewById(R.id.pbr_frc_layout);
-        inputComment = view.findViewById(R.id.text_frc_comment);
-        emptyComment = view.findViewById(R.id.text_frc_empty);
-        Button buttonComment = view.findViewById(R.id.button_frc_comment);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_frc_layout);
+        recyclerView = view.findViewById(R.id.recycler_frc_layout);
 
         // Auth
         isAuth = new Auth(context).isAuth();
 
-        // List
-        commentList = new ArrayList<>();
+        // Mendapatkan data
+        getComment();
 
+        // Activity
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isAuth) {
+                    buttonComment.setEnabled(false);
+                    String comment = inputComment.getText().toString();
+                    addComment(comment);
+                } else {
+                    gotoEmptyAccount();
+                }
+            }
+        });
+
+        /*
         // GET
         CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView);
         String requestURL = commentRequest.getRequestURL(reviewID, 1);
@@ -76,13 +93,11 @@ public class ReviewCommentFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyComment.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyComment.setVisibility(View.VISIBLE);
                 Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
@@ -117,7 +132,42 @@ public class ReviewCommentFragment extends Fragment {
                 }
             }
         });
+         */
 
         return view;
+    }
+
+    private void getComment() {
+        List<Comment> commentList = new ArrayList<>();
+
+        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView);
+        String requestURL = commentRequest.getRequestURL(reviewID, 1);
+        commentRequest.sendRequest(requestURL, new CommentRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onEmpty() {
+                notFoundLayout.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                notFoundLayout.setVisibility(View.VISIBLE);
+                Snackbar.make(anchorLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addComment(String comment) {
+
+    }
+
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(context, EmptyAccountActivity.class);
+        context.startActivity(intent);
     }
 }

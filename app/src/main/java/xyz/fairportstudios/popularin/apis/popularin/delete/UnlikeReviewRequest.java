@@ -35,9 +35,9 @@ public class UnlikeReviewRequest {
     public void sendRequest(final APICallback callback) {
         final Auth auth = new Auth(context);
 
-        String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
+        final String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
 
-        JsonObjectRequest unlikeReviewRequest = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest unlikeReview = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -63,12 +63,12 @@ public class UnlikeReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(unlikeReviewRequest);
+        Volley.newRequestQueue(context).add(unlikeReview);
     }
 }

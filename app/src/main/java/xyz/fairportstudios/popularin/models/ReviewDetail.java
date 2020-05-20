@@ -3,35 +3,46 @@ package xyz.fairportstudios.popularin.models;
 public class ReviewDetail {
     private Integer film_id;
     private Integer user_id;
-    private Boolean liked;
+    private Integer total_like;
+    private Boolean is_liked;
     private Double rating;
-    private Integer likes;
-    private String poster;
+    private String review_detail;
+    private String review_date;
     private String title;
     private String release_date;
-    private String review_date;
-    private String watch_date;
-    private String review_text;
-    private String first_name;
+    private String poster;
+    private String full_name;
     private String profile_picture;
 
     public ReviewDetail() {
         // Empty constructor
     }
 
-    public ReviewDetail(Integer film_id, Integer user_id, Boolean liked, Double rating, Integer likes, String poster, String title, String release_date, String review_date, String watch_date, String review_text, String first_name, String profile_picture) {
+    public ReviewDetail(
+            Integer film_id,
+            Integer user_id,
+            Integer total_like,
+            Boolean is_liked,
+            Double rating,
+            String review_detail,
+            String review_date,
+            String title,
+            String release_date,
+            String poster,
+            String full_name,
+            String profile_picture
+    ) {
         this.film_id = film_id;
         this.user_id = user_id;
-        this.liked = liked;
+        this.total_like = total_like;
+        this.is_liked = is_liked;
         this.rating = rating;
-        this.likes = likes;
-        this.poster = poster;
+        this.review_detail = review_detail;
+        this.review_date = review_date;
         this.title = title;
         this.release_date = release_date;
-        this.review_date = review_date;
-        this.watch_date = watch_date;
-        this.review_text = review_text;
-        this.first_name = first_name;
+        this.poster = poster;
+        this.full_name = full_name;
         this.profile_picture = profile_picture;
     }
 
@@ -39,100 +50,92 @@ public class ReviewDetail {
         return film_id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public Boolean getLiked() {
-        return liked;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public String getReview_date() {
-        return review_date;
-    }
-
-    public String getWatch_date() {
-        return watch_date;
-    }
-
-    public String getReview_text() {
-        return review_text;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
     public void setFilm_id(Integer film_id) {
         this.film_id = film_id;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
     }
 
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
 
-    public void setLiked(Boolean liked) {
-        this.liked = liked;
+    public Integer getTotal_like() {
+        return total_like;
+    }
+
+    public void setTotal_like(Integer total_like) {
+        this.total_like = total_like;
+    }
+
+    public Boolean getIs_liked() {
+        return is_liked;
+    }
+
+    public void setIs_liked(Boolean is_liked) {
+        this.is_liked = is_liked;
+    }
+
+    public Double getRating() {
+        return rating;
     }
 
     public void setRating(Double rating) {
         this.rating = rating;
     }
 
-    public void setLikes(Integer likes) {
-        this.likes = likes;
+    public String getReview_detail() {
+        return review_detail;
     }
 
-    public void setPoster(String poster) {
-        this.poster = poster;
+    public void setReview_detail(String review_detail) {
+        this.review_detail = review_detail;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
+    public String getReview_date() {
+        return review_date;
     }
 
     public void setReview_date(String review_date) {
         this.review_date = review_date;
     }
 
-    public void setWatch_date(String watch_date) {
-        this.watch_date = watch_date;
+    public String getTitle() {
+        return title;
     }
 
-    public void setReview_text(String review_text) {
-        this.review_text = review_text;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
     public void setProfile_picture(String profile_picture) {

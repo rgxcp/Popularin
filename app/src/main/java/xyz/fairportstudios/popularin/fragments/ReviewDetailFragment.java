@@ -7,22 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
@@ -37,34 +35,39 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class ReviewDetailFragment extends Fragment {
+    // Member
     private Boolean isAuth;
     private Boolean isLiked;
     private Context context;
-    private CoordinatorLayout layout;
-    private ImageView userProfile;
-    private ImageView filmPoster;
-    private ImageView star;
-    private ImageView like;
-    private Integer currentLikes;
-    private Integer likes;
+    private ImageView imageUserProfile;
+    private ImageView imageFilmPoster;
+    private ImageView imageReviewStar;
+    private ImageView imageLike;
+    private Integer rating;
+    private Integer currentLike;
+    private Integer totalLike;
+    private LinearLayout notFoundLayout;
     private ProgressBar progressBar;
+    private RelativeLayout anchorLayot;
     private ScrollView scrollView;
     private String userID;
     private String filmID;
+    private String filmTitle;
+    private String filmYear;
+    private String filmPoster;
+    private TextView textUserFullName;
+    private TextView textFilmTitle;
+    private TextView textFilmYear;
+    private TextView textReviewDate;
+    private TextView textReviewDetail;
+    private TextView textLikeStatus;
+    private TextView textTotalLike;
+
+    // Constructor
     private String reviewID;
-    private String title;
-    private String year;
-    private String poster;
-    private TextView userFirstName;
-    private TextView filmTitle;
-    private TextView filmYear;
-    private TextView reviewDate;
-    private TextView reviewText;
-    private TextView likeStatus;
-    private TextView totalLike;
-    private TextView emptyResult;
 
     public ReviewDetailFragment(String reviewID) {
         this.reviewID = reviewID;
@@ -77,61 +80,112 @@ public class ReviewDetailFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        layout = view.findViewById(R.id.layout_frd_anchor);
-        userProfile = view.findViewById(R.id.image_frd_profile);
-        filmPoster = view.findViewById(R.id.image_frd_poster);
-        star = view.findViewById(R.id.image_frd_star);
-        like = view.findViewById(R.id.icon_frd_like);
+        imageUserProfile = view.findViewById(R.id.image_frd_profile);
+        imageFilmPoster = view.findViewById(R.id.image_frd_poster);
+        imageReviewStar = view.findViewById(R.id.image_frd_star);
+        imageLike = view.findViewById(R.id.icon_frd_like);
+        notFoundLayout = view.findViewById(R.id.layout_frd_not_found);
         progressBar = view.findViewById(R.id.pbr_frd_layout);
+        anchorLayot = view.findViewById(R.id.layout_frd_anchor);
         scrollView = view.findViewById(R.id.scroll_frd_anchor);
-        userFirstName = view.findViewById(R.id.text_frd_first_name);
-        filmTitle = view.findViewById(R.id.text_frd_title);
-        filmYear = view.findViewById(R.id.text_frd_year);
-        reviewDate = view.findViewById(R.id.text_frd_date);
-        reviewText = view.findViewById(R.id.text_frd_detail);
-        likeStatus = view.findViewById(R.id.text_frd_like_status);
-        totalLike = view.findViewById(R.id.text_frd_total_like);
-        emptyResult = view.findViewById(R.id.text_frd_empty);
+        textUserFullName = view.findViewById(R.id.text_frd_full_name);
+        textFilmTitle = view.findViewById(R.id.text_frd_title);
+        textFilmYear = view.findViewById(R.id.text_frd_year);
+        textReviewDate = view.findViewById(R.id.text_frd_date);
+        textReviewDetail = view.findViewById(R.id.text_frd_detail);
+        textLikeStatus = view.findViewById(R.id.text_frd_like_status);
+        textTotalLike = view.findViewById(R.id.text_frd_total_like);
 
         // Auth
         isAuth = new Auth(context).isAuth();
 
-        // GET
+        // Mendapatkan data
+        getReviewDetail();
+
+        // Activity
+        imageUserProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoUserDetail();
+            }
+        });
+
+        imageFilmPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoFilmDetail();
+            }
+        });
+
+        imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showFilmStatusModal();
+                return true;
+            }
+        });
+
+        imageLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isAuth) {
+                    if (!isLiked) {
+                        likeReview();
+                    } else {
+                        unlikeReview();
+                    }
+                } else {
+                    gotoEmptyAccount();
+                }
+            }
+        });
+
+        textTotalLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoUserList();
+            }
+        });
+
+        return view;
+    }
+
+    private void getReviewDetail() {
         ReviewDetailRequest reviewDetailRequest = new ReviewDetailRequest(context, reviewID);
         reviewDetailRequest.sendRequest(new ReviewDetailRequest.APICallback() {
             @Override
             public void onSuccess(ReviewDetail reviewDetail) {
-                // Like
-                isLiked = reviewDetail.getLiked();
-                if (isLiked) {
-                    like.setImageResource(R.drawable.ic_favorite_filled);
-                    likeStatus.setText(R.string.liked);
-                }
+                // ID
+                filmID = String.valueOf(reviewDetail.getFilm_id());
+                userID = String.valueOf(reviewDetail.getUser_id());
 
                 // Parsing
-                Integer rating = new ParseStar().getStar(reviewDetail.getRating());
-                String date = new ParseDate().getDate(reviewDetail.getReview_date());
-                title = reviewDetail.getTitle();
-                year = new ParseDate().getYear(reviewDetail.getRelease_date());
-                poster = new ParseImage().getImage(reviewDetail.getPoster());
+                filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
+                filmPoster = new ParseImage().getImage(reviewDetail.getPoster());
+                rating = new ParseStar().getStar(reviewDetail.getRating());
+                String reviewDate = new ParseDate().getDate(reviewDetail.getReview_date());
 
-                // Request gambar
-                RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+                // Getter
+                isLiked = reviewDetail.getIs_liked();
+                totalLike = reviewDetail.getTotal_like();
+                filmTitle = reviewDetail.getTitle();
 
-                // Mengisi data
-                userID = String.valueOf(reviewDetail.getUser_id());
-                likes = reviewDetail.getLikes();
-                filmID = String.valueOf(reviewDetail.getFilm_id());
-                userFirstName.setText(reviewDetail.getFirst_name());
-                filmTitle.setText(title);
-                filmYear.setText(year);
-                reviewDate.setText(date);
-                reviewText.setText(reviewDetail.getReview_text());
-                totalLike.setText(String.format("Total %s", String.valueOf(likes)));
-                star.setImageResource(rating);
-                Glide.with(Objects.requireNonNull(context)).load(reviewDetail.getProfile_picture()).apply(requestOptions).into(userProfile);
-                Glide.with(Objects.requireNonNull(context)).load(poster).apply(requestOptions).into(filmPoster);
+                // Status
+                if (isLiked) {
+                    imageLike.setImageResource(R.drawable.ic_favorite_fill);
+                    textLikeStatus.setText(R.string.liked);
+                }
 
+                // Setter
+                textUserFullName.setText(reviewDetail.getFull_name());
+                textFilmTitle.setText(filmTitle);
+                textFilmYear.setText(filmYear);
+                textReviewDate.setText(reviewDate);
+                textReviewDetail.setText(reviewDetail.getReview_detail());
+                textTotalLike.setText(String.format("Total %s", String.valueOf(totalLike)));
+                imageReviewStar.setImageResource(rating);
+                Glide.with(context).load(filmPoster).into(imageFilmPoster);
+                Glide.with(context).load(reviewDetail.getProfile_picture()).into(imageUserProfile);
                 progressBar.setVisibility(View.GONE);
                 scrollView.setVisibility(View.VISIBLE);
             }
@@ -139,99 +193,78 @@ public class ReviewDetailFragment extends Fragment {
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                notFoundLayout.setVisibility(View.VISIBLE);
+                Snackbar.make(anchorLayot, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
-        // Activity
-        userProfile.setOnClickListener(new View.OnClickListener() {
+    private void gotoUserDetail() {
+        Intent intent = new Intent(context, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        context.startActivity(intent);
+    }
+
+    private void gotoFilmDetail() {
+        Intent intent = new Intent(context, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, filmID);
+        context.startActivity(intent);
+    }
+
+    private void showFilmStatusModal() {
+        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, filmTitle, filmYear, filmPoster);
+        filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+    }
+
+    private void likeReview() {
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
+        likeReviewRequest.sendRequest(new LikeReviewRequest.APICallback() {
             @Override
-            public void onClick(View view) {
-                Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
-                gotoUserDetail.putExtra("USER_ID", userID);
-                context.startActivity(gotoUserDetail);
+            public void onSuccess() {
+                imageLike.setImageResource(R.drawable.ic_favorite_fill);
+                currentLike = totalLike + 1;
+                textTotalLike.setText(String.format("Total %s", String.valueOf(currentLike)));
+                isLiked = true;
+                totalLike++;
+                Snackbar.make(anchorLayot, R.string.review_liked, Snackbar.LENGTH_SHORT).show();
             }
-        });
 
-        filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+            public void onError() {
+                Snackbar.make(anchorLayot, R.string.failed_like_review, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
-        filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+    private void unlikeReview() {
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
+        unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.APICallback() {
             @Override
-            public boolean onLongClick(View view) {
-                FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
-                return true;
+            public void onSuccess() {
+                imageLike.setImageResource(R.drawable.ic_favorite_outline);
+                currentLike = totalLike - 1;
+                textTotalLike.setText(String.format("Total %s", String.valueOf(currentLike)));
+                isLiked = false;
+                totalLike--;
+                Snackbar.make(anchorLayot, R.string.review_unliked, Snackbar.LENGTH_SHORT).show();
             }
-        });
 
-        like.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (isAuth) {
-                    if (!isLiked) {
-                        // POST
-                        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
-                        likeReviewRequest.sendRequest(new LikeReviewRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                like.setImageResource(R.drawable.ic_favorite_filled);
-                                currentLikes = likes + 1;
-                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                isLiked = true;
-                                likes++;
-                                Snackbar.make(layout, R.string.review_liked, Snackbar.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                Snackbar.make(layout, R.string.like_error, Snackbar.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        // DELETE
-                        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
-                        unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.APICallback() {
-                            @Override
-                            public void onSuccess() {
-                                like.setImageResource(R.drawable.ic_favorite_blank);
-                                currentLikes = likes - 1;
-                                totalLike.setText(String.format("Total %s", String.valueOf(currentLikes)));
-                                isLiked = false;
-                                likes--;
-                                Snackbar.make(layout, R.string.review_unliked, Snackbar.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError() {
-                                Snackbar.make(layout, R.string.unlike_error, Snackbar.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(gotoEmptyUser);
-                }
+            public void onError() {
+                Snackbar.make(anchorLayot, R.string.failed_unlike_review, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
-        totalLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoUserList = new Intent(context, LikedByActivity.class);
-                gotoUserList.putExtra("REVIEW_ID", reviewID);
-                startActivity(gotoUserList);
-            }
-        });
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(context, EmptyAccountActivity.class);
+        context.startActivity(intent);
+    }
 
-        return view;
+    private void gotoUserList() {
+        Intent intent = new Intent(context, LikedByActivity.class);
+        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        context.startActivity(intent);
     }
 }

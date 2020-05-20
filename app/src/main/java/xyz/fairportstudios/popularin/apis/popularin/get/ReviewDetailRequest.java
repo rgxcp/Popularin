@@ -17,9 +17,6 @@ import java.util.Map;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
-import xyz.fairportstudios.popularin.services.ParseStar;
 
 public class ReviewDetailRequest {
     private Context context;
@@ -39,33 +36,32 @@ public class ReviewDetailRequest {
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.REVIEW + "/" + id;
 
-        JsonObjectRequest reviewDetailRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest reviewDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONObject jsonObjectReview = jsonObjectResult.getJSONObject("review");
-                        JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
-                        JSONObject jsonObjectFilm = jsonObjectReview.getJSONObject("film");
-                        JSONObject jsonObjectUser = jsonObjectReview.getJSONObject("user");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONObject reviewObject = resultObject.getJSONObject("review");
+                        JSONObject metadataObject = resultObject.getJSONObject("metadata");
+                        JSONObject filmObject = reviewObject.getJSONObject("film");
+                        JSONObject userObject = reviewObject.getJSONObject("user");
 
                         ReviewDetail reviewDetail = new ReviewDetail();
-                        reviewDetail.setFilm_id(jsonObjectFilm.getInt("tmdb_id"));
-                        reviewDetail.setUser_id(jsonObjectUser.getInt("id"));
-                        reviewDetail.setLiked(jsonObjectMetadata.getBoolean("liked"));
-                        reviewDetail.setRating(jsonObjectReview.getDouble("rating"));
-                        reviewDetail.setLikes(jsonObjectMetadata.getInt("likes"));
-                        reviewDetail.setPoster(jsonObjectFilm.getString("poster"));
-                        reviewDetail.setTitle(jsonObjectFilm.getString("title"));
-                        reviewDetail.setRelease_date(jsonObjectFilm.getString("release_date"));
-                        reviewDetail.setReview_date(jsonObjectReview.getString("review_date"));
-                        reviewDetail.setWatch_date(jsonObjectReview.getString("watch_date"));
-                        reviewDetail.setReview_text(jsonObjectReview.getString("review_text"));
-                        reviewDetail.setFirst_name(jsonObjectUser.getString("first_name"));
-                        reviewDetail.setProfile_picture(jsonObjectUser.getString("profile_picture"));
+                        reviewDetail.setFilm_id(filmObject.getInt("tmdb_id"));
+                        reviewDetail.setUser_id(userObject.getInt("id"));
+                        reviewDetail.setTotal_like(metadataObject.getInt("total_like"));
+                        reviewDetail.setIs_liked(metadataObject.getBoolean("is_liked"));
+                        reviewDetail.setRating(reviewObject.getDouble("rating"));
+                        reviewDetail.setReview_detail(reviewObject.getString("review_detail"));
+                        reviewDetail.setReview_date(reviewObject.getString("review_date"));
+                        reviewDetail.setTitle(filmObject.getString("title"));
+                        reviewDetail.setRelease_date(filmObject.getString("release_date"));
+                        reviewDetail.setPoster(filmObject.getString("poster"));
+                        reviewDetail.setFull_name(userObject.getString("full_name"));
+                        reviewDetail.setProfile_picture(userObject.getString("profile_picture"));
                         callback.onSuccess(reviewDetail);
                     } else {
                         callback.onError();
@@ -85,11 +81,11 @@ public class ReviewDetailRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(reviewDetailRequest);
+        Volley.newRequestQueue(context).add(reviewDetail);
     }
 }

@@ -24,7 +24,6 @@ import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.ParseDate;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private Context context;
@@ -64,12 +63,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         // Request gambar
         RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
 
-        // Parsing
-        String date = new ParseDate().getDate(commentList.get(position).getComment_date());
-
         // Mengisi data
         holder.userFirstName.setText(commentList.get(position).getFirst_name());
-        holder.commentDate.setText(date);
+        holder.commentDate.setText(commentList.get(position).getTimestamp());
         holder.commentDetail.setText(commentList.get(position).getComment_text());
         Glide.with(context).load(commentList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
 

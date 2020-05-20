@@ -60,17 +60,17 @@ public class CommentRequest {
                         JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
 
                         for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                            JSONObject objectIndex = jsonArrayData.getJSONObject(index);
+                            JSONObject userObject = objectIndex.getJSONObject("user");
 
                             Comment comment = new Comment();
-                            comment.setId(jsonObject.getInt("id"));
-                            comment.setUser_id(jsonObjectUser.getInt("id"));
-                            comment.setComment_date(jsonObject.getString("comment_date"));
-                            comment.setComment_text(jsonObject.getString("comment_text"));
-                            comment.setFirst_name(jsonObjectUser.getString("first_name"));
-                            comment.setProfile_picture(jsonObjectUser.getString("profile_picture"));
-
+                            comment.setId(objectIndex.getInt("id"));
+                            comment.setUser_id(userObject.getInt("id"));
+                            comment.setComment_detail(objectIndex.getString("comment_detail"));
+                            comment.setComment_text(objectIndex.getString("comment_detail"));
+                            comment.setTimestamp(objectIndex.getString("timestamp"));
+                            comment.setFirst_name(userObject.getString("first_name"));
+                            comment.setProfile_picture(userObject.getString("profile_picture"));
                             commentList.add(comment);
                         }
 

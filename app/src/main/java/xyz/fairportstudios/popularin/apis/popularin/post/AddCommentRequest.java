@@ -55,6 +55,7 @@ public class AddCommentRequest {
                     int status = jsonObject.getInt("status");
 
                     if (status == 202) {
+                        /*
                         JSONObject jsonObjectResult = jsonObject.getJSONObject("result");
                         JSONObject jsonObjectComment = jsonObjectResult.getJSONObject("comment");
                         JSONObject jsonObjectUser = jsonObjectResult.getJSONObject("user");
@@ -71,6 +72,7 @@ public class AddCommentRequest {
                         CommentAdapter commentAdapter = new CommentAdapter(context, commentList);
                         commentAdapter.notifyItemInserted(commentList.size());
                         callback.onSuccess();
+                         */
                     } else if (status == 626) {
                         JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
                         String message = jsonArrayResult.getString(0);
