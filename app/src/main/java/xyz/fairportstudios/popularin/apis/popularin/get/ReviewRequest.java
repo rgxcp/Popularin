@@ -27,7 +27,11 @@ public class ReviewRequest {
     private List<Review> reviewList;
     private RecyclerView recyclerView;
 
-    public ReviewRequest(Context context, List<Review> reviewList, RecyclerView recyclerView) {
+    public ReviewRequest(
+            Context context,
+            List<Review> reviewList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
         this.reviewList = reviewList;
         this.recyclerView = recyclerView;
@@ -35,6 +39,8 @@ public class ReviewRequest {
 
     public interface APICallback {
         void onSuccess();
+
+        void onEmpty();
 
         void onError();
     }
@@ -50,33 +56,40 @@ public class ReviewRequest {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                    int status = response.getInt("status");
 
-                    for (int index = 0; index < jsonArrayData.length(); index++) {
-                        JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                        JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
-                        JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                    if (status == 101) {
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        Review review = new Review();
-                        review.setId(jsonObject.getInt("id"));
-                        review.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                        review.setUser_id(jsonObjectUser.getInt("id"));
-                        review.setRating(jsonObject.getDouble("rating"));
-                        review.setFirst_name(jsonObjectUser.getString("first_name"));
-                        review.setPoster(jsonObjectFilm.getString("poster"));
-                        review.setProfile_picture(jsonObjectUser.getString("profile_picture"));
-                        review.setRelease_date(jsonObjectFilm.getString("release_date"));
-                        review.setReview_text(jsonObject.getString("review_text"));
-                        review.setTitle(jsonObjectFilm.getString("title"));
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject reviewObject = dataArray.getJSONObject(index);
+                            JSONObject filmObject = reviewObject.getJSONObject("film");
+                            JSONObject userObject = reviewObject.getJSONObject("user");
 
-                        reviewList.add(review);
+                            Review review = new Review();
+                            review.setId(reviewObject.getInt("id"));
+                            review.setTmdb_id(filmObject.getInt("tmdb_id"));
+                            review.setUser_id(userObject.getInt("id"));
+                            review.setRating(reviewObject.getDouble("rating"));
+                            review.setTitle(filmObject.getString("title"));
+                            review.setPoster(filmObject.getString("poster"));
+                            review.setRelease_date(filmObject.getString("release_date"));
+                            review.setFirst_name(userObject.getString("first_name"));
+                            review.setProfile_picture(userObject.getString("profile_picture"));
+                            review.setReview_detail(reviewObject.getString("review_detail"));
+                            review.setTimestamp(reviewObject.getString("timestamp"));
+                            reviewList.add(review);
+                        }
+
+                        ReviewAdapter reviewAdapter = new ReviewAdapter(context, reviewList);
+                        recyclerView.setAdapter(reviewAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                        recyclerView.setVisibility(View.VISIBLE);
+                        callback.onSuccess();
+                    } else {
+                        callback.onEmpty();
                     }
-
-                    ReviewAdapter reviewAdapter = new ReviewAdapter(context, reviewList);
-                    recyclerView.setAdapter(reviewAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    recyclerView.setVisibility(View.VISIBLE);
-                    callback.onSuccess();
                 } catch (JSONException exception) {
                     exception.printStackTrace();
                     callback.onError();
