@@ -20,12 +20,12 @@ public class FavoritedByActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.global_toolbar_pager);
+        setContentView(R.layout.reusable_toolbar_pager);
 
         // Binding
-        TabLayout tabLayout = findViewById(R.id.tab_gtp_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_gtp_layout);
-        ViewPager viewPager = findViewById(R.id.pager_gtp_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_rtp_layout);
+        ViewPager viewPager = findViewById(R.id.pager_rtp_layout);
 
         // Extra
         Intent intent = getIntent();

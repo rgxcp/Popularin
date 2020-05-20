@@ -6,25 +6,25 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_gtp_layout"
+        android:id="@+id/toolbar_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/blackPrimary"
         app:navigationIcon="@drawable/ic_back"
-        app:titleTextColor="#FFFFFF" />
+        app:titleTextColor="@color/whitePrimary" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_gtp_layout"
+        android:id="@+id/tab_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/blackPrimary"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorAccent"
+        app:tabIndicatorColor="@color/colorPrimary"
         app:tabMode="fixed"
-        app:tabTextColor="#FFFFFF" />
+        app:tabTextColor="@color/whitePrimary" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager_gtp_layout"
+        android:id="@+id/pager_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
