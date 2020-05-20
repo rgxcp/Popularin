@@ -26,13 +26,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="16dp">
+            android:orientation="vertical">
 
             <com.github.florent37.shapeofview.shapes.CircleView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp">
 
                 <ImageView
                     android:id="@+id/image_fa_profile"
@@ -207,13 +207,29 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button_fa_edit_profile"
-                style="@style/ButtonPrimary"
-                android:layout_height="35dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/edit_profile" />
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/button_fa_edit_profile"
+                    style="@style/ButtonPrimary"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/edit_profile" />
+
+                <Button
+                    android:id="@+id/button_fa_sign_out"
+                    style="@style/ButtonPrimary"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_red"
+                    android:text="@string/sign_out" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -280,6 +296,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/recent_review_fa_anchor"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone" />
             </RelativeLayout>
         </LinearLayout>

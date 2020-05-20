@@ -25,13 +25,16 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.activities.SocialActivity;
 import xyz.fairportstudios.popularin.activities.UserFavoriteActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserWatchlistActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.AccountDetailRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.SignOutRequest;
 import xyz.fairportstudios.popularin.models.AccountDetail;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
@@ -39,6 +42,7 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.Popularin;
 
 public class AccountFragment extends Fragment {
+    private Button buttonSignOut;
     private Context context;
     private CoordinatorLayout layout;
     private ImageView imageProfile;
@@ -62,6 +66,7 @@ public class AccountFragment extends Fragment {
 
         // Binding
         context = getActivity();
+        buttonSignOut = view.findViewById(R.id.button_fa_sign_out);
         layout = view.findViewById(R.id.layout_fa_anchor);
         imageProfile = view.findViewById(R.id.image_fa_profile);
         imageEmptyRecentFavorite = view.findViewById(R.id.image_fa_empty_recent_favorite);
@@ -194,6 +199,34 @@ public class AccountFragment extends Fragment {
             }
         });
 
+        buttonSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonSignOut.setEnabled(false);
+                buttonSignOut.setText(R.string.loading);
+                signOut();
+            }
+        });
+
         return view;
+    }
+
+    private void signOut() {
+        SignOutRequest signOutRequest = new SignOutRequest(context);
+        signOutRequest.sendRequest(new SignOutRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                Objects.requireNonNull(getActivity()).finish();
+            }
+
+            @Override
+            public void onError() {
+                buttonSignOut.setEnabled(true);
+                buttonSignOut.setText(R.string.sign_out);
+                Snackbar.make(layout, R.string.sign_out_error, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }

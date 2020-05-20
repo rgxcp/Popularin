@@ -15,16 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignOutRequest {
     private Context context;
-    private String id;
-    private String token;
 
-    public SignOutRequest(Context context, String id, String token) {
+    public SignOutRequest(Context context) {
         this.context = context;
-        this.id = id;
-        this.token = token;
     }
 
     public interface APICallback {
@@ -34,15 +31,18 @@ public class SignOutRequest {
     }
 
     public void sendRequest(final APICallback callback) {
+        final Auth auth = new Auth(context);
+
         String requestURL = PopularinAPI.SIGN_OUT;
 
-        JsonObjectRequest signOutRequest = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest signOut = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 525) {
+                        auth.delAuth();
                         callback.onSuccess();
                     } else {
                         callback.onError();
@@ -62,12 +62,12 @@ public class SignOutRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", id);
-                headers.put("auth_token", token);
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(signOutRequest);
+        Volley.newRequestQueue(context).add(signOut);
     }
 }
