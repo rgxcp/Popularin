@@ -30,19 +30,26 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserDetailRequest {
     private Context context;
+    private String id;
     private List<RecentFavorite> recentFavoriteList;
     private List<RecentReview> recentReviewList;
-    private RecyclerView recyclerViewLatestFavorite;
-    private RecyclerView recyclerViewLatestReview;
-    private String id;
+    private RecyclerView recyclerRecentFavorite;
+    private RecyclerView recyclerRecentReview;
 
-    public UserDetailRequest(Context context, List<RecentFavorite> recentFavoriteList, List<RecentReview> recentReviewList, RecyclerView recyclerViewLatestFavorite, RecyclerView recyclerViewLatestReview, String id) {
+    public UserDetailRequest(
+            Context context,
+            String id,
+            List<RecentFavorite> recentFavoriteList,
+            List<RecentReview> recentReviewList,
+            RecyclerView recyclerRecentFavorite,
+            RecyclerView recyclerRecentReview
+    ) {
         this.context = context;
+        this.id = id;
         this.recentFavoriteList = recentFavoriteList;
         this.recentReviewList = recentReviewList;
-        this.recyclerViewLatestFavorite = recyclerViewLatestFavorite;
-        this.recyclerViewLatestReview = recyclerViewLatestReview;
-        this.id = id;
+        this.recyclerRecentFavorite = recyclerRecentFavorite;
+        this.recyclerRecentReview = recyclerRecentReview;
     }
 
     public interface APICallback {
@@ -52,67 +59,55 @@ public class UserDetailRequest {
 
         void onEmptyReview();
 
-        void onDeleted();
-
         void onError();
     }
 
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.USER + "/" + id;
 
-        JsonObjectRequest userDetailRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest userDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONObject jsonObjectUser = jsonObjectResult.getJSONObject("user");
-                        JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
-                        JSONObject jsonObjectActivity = response.getJSONObject("result").getJSONObject("activity");
+                        JSONObject result = response.getJSONObject("result");
+                        JSONObject user = result.getJSONObject("user");
+                        JSONObject metadata = result.getJSONObject("metadata");
+                        JSONObject activity = response.getJSONObject("result").getJSONObject("activity");
 
                         UserDetail userDetail = new UserDetail();
-                        userDetail.setFollowingStatus(jsonObjectMetadata.getBoolean("is_following"));
-                        userDetail.setFollowerStatus(jsonObjectMetadata.getBoolean("is_follower"));
-                        userDetail.setFullName(jsonObjectUser.getString("full_name"));
-                        userDetail.setProfilePicture(jsonObjectUser.getString("profile_picture"));
-                        userDetail.setRate05(String.valueOf(jsonObjectMetadata.getInt("rate_0.5")));
-                        userDetail.setRate10(String.valueOf(jsonObjectMetadata.getInt("rate_1.0")));
-                        userDetail.setRate15(String.valueOf(jsonObjectMetadata.getInt("rate_1.5")));
-                        userDetail.setRate20(String.valueOf(jsonObjectMetadata.getInt("rate_2.0")));
-                        userDetail.setRate25(String.valueOf(jsonObjectMetadata.getInt("rate_2.5")));
-                        userDetail.setRate30(String.valueOf(jsonObjectMetadata.getInt("rate_3.0")));
-                        userDetail.setRate35(String.valueOf(jsonObjectMetadata.getInt("rate_3.5")));
-                        userDetail.setRate40(String.valueOf(jsonObjectMetadata.getInt("rate_4.0")));
-                        userDetail.setRate45(String.valueOf(jsonObjectMetadata.getInt("rate_4.5")));
-                        userDetail.setRate50(String.valueOf(jsonObjectMetadata.getInt("rate_5.0")));
-                        userDetail.setTotalFavorite(String.valueOf(jsonObjectMetadata.getInt("favorites")));
-                        userDetail.setTotalFollower(String.valueOf(jsonObjectMetadata.getInt("followers")));
-                        userDetail.setTotalFollowing(String.valueOf(jsonObjectMetadata.getInt("followings")));
-                        userDetail.setTotalReview(String.valueOf(jsonObjectMetadata.getInt("reviews")));
-                        userDetail.setTotalWatchlist(String.valueOf(jsonObjectMetadata.getInt("watchlists")));
-                        userDetail.setUsername(String.format("@%s", jsonObjectUser.getString("username")));
+                        userDetail.setIs_following(metadata.getBoolean("is_following"));
+                        userDetail.setIs_follower(metadata.getBoolean("is_follower"));
+                        userDetail.setTotal_following(metadata.getInt("total_following"));
+                        userDetail.setTotal_follower(metadata.getInt("total_follower"));
+                        userDetail.setTotal_favorite(metadata.getInt("total_favorite"));
+                        userDetail.setTotal_review(metadata.getInt("total_review"));
+                        userDetail.setTotal_watchlist(metadata.getInt("total_watchlist"));
+                        userDetail.setFull_name(user.getString("full_name"));
+                        userDetail.setUsername(user.getString("username"));
+                        userDetail.setProfile_picture(user.getString("profile_picture"));
                         callback.onSuccess(userDetail);
 
-                        int favorites = jsonObjectMetadata.getInt("favorites");
-                        int reviews = jsonObjectMetadata.getInt("reviews");
+                        int totalFavorite = metadata.getInt("total_favorite");
+                        int totalReview = metadata.getInt("total_review");
 
-                        if (favorites == 0) {
-                            callback.onEmptyFavorite();
+                        if (totalFavorite > 0) {
+                            JSONArray recentFavorites = activity.getJSONArray("recent_favorites");
+                            getRecentFavorites(recentFavorites);
                         } else {
-                            JSONArray jsonArrayFavorites = jsonObjectActivity.getJSONArray("favorites");
-                            getUserLatestFavorite(jsonArrayFavorites);
+                            callback.onEmptyFavorite();
                         }
 
-                        if (reviews == 0) {
-                            callback.onEmptyReview();
+                        if (totalReview > 0) {
+                            JSONArray recentReviews = activity.getJSONArray("recent_reviews");
+                            getRecentReviews(recentReviews);
                         } else {
-                            JSONArray jsonArrayReviews = jsonObjectActivity.getJSONArray("reviews");
-                            getUserLatestReview(jsonArrayReviews);
+                            callback.onEmptyReview();
                         }
                     } else {
-                        callback.onDeleted();
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -129,59 +124,57 @@ public class UserDetailRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(userDetailRequest);
+        Volley.newRequestQueue(context).add(userDetail);
     }
 
-    private void getUserLatestFavorite(JSONArray jsonArrayFavorites) {
+    private void getRecentFavorites(JSONArray recentFavorites) {
         try {
-            for (int index = 0; index < jsonArrayFavorites.length(); index++) {
-                JSONObject jsonObject = jsonArrayFavorites.getJSONObject(index);
-                JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
+            for (int index = 0; index < recentFavorites.length(); index++) {
+                JSONObject response = recentFavorites.getJSONObject(index);
+                JSONObject film = response.getJSONObject("film");
 
                 RecentFavorite recentFavorite = new RecentFavorite();
-                recentFavorite.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                recentFavorite.setPoster(jsonObjectFilm.getString("poster"));
-                recentFavorite.setRelease_date(jsonObjectFilm.getString("release_date"));
-                recentFavorite.setTitle(jsonObjectFilm.getString("title"));
-
+                recentFavorite.setTmdb_id(film.getInt("tmdb_id"));
+                recentFavorite.setTitle(film.getString("title"));
+                recentFavorite.setRelease_date(film.getString("release_date"));
+                recentFavorite.setPoster(film.getString("poster"));
                 recentFavoriteList.add(recentFavorite);
             }
 
             RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavoriteList);
-            recyclerViewLatestFavorite.setAdapter(recentFavoriteAdapter);
-            recyclerViewLatestFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            recyclerViewLatestFavorite.setVisibility(View.VISIBLE);
+            recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
+            recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+            recyclerRecentFavorite.setVisibility(View.VISIBLE);
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
     }
 
-    private void getUserLatestReview(JSONArray jsonArrayReviews) {
+    private void getRecentReviews(JSONArray recentReviews) {
         try {
-            for (int index = 0; index < jsonArrayReviews.length(); index++) {
-                JSONObject jsonObject = jsonArrayReviews.getJSONObject(index);
-                JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
+            for (int index = 0; index < recentReviews.length(); index++) {
+                JSONObject response = recentReviews.getJSONObject(index);
+                JSONObject film = response.getJSONObject("film");
 
-                RecentReview recentReview = new RecentReview();
-                recentReview.setId(jsonObject.getInt("id"));
-                recentReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                recentReview.setRating(jsonObject.getDouble("rating"));
-                recentReview.setPoster(jsonObjectFilm.getString("poster"));
-                recentReview.setRelease_date(jsonObjectFilm.getString("release_date"));
-                recentReview.setTitle(jsonObjectFilm.getString("title"));
-
-                recentReviewList.add(recentReview);
+                RecentReview latestReview = new RecentReview();
+                latestReview.setId(response.getInt("id"));
+                latestReview.setTmdb_id(film.getInt("tmdb_id"));
+                latestReview.setRating(response.getDouble("rating"));
+                latestReview.setTitle(film.getString("title"));
+                latestReview.setRelease_date(film.getString("release_date"));
+                latestReview.setPoster(film.getString("poster"));
+                recentReviewList.add(latestReview);
             }
 
             RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, id, recentReviewList);
-            recyclerViewLatestReview.setAdapter(recentReviewAdapter);
-            recyclerViewLatestReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            recyclerViewLatestReview.setVisibility(View.VISIBLE);
+            recyclerRecentReview.setAdapter(recentReviewAdapter);
+            recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+            recyclerRecentReview.setVisibility(View.VISIBLE);
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
