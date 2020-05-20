@@ -28,6 +28,7 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
     private Context context;
@@ -51,21 +52,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
-        // Review ID
+        // ID
         final String reviewID = String.valueOf(reviewList.get(position).getId());
-
-        // Film ID
-        final String filmID = String.valueOf(reviewList.get(position).getTmdb_id());
-
-        // User ID
         final String userID = String.valueOf(reviewList.get(position).getUser_id());
+        final String filmID = String.valueOf(reviewList.get(position).getTmdb_id());
 
         // Auth
         final String authID = new Auth(context).getAuthID();
         final boolean isSelf = userID.equals(authID);
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorPrimary)
+                .error(R.color.colorPrimary);
 
         // Parsing
         final String title = reviewList.get(position).getTitle();
@@ -77,7 +77,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.filmTitle.setText(title);
         holder.filmYear.setText(year);
         holder.userFirstName.setText(reviewList.get(position).getFirst_name());
-        holder.reviewDetail.setText(reviewList.get(position).getReview_text());
+        holder.reviewDetail.setText(reviewList.get(position).getReview_detail());
+        holder.reviewTimestamp.setText(reviewList.get(position).getTimestamp());
         holder.reviewStar.setImageResource(star);
         Glide.with(context).load(reviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
         Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
@@ -94,28 +95,28 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
-                gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
-                gotoReviewDetail.putExtra("IS_SELF", isSelf);
-                context.startActivity(gotoReviewDetail);
+                Intent intent = new Intent(context, ReviewDetailActivity.class);
+                intent.putExtra(Popularin.REVIEW_ID, reviewID);
+                intent.putExtra(Popularin.IS_SELF, isSelf);
+                context.startActivity(intent);
             }
         });
 
         holder.userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
-                gotoUserDetail.putExtra("USER_ID", userID);
-                context.startActivity(gotoUserDetail);
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                intent.putExtra(Popularin.USER_ID, userID);
+                context.startActivity(intent);
             }
         });
 
         holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+                Intent intent = new Intent(context, FilmDetailActivity.class);
+                intent.putExtra(Popularin.FILM_ID, filmID);
+                context.startActivity(intent);
             }
         });
 
@@ -124,7 +125,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
                 FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
+                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });
@@ -143,6 +144,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         TextView filmYear;
         TextView userFirstName;
         TextView reviewDetail;
+        TextView reviewTimestamp;
         View border;
 
         ReviewViewHolder(@NonNull View itemView) {
@@ -155,6 +157,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             filmYear = itemView.findViewById(R.id.text_rr_year);
             userFirstName = itemView.findViewById(R.id.text_rr_first_name);
             reviewDetail = itemView.findViewById(R.id.text_rr_review);
+            reviewTimestamp = itemView.findViewById(R.id.text_rr_timestamp);
             border = itemView.findViewById(R.id.border_rr_layout);
         }
     }
