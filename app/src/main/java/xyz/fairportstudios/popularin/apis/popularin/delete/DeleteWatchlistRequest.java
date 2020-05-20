@@ -35,7 +35,7 @@ public class DeleteWatchlistRequest {
     public void sendRequest(final APICallback callback) {
         final Auth auth = new Auth(context);
 
-        String requestURL = PopularinAPI.WATCHLIST + "/" + id;
+        String requestURL = PopularinAPI.FILM + "/" + id + "/unwatchlist";
 
         JsonObjectRequest deleteWatchlist = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -61,9 +61,8 @@ public class DeleteWatchlistRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };

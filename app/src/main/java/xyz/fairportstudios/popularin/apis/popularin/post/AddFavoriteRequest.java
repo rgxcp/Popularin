@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -35,14 +35,13 @@ public class AddFavoriteRequest {
     public void sendRequest(final APICallback callback) {
         final Auth auth = new Auth(context);
 
-        String requestURL = PopularinAPI.FAVORITE;
+        String requestURL = PopularinAPI.FILM + "/" + id + "/favorite";
 
-        StringRequest addFavorite = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
+        JsonObjectRequest addFavorite = new JsonObjectRequest(Request.Method.POST, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    int status = response.getInt("status");
 
                     if (status == 202) {
                         callback.onSuccess();
@@ -60,17 +59,10 @@ public class AddFavoriteRequest {
             }
         }) {
             @Override
-            public Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("tmdb_id", id);
-                return params;
-            }
-
-            @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }

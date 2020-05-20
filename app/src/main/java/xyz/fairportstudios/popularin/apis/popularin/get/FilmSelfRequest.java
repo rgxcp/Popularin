@@ -29,8 +29,6 @@ public class FilmSelfRequest {
 
     public interface APICallback {
         void onSuccess(FilmSelf filmSelf);
-
-        void onError();
     }
 
     public void sendRequest(final APICallback callback) {
@@ -45,32 +43,30 @@ public class FilmSelfRequest {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
+                        JSONObject resultObject = response.getJSONObject("result");
 
                         FilmSelf filmSelf = new FilmSelf();
-                        filmSelf.setIn_favorite(jsonObjectResult.getBoolean("in_favorite"));
-                        filmSelf.setIn_review(jsonObjectResult.getBoolean("in_review"));
-                        filmSelf.setIn_watchlist(jsonObjectResult.getBoolean("in_watchlist"));
-                        filmSelf.setLast_rate(jsonObjectResult.getDouble("last_rate"));
+                        filmSelf.setIn_favorite(resultObject.getBoolean("in_favorite"));
+                        filmSelf.setIn_review(resultObject.getBoolean("in_review"));
+                        filmSelf.setIn_watchlist(resultObject.getBoolean("in_watchlist"));
+                        filmSelf.setLast_rate(resultObject.getDouble("last_rate"));
                         callback.onSuccess(filmSelf);
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }
         };
