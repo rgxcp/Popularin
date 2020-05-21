@@ -14,19 +14,21 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.fragments.AccountFragment;
 import xyz.fairportstudios.popularin.fragments.AiringFragment;
 import xyz.fairportstudios.popularin.fragments.EmptyAccountFragment;
 import xyz.fairportstudios.popularin.fragments.GenreFragment;
-import xyz.fairportstudios.popularin.fragments.AccountFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.fragments.SearchFragment;
 import xyz.fairportstudios.popularin.fragments.TimelineFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
 
 public class MainActivity extends AppCompatActivity {
+    // Untuk fitur double press to exit
     private static final int TIME_INTERVAL = 2000;
     private static long TIME_BACK_PRESSED;
+
+    // Member
     private Boolean isAuth;
     private Context context;
     private Fragment selectedFragment;
@@ -36,14 +38,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Binding
+        // Context
         context = MainActivity.this;
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation_am_layout);
 
         // Auth
         isAuth = new Auth(context).isAuth();
 
         // Bottom navigation
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation_am_layout);
         bottomNavigation.setOnNavigationItemSelectedListener(listener);
 
         // Menampilkan fragment otomatis sesuai kondisi
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             selectedFragment = new GenreFragment();
         }
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_am_container, selectedFragment)
@@ -61,18 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment backStack = getSupportFragmentManager().findFragmentByTag(Popularin.EDIT_PROFILE);
-
-        if (backStack != null) {
+        if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
-                super.onBackPressed();
-            } else {
-                Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
-            }
-            TIME_BACK_PRESSED = System.currentTimeMillis();
+            Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
         }
+        TIME_BACK_PRESSED = System.currentTimeMillis();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.menu_bn_search:
                     selectedFragment = new SearchFragment();
                     break;
-                case R.id.menu_bn_profile:
+                case R.id.menu_bn_acount:
                     if (isAuth) {
                         selectedFragment = new AccountFragment();
                     } else {
@@ -106,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (selectedFragment != null) {
                 // Menghapus semua stack
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager()
+                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                 // Menampilkan fragment
                 getSupportFragmentManager()
