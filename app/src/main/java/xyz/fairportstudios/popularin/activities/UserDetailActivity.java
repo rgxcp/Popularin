@@ -94,7 +94,6 @@ public class UserDetailActivity extends AppCompatActivity {
         final boolean isSelf = Objects.requireNonNull(userID).equals(authID);
 
         if (isSelf) {
-            buttonFollow.setEnabled(false);
             buttonFollow.setText(R.string.edit_profile);
         }
 
@@ -159,7 +158,10 @@ public class UserDetailActivity extends AppCompatActivity {
         buttonFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isAuth) {
+                if (isAuth && isSelf) {
+                    Intent intent = new Intent(context, EditProfileActivity.class);
+                    startActivity(intent);
+                } else if (isAuth) {
                     if (!isFollowing) {
                         followUser();
                     } else {
