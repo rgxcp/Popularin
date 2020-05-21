@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.SelfDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
 import xyz.fairportstudios.popularin.models.SelfDetail;
-import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditProfileFragment extends Fragment {
     private Button buttonSave;
@@ -66,7 +67,7 @@ public class EditProfileFragment extends Fragment {
             public void onClick(View view) {
                 if (getFragmentManager() != null) {
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_am_container, new EditPasswordFragment())
+                            .replace(R.id.fragment_aep_container, new EditPasswordFragment())
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .addToBackStack(null)
                             .commit();
@@ -119,9 +120,9 @@ public class EditProfileFragment extends Fragment {
         updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
             @Override
             public void onSuccess() {
-                if (getFragmentManager() != null) {
-                    getFragmentManager().popBackStack();
-                }
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                Objects.requireNonNull(getActivity()).finish();
             }
 
             @Override

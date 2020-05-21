@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.EditProfileActivity;
 import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.activities.SocialActivity;
 import xyz.fairportstudios.popularin.activities.UserFavoriteActivity;
@@ -189,13 +189,8 @@ public class AccountFragment extends Fragment {
         buttonEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getFragmentManager() != null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_am_container, new EditProfileFragment(), Popularin.EDIT_PROFILE)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                Intent intent = new Intent(context, EditProfileActivity.class);
+                startActivity(intent);
             }
         });
 
