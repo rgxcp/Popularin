@@ -45,6 +45,8 @@ public class DeleteFavoriteRequest {
 
                     if (status == 404) {
                         callback.onSuccess();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();

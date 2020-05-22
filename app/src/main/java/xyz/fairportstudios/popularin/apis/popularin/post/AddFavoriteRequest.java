@@ -45,6 +45,8 @@ public class AddFavoriteRequest {
 
                     if (status == 202) {
                         callback.onSuccess();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -63,7 +65,6 @@ public class AddFavoriteRequest {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Auth-ID", auth.getAuthID());
                 headers.put("Auth-Token", auth.getAuthToken());
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
