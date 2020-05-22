@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,35 +54,34 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         // ID
-        final String reviewID = String.valueOf(reviewList.get(position).getId());
-        final String userID = String.valueOf(reviewList.get(position).getUser_id());
+        final String reviewID = String.valueOf(reviewList.get(position).getReview_id());
         final String filmID = String.valueOf(reviewList.get(position).getTmdb_id());
+        final String userID = String.valueOf(reviewList.get(position).getUser_id());
 
         // Auth
-        final String authID = new Auth(context).getAuthID();
-        final boolean isSelf = userID.equals(authID);
+        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
+
+        // Parsing
+        final String filmTitle = reviewList.get(position).getTitle();
+        final String filmYear = new ParseDate().getYear(reviewList.get(position).getRelease_date());
+        final String filmPoster = new ParseImage().getImage(reviewList.get(position).getPoster());
+        final Integer reviewStar = new ParseStar().getStar(reviewList.get(position).getRating());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .error(R.color.colorPrimary);
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Parsing
-        final String title = reviewList.get(position).getTitle();
-        final String year = new ParseDate().getYear(reviewList.get(position).getRelease_date());
-        final String poster = new ParseImage().getImage(reviewList.get(position).getPoster());
-        Integer star = new ParseStar().getStar(reviewList.get(position).getRating());
-
-        // Mengisi data
-        holder.filmTitle.setText(title);
-        holder.filmYear.setText(year);
-        holder.userFirstName.setText(reviewList.get(position).getFirst_name());
-        holder.reviewDetail.setText(reviewList.get(position).getReview_detail());
-        holder.reviewTimestamp.setText(reviewList.get(position).getTimestamp());
-        holder.reviewStar.setImageResource(star);
-        Glide.with(context).load(reviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
-        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+        // Isi
+        holder.textFilmTitle.setText(filmTitle);
+        holder.textFilmYear.setText(filmYear);
+        holder.textUsername.setText(reviewList.get(position).getUsername());
+        holder.textReviewDetail.setText(reviewList.get(position).getReview_detail());
+        holder.textReviewTimestamp.setText(reviewList.get(position).getTimestamp());
+        holder.imageReviewStar.setImageResource(reviewStar);
+        Glide.with(context).load(reviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -102,7 +102,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             }
         });
 
-        holder.userProfile.setOnClickListener(new View.OnClickListener() {
+        holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, UserDetailActivity.class);
@@ -111,7 +111,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             }
         });
 
-        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
+        holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmDetailActivity.class);
@@ -120,11 +120,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             }
         });
 
-        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
+                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, filmTitle, filmYear, filmPoster);
                 filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
@@ -137,28 +137,28 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     }
 
     static class ReviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView userProfile;
-        ImageView reviewStar;
-        ImageView filmPoster;
-        TextView filmTitle;
-        TextView filmYear;
-        TextView userFirstName;
-        TextView reviewDetail;
-        TextView reviewTimestamp;
-        View border;
+        private ImageView imageUserProfile;
+        private ImageView imageReviewStar;
+        private ImageView imageFilmPoster;
+        private TextView textFilmTitle;
+        private TextView textFilmYear;
+        private TextView textUsername;
+        private TextView textReviewDetail;
+        private TextView textReviewTimestamp;
+        private View border;
 
         ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userProfile = itemView.findViewById(R.id.image_rr_profile);
-            reviewStar = itemView.findViewById(R.id.image_rr_star);
-            filmPoster = itemView.findViewById(R.id.image_rr_poster);
-            filmTitle = itemView.findViewById(R.id.text_rr_title);
-            filmYear = itemView.findViewById(R.id.text_rr_year);
-            userFirstName = itemView.findViewById(R.id.text_rr_first_name);
-            reviewDetail = itemView.findViewById(R.id.text_rr_review);
-            reviewTimestamp = itemView.findViewById(R.id.text_rr_timestamp);
-            border = itemView.findViewById(R.id.border_rr_layout);
+            imageUserProfile = itemView.findViewById(R.id.image_rr_profile);
+            imageReviewStar = itemView.findViewById(R.id.image_rr_star);
+            imageFilmPoster = itemView.findViewById(R.id.image_rr_poster);
+            textFilmTitle = itemView.findViewById(R.id.text_rr_title);
+            textFilmYear = itemView.findViewById(R.id.text_rr_year);
+            textUsername = itemView.findViewById(R.id.text_rr_username);
+            textReviewDetail = itemView.findViewById(R.id.text_rr_review);
+            textReviewTimestamp = itemView.findViewById(R.id.text_rr_timestamp);
+            border = itemView.findViewById(R.id.layout_rr_border);
         }
     }
 }
