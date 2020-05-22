@@ -1,54 +1,54 @@
 package xyz.fairportstudios.popularin.models;
 
 public class Review {
-    private Integer id;
+    private Integer review_id;
     private Integer tmdb_id;
     private Integer user_id;
     private Double rating;
-    private String title;
-    private String poster;
-    private String release_date;
-    private String first_name;
-    private String profile_picture;
     private String review_detail;
     private String timestamp;
+    private String title;
+    private String release_date;
+    private String poster;
+    private String username;
+    private String profile_picture;
 
     public Review() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public Review(
-            Integer id,
+            Integer review_id,
             Integer tmdb_id,
             Integer user_id,
             Double rating,
-            String title,
-            String poster,
-            String release_date,
-            String first_name,
-            String profile_picture,
             String review_detail,
-            String timestamp
+            String timestamp,
+            String title,
+            String release_date,
+            String poster,
+            String username,
+            String profile_picture
     ) {
-        this.id = id;
+        this.review_id = review_id;
         this.tmdb_id = tmdb_id;
         this.user_id = user_id;
         this.rating = rating;
-        this.title = title;
-        this.poster = poster;
-        this.release_date = release_date;
-        this.first_name = first_name;
-        this.profile_picture = profile_picture;
         this.review_detail = review_detail;
         this.timestamp = timestamp;
+        this.title = title;
+        this.release_date = release_date;
+        this.poster = poster;
+        this.username = username;
+        this.profile_picture = profile_picture;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getReview_id() {
+        return review_id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setReview_id(Integer review_id) {
+        this.review_id = review_id;
     }
 
     public Integer getTmdb_id() {
@@ -75,46 +75,6 @@ public class Review {
         this.rating = rating;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
-    }
-
     public String getReview_detail() {
         return review_detail;
     }
@@ -129,5 +89,45 @@ public class Review {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
+    }
+
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 }
