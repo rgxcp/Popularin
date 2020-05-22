@@ -7,7 +7,7 @@ public class FilmSelf {
     private Double last_rate;
 
     public FilmSelf() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public FilmSelf(
