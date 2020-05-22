@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grayPrimary"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingVertical="8dp">
 
     <TextView
-        android:id="@+id/text_mfs_title"
+        android:id="@+id/text_mf_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:fontFamily="@font/jost_medium"
         android:maxLines="1"
-        android:textColor="@color/whitePrimary"
+        android:textColor="@color/colorOnBackground"
         android:textSize="17sp" />
 
     <TextView
-        android:id="@+id/text_mfs_year"
+        android:id="@+id/text_mf_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/jost_regular"
-        android:textColor="@color/whitePrimary"
+        android:textColor="@color/colorOnBackground"
         android:textSize="15sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorAccent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,113 +40,110 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <LinearLayout
-            android:id="@+id/review_mfs_layout"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            android:gravity="center">
 
             <ImageView
-                android:id="@+id/image_mfs_review"
+                android:id="@+id/image_mf_review"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/ic_review_outline"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/colorAccent"
                 android:contentDescription="@null" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/image_mf_review"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/review"
-                android:textColor="@color/whitePrimary"
+                android:textColor="@color/colorOnBackground"
                 android:textSize="15sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/favorite_mfs_layout"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            android:gravity="center">
 
             <ImageView
-                android:id="@+id/image_mfs_favorite"
+                android:id="@+id/image_mf_favorite"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/ic_favorite_outline"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/colorAccent"
                 android:contentDescription="@null" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/image_mf_favorite"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/favorite"
-                android:textColor="@color/whitePrimary"
+                android:textColor="@color/colorOnBackground"
                 android:textSize="15sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/watchlist_mfs_layout"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            android:gravity="center">
 
             <ImageView
-                android:id="@+id/image_mfs_watchlist"
+                android:id="@+id/image_mf_watchlist"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/ic_watchlist_outline"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/colorAccent"
                 android:contentDescription="@null" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/image_mf_watchlist"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/watchlist"
-                android:textColor="@color/whitePrimary"
+                android:textColor="@color/colorOnBackground"
                 android:textSize="15sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorAccent" />
 
     <RatingBar
-        android:id="@+id/rbr_mfs_layout"
+        android:id="@+id/rbr_mf_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:isIndicator="true"
+        android:layout_marginTop="12dp"
         android:numStars="5"
-        android:progressTint="@color/colorPrimary"
         android:stepSize="0.5" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
         android:fontFamily="@font/jost_regular"
         android:text="@string/rating"
-        android:textColor="@color/whitePrimary"
+        android:textColor="@color/colorOnBackground"
         android:textSize="15sp" />
 
 </LinearLayout>
