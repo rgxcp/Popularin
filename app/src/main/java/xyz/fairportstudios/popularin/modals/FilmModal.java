@@ -131,11 +131,12 @@ public class FilmModal extends BottomSheetDialogFragment {
                     if (lastRate != v) {
                         currentRate = v;
                         addReview();
+                        dismiss();
                     }
                 } else {
                     gotoEmptyAccount();
+                    dismiss();
                 }
-                dismiss();
             }
         });
 
