@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -20,7 +21,7 @@ import xyz.fairportstudios.popularin.fragments.ReviewCommentFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
 import xyz.fairportstudios.popularin.services.Popularin;
 
-public class ReviewDetailActivity extends AppCompatActivity {
+public class ReviewActivity extends AppCompatActivity {
     private Context context;
     private String reviewID;
     private Toolbar toolbar;
@@ -31,7 +32,7 @@ public class ReviewDetailActivity extends AppCompatActivity {
         setContentView(R.layout.reusable_toolbar_pager);
 
         // Binding
-        context = ReviewDetailActivity.this;
+        context = ReviewActivity.this;
         toolbar = findViewById(R.id.toolbar_rtp_layout);
         TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
         ViewPager viewPager = findViewById(R.id.pager_rtp_layout);
@@ -39,7 +40,7 @@ public class ReviewDetailActivity extends AppCompatActivity {
         // Extra
         Intent intent = getIntent();
         reviewID = intent.getStringExtra(Popularin.REVIEW_ID);
-        final boolean isSelf = intent.getBooleanExtra(Popularin.IS_SELF, false);
+        boolean isSelf = intent.getBooleanExtra(Popularin.IS_SELF, false);
 
         // Toolbar
         toolbar.setTitle(R.string.review);
@@ -47,10 +48,10 @@ public class ReviewDetailActivity extends AppCompatActivity {
             addToolbarMenu();
         }
 
-        // Tab
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new ReviewDetailFragment(reviewID), "DETAIL");
-        pagerAdapter.addFragment(new ReviewCommentFragment(reviewID), "KOMEN");
+        // Tab Pager
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pagerAdapter.addFragment(new ReviewDetailFragment(reviewID), getString(R.string.detail));
+        pagerAdapter.addFragment(new ReviewCommentFragment(reviewID), getString(R.string.comment));
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -83,9 +84,9 @@ public class ReviewDetailActivity extends AppCompatActivity {
     }
 
     private void editReview() {
-        Intent gotoEditReview = new Intent(context, EditReviewActivity.class);
-        gotoEditReview.putExtra(Popularin.REVIEW_ID, reviewID);
-        startActivity(gotoEditReview);
+        Intent intent = new Intent(context, EditReviewActivity.class);
+        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        startActivity(intent);
     }
 
     private void deleteReview() {
@@ -93,13 +94,13 @@ public class ReviewDetailActivity extends AppCompatActivity {
         deleteReviewRequest.sendRequest(new DeleteReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(context, R.string.review_removed, Toast.LENGTH_SHORT).show();
                 onBackPressed();
+                Toast.makeText(context, R.string.review_deleted, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError() {
-                Toast.makeText(context, R.string.failed_remove_review, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.failed_delete_review, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -9,19 +9,16 @@
         android:id="@+id/toolbar_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/blackPrimary"
-        app:navigationIcon="@drawable/ic_back"
-        app:titleTextColor="@color/whitePrimary" />
+        app:navigationIcon="@drawable/ic_back" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/blackPrimary"
+        android:background="@color/colorBackground"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorPrimary"
         app:tabMode="fixed"
-        app:tabTextColor="@color/whitePrimary" />
+        app:tabTextColor="@color/colorOnBackground" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager_rtp_layout"
