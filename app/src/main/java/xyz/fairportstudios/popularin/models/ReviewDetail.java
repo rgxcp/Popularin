@@ -1,7 +1,7 @@
 package xyz.fairportstudios.popularin.models;
 
 public class ReviewDetail {
-    private Integer film_id;
+    private Integer tmdb_id;
     private Integer user_id;
     private Integer total_like;
     private Boolean is_liked;
@@ -15,11 +15,11 @@ public class ReviewDetail {
     private String profile_picture;
 
     public ReviewDetail() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public ReviewDetail(
-            Integer film_id,
+            Integer tmdb_id,
             Integer user_id,
             Integer total_like,
             Boolean is_liked,
@@ -32,7 +32,7 @@ public class ReviewDetail {
             String full_name,
             String profile_picture
     ) {
-        this.film_id = film_id;
+        this.tmdb_id = tmdb_id;
         this.user_id = user_id;
         this.total_like = total_like;
         this.is_liked = is_liked;
@@ -46,12 +46,12 @@ public class ReviewDetail {
         this.profile_picture = profile_picture;
     }
 
-    public Integer getFilm_id() {
-        return film_id;
+    public Integer getTmdb_id() {
+        return tmdb_id;
     }
 
-    public void setFilm_id(Integer film_id) {
-        this.film_id = film_id;
+    public void setTmdb_id(Integer tmdb_id) {
+        this.tmdb_id = tmdb_id;
     }
 
     public Integer getUser_id() {
