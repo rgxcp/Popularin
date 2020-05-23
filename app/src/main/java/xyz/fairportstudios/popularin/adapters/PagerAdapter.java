@@ -22,15 +22,15 @@ public class PagerAdapter extends FragmentPagerAdapter {
         titleList.add(title);
     }
 
+    @Override
+    public int getCount() {
+        return fragmentList.size();
+    }
+
     @NonNull
     @Override
     public Fragment getItem(int position) {
         return fragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return fragmentList.size();
     }
 
     @Nullable
