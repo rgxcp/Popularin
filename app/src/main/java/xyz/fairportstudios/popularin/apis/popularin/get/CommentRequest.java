@@ -42,34 +42,30 @@ public class CommentRequest {
     }
 
     public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.REVIEW
-                + "/"
-                + id
-                + "/comments?page="
-                + page;
+        return PopularinAPI.REVIEW + "/" + id + "/comments?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest commenRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest comment = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject objectIndex = jsonArrayData.getJSONObject(index);
-                            JSONObject userObject = objectIndex.getJSONObject("user");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject commentObject = dataArray.getJSONObject(index);
+                            JSONObject userObject = commentObject.getJSONObject("user");
 
                             Comment comment = new Comment();
-                            comment.setId(objectIndex.getInt("id"));
+                            comment.setId(commentObject.getInt("id"));
                             comment.setUser_id(userObject.getInt("id"));
-                            comment.setComment_detail(objectIndex.getString("comment_detail"));
-                            comment.setComment_text(objectIndex.getString("comment_detail"));
-                            comment.setTimestamp(objectIndex.getString("timestamp"));
-                            comment.setFirst_name(userObject.getString("first_name"));
+                            comment.setComment_detail(commentObject.getString("comment_detail"));
+                            comment.setTimestamp(commentObject.getString("timestamp"));
+                            comment.setUsername(userObject.getString("username"));
                             comment.setProfile_picture(userObject.getString("profile_picture"));
                             commentList.add(comment);
                         }
@@ -79,8 +75,10 @@ public class CommentRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -95,6 +93,6 @@ public class CommentRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(commenRequest);
+        Volley.newRequestQueue(context).add(comment);
     }
 }
