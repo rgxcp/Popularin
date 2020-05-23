@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private Context context;
@@ -47,27 +47,27 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public void onBindViewHolder(@NonNull final CommentViewHolder holder, final int position) {
-        // Comment ID
+        // ID
         final String commentID = String.valueOf(commentList.get(position).getId());
-
-        // User ID
         final String userID = String.valueOf(commentList.get(position).getUser_id());
 
         // Auth
-        final String authID = new Auth(context).getAuthID();
-
-        if (userID.equals(authID)) {
-            holder.buttonDelete.setVisibility(View.VISIBLE);
+        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
+        if (isSelf) {
+            holder.imageDelete.setVisibility(View.VISIBLE);
         }
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mengisi data
-        holder.userFirstName.setText(commentList.get(position).getFirst_name());
-        holder.commentDate.setText(commentList.get(position).getTimestamp());
-        holder.commentDetail.setText(commentList.get(position).getComment_text());
-        Glide.with(context).load(commentList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
+        // Isi
+        holder.textUsername.setText(commentList.get(position).getUsername());
+        holder.textCommentTimestamp.setText(commentList.get(position).getTimestamp());
+        holder.textCommentDetail.setText(commentList.get(position).getComment_detail());
+        Glide.with(context).load(commentList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -78,29 +78,30 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
-        holder.userProfile.setOnClickListener(new View.OnClickListener() {
+        holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
-                gotoUserDetail.putExtra("USER_ID", userID);
-                context.startActivity(gotoUserDetail);
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                intent.putExtra(Popularin.USER_ID, userID);
+                context.startActivity(intent);
             }
         });
 
-        holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+        holder.imageDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // DELETE
-                DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(position, context, commentList, commentID);
+                DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(context, commentID);
                 deleteCommentRequest.sendRequest(new DeleteCommentRequest.APICallback() {
                     @Override
                     public void onSuccess() {
-                        Snackbar.make(holder.layout, R.string.comment_deleted, Snackbar.LENGTH_SHORT).show();
+                        commentList.remove(position);
+                        notifyItemRemoved(position);
+                        Snackbar.make(holder.anchorLayout, R.string.comment_deleted, Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError() {
-                        Snackbar.make(holder.layout, R.string.delete_comment_error, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(holder.anchorLayout, R.string.failed_delete_comment, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }
@@ -113,24 +114,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {
-        Button buttonDelete;
-        ImageView userProfile;
-        LinearLayout layout;
-        TextView userFirstName;
-        TextView commentDate;
-        TextView commentDetail;
-        View border;
+        private ImageView imageUserProfile;
+        private ImageView imageDelete;
+        private LinearLayout anchorLayout;
+        private TextView textUsername;
+        private TextView textCommentTimestamp;
+        private TextView textCommentDetail;
+        private View border;
 
         CommentViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            buttonDelete = itemView.findViewById(R.id.button_rc_delete);
-            userProfile = itemView.findViewById(R.id.image_rc_profile);
-            layout = itemView.findViewById(R.id.layout_rc_anchor);
-            userFirstName = itemView.findViewById(R.id.text_rc_first_name);
-            commentDate = itemView.findViewById(R.id.text_rc_date);
-            commentDetail = itemView.findViewById(R.id.text_rc_comment);
-            border = itemView.findViewById(R.id.border_rc_layout);
+            imageUserProfile = itemView.findViewById(R.id.image_rc_profile);
+            imageDelete = itemView.findViewById(R.id.button_rc_delete);
+            anchorLayout = itemView.findViewById(R.id.layout_rc_anchor);
+            textUsername = itemView.findViewById(R.id.text_rc_username);
+            textCommentTimestamp = itemView.findViewById(R.id.text_rc_timestamp);
+            textCommentDetail = itemView.findViewById(R.id.text_rc_comment);
+            border = itemView.findViewById(R.id.layout_rr_border);
         }
     }
 }
