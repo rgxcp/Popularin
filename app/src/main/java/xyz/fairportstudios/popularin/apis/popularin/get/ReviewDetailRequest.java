@@ -50,7 +50,7 @@ public class ReviewDetailRequest {
                         JSONObject userObject = reviewObject.getJSONObject("user");
 
                         ReviewDetail reviewDetail = new ReviewDetail();
-                        reviewDetail.setFilm_id(filmObject.getInt("tmdb_id"));
+                        reviewDetail.setTmdb_id(filmObject.getInt("tmdb_id"));
                         reviewDetail.setUser_id(userObject.getInt("id"));
                         reviewDetail.setTotal_like(metadataObject.getInt("total_like"));
                         reviewDetail.setIs_liked(metadataObject.getBoolean("is_liked"));
