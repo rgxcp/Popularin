@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,20 +24,20 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
+import xyz.fairportstudios.popularin.adapters.CommentAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.CommentRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.AddCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class ReviewCommentFragment extends Fragment {
-    // Member
-    private Boolean isAuth;
-    private Button buttonComment;
     private Context context;
     private EditText inputComment;
-    private LinearLayout notFoundLayout;
-    private RelativeLayout anchorLayout;
+    private List<Comment> commentList;
     private ProgressBar progressBar;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerComment;
+    private RelativeLayout anchorLayout;
+    private TextView textEmptyResult;
 
     // Constructor
     private String reviewID;
@@ -53,94 +53,42 @@ public class ReviewCommentFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        buttonComment = view.findViewById(R.id.button_frc_comment);
         inputComment = view.findViewById(R.id.input_frc_comment);
-        notFoundLayout = view.findViewById(R.id.layout_frc_not_found);
-        anchorLayout = view.findViewById(R.id.layout_frc_anchor);
+        anchorLayout = view.findViewById(R.id.anchor_frc_layout);
         progressBar = view.findViewById(R.id.pbr_frc_layout);
-        recyclerView = view.findViewById(R.id.recycler_frc_layout);
+        recyclerComment = view.findViewById(R.id.recycler_frc_layout);
+        textEmptyResult = view.findViewById(R.id.text_frc_empty_result);
+        ImageView imageSend = view.findViewById(R.id.image_fr_send);
 
         // Auth
-        isAuth = new Auth(context).isAuth();
+        final boolean isAuth = new Auth(context).isAuth();
 
-        // Mendapatkan data
-        getComment();
+        // List
+        commentList = new ArrayList<>();
 
         // Activity
-        buttonComment.setOnClickListener(new View.OnClickListener() {
+        imageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    buttonComment.setEnabled(false);
-                    String comment = inputComment.getText().toString();
-                    addComment(comment);
+                    addComment();
                 } else {
                     gotoEmptyAccount();
                 }
             }
         });
 
-        /*
-        // GET
-        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView);
-        String requestURL = commentRequest.getRequestURL(reviewID, 1);
-        commentRequest.sendRequest(requestURL, new CommentRequest.APICallback() {
-            @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onEmpty() {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        // Activity
-        buttonComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isAuth) {
-                    // POST
-                    String comment = Objects.requireNonNull(inputComment.getText()).toString();
-                    AddCommentRequest addCommentRequest = new AddCommentRequest(context, commentList, reviewID, comment);
-                    addCommentRequest.sendRequest(new AddCommentRequest.APICallback() {
-                        @Override
-                        public void onSuccess() {
-                            Snackbar.make(layout, R.string.comment_sent, Snackbar.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onFailed(String message) {
-                            Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onError() {
-                            Snackbar.make(layout, R.string.post_comment_error, Snackbar.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    Intent gotoEmptyUser = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(gotoEmptyUser);
-                }
-            }
-        });
-         */
-
         return view;
     }
 
-    private void getComment() {
-        List<Comment> commentList = new ArrayList<>();
+    @Override
+    public void onResume() {
+        super.onResume();
+        getComment();
+    }
 
-        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerView);
+    private void getComment() {
+        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerComment);
         String requestURL = commentRequest.getRequestURL(reviewID, 1);
         commentRequest.sendRequest(requestURL, new CommentRequest.APICallback() {
             @Override
@@ -150,20 +98,43 @@ public class ReviewCommentFragment extends Fragment {
 
             @Override
             public void onEmpty() {
-                notFoundLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                notFoundLayout.setVisibility(View.VISIBLE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
                 Snackbar.make(anchorLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
-    private void addComment(String comment) {
+    private void addComment() {
+        String comment = inputComment.getText().toString();
+        AddCommentRequest addCommentRequest = new AddCommentRequest(context, reviewID, comment);
+        addCommentRequest.sendRequest(new AddCommentRequest.APICallback() {
+            @Override
+            public void onSuccess(Comment comment) {
+                CommentAdapter commentAdapter = new CommentAdapter(context, commentList);
+                int position = commentList.size();
+                commentList.add(position, comment);
+                commentAdapter.notifyItemInserted(position);
+                Snackbar.make(anchorLayout, R.string.comment_added, Snackbar.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onFailed(String message) {
+                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError() {
+                Snackbar.make(anchorLayout, R.string.failed_add_comment, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void gotoEmptyAccount() {

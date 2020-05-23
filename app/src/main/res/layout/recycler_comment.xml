@@ -3,16 +3,16 @@
     android:id="@+id/layout_rc_anchor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.github.florent37.shapeofview.shapes.CircleView
-            android:id="@+id/sov_rc_anchor"
+            android:id="@+id/sov_rc_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -20,33 +20,31 @@
                 android:id="@+id/image_rc_profile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:contentDescription="@null"
-                android:src="@color/colorPrimary" />
+                android:background="@color/colorSurface"
+                android:contentDescription="@null" />
         </com.github.florent37.shapeofview.shapes.CircleView>
 
         <TextView
-            android:id="@+id/text_rc_first_name"
+            android:id="@+id/text_rc_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_toStartOf="@id/text_rc_date"
-            android:layout_toEndOf="@+id/sov_rc_anchor"
+            android:layout_marginHorizontal="16dp"
+            android:layout_toStartOf="@id/text_rc_timestamp"
+            android:layout_toEndOf="@+id/sov_rc_layout"
             android:ellipsize="end"
             android:fontFamily="@font/jost_regular"
             android:maxLines="1"
-            android:textColor="@color/whitePrimary"
+            android:textColor="@color/colorOnBackground"
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/text_rc_date"
+            android:id="@+id/text_rc_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:fontFamily="@font/jost_light"
-            android:textColor="@color/whitePrimary"
             android:textSize="15sp" />
     </RelativeLayout>
 
@@ -56,25 +54,26 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="46dp"
         android:fontFamily="@font/jost_light"
-        android:textColor="@color/whitePrimary"
+        android:textColor="@color/colorOnSurface"
         android:textSize="15sp" />
 
-    <Button
+    <ImageView
         android:id="@+id/button_rc_delete"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="end"
         android:layout_marginTop="4dp"
-        android:background="@drawable/ic_delete"
-        android:backgroundTint="@color/colorPrimary"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_delete"
+        android:tint="@color/colorAccent"
         android:visibility="gone" />
 
     <View
-        android:id="@+id/border_rc_layout"
+        android:id="@+id/layout_rr_border"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.1dp"
         android:layout_marginStart="46dp"
         android:layout_marginTop="16dp"
-        android:background="@color/colorPrimary" />
+        android:background="@color/grayPrimary" />
 
 </LinearLayout>
