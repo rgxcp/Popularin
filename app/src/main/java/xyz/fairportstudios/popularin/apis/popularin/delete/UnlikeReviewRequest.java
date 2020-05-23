@@ -35,7 +35,7 @@ public class UnlikeReviewRequest {
     public void sendRequest(final APICallback callback) {
         final Auth auth = new Auth(context);
 
-        final String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
+        String requestURL = PopularinAPI.REVIEW + "/" + id + "/unlike";
 
         JsonObjectRequest unlikeReview = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override

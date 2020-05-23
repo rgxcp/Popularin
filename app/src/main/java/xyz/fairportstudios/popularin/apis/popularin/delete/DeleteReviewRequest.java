@@ -61,7 +61,7 @@ public class DeleteReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };
