@@ -19,7 +19,7 @@
         <activity android:name=".activities.UserFavoriteActivity" />
         <activity android:name=".activities.UserReviewActivity" />
         <activity android:name=".activities.UserDetailActivity" />
-        <activity android:name=".activities.ReviewDetailActivity" />
+        <activity android:name=".activities.ReviewActivity" />
         <activity android:name=".activities.EditReviewActivity" />
         <activity android:name=".activities.AddReviewActivity" />
         <activity android:name=".activities.FilmReviewActivity" />
