@@ -157,7 +157,8 @@
                     android:layout_width="20sp"
                     android:layout_height="20sp"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_favorite_outline_red" />
+                    android:src="@drawable/ic_favorite_outline"
+                    android:tint="@color/redPrimary" />
 
                 <TextView
                     android:id="@+id/text_frd_like"

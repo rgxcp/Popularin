@@ -165,7 +165,7 @@ public class ReviewDetailFragment extends Fragment {
 
                 // Like status
                 if (isLiked) {
-                    imageLike.setImageResource(R.drawable.ic_favorite_fill_red);
+                    imageLike.setImageResource(R.drawable.ic_favorite_fill);
                     textLike.setText(R.string.liked);
                 }
 
@@ -206,7 +206,7 @@ public class ReviewDetailFragment extends Fragment {
                 isLiked = true;
                 totalLike = currentLike + 1;
                 currentLike++;
-                imageLike.setImageResource(R.drawable.ic_favorite_fill_red);
+                imageLike.setImageResource(R.drawable.ic_favorite_fill);
                 textLike.setText(R.string.liked);
                 textTotalLike.setText(String.format("Total %s", String.valueOf(totalLike)));
                 Snackbar.make(anchorLayot, R.string.review_liked, Snackbar.LENGTH_SHORT).show();
@@ -227,7 +227,7 @@ public class ReviewDetailFragment extends Fragment {
                 isLiked = false;
                 totalLike = currentLike - 1;
                 currentLike--;
-                imageLike.setImageResource(R.drawable.ic_favorite_outline_red);
+                imageLike.setImageResource(R.drawable.ic_favorite_outline);
                 textLike.setText(R.string.like);
                 textTotalLike.setText(String.format("Total %s", String.valueOf(totalLike)));
                 Snackbar.make(anchorLayot, R.string.review_unliked, Snackbar.LENGTH_SHORT).show();
