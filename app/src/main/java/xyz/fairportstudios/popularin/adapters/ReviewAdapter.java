@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,9 +20,9 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
-import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
-import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -95,7 +94,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ReviewDetailActivity.class);
+                Intent intent = new Intent(context, ReviewActivity.class);
                 intent.putExtra(Popularin.REVIEW_ID, reviewID);
                 intent.putExtra(Popularin.IS_SELF, isSelf);
                 context.startActivity(intent);
@@ -124,8 +123,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, filmTitle, filmYear, filmPoster);
-                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+                filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });
