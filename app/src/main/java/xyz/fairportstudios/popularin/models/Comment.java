@@ -4,30 +4,27 @@ public class Comment {
     private Integer id;
     private Integer user_id;
     private String comment_detail;
-    private String comment_text;
     private String timestamp;
-    private String first_name;
+    private String username;
     private String profile_picture;
 
     public Comment() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public Comment(
             Integer id,
             Integer user_id,
             String comment_detail,
-            String comment_text,
             String timestamp,
-            String first_name,
+            String username,
             String profile_picture
     ) {
         this.id = id;
         this.user_id = user_id;
         this.comment_detail = comment_detail;
-        this.comment_text = comment_text;
         this.timestamp = timestamp;
-        this.first_name = first_name;
+        this.username = username;
         this.profile_picture = profile_picture;
     }
 
@@ -55,14 +52,6 @@ public class Comment {
         this.comment_detail = comment_detail;
     }
 
-    public String getComment_text() {
-        return comment_text;
-    }
-
-    public void setComment_text(String comment_text) {
-        this.comment_text = comment_text;
-    }
-
     public String getTimestamp() {
         return timestamp;
     }
@@ -71,12 +60,12 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getProfile_picture() {
