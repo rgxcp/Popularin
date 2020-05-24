@@ -1,40 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_gtr_anchor"
+    android:id="@+id/anchor_rtr_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_gtr_layout"
+        android:id="@+id/toolbar_rtr_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:navigationIcon="@drawable/ic_back"
-        app:titleTextColor="#FFFFFF" />
+        app:navigationIcon="@drawable/ic_back" />
 
     <ProgressBar
-        android:id="@+id/pbr_gtr_layout"
+        android:id="@+id/pbr_rtr_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_gtr_layout"
+        android:layout_below="@id/toolbar_rtr_layout"
         android:padding="168dp" />
 
     <TextView
-        android:id="@+id/text_fp_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_gtr_layout"
-        android:gravity="center"
-        android:lineSpacingExtra="8dp"
-        android:text="@string/empty_result"
+        android:id="@+id/text_rtr_network_error"
+        style="@style/TextMessagePrimary"
+        android:layout_below="@id/toolbar_rtr_layout"
+        android:text="@string/not_found"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_gtr_layout"
+        android:id="@+id/recycler_rtr_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_gtr_layout"
+        android:layout_below="@id/toolbar_rtr_layout"
         android:visibility="gone" />
 
 </RelativeLayout>
