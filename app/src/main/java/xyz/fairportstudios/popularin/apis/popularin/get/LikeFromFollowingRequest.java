@@ -45,33 +45,29 @@ public class LikeFromFollowingRequest {
     }
 
     public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.REVIEW
-                + "/"
-                + id
-                + "/likes/from/following?page="
-                + page;
+        return PopularinAPI.REVIEW + "/" + id + "/likes/from/following?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest likeFromFollowingRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest likeFromFollowing = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject userObject = indexObject.getJSONObject("user");
 
                             User user = new User();
-                            user.setId(jsonObjectUser.getInt("id"));
-                            user.setFull_name(jsonObjectUser.getString("full_name"));
-                            user.setUsername(jsonObjectUser.getString("username"));
-                            user.setProfile_picture(jsonObjectUser.getString("profile_picture"));
-
+                            user.setId(userObject.getInt("id"));
+                            user.setFull_name(userObject.getString("full_name"));
+                            user.setUsername(userObject.getString("username"));
+                            user.setProfile_picture(userObject.getString("profile_picture"));
                             userList.add(user);
                         }
 
@@ -80,8 +76,10 @@ public class LikeFromFollowingRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -98,11 +96,11 @@ public class LikeFromFollowingRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(likeFromFollowingRequest);
+        Volley.newRequestQueue(context).add(likeFromFollowing);
     }
 }
