@@ -24,11 +24,18 @@ import xyz.fairportstudios.popularin.models.Film;
 
 public class DiscoverFilmRequest {
     private Context context;
+    private String genreID;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public DiscoverFilmRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public DiscoverFilmRequest(
+            Context context,
+            String genreID,
+            List<Film> filmList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.genreID = genreID;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
     }
@@ -39,36 +46,35 @@ public class DiscoverFilmRequest {
         void onError();
     }
 
-    public String getRequestURL(String genre, Integer page) {
-        return TMDbAPI.DISCOVER_GENRE
+    public String getRequestURL(Integer page) {
+        return TMDbAPI.DISCOVER_FILM
                 + "?api_key="
                 + TMDbAPI.API_KEY
                 + "&language=id&sort_by=popularity.desc&page="
                 + page
                 + "&release_date.gte=2000-01-01&with_genres="
-                + genre
+                + genreID
                 + "&with_runtime.gte=0&with_original_language=id";
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest discoverFilmRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest discoverFilm = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray jsonArrayResult = response.getJSONArray("results");
+                    JSONArray resultArray = response.getJSONArray("results");
 
-                    for (int index = 0; index < jsonArrayResult.length(); index++) {
-                        JSONObject jsonObject = jsonArrayResult.getJSONObject(index);
-                        String language = jsonObject.getString("original_language");
+                    for (int index = 0; index < resultArray.length(); index++) {
+                        JSONObject indexObject = resultArray.getJSONObject(index);
+                        String language = indexObject.getString("original_language");
 
                         if (language.equals("id")) {
                             Film film = new Film();
-                            film.setId(jsonObject.getInt("id"));
-                            film.setGenre_id(jsonObject.getJSONArray("genre_ids").getInt(0));
-                            film.setOriginal_title(jsonObject.getString("original_title"));
-                            film.setPoster_path(jsonObject.getString("poster_path"));
-                            film.setRelease_date(jsonObject.getString("release_date"));
-
+                            film.setId(indexObject.getInt("id"));
+                            film.setGenre_id(indexObject.getJSONArray("genre_ids").getInt(0));
+                            film.setOriginal_title(indexObject.getString("original_title"));
+                            film.setRelease_date(indexObject.getString("release_date"));
+                            film.setPoster_path(indexObject.getString("poster_path"));
                             filmList.add(film);
                         }
                     }
@@ -91,6 +97,6 @@ public class DiscoverFilmRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(discoverFilmRequest);
+        Volley.newRequestQueue(context).add(discoverFilm);
     }
 }
