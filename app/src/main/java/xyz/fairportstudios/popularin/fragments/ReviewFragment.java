@@ -1,11 +1,12 @@
 package xyz.fairportstudios.popularin.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,9 +24,16 @@ import xyz.fairportstudios.popularin.apis.popularin.get.ReviewRequest;
 import xyz.fairportstudios.popularin.models.Review;
 
 public class ReviewFragment extends Fragment {
-    private CoordinatorLayout layout;
-    private LinearLayout layoutNotFound;
+    // Untuk fitur load more
+    private Integer currentPage = 1;
+
+    // Member variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
+    private List<Review> reviewList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerReview;
+    private TextView textEmptyReview;
 
     @Nullable
     @Override
@@ -33,36 +41,56 @@ public class ReviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerReview = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyReview = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
-        List<Review> reviewList = new ArrayList<>();
+        // Request
+        reviewList = new ArrayList<>();
+        getAllReview(currentPage);
 
-        // GET
-        ReviewRequest reviewRequest = new ReviewRequest(getActivity(), reviewList, recyclerView);
-        String requestURL = reviewRequest.getRequestURL(1);
+        // Activity
+        /*
+        recyclerReview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    getAllReview(currentPage);
+                }
+            }
+        });
+         */
+
+        return view;
+    }
+
+    private void getAllReview(Integer page) {
+        ReviewRequest reviewRequest = new ReviewRequest(context, reviewList, recyclerReview);
+        String requestURL = reviewRequest.getRequestURL(page);
         reviewRequest.sendRequest(requestURL, new ReviewRequest.APICallback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);
+                currentPage++;
             }
 
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                layoutNotFound.setVisibility(View.VISIBLE);
+                textEmptyReview.setVisibility(View.VISIBLE);
+                textEmptyReview.setText(R.string.empty_review);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                layoutNotFound.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyReview.setVisibility(View.VISIBLE);
+                textEmptyReview.setText(R.string.empty_review);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
