@@ -31,6 +31,10 @@ import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class ReviewCommentFragment extends Fragment {
+    // Untuk fitur onResume
+    private Boolean firstTime = true;
+
+    // Member variable
     private Context context;
     private EditText inputComment;
     private List<Comment> commentList;
@@ -84,7 +88,10 @@ public class ReviewCommentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getComment();
+        if (firstTime) {
+            getComment();
+            firstTime = false;
+        }
     }
 
     private void getComment() {
