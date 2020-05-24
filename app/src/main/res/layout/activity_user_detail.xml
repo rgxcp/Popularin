@@ -88,6 +88,7 @@
                 android:weightSum="5">
 
                 <LinearLayout
+                    android:id="@+id/layout_aud_total_review"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -114,6 +115,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_aud_total_favorite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -141,6 +143,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_aud_total_watchlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -168,6 +171,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_aud_total_follower"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -195,6 +199,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_aud_total_following"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

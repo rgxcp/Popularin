@@ -81,6 +81,11 @@ public class UserDetailActivity extends AppCompatActivity {
         textTotalWatchlist = findViewById(R.id.text_aud_total_watchlist);
         textTotalFollower = findViewById(R.id.text_aud_total_follower);
         textTotalFollowing = findViewById(R.id.text_aud_total_following);
+        LinearLayout totalReviewLayout = findViewById(R.id.layout_aud_total_review);
+        LinearLayout totalFavoriteLayout = findViewById(R.id.layout_aud_total_favorite);
+        LinearLayout totalWatchlistLayout = findViewById(R.id.layout_aud_total_watchlist);
+        LinearLayout totalFollowerLayout = findViewById(R.id.layout_aud_total_follower);
+        LinearLayout totalFollowingLayout = findViewById(R.id.layout_aud_total_following);
         Toolbar toolbar = findViewById(R.id.toolbar_aud_layout);
 
         // Extra
@@ -92,12 +97,11 @@ public class UserDetailActivity extends AppCompatActivity {
         final String authID = auth.getAuthID();
         final boolean isAuth = auth.isAuth();
         final boolean isSelf = Objects.requireNonNull(userID).equals(authID);
-
         if (isSelf) {
             buttonFollow.setText(R.string.edit_profile);
         }
 
-        // Mendapatkan data
+        // Request
         getUserDetail();
 
         // Activity
@@ -108,50 +112,38 @@ public class UserDetailActivity extends AppCompatActivity {
             }
         });
 
-        textTotalReview.setOnClickListener(new View.OnClickListener() {
+        totalReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, UserReviewActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
+                getUserReview();
             }
         });
 
-        textTotalFavorite.setOnClickListener(new View.OnClickListener() {
+        totalFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, UserFavoriteActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
+                getUserFavorite();
             }
         });
 
-        textTotalWatchlist.setOnClickListener(new View.OnClickListener() {
+        totalWatchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, UserWatchlistActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
+                getUserWatchlist();
             }
         });
 
-        textTotalFollower.setOnClickListener(new View.OnClickListener() {
+        totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, SocialActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                intent.putExtra(Popularin.IS_SELF, true);
-                startActivity(intent);
+                getUserFollower();
             }
         });
 
-        textTotalFollowing.setOnClickListener(new View.OnClickListener() {
+        totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, SocialActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                intent.putExtra(Popularin.IS_SELF, true);
-                startActivity(intent);
+                getUserFollowing();
             }
         });
 
@@ -159,19 +151,15 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isAuth && isSelf) {
-                    Intent intent = new Intent(context, EditProfileActivity.class);
-                    startActivity(intent);
+                    gotoEditProfile();
                 } else if (isAuth) {
                     if (!isFollowing) {
-                        buttonFollow.setEnabled(false);
                         followUser();
                     } else {
-                        buttonFollow.setEnabled(false);
                         unfollowUser();
                     }
                 } else {
-                    Intent intent = new Intent(context, EmptyAccountActivity.class);
-                    startActivity(intent);
+                    gotoEmptyAccount();
                 }
             }
         });
@@ -231,7 +219,38 @@ public class UserDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void getUserReview() {
+        Intent intent = new Intent(context, UserReviewActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void getUserFavorite() {
+        Intent intent = new Intent(context, UserFavoriteActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void getUserWatchlist() {
+        Intent intent = new Intent(context, UserWatchlistActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void getUserFollower() {
+        Intent intent = new Intent(context, SocialActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void getUserFollowing() {
+        Intent intent = new Intent(context, SocialActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
     private void followUser() {
+        buttonFollow.setEnabled(false);
         FollowUserRequest followUserRequest = new FollowUserRequest(context, userID);
         followUserRequest.sendRequest(new FollowUserRequest.APICallback() {
             @Override
@@ -254,6 +273,7 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void unfollowUser() {
+        buttonFollow.setEnabled(false);
         UnfollowUserRequest unfollowUserRequest = new UnfollowUserRequest(context, userID);
         unfollowUserRequest.sendRequest(new UnfollowUserRequest.APICallback() {
             @Override
@@ -273,5 +293,15 @@ public class UserDetailActivity extends AppCompatActivity {
                 Snackbar.make(anchorLayout, R.string.failed_unfollow_user, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void gotoEditProfile() {
+        Intent intent = new Intent(context, EditProfileActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(context, EmptyAccountActivity.class);
+        startActivity(intent);
     }
 }
