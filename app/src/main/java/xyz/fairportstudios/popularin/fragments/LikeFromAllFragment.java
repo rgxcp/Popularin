@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +24,14 @@ import xyz.fairportstudios.popularin.apis.popularin.get.LikeFromAllRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class LikeFromAllFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Member variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
     private ProgressBar progressBar;
+    private RecyclerView recyclerUser;
+    private TextView textEmptyResult;
+
+    // Constructor variable
     private String reviewID;
 
     public LikeFromAllFragment(String reviewID) {
@@ -37,16 +44,21 @@ public class LikeFromAllFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.layout_rr_anchor);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
+        // Mendapatkan data
+        getAllLike();
+
+        return view;
+    }
+
+    private void getAllLike() {
         List<User> userList = new ArrayList<>();
-
-        // GET
-        LikeFromAllRequest likeFromAllRequest = new LikeFromAllRequest(context, userList, recyclerView);
+        LikeFromAllRequest likeFromAllRequest = new LikeFromAllRequest(context, userList, recyclerUser);
         String requestURL = likeFromAllRequest.getRequestURL(reviewID, 1);
         likeFromAllRequest.sendRequest(requestURL, new LikeFromAllRequest.APICallback() {
             @Override
@@ -57,15 +69,17 @@ public class LikeFromAllFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_like);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
