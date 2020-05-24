@@ -30,9 +30,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.userList = userList;
     }
 
-    private Integer dpToPx() {
-        float px = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp() {
+        float dp = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -60,7 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == userList.size() - 1) {
-            layoutParams.bottomMargin = dpToPx();
+            layoutParams.bottomMargin = pxToDp();
         }
         holder.itemView.setLayoutParams(layoutParams);
 

@@ -34,9 +34,9 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         this.filmList = filmList;
     }
 
-    private Integer dpToPx(Integer dp) {
-        float px = dp * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp(Integer px) {
+        float dp = px * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -65,10 +65,10 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imagePoster);
 
         // Margin
-        int left = dpToPx(2);
-        int top = dpToPx(2);
-        int right = dpToPx(2);
-        int bottom = dpToPx(2);
+        int left = pxToDp(2);
+        int top = pxToDp(2);
+        int right = pxToDp(2);
+        int bottom = pxToDp(2);
 
         boolean isEdgeLeft = (position % 4) == 0;
         boolean isEdgeTop = position < 4;
@@ -76,19 +76,19 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         boolean isEdgeBottom = position > (getItemCount() - 4);
 
         if (isEdgeLeft) {
-            left = dpToPx(4);
+            left = pxToDp(4);
         }
 
         if (isEdgeTop) {
-            top = dpToPx(4);
+            top = pxToDp(4);
         }
 
         if (isEdgeRight) {
-            right = dpToPx(4);
+            right = pxToDp(4);
         }
 
         if (isEdgeBottom) {
-            bottom = dpToPx(4);
+            bottom = pxToDp(4);
         }
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();

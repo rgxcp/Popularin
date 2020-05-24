@@ -36,9 +36,9 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         this.filmList = filmList;
     }
 
-    private Integer dpToPx() {
-        float px = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp() {
+        float dp = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -74,7 +74,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == filmList.size() - 1) {
-            layoutParams.bottomMargin = dpToPx();
+            layoutParams.bottomMargin = pxToDp();
         }
         holder.itemView.setLayoutParams(layoutParams);
 

@@ -28,9 +28,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         this.crewList = crewList;
     }
 
-    private Integer dpToPx(Integer dp) {
-        float px = dp * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp(Integer px) {
+        float dp = px * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -58,12 +58,12 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            layoutParams.leftMargin = dpToPx(16);
-            layoutParams.rightMargin = dpToPx(8);
+            layoutParams.leftMargin = pxToDp(16);
+            layoutParams.rightMargin = pxToDp(8);
         } else if (position == crewList.size() - 1) {
-            layoutParams.rightMargin = dpToPx(16);
+            layoutParams.rightMargin = pxToDp(16);
         } else {
-            layoutParams.rightMargin = dpToPx(8);
+            layoutParams.rightMargin = pxToDp(8);
         }
         holder.itemView.setLayoutParams(layoutParams);
 

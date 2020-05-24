@@ -33,9 +33,9 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         this.filmReviewList = filmReviewList;
     }
 
-    private Integer dpToPx() {
-        float px = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp() {
+        float dp = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -73,7 +73,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == filmReviewList.size() - 1) {
-            layoutParams.bottomMargin = dpToPx();
+            layoutParams.bottomMargin = pxToDp();
             holder.border.setVisibility(View.GONE);
         }
         holder.itemView.setLayoutParams(layoutParams);

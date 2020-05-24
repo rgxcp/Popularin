@@ -39,9 +39,9 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         this.userReviewList = userReviewList;
     }
 
-    private Integer dpToPx() {
-        float px = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) px;
+    private Integer pxToDp() {
+        float dp = 16 * context.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
@@ -83,7 +83,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == userReviewList.size() - 1) {
-            layoutParams.bottomMargin = dpToPx();
+            layoutParams.bottomMargin = pxToDp();
             holder.border.setVisibility(View.GONE);
         }
         holder.itemView.setLayoutParams(layoutParams);
