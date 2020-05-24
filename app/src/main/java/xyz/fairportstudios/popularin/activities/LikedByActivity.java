@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -14,6 +15,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.fragments.LikeFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.LikeFromFollowingFragment;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class LikedByActivity extends AppCompatActivity {
 
@@ -29,15 +31,15 @@ public class LikedByActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        String reviewID = intent.getStringExtra("REVIEW_ID");
+        String reviewID = intent.getStringExtra(Popularin.REVIEW_ID);
 
         // Toolbar
-        toolbar.setTitle("Suka");
+        toolbar.setTitle(R.string.liked_by);
 
-        // Tab
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new LikeFromAllFragment(reviewID), "SEMUA");
-        pagerAdapter.addFragment(new LikeFromFollowingFragment(reviewID), "MENGIKUTI");
+        // Tab Pager
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pagerAdapter.addFragment(new LikeFromAllFragment(reviewID), getString(R.string.all));
+        pagerAdapter.addFragment(new LikeFromFollowingFragment(reviewID), getString(R.string.following));
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
