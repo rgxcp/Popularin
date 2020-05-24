@@ -68,14 +68,14 @@ public class ReviewRequest {
                             JSONObject userObject = reviewObject.getJSONObject("user");
 
                             Review review = new Review();
-                            review.setId(reviewObject.getInt("id"));
+                            review.setReview_id(reviewObject.getInt("id"));
                             review.setTmdb_id(filmObject.getInt("tmdb_id"));
                             review.setUser_id(userObject.getInt("id"));
                             review.setRating(reviewObject.getDouble("rating"));
                             review.setTitle(filmObject.getString("title"));
                             review.setPoster(filmObject.getString("poster"));
                             review.setRelease_date(filmObject.getString("release_date"));
-                            review.setFirst_name(userObject.getString("first_name"));
+                            review.setUsername(userObject.getString("first_name"));
                             review.setProfile_picture(userObject.getString("profile_picture"));
                             review.setReview_detail(reviewObject.getString("review_detail"));
                             review.setTimestamp(reviewObject.getString("timestamp"));

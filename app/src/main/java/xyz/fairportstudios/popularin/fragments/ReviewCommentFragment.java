@@ -114,7 +114,7 @@ public class ReviewCommentFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 textEmptyResult.setVisibility(View.VISIBLE);
                 textEmptyResult.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }

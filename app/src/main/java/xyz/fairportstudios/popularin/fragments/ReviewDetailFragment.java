@@ -29,6 +29,7 @@ import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -187,15 +188,15 @@ public class ReviewDetailFragment extends Fragment {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 textNetworkError.setVisibility(View.VISIBLE);
-                Snackbar.make(anchorLayot, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayot, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     private void showFilmModal() {
         FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-        FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, filmTitle, filmYear, filmPoster);
-        filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+        FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+        filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
     }
 
     private void likeReview() {

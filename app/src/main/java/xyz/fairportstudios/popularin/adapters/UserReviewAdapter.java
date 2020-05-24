@@ -20,8 +20,8 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
-import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
-import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -92,7 +92,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 gotoReviewDetail.putExtra("IS_SELF", isSelf);
                 context.startActivity(gotoReviewDetail);
@@ -112,8 +112,8 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, "FILM_STATUS_MODAL");
+                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                filmModal.show(fragmentManager, "FILM_STATUS_MODAL");
                 return true;
             }
         });

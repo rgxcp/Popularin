@@ -26,7 +26,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmMetadataRequest;
 import xyz.fairportstudios.popularin.apis.tmdb.get.FilmDetailRequest;
-import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
@@ -149,7 +149,7 @@ public class FilmDetailActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -178,7 +178,7 @@ public class FilmDetailActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -220,8 +220,8 @@ public class FilmDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(getSupportFragmentManager(), "FILM_STATUS_MODAL");
+                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                filmModal.show(getSupportFragmentManager(), "FILM_STATUS_MODAL");
             }
         });
     }

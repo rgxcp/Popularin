@@ -20,8 +20,6 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
@@ -32,8 +30,6 @@ import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateReviewRequest;
 import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
-import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
 
 public class EditReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Context context;
@@ -115,7 +111,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 networkError.setVisibility(View.VISIBLE);
-                Snackbar.make(relativeLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(relativeLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

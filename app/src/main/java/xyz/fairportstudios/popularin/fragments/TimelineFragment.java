@@ -69,7 +69,7 @@ public class TimelineFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 textEmptyTimeline.setVisibility(View.VISIBLE);
                 textEmptyTimeline.setText(R.string.empty_timeline);
-                Snackbar.make(anchorLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }

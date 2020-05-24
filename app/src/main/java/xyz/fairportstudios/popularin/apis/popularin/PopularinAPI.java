@@ -1,11 +1,15 @@
 package xyz.fairportstudios.popularin.apis.popularin;
 
 public class PopularinAPI {
-    public static final String BASE = "https://popularin.fairportstudios.xyz/api";
-    public static final String COMMENT = "https://popularin.fairportstudios.xyz/api/comment";
+    // Safe
+    private static final String BASE = "https://popularin.fairportstudios.xyz/api";
+    public static final String COMMENT = PopularinAPI.BASE + "/comment";
+    public static final String FILM = PopularinAPI.BASE + "/film";
+    public static final String REVIEW = PopularinAPI.BASE + "/review";
+    public static final String TIMELINE = PopularinAPI.BASE + "/review/timeline?page=";
+
+    // Unsafe
     public static final String FAVORITE = "https://popularin.fairportstudios.xyz/api/favorite";
-    public static final String FILM = "https://popularin.fairportstudios.xyz/api/film";
-    public static final String REVIEW = "https://popularin.fairportstudios.xyz/api/review";
     public static final String REVIEWS = "https://popularin.fairportstudios.xyz/api/reviews";
     public static final String SEARCH_USER = "https://popularin.fairportstudios.xyz/api/user/search?query=";
     public static final String SIGN_IN = "https://popularin.fairportstudios.xyz/api/user/signin";

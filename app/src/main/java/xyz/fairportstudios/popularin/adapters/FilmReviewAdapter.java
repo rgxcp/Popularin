@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -82,7 +82,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
                 gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
                 gotoReviewDetail.putExtra("IS_SELF", isSelf);
                 context.startActivity(gotoReviewDetail);

@@ -18,8 +18,8 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewDetailActivity;
-import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -91,7 +91,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         holder.filmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewDetailActivity.class);
+                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
                 gotoReviewDetail.putExtra(Popularin.REVIEW_ID, reviewID);
                 gotoReviewDetail.putExtra(Popularin.IS_SELF, isSelf);
                 context.startActivity(gotoReviewDetail);
@@ -102,8 +102,8 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });

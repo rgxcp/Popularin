@@ -224,7 +224,7 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 notFoundLayout.setVisibility(View.VISIBLE);
-                Snackbar.make(anchorLayout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }

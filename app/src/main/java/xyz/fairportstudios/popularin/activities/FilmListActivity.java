@@ -61,7 +61,7 @@ public class FilmListActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 

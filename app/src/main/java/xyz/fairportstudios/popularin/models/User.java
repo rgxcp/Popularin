@@ -7,10 +7,15 @@ public class User {
     private String profile_picture;
 
     public User() {
-        // Empty constructor
+        // Constructor kosong
     }
 
-    public User(Integer id, String full_name, String username, String profile_picture) {
+    public User(
+            Integer id,
+            String full_name,
+            String username,
+            String profile_picture
+    ) {
         this.id = id;
         this.full_name = full_name;
         this.username = username;
@@ -21,28 +26,28 @@ public class User {
         return id;
     }
 
-    public String getFull_name() {
-        return full_name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getFull_name() {
+        return full_name;
     }
 
     public void setFull_name(String full_name) {
         this.full_name = full_name;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
     public void setProfile_picture(String profile_picture) {

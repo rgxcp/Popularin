@@ -19,7 +19,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
-import xyz.fairportstudios.popularin.fragments.FilmStatusModal;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
@@ -88,8 +88,8 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmStatusModal filmStatusModal = new FilmStatusModal(filmID, title, year, poster);
-                filmStatusModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });

@@ -38,7 +38,7 @@ public class FollowerFragment extends Fragment {
 
         // Binding
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        layout = view.findViewById(R.id.layout_rr_anchor);
+        layout = view.findViewById(R.id.anchor_rr_layout);
         Context context = getActivity();
         RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
 
@@ -62,7 +62,7 @@ public class FollowerFragment extends Fragment {
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.get_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
