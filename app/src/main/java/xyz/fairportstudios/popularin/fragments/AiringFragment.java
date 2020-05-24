@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +24,11 @@ import xyz.fairportstudios.popularin.apis.tmdb.get.AiringFilmRequest;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class AiringFragment extends Fragment {
-    private CoordinatorLayout layout;
+    private Context context;
+    private CoordinatorLayout anchorLayout;
     private ProgressBar progressBar;
+    private RecyclerView recyclerFilm;
+    private TextView textEmptyResult;
 
     @Nullable
     @Override
@@ -32,16 +36,21 @@ public class AiringFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerFilm = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
+        // Mendapatkan data
+        getAiringFilm();
+
+        return view;
+    }
+
+    private void getAiringFilm() {
         List<Film> filmList = new ArrayList<>();
-
-        // GET
-        AiringFilmRequest airingFilmRequest = new AiringFilmRequest(context, filmList, recyclerView);
+        AiringFilmRequest airingFilmRequest = new AiringFilmRequest(context, filmList, recyclerFilm);
         airingFilmRequest.sendRequest(new AiringFilmRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -51,15 +60,17 @@ public class AiringFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_airing);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_airing);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
