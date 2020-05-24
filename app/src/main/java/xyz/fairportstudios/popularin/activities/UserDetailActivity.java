@@ -40,8 +40,8 @@ public class UserDetailActivity extends AppCompatActivity {
     private ImageView imageProfile;
     private ImageView imageEmptyRecentFavorite;
     private ImageView imageEmptyRecentReview;
-    private Integer totalFollower;
     private Integer currentFollower;
+    private Integer totalFollower;
     private LinearLayout notFoundLayout;
     private ProgressBar progressBar;
     private RecyclerView recyclerRecentFavorite;
@@ -163,8 +163,10 @@ public class UserDetailActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else if (isAuth) {
                     if (!isFollowing) {
+                        buttonFollow.setEnabled(false);
                         followUser();
                     } else {
+                        buttonFollow.setEnabled(false);
                         unfollowUser();
                     }
                 } else {
@@ -204,7 +206,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 scrollView.setVisibility(View.VISIBLE);
 
                 // Following
-                totalFollower = userDetail.getTotal_follower();
+                currentFollower = userDetail.getTotal_follower();
                 if (isFollowing) {
                     buttonFollow.setText(R.string.following);
                 }
@@ -234,17 +236,19 @@ public class UserDetailActivity extends AppCompatActivity {
         followUserRequest.sendRequest(new FollowUserRequest.APICallback() {
             @Override
             public void onSuccess() {
-                buttonFollow.setText(R.string.followed);
-                currentFollower = totalFollower + 1;
-                textTotalFollower.setText(String.valueOf(currentFollower));
                 isFollowing = true;
-                totalFollower++;
+                totalFollower = currentFollower + 1;
+                currentFollower++;
+                buttonFollow.setEnabled(true);
+                buttonFollow.setText(R.string.following);
+                textTotalFollower.setText(String.valueOf(totalFollower));
                 Snackbar.make(anchorLayout, R.string.user_followed, Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError() {
-                Snackbar.make(anchorLayout, R.string.follow_error, Snackbar.LENGTH_LONG).show();
+                buttonFollow.setEnabled(true);
+                Snackbar.make(anchorLayout, R.string.failed_follow_user, Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -254,17 +258,19 @@ public class UserDetailActivity extends AppCompatActivity {
         unfollowUserRequest.sendRequest(new UnfollowUserRequest.APICallback() {
             @Override
             public void onSuccess() {
-                buttonFollow.setText(R.string.follow);
-                currentFollower = totalFollower - 1;
-                textTotalFollower.setText(String.valueOf(currentFollower));
                 isFollowing = false;
-                totalFollower--;
+                totalFollower = currentFollower - 1;
+                currentFollower--;
+                buttonFollow.setEnabled(true);
+                buttonFollow.setText(R.string.follow);
+                textTotalFollower.setText(String.valueOf(totalFollower));
                 Snackbar.make(anchorLayout, R.string.user_unfollowed, Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError() {
-                Snackbar.make(anchorLayout, R.string.unfollow_error, Snackbar.LENGTH_LONG).show();
+                buttonFollow.setEnabled(true);
+                Snackbar.make(anchorLayout, R.string.failed_unfollow_user, Snackbar.LENGTH_LONG).show();
             }
         });
     }
