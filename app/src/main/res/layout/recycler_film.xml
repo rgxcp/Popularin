@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="16dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
     <com.github.florent37.shapeofview.shapes.RoundRectView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:shape_roundRect_borderColor="@color/colorPrimary"
+        app:shape_roundRect_borderWidth="0.1dp"
         app:shape_roundRect_bottomLeftRadius="5dp"
-        app:shape_roundRect_bottomRightRadius="25dp"
+        app:shape_roundRect_bottomRightRadius="5dp"
         app:shape_roundRect_topLeftRadius="5dp"
         app:shape_roundRect_topRightRadius="5dp">
 
@@ -19,12 +21,12 @@
             android:id="@+id/image_rf_poster"
             android:layout_width="100dp"
             android:layout_height="150dp"
-            android:contentDescription="@null"
-            android:src="@color/colorPrimary" />
+            android:background="@color/colorSurface"
+            android:contentDescription="@null" />
     </com.github.florent37.shapeofview.shapes.RoundRectView>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -35,22 +37,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:fontFamily="@font/jost_regular"
             android:maxLines="1"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textColor="@color/colorOnBackground"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/text_rf_genre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/jost_light"
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/text_rf_date"
+            android:id="@+id/text_rf_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/jost_regular"
             android:textSize="15sp" />
     </LinearLayout>
 

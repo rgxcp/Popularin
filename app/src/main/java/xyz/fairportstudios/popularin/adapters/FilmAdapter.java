@@ -25,6 +25,7 @@ import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseGenre;
 import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder> {
     private Context context;
@@ -48,24 +49,27 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull FilmViewHolder holder, int position) {
-        // Film ID
+        // ID
         final String filmID = String.valueOf(filmList.get(position).getId());
 
-        // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
-
         // Parsing
-        final String title = filmList.get(position).getOriginal_title();
-        final String date = new ParseDate().getDate(filmList.get(position).getRelease_date());
-        final String year = new ParseDate().getYear(filmList.get(position).getRelease_date());
-        final String poster = new ParseImage().getImage(filmList.get(position).getPoster_path());
-        String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_ids());
+        final String filmTitle = filmList.get(position).getOriginal_title();
+        final String filmYear = new ParseDate().getYear(filmList.get(position).getRelease_date());
+        final String filmPoster = new ParseImage().getImage(filmList.get(position).getPoster_path());
+        final String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_id());
+        final String releaseDate = new ParseDate().getDate(filmList.get(position).getRelease_date());
 
-        // Mengisi data
-        holder.filmTitle.setText(title);
-        holder.filmGenre.setText(genre);
-        holder.filmReleaseDate.setText(date);
-        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+        // Request gambar
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
+
+        // Isi
+        holder.textTitle.setText(filmTitle);
+        holder.textGenre.setText(genre);
+        holder.textReleaseDate.setText(releaseDate);
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imagePoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -78,27 +82,27 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+                Intent intent = new Intent(context, FilmDetailActivity.class);
+                intent.putExtra(Popularin.FILM_ID, filmID);
+                context.startActivity(intent);
             }
         });
 
-        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
+        holder.imagePoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoFilmDetail = new Intent(context, FilmDetailActivity.class);
-                gotoFilmDetail.putExtra("FILM_ID", filmID);
-                context.startActivity(gotoFilmDetail);
+                Intent intent = new Intent(context, FilmDetailActivity.class);
+                intent.putExtra(Popularin.FILM_ID, filmID);
+                context.startActivity(intent);
             }
         });
 
-        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imagePoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
-                filmModal.show(fragmentManager, "FILM_STATUS_MODAL");
+                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+                filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
         });
@@ -110,18 +114,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
     }
 
     static class FilmViewHolder extends RecyclerView.ViewHolder {
-        ImageView filmPoster;
-        TextView filmTitle;
-        TextView filmGenre;
-        TextView filmReleaseDate;
+        private ImageView imagePoster;
+        private TextView textTitle;
+        private TextView textGenre;
+        private TextView textReleaseDate;
 
         FilmViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rf_poster);
-            filmTitle = itemView.findViewById(R.id.text_rf_title);
-            filmGenre = itemView.findViewById(R.id.text_rf_genre);
-            filmReleaseDate = itemView.findViewById(R.id.text_rf_date);
+            imagePoster = itemView.findViewById(R.id.image_rf_poster);
+            textTitle = itemView.findViewById(R.id.text_rf_title);
+            textGenre = itemView.findViewById(R.id.text_rf_genre);
+            textReleaseDate = itemView.findViewById(R.id.text_rf_release_date);
         }
     }
 }
