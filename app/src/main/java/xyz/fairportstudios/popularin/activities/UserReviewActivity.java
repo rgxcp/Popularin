@@ -33,7 +33,7 @@ public class UserReviewActivity extends AppCompatActivity {
         // Binding
         progressBar = findViewById(R.id.pbr_rtr_layout);
         layout = findViewById(R.id.anchor_rtr_layout);
-        emptyResult = findViewById(R.id.text_rtr_network_error);
+        emptyResult = findViewById(R.id.text_rtr_empty_result);
         RecyclerView recyclerView = findViewById(R.id.recycler_rtr_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 

@@ -43,7 +43,7 @@ public class FilmListActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pbr_rtr_layout);
         recyclerFilm = findViewById(R.id.recycler_rtr_layout);
         anchorLayout = findViewById(R.id.anchor_rtr_layout);
-        textNetworkError = findViewById(R.id.text_rtr_network_error);
+        textNetworkError = findViewById(R.id.text_rtr_empty_result);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
@@ -91,6 +91,7 @@ public class FilmListActivity extends AppCompatActivity {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 textNetworkError.setVisibility(View.VISIBLE);
+                textNetworkError.setText(R.string.not_found);
                 Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });

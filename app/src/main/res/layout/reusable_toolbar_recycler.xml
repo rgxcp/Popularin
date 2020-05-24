@@ -19,10 +19,9 @@
         android:padding="168dp" />
 
     <TextView
-        android:id="@+id/text_rtr_network_error"
+        android:id="@+id/text_rtr_empty_result"
         style="@style/TextMessagePrimary"
         android:layout_below="@id/toolbar_rtr_layout"
-        android:text="@string/not_found"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
