@@ -28,14 +28,14 @@ public class UserWatchlistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.global_toolbar_recycler);
+        setContentView(R.layout.reusable_toolbar_recycler);
 
         // Binding
-        progressBar = findViewById(R.id.pbr_gtr_layout);
-        layout = findViewById(R.id.layout_gtr_anchor);
-        emptyResult = findViewById(R.id.text_fp_empty);
-        RecyclerView recyclerView = findViewById(R.id.recycler_gtr_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_gtr_layout);
+        progressBar = findViewById(R.id.pbr_rtr_layout);
+        layout = findViewById(R.id.anchor_rtr_layout);
+        emptyResult = findViewById(R.id.text_rtr_network_error);
+        RecyclerView recyclerView = findViewById(R.id.recycler_rtr_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
         Intent intent = getIntent();
