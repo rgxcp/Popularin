@@ -2,60 +2,66 @@ package xyz.fairportstudios.popularin.models;
 
 public class Film {
     private Integer id;
-    private Integer genre_ids;
+    private Integer genre_id;
     private String original_title;
-    private String poster_path;
     private String release_date;
+    private String poster_path;
 
     public Film() {
-        // Empty constructor
+        // Constructor kosong
     }
 
-    public Film(Integer id, Integer genre_ids, String original_title, String poster_path, String release_date) {
+    public Film(
+            Integer id,
+            Integer genre_id,
+            String original_title,
+            String release_date,
+            String poster_path
+    ) {
         this.id = id;
-        this.genre_ids = genre_ids;
+        this.genre_id = genre_id;
         this.original_title = original_title;
-        this.poster_path = poster_path;
         this.release_date = release_date;
+        this.poster_path = poster_path;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Integer getGenre_ids() {
-        return genre_ids;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getGenre_id() {
+        return genre_id;
+    }
+
+    public void setGenre_id(Integer genre_id) {
+        this.genre_id = genre_id;
     }
 
     public String getOriginal_title() {
         return original_title;
     }
 
-    public String getPoster_path() {
-        return poster_path;
+    public void setOriginal_title(String original_title) {
+        this.original_title = original_title;
     }
 
     public String getRelease_date() {
         return release_date;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
     }
 
-    public void setGenre_ids(Integer genre_ids) {
-        this.genre_ids = genre_ids;
-    }
-
-    public void setOriginal_title(String original_title) {
-        this.original_title = original_title;
+    public String getPoster_path() {
+        return poster_path;
     }
 
     public void setPoster_path(String poster_path) {
         this.poster_path = poster_path;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
     }
 }
