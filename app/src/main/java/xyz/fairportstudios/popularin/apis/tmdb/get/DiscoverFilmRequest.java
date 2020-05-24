@@ -3,7 +3,7 @@ package xyz.fairportstudios.popularin.apis.tmdb.get;
 import android.content.Context;
 import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import xyz.fairportstudios.popularin.adapters.FilmAdapter;
+import xyz.fairportstudios.popularin.adapters.FilmGridAdapter;
 import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Film;
 
@@ -79,9 +79,9 @@ public class DiscoverFilmRequest {
                         }
                     }
 
-                    FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
-                    recyclerView.setAdapter(filmAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    FilmGridAdapter filmGridAdapter = new FilmGridAdapter(context, filmList);
+                    recyclerView.setAdapter(filmGridAdapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
                     recyclerView.setVisibility(View.VISIBLE);
                     callback.onSuccess();
                 } catch (JSONException exception) {
