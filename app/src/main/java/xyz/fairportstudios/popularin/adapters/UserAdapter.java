@@ -19,6 +19,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context context;
@@ -42,16 +43,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        // User ID
+        // ID
         final String userID = String.valueOf(userList.get(position).getId());
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mengisi data
-        holder.fullName.setText(userList.get(position).getFull_name());
-        holder.username.setText(String.format("@%s", userList.get(position).getUsername()));
-        Glide.with(context).load(userList.get(position).getProfile_picture()).apply(requestOptions).into(holder.profile);
+        // Isi
+        holder.textFullName.setText(userList.get(position).getFull_name());
+        holder.textUsername.setText(String.format("@%s", userList.get(position).getUsername()));
+        Glide.with(context).load(userList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageProfile);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -64,9 +68,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
-                gotoUserDetail.putExtra("USER_ID", userID);
-                context.startActivity(gotoUserDetail);
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                intent.putExtra(Popularin.USER_ID, userID);
+                context.startActivity(intent);
             }
         });
     }
@@ -77,16 +81,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        ImageView profile;
-        TextView fullName;
-        TextView username;
+        private ImageView imageProfile;
+        private TextView textFullName;
+        private TextView textUsername;
 
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profile = itemView.findViewById(R.id.image_ru_profile);
-            fullName = itemView.findViewById(R.id.text_ru_full_name);
-            username = itemView.findViewById(R.id.text_ru_username);
+            imageProfile = itemView.findViewById(R.id.image_ru_profile);
+            textFullName = itemView.findViewById(R.id.text_ru_full_name);
+            textUsername = itemView.findViewById(R.id.text_ru_username);
         }
     }
 }

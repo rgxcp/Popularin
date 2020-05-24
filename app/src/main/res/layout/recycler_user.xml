@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="16dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
     <com.github.florent37.shapeofview.shapes.CircleView
         android:layout_width="wrap_content"
@@ -12,10 +12,10 @@
 
         <ImageView
             android:id="@+id/image_ru_profile"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:contentDescription="@null"
-            android:src="@color/colorPrimary" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/colorSurface"
+            android:contentDescription="@null" />
     </com.github.florent37.shapeofview.shapes.CircleView>
 
     <LinearLayout
@@ -30,16 +30,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:fontFamily="@font/jost_regular"
             android:maxLines="1"
-            android:textColor="#000000" />
+            android:textColor="@color/colorOnBackground"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/text_ru_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:ellipsize="end"
-            android:maxLines="1" />
+            android:fontFamily="@font/jost_regular"
+            android:maxLines="1"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>
