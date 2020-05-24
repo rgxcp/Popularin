@@ -65,7 +65,7 @@ public class UserWatchlistRequest {
 
                             Film film = new Film();
                             film.setId(jsonObjectFilm.getInt("tmdb_id"));
-                            film.setGenre_ids(jsonObjectFilm.getInt("genre_id"));
+                            film.setGenre_id(jsonObjectFilm.getInt("genre_id"));
                             film.setOriginal_title(jsonObjectFilm.getString("title"));
                             film.setPoster_path(jsonObjectFilm.getString("poster"));
                             film.setRelease_date(jsonObjectFilm.getString("release_date"));

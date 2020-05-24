@@ -64,7 +64,7 @@ public class DiscoverFilmRequest {
                         if (language.equals("id")) {
                             Film film = new Film();
                             film.setId(jsonObject.getInt("id"));
-                            film.setGenre_ids(jsonObject.getJSONArray("genre_ids").getInt(0));
+                            film.setGenre_id(jsonObject.getJSONArray("genre_ids").getInt(0));
                             film.setOriginal_title(jsonObject.getString("original_title"));
                             film.setPoster_path(jsonObject.getString("poster_path"));
                             film.setRelease_date(jsonObject.getString("release_date"));
