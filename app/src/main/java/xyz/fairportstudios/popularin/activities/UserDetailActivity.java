@@ -34,6 +34,7 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.Popularin;
 
 public class UserDetailActivity extends AppCompatActivity {
+    private Boolean isSelf;
     private Boolean isFollowing;
     private Button buttonFollow;
     private Context context;
@@ -96,7 +97,7 @@ public class UserDetailActivity extends AppCompatActivity {
         Auth auth = new Auth(context);
         final String authID = auth.getAuthID();
         final boolean isAuth = auth.isAuth();
-        final boolean isSelf = Objects.requireNonNull(userID).equals(authID);
+        isSelf = Objects.requireNonNull(userID).equals(authID);
         if (isSelf) {
             buttonFollow.setText(R.string.edit_profile);
         }
@@ -240,12 +241,14 @@ public class UserDetailActivity extends AppCompatActivity {
     private void getUserFollower() {
         Intent intent = new Intent(context, SocialActivity.class);
         intent.putExtra(Popularin.USER_ID, userID);
+        intent.putExtra(Popularin.IS_SELF, isSelf);
         startActivity(intent);
     }
 
     private void getUserFollowing() {
         Intent intent = new Intent(context, SocialActivity.class);
         intent.putExtra(Popularin.USER_ID, userID);
+        intent.putExtra(Popularin.IS_SELF, isSelf);
         startActivity(intent);
     }
 
