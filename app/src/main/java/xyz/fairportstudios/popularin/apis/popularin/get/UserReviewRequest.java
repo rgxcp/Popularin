@@ -21,18 +21,24 @@ import java.util.List;
 import xyz.fairportstudios.popularin.adapters.UserReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.UserReview;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserReviewRequest {
     private Context context;
+    private String id;
     private List<UserReview> userReviewList;
     private RecyclerView recyclerView;
-    private String id;
 
-    public UserReviewRequest(Context context, List<UserReview> userReviewList, RecyclerView recyclerView, String id) {
+    public UserReviewRequest(
+            Context context,
+            String id,
+            List<UserReview> userReviewList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.id = id;
         this.userReviewList = userReviewList;
         this.recyclerView = recyclerView;
-        this.id = id;
     }
 
     public interface APICallback {
@@ -44,47 +50,48 @@ public class UserReviewRequest {
     }
 
     public String getRequestURL(Integer page) {
-        return PopularinAPI.USER
-                + "/"
-                + id
-                + "/reviews?page="
-                + page;
+        return PopularinAPI.USER + "/" + id + "/reviews?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest userReviewRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        // Auth
+        final boolean isSelf = id.equals(new Auth(context).getAuthID());
+
+        JsonObjectRequest userReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject filmObject = indexObject.getJSONObject("film");
 
                             UserReview userReview = new UserReview();
-                            userReview.setId(jsonObject.getInt("id"));
-                            userReview.setTmdb_id(jsonObjectFilm.getInt("tmdb_id"));
-                            userReview.setRating(jsonObject.getDouble("rating"));
-                            userReview.setPoster(jsonObjectFilm.getString("poster"));
-                            userReview.setRelease_date(jsonObjectFilm.getString("release_date"));
-                            userReview.setReview_date(jsonObject.getString("review_date"));
-                            userReview.setReview_text(jsonObject.getString("review_text"));
-                            userReview.setTitle(jsonObjectFilm.getString("title"));
-
+                            userReview.setId(indexObject.getInt("id"));
+                            userReview.setTmdb_id(filmObject.getInt("tmdb_id"));
+                            userReview.setRating(indexObject.getDouble("rating"));
+                            userReview.setReview_detail(indexObject.getString("review_detail"));
+                            userReview.setTimestamp(indexObject.getString("timestamp"));
+                            userReview.setTitle(filmObject.getString("title"));
+                            userReview.setRelease_date(filmObject.getString("release_date"));
+                            userReview.setPoster(filmObject.getString("poster"));
                             userReviewList.add(userReview);
                         }
 
-                        UserReviewAdapter userReviewAdapter = new UserReviewAdapter(context, id, userReviewList);
+                        UserReviewAdapter userReviewAdapter = new UserReviewAdapter(context, userReviewList, isSelf);
                         recyclerView.setAdapter(userReviewAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -99,6 +106,6 @@ public class UserReviewRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(userReviewRequest);
+        Volley.newRequestQueue(context).add(userReview);
     }
 }
