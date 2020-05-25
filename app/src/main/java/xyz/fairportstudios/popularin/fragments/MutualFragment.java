@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +24,18 @@ import xyz.fairportstudios.popularin.apis.popularin.get.UserMutualRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class MutualFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Untuk fitur onResume
+    private Integer onResumeCount = 0;
+
+    // Mmeber variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
+    private List<User> userList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerMutual;
+    private TextView textEmptyMutual;
+
+    // Constructor variable
     private String userID;
 
     public MutualFragment(String userID) {
@@ -37,17 +48,30 @@ public class MutualFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        layout = view.findViewById(R.id.anchor_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerMutual = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyMutual = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
-        List<User> userList = new ArrayList<>();
+        // Mendapatkan data
+        userList = new ArrayList<>();
 
-        // GET
-        UserMutualRequest userMutualRequest = new UserMutualRequest(context, userList, recyclerView);
-        String requestURL = userMutualRequest.getRequestURL(userID, 1);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onResumeCount++;
+        if (onResumeCount >= 1) {
+            getUserMutual();
+        }
+    }
+
+    private void getUserMutual() {
+        UserMutualRequest userMutualRequest = new UserMutualRequest(context, userID, userList, recyclerMutual);
+        String requestURL = userMutualRequest.getRequestURL(1);
         userMutualRequest.sendRequest(requestURL, new UserMutualRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -57,15 +81,17 @@ public class MutualFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyMutual.setVisibility(View.VISIBLE);
+                textEmptyMutual.setText(R.string.empty_mutual);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyMutual.setVisibility(View.VISIBLE);
+                textEmptyMutual.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
