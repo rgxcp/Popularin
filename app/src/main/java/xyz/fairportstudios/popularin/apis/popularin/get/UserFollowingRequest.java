@@ -24,11 +24,18 @@ import xyz.fairportstudios.popularin.models.User;
 
 public class UserFollowingRequest {
     private Context context;
+    private String id;
     private List<User> userList;
     private RecyclerView recyclerView;
 
-    public UserFollowingRequest(Context context, List<User> userList, RecyclerView recyclerView) {
+    public UserFollowingRequest(
+            Context context,
+            String id,
+            List<User> userList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.id = id;
         this.userList = userList;
         this.recyclerView = recyclerView;
     }
@@ -41,35 +48,30 @@ public class UserFollowingRequest {
         void onError();
     }
 
-    public String getRequestURL(String id,  Integer page) {
-        return PopularinAPI.USER
-                + "/"
-                + id
-                + "/followings?page="
-                + page;
+    public String getRequestURL(Integer page) {
+        return PopularinAPI.USER + "/" + id + "/followings?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest userFollowingRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest userFollowing = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONArray jsonArrayData = jsonObjectResult.getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectFollowing = jsonObject.getJSONObject("following");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject followingObject = indexObject.getJSONObject("following");
 
                             User user = new User();
-                            user.setId(jsonObjectFollowing.getInt("id"));
-                            user.setFull_name(jsonObjectFollowing.getString("full_name"));
-                            user.setUsername(jsonObjectFollowing.getString("username"));
-                            user.setProfile_picture(jsonObjectFollowing.getString("profile_picture"));
-
+                            user.setId(followingObject.getInt("id"));
+                            user.setFull_name(followingObject.getString("full_name"));
+                            user.setUsername(followingObject.getString("username"));
+                            user.setProfile_picture(followingObject.getString("profile_picture"));
                             userList.add(user);
                         }
 
@@ -78,8 +80,10 @@ public class UserFollowingRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -94,6 +98,6 @@ public class UserFollowingRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(userFollowingRequest);
+        Volley.newRequestQueue(context).add(userFollowing);
     }
 }

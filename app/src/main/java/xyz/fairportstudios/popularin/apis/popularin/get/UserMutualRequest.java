@@ -27,11 +27,18 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UserMutualRequest {
     private Context context;
+    private String id;
     private List<User> userList;
     private RecyclerView recyclerView;
 
-    public UserMutualRequest(Context context, List<User> userList, RecyclerView recyclerView) {
+    public UserMutualRequest(
+            Context context,
+            String id,
+            List<User> userList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.id = id;
         this.userList = userList;
         this.recyclerView = recyclerView;
     }
@@ -44,34 +51,29 @@ public class UserMutualRequest {
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.USER
-                + "/"
-                + id
-                + "/mutuals?page="
-                + page;
+    public String getRequestURL(Integer page) {
+        return PopularinAPI.USER + "/" + id + "/mutuals?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest userMutualRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest userMutual = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONArray jsonArrayData = jsonObjectResult.getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
 
                             User user = new User();
-                            user.setId(jsonObject.getInt("id"));
-                            user.setFull_name(jsonObject.getString("full_name"));
-                            user.setUsername(jsonObject.getString("username"));
-                            user.setProfile_picture(jsonObject.getString("profile_picture"));
-
+                            user.setId(indexObject.getInt("id"));
+                            user.setFull_name(indexObject.getString("full_name"));
+                            user.setUsername(indexObject.getString("username"));
+                            user.setProfile_picture(indexObject.getString("profile_picture"));
                             userList.add(user);
                         }
 
@@ -80,6 +82,8 @@ public class UserMutualRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
+                    } else if (status == 606) {
+                        callback.onEmpty();
                     } else {
                         callback.onEmpty();
                     }
@@ -98,11 +102,11 @@ public class UserMutualRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(userMutualRequest);
+        Volley.newRequestQueue(context).add(userMutual);
     }
 }
