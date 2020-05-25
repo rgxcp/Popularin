@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +24,15 @@ import xyz.fairportstudios.popularin.apis.popularin.get.WatchlistFromAllRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class WatchlistFromAllFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Member variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
+    private List<User> userList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerUser;
+    private TextView textEmptyResult;
+
+    // Constructor variable
     private String filmID;
 
     public WatchlistFromAllFragment(String filmID) {
@@ -37,17 +45,22 @@ public class WatchlistFromAllFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
-        List<User> userList = new ArrayList<>();
+        // Mendapatkan data
+        userList = new ArrayList<>();
+        getWatchlistFromAll();
 
-        // GET
-        WatchlistFromAllRequest watchlistFromAllRequest = new WatchlistFromAllRequest(context, userList, recyclerView);
-        String requestURL = watchlistFromAllRequest.getRequestURL(filmID, 1);
+        return view;
+    }
+
+    private void getWatchlistFromAll() {
+        WatchlistFromAllRequest watchlistFromAllRequest = new WatchlistFromAllRequest(context, filmID, userList, recyclerUser);
+        String requestURL = watchlistFromAllRequest.getRequestURL(1);
         watchlistFromAllRequest.sendRequest(requestURL, new WatchlistFromAllRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -57,15 +70,17 @@ public class WatchlistFromAllFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_film_watchlist);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }

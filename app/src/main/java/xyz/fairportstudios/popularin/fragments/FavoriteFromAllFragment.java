@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +24,15 @@ import xyz.fairportstudios.popularin.apis.popularin.get.FavoriteFromAllRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class FavoriteFromAllFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Member variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
+    private List<User> userList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerUser;
+    private TextView textEmptyResult;
+
+    // Constructor variable
     private String filmID;
 
     public FavoriteFromAllFragment(String filmID) {
@@ -37,17 +45,22 @@ public class FavoriteFromAllFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
-        List<User> userList = new ArrayList<>();
+        // Mendapatkan data
+        userList = new ArrayList<>();
+        getFavoriteFromAll();
 
-        // GET
-        FavoriteFromAllRequest favoriteFromAllRequest = new FavoriteFromAllRequest(context, userList, recyclerView);
-        String requestURL = favoriteFromAllRequest.getRequestURL(filmID, 1);
+        return view;
+    }
+
+    private void getFavoriteFromAll() {
+        FavoriteFromAllRequest favoriteFromAllRequest = new FavoriteFromAllRequest(context, filmID, userList, recyclerUser);
+        String requestURL = favoriteFromAllRequest.getRequestURL(1);
         favoriteFromAllRequest.sendRequest(requestURL, new FavoriteFromAllRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -57,15 +70,17 @@ public class FavoriteFromAllFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_film_favorite);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
