@@ -19,11 +19,15 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserWatchlistRequest;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class UserWatchlistActivity extends AppCompatActivity {
+    private List<Film> filmList;
     private ProgressBar progressBar;
-    private RelativeLayout layout;
-    private TextView emptyResult;
+    private RecyclerView recyclerWatchlist;
+    private RelativeLayout anchorLayout;
+    private String userID;
+    private TextView textEmptyWatchlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +36,34 @@ public class UserWatchlistActivity extends AppCompatActivity {
 
         // Binding
         progressBar = findViewById(R.id.pbr_rtr_layout);
-        layout = findViewById(R.id.anchor_rtr_layout);
-        emptyResult = findViewById(R.id.text_rtr_empty_result);
-        RecyclerView recyclerView = findViewById(R.id.recycler_rtr_layout);
+        recyclerWatchlist = findViewById(R.id.recycler_rtr_layout);
+        anchorLayout = findViewById(R.id.anchor_rtr_layout);
+        textEmptyWatchlist = findViewById(R.id.text_rtr_empty_result);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("USER_ID");
+        userID = intent.getStringExtra(Popularin.USER_ID);
 
         // Toolbar
-        toolbar.setTitle("Watchlist");
+        toolbar.setTitle(R.string.watchlist);
 
-        // List
-        List<Film> filmList = new ArrayList<>();
+        // Mendapatkan data
+        filmList = new ArrayList<>();
+        getUserWatchlist();
 
-        // GET
-        UserWatchlistRequest userWatchlistRequest = new UserWatchlistRequest(this, filmList, recyclerView);
-        String requestURL = userWatchlistRequest.getRequestURL(userID, 1);
+        // Activity
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void getUserWatchlist() {
+        UserWatchlistRequest userWatchlistRequest = new UserWatchlistRequest(this, userID, filmList, recyclerWatchlist);
+        String requestURL = userWatchlistRequest.getRequestURL(1);
         userWatchlistRequest.sendRequest(requestURL, new UserWatchlistRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -59,22 +73,16 @@ public class UserWatchlistActivity extends AppCompatActivity {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
+                textEmptyWatchlist.setVisibility(View.VISIBLE);
+                textEmptyWatchlist.setText(R.string.empty_user_watchlist);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        // Activity
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                textEmptyWatchlist.setVisibility(View.VISIBLE);
+                textEmptyWatchlist.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }

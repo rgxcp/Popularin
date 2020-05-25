@@ -19,11 +19,15 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserFavoriteRequest;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class UserFavoriteActivity extends AppCompatActivity {
+    private List<Film> filmList;
     private ProgressBar progressBar;
-    private RelativeLayout layout;
-    private TextView emptyResult;
+    private RecyclerView recyclerFavorite;
+    private RelativeLayout anchorLayout;
+    private String userID;
+    private TextView textEmptyFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +36,34 @@ public class UserFavoriteActivity extends AppCompatActivity {
 
         // Binding
         progressBar = findViewById(R.id.pbr_rtr_layout);
-        layout = findViewById(R.id.anchor_rtr_layout);
-        emptyResult = findViewById(R.id.text_rtr_network_error);
-        RecyclerView recyclerView = findViewById(R.id.recycler_rtr_layout);
+        recyclerFavorite = findViewById(R.id.recycler_rtr_layout);
+        anchorLayout = findViewById(R.id.anchor_rtr_layout);
+        textEmptyFavorite = findViewById(R.id.text_rtr_empty_result);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("USER_ID");
+        userID = intent.getStringExtra(Popularin.USER_ID);
 
         // Toolbar
-        toolbar.setTitle("Favorit");
+        toolbar.setTitle(R.string.favorite);
 
-        // List
-        List<Film> filmList = new ArrayList<>();
+        // Mendapatkan data
+        filmList = new ArrayList<>();
+        getUserFavorite();
 
-        // GET
-        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(this, filmList, recyclerView);
-        String requestURL = userFavoriteRequest.getRequestURL(userID, 1);
+        // Activity
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void getUserFavorite() {
+        UserFavoriteRequest userFavoriteRequest = new UserFavoriteRequest(this, userID, filmList, recyclerFavorite);
+        String requestURL = userFavoriteRequest.getRequestURL(1);
         userFavoriteRequest.sendRequest(requestURL, new UserFavoriteRequest.JSONCallback() {
             @Override
             public void onSuccess() {
@@ -59,22 +73,16 @@ public class UserFavoriteActivity extends AppCompatActivity {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
+                textEmptyFavorite.setVisibility(View.VISIBLE);
+                textEmptyFavorite.setText(R.string.empty_user_favorite);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        // Activity
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                textEmptyFavorite.setVisibility(View.VISIBLE);
+                textEmptyFavorite.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
