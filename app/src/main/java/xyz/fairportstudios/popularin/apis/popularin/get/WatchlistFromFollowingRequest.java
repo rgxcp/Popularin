@@ -27,11 +27,18 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class WatchlistFromFollowingRequest {
     private Context context;
+    private String id;
     private List<User> userList;
     private RecyclerView recyclerView;
 
-    public WatchlistFromFollowingRequest(Context context, List<User> userList, RecyclerView recyclerView) {
+    public WatchlistFromFollowingRequest(
+            Context context,
+            String id,
+            List<User> userList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.id = id;
         this.userList = userList;
         this.recyclerView = recyclerView;
     }
@@ -44,12 +51,8 @@ public class WatchlistFromFollowingRequest {
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.FILM
-                + "/"
-                + id
-                + "/watchlists/from/following?page="
-                + page;
+    public String getRequestURL(Integer page) {
+        return PopularinAPI.FILM + "/" + id + "/watchlists/from/following?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
@@ -60,18 +63,18 @@ public class WatchlistFromFollowingRequest {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject userObject = indexObject.getJSONObject("user");
 
                             User user = new User();
-                            user.setId(jsonObjectUser.getInt("id"));
-                            user.setFull_name(jsonObjectUser.getString("full_name"));
-                            user.setUsername(jsonObjectUser.getString("username"));
-                            user.setProfile_picture(jsonObjectUser.getString("profile_picture"));
-
+                            user.setId(userObject.getInt("id"));
+                            user.setFull_name(userObject.getString("full_name"));
+                            user.setUsername(userObject.getString("username"));
+                            user.setProfile_picture(userObject.getString("profile_picture"));
                             userList.add(user);
                         }
 
@@ -80,8 +83,10 @@ public class WatchlistFromFollowingRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -98,7 +103,7 @@ public class WatchlistFromFollowingRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
