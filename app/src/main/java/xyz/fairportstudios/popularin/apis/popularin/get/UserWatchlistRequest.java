@@ -24,11 +24,18 @@ import xyz.fairportstudios.popularin.models.Film;
 
 public class UserWatchlistRequest {
     private Context context;
+    private String id;
     private List<Film> filmList;
     private RecyclerView recyclerView;
 
-    public UserWatchlistRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public UserWatchlistRequest(
+            Context context,
+            String id,
+            List<Film> filmList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.id = id;
         this.filmList = filmList;
         this.recyclerView = recyclerView;
     }
@@ -41,46 +48,43 @@ public class UserWatchlistRequest {
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.USER
-                + "/"
-                + id
-                + "/watchlists?page="
-                + page;
+    public String getRequestURL(Integer page) {
+        return PopularinAPI.USER + "/" + id + "/watchlists?page=" + page;
     }
 
     public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest userWatchlistRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest userWatchlist = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONArray jsonArrayData = response.getJSONObject("result").getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectFilm = jsonObject.getJSONObject("film");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject filmObject = indexObject.getJSONObject("film");
 
                             Film film = new Film();
-                            film.setId(jsonObjectFilm.getInt("tmdb_id"));
-                            film.setGenre_id(jsonObjectFilm.getInt("genre_id"));
-                            film.setOriginal_title(jsonObjectFilm.getString("title"));
-                            film.setPoster_path(jsonObjectFilm.getString("poster"));
-                            film.setRelease_date(jsonObjectFilm.getString("release_date"));
-
+                            film.setId(filmObject.getInt("tmdb_id"));
+                            film.setGenre_id(filmObject.getInt("genre_id"));
+                            film.setOriginal_title(filmObject.getString("title"));
+                            film.setRelease_date(filmObject.getString("release_date"));
+                            film.setPoster_path(filmObject.getString("poster"));
                             filmList.add(film);
                         }
 
                         FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
                         recyclerView.setAdapter(filmAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setHasFixedSize(false);
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -95,6 +99,6 @@ public class UserWatchlistRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(userWatchlistRequest);
+        Volley.newRequestQueue(context).add(userWatchlist);
     }
 }
