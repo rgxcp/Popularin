@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -14,6 +15,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.fragments.WatchlistFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.WatchlistFromFollowingFragment;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class WatchlistedByActivity extends AppCompatActivity {
 
@@ -29,15 +31,15 @@ public class WatchlistedByActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        String filmID = intent.getStringExtra("FILM_ID");
+        String filmID = intent.getStringExtra(Popularin.FILM_ID);
 
         // Toolbar
-        toolbar.setTitle("Favorit");
+        toolbar.setTitle(R.string.watchlisted_by);
 
         // Tab
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new WatchlistFromAllFragment(filmID), "SEMUA");
-        pagerAdapter.addFragment(new WatchlistFromFollowingFragment(filmID), "MENGIKUTI");
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pagerAdapter.addFragment(new WatchlistFromAllFragment(filmID), getString(R.string.all));
+        pagerAdapter.addFragment(new WatchlistFromFollowingFragment(filmID), getString(R.string.following));
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

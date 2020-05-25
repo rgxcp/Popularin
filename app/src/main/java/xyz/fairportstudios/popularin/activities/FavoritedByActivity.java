@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -14,6 +15,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.fragments.FavoriteFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.FavoriteFromFollowingFragment;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class FavoritedByActivity extends AppCompatActivity {
 
@@ -29,15 +31,15 @@ public class FavoritedByActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        String filmID = intent.getStringExtra("FILM_ID");
+        String filmID = intent.getStringExtra(Popularin.FILM_ID);
 
         // Toolbar
-        toolbar.setTitle("Favorit");
+        toolbar.setTitle(R.string.favorited_by);
 
         // Tab
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new FavoriteFromAllFragment(filmID), "SEMUA");
-        pagerAdapter.addFragment(new FavoriteFromFollowingFragment(filmID), "MENGIKUTI");
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pagerAdapter.addFragment(new FavoriteFromAllFragment(filmID), getString(R.string.all));
+        pagerAdapter.addFragment(new FavoriteFromFollowingFragment(filmID), getString(R.string.following));
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
