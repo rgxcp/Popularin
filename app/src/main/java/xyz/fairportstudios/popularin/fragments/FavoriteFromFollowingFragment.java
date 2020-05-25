@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +22,22 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.FavoriteFromFollowingRequest;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class FavoriteFromFollowingFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Untuk fitur onPause
+    private Boolean isAuth;
+    private Boolean firstTime = true;
+
+    // Member variable
+    private Context context;
+    private CoordinatorLayout anchorLayout;
+    private List<User> userList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerUser;
+    private TextView textEmptyResult;
+
+    // Constructor variable
     private String filmID;
 
     public FavoriteFromFollowingFragment(String filmID) {
@@ -37,17 +50,39 @@ public class FavoriteFromFollowingFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        context = getActivity();
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
 
-        // List
-        List<User> userList = new ArrayList<>();
+        // Auth
+        isAuth = new Auth(context).isAuth();
 
-        // GET
-        FavoriteFromFollowingRequest favoriteFromFollowingRequest = new FavoriteFromFollowingRequest(context, userList, recyclerView);
-        String requestURL = favoriteFromFollowingRequest.getRequestURL(filmID, 1);
+        // Mendapatkan data
+        userList = new ArrayList<>();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAuth) {
+            if (firstTime) {
+                getFavoriteFromFollowing();
+                firstTime = false;
+            }
+        } else {
+            progressBar.setVisibility(View.GONE);
+            textEmptyResult.setVisibility(View.VISIBLE);
+            textEmptyResult.setText(R.string.empty_account);
+        }
+    }
+
+    private void getFavoriteFromFollowing() {
+        FavoriteFromFollowingRequest favoriteFromFollowingRequest = new FavoriteFromFollowingRequest(context, filmID, userList, recyclerUser);
+        String requestURL = favoriteFromFollowingRequest.getRequestURL(1);
         favoriteFromFollowingRequest.sendRequest(requestURL, new FavoriteFromFollowingRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -57,15 +92,17 @@ public class FavoriteFromFollowingFragment extends Fragment {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_film_favorite);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
