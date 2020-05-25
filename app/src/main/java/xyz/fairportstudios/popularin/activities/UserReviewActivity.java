@@ -19,11 +19,15 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserReviewRequest;
 import xyz.fairportstudios.popularin.models.UserReview;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class UserReviewActivity extends AppCompatActivity {
+    private List<UserReview> userReviewList;
     private ProgressBar progressBar;
-    private RelativeLayout layout;
-    private TextView emptyResult;
+    private RecyclerView recyclerReview;
+    private RelativeLayout anchorLayout;
+    private String userID;
+    private TextView textEmptyResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +36,33 @@ public class UserReviewActivity extends AppCompatActivity {
 
         // Binding
         progressBar = findViewById(R.id.pbr_rtr_layout);
-        layout = findViewById(R.id.anchor_rtr_layout);
-        emptyResult = findViewById(R.id.text_rtr_empty_result);
-        RecyclerView recyclerView = findViewById(R.id.recycler_rtr_layout);
+        recyclerReview = findViewById(R.id.recycler_rtr_layout);
+        anchorLayout = findViewById(R.id.anchor_rtr_layout);
+        textEmptyResult = findViewById(R.id.text_rtr_empty_result);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("USER_ID");
+        userID = intent.getStringExtra(Popularin.USER_ID);
 
         // Toolbar
-        toolbar.setTitle("Ulasan");
+        toolbar.setTitle(R.string.review);
 
-        // List
-        List<UserReview> userReviewList = new ArrayList<>();
+        // Mendapatkan data
+        userReviewList = new ArrayList<>();
+        getUserReview();
 
-        // GET
-        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userReviewList, recyclerView, userID);
+        // Activity
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void getUserReview() {
+        UserReviewRequest userReviewRequest = new UserReviewRequest(this, userID, userReviewList, recyclerReview);
         String requestURL = userReviewRequest.getRequestURL(1);
         userReviewRequest.sendRequest(requestURL, new UserReviewRequest.APICallback() {
             @Override
@@ -59,22 +73,16 @@ public class UserReviewActivity extends AppCompatActivity {
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.empty_user_review);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                emptyResult.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        // Activity
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                textEmptyResult.setVisibility(View.VISIBLE);
+                textEmptyResult.setText(R.string.not_found);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
