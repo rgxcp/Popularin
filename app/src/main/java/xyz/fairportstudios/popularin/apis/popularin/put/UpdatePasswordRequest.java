@@ -49,10 +49,7 @@ public class UpdatePasswordRequest {
     public void sendRequest(final APICallback callback) {
         final Auth auth = new Auth(context);
 
-        String requestURL = PopularinAPI.USER
-                + "/"
-                + auth.getAuthID()
-                + "/password";
+        String requestURL = PopularinAPI.USER + "/" + auth.getAuthID() + "/password";
 
         StringRequest updatePassword = new StringRequest(Request.Method.PUT, requestURL, new Response.Listener<String>() {
             @Override
@@ -63,9 +60,9 @@ public class UpdatePasswordRequest {
 
                     if (status == 303) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        String uid = String.valueOf(resultObject.getInt("id"));
+                        String id = String.valueOf(resultObject.getInt("id"));
                         String token = resultObject.getString("token");
-                        auth.setAuth(uid, token);
+                        auth.setAuth(id, token);
                         callback.onSuccess();
                     } else if (status == 616) {
                         callback.onInvalid();
