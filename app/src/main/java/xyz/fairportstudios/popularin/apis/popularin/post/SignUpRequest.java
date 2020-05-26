@@ -19,16 +19,20 @@ import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 
 public class SignUpRequest {
     private Context context;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String username;
     private String email;
     private String password;
 
-    public SignUpRequest(Context context, String firstName, String lastName, String username, String email, String password) {
+    public SignUpRequest(
+            Context context,
+            String fullName,
+            String username,
+            String email,
+            String password
+    ) {
         this.context = context;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -49,18 +53,20 @@ public class SignUpRequest {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    JSONObject responseObject = new JSONObject(response);
+                    int status = responseObject.getInt("status");
 
                     if (status == 505) {
-                        JSONObject jsonObjectResult = jsonObject.getJSONObject("result");
-                        String id = String.valueOf(jsonObjectResult.getInt("id"));
-                        String token = jsonObjectResult.getString("token");
+                        JSONObject resultObject = responseObject.getJSONObject("result");
+                        String id = String.valueOf(resultObject.getInt("id"));
+                        String token = resultObject.getString("token");
                         callback.onSuccess(id, token);
                     } else if (status == 626) {
-                        JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
-                        String message = jsonArrayResult.get(0).toString();
+                        JSONArray resultArray = responseObject.getJSONArray("result");
+                        String message = resultArray.get(0).toString();
                         callback.onFailed(message);
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -77,8 +83,7 @@ public class SignUpRequest {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("first_name", firstName);
-                params.put("last_name", lastName);
+                params.put("full_name", fullName);
                 params.put("username", username);
                 params.put("email", email);
                 params.put("password", password);
