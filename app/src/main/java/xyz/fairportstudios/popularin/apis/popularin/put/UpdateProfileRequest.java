@@ -20,21 +20,18 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UpdateProfileRequest {
     private Context context;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String username;
     private String email;
 
     public UpdateProfileRequest(
             Context context,
-            String firstName,
-            String lastName,
+            String fullName,
             String username,
             String email
     ) {
         this.context = context;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.fullName = fullName;
         this.username = username;
         this.email = email;
     }
@@ -61,9 +58,9 @@ public class UpdateProfileRequest {
 
                     if (status == 303) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        String uid = String.valueOf(resultObject.getInt("id"));
+                        String id = String.valueOf(resultObject.getInt("id"));
                         String token = resultObject.getString("token");
-                        auth.setAuth(uid, token);
+                        auth.setAuth(id, token);
                         callback.onSuccess();
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
@@ -87,8 +84,7 @@ public class UpdateProfileRequest {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("first_name", firstName);
-                params.put("last_name", lastName);
+                params.put("full_name", fullName);
                 params.put("username", username);
                 params.put("email", email);
                 return params;

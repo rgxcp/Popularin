@@ -43,13 +43,12 @@ public class SelfDetailRequest {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject result = response.getJSONObject("result");
+                        JSONObject resultObject = response.getJSONObject("result");
 
                         SelfDetail selfDetail = new SelfDetail();
-                        selfDetail.setFirst_name(result.getString("first_name"));
-                        selfDetail.setLast_name(result.getString("last_name"));
-                        selfDetail.setUsername(result.getString("username"));
-                        selfDetail.setEmail(result.getString("email"));
+                        selfDetail.setFull_name(resultObject.getString("full_name"));
+                        selfDetail.setUsername(resultObject.getString("username"));
+                        selfDetail.setEmail(resultObject.getString("email"));
                         callback.onSuccess(selfDetail);
                     } else {
                         callback.onError();
