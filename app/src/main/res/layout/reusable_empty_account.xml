@@ -2,10 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blackPrimary"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingHorizontal="48dp">
+    android:paddingHorizontal="32dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -16,23 +15,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/jost_regular"
         android:text="@string/empty_account"
         android:textAlignment="center"
-        android:textColor="@color/whitePrimary"
+        android:textColor="@color/colorOnBackground"
         android:textSize="17sp" />
 
     <Button
         android:id="@+id/button_rea_sign_in"
         style="@style/ButtonPrimary"
-        android:layout_marginTop="48dp"
-        android:text="@string/signin" />
+        android:layout_marginTop="32dp"
+        android:text="@string/sign_in" />
 
     <Button
         android:id="@+id/button_rea_sign_up"
         style="@style/ButtonPrimary"
-        android:layout_marginTop="24dp"
-        android:text="@string/signup" />
+        android:layout_marginTop="16dp"
+        android:text="@string/sign_up" />
 
 </LinearLayout>

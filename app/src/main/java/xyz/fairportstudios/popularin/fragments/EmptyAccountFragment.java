@@ -30,19 +30,27 @@ public class EmptyAccountFragment extends Fragment {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                startActivity(intent);
+                gotoSignIn();
             }
         });
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SignUpActivity.class);
-                startActivity(intent);
+                gotoSignUp();
             }
         });
 
         return view;
+    }
+
+    private void gotoSignIn() {
+        Intent intent = new Intent(getActivity(), SignInActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoSignUp() {
+        Intent intent = new Intent(getActivity(), SignUpActivity.class);
+        startActivity(intent);
     }
 }

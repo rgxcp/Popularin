@@ -24,17 +24,25 @@ public class EmptyAccountActivity extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EmptyAccountActivity.this, SignInActivity.class);
-                startActivity(intent);
+                gotoSignIn();
             }
         });
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EmptyAccountActivity.this, SignUpActivity.class);
-                startActivity(intent);
+                gotoSignUp();
             }
         });
+    }
+
+    private void gotoSignIn() {
+        Intent intent = new Intent(EmptyAccountActivity.this, SignInActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoSignUp() {
+        Intent intent = new Intent(EmptyAccountActivity.this, SignUpActivity.class);
+        startActivity(intent);
     }
 }
