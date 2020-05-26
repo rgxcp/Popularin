@@ -44,7 +44,7 @@ import xyz.fairportstudios.popularin.services.Popularin;
 public class AccountFragment extends Fragment {
     private Button buttonSignOut;
     private Context context;
-    private CoordinatorLayout layout;
+    private CoordinatorLayout anchorLayout;
     private ImageView imageProfile;
     private ImageView imageEmptyRecentFavorite;
     private ImageView imageEmptyRecentReview;
@@ -67,7 +67,7 @@ public class AccountFragment extends Fragment {
         // Binding
         context = getActivity();
         buttonSignOut = view.findViewById(R.id.button_fa_sign_out);
-        layout = view.findViewById(R.id.layout_fa_anchor);
+        anchorLayout = view.findViewById(R.id.layout_fa_anchor);
         imageProfile = view.findViewById(R.id.image_fa_profile);
         imageEmptyRecentFavorite = view.findViewById(R.id.image_fa_empty_recent_favorite);
         imageEmptyRecentReview = view.findViewById(R.id.image_fa_empty_recent_review);
@@ -134,7 +134,7 @@ public class AccountFragment extends Fragment {
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 layoutNotFound.setVisibility(View.VISIBLE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -197,8 +197,6 @@ public class AccountFragment extends Fragment {
         buttonSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonSignOut.setEnabled(false);
-                buttonSignOut.setText(R.string.loading);
                 signOut();
             }
         });
@@ -207,6 +205,9 @@ public class AccountFragment extends Fragment {
     }
 
     private void signOut() {
+        buttonSignOut.setEnabled(false);
+        buttonSignOut.setText(R.string.loading);
+
         SignOutRequest signOutRequest = new SignOutRequest(context);
         signOutRequest.sendRequest(new SignOutRequest.APICallback() {
             @Override
@@ -220,7 +221,7 @@ public class AccountFragment extends Fragment {
             public void onError() {
                 buttonSignOut.setEnabled(true);
                 buttonSignOut.setText(R.string.sign_out);
-                Snackbar.make(layout, R.string.sign_out_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.failed_sign_out, Snackbar.LENGTH_LONG).show();
             }
         });
     }
