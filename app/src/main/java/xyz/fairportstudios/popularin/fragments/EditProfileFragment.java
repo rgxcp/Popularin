@@ -3,14 +3,20 @@ package xyz.fairportstudios.popularin.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.RelativeSizeSpan;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,11 +32,13 @@ import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
 import xyz.fairportstudios.popularin.models.SelfDetail;
 
 public class EditProfileFragment extends Fragment {
-    private Button buttonSave;
+    private Button buttonSaveProfile;
     private Context context;
-    private CoordinatorLayout layout;
-    private TextInputEditText inputFirstName;
-    private TextInputEditText inputLastName;
+    private LinearLayout anchorLayout;
+    private String fullName;
+    private String username;
+    private String email;
+    private TextInputEditText inputFullName;
     private TextInputEditText inputUsername;
     private TextInputEditText inputEmail;
 
@@ -41,101 +49,155 @@ public class EditProfileFragment extends Fragment {
 
         // Binding
         context = getActivity();
-        buttonSave = view.findViewById(R.id.button_fep_save);
-        layout = view.findViewById(R.id.layout_fep_anchor);
-        inputFirstName = view.findViewById(R.id.input_fep_first_name);
-        inputLastName = view.findViewById(R.id.input_fep_last_name);
-        inputUsername = view.findViewById(R.id.text_fep_username);
+        buttonSaveProfile = view.findViewById(R.id.button_fep_save_profile);
+        anchorLayout = view.findViewById(R.id.anchor_fep_layout);
+        inputFullName = view.findViewById(R.id.input_fep_full_name);
+        inputUsername = view.findViewById(R.id.input_fep_username);
         inputEmail = view.findViewById(R.id.input_fep_email);
         Button buttonEditPassword = view.findViewById(R.id.button_fep_edit_password);
+        TextView textWelcome = view.findViewById(R.id.text_fep_welcome);
 
-        // Mendapatkan data awal
-        getSelf();
+        // Pesan
+        String welcome = getString(R.string.edit_profile_welcome);
+        SpannableString spannableString = new SpannableString(welcome);
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
+        spannableString.setSpan(relativeSizeSpan, 0, 4, 0);
+        textWelcome.setText(spannableString);
+
+        // Request
+        getSelfDetail();
+
+        // Text watcher
+        inputFullName.addTextChangedListener(editProfileWatcher);
+        inputUsername.addTextChangedListener(editProfileWatcher);
+        inputEmail.addTextChangedListener(editProfileWatcher);
 
         // Activity
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        buttonSaveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveProfile();
-                buttonSave.setEnabled(false);
-                buttonSave.setText(R.string.loading);
             }
         });
 
         buttonEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getFragmentManager() != null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_aep_container, new EditPasswordFragment())
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                gotoEditPassword();
             }
         });
 
         return view;
     }
 
-    private void getSelf() {
-        // Membuat objek
-        SelfDetailRequest selfDetailRequest = new SelfDetailRequest(context);
+    private TextWatcher editProfileWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            // Tidak digunakan
+        }
 
-        // Mengirim request
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            fullName = Objects.requireNonNull(inputFullName.getText()).toString();
+            username = Objects.requireNonNull(inputUsername.getText()).toString();
+            email = Objects.requireNonNull(inputEmail.getText()).toString();
+            buttonSaveProfile.setEnabled(!fullName.isEmpty() && !username.isEmpty() && !email.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            // Tidak digunakan
+        }
+    };
+
+    private void getSelfDetail() {
+        SelfDetailRequest selfDetailRequest = new SelfDetailRequest(context);
         selfDetailRequest.sendRequest(new SelfDetailRequest.APICallback() {
             @Override
             public void onSuccess(SelfDetail selfDetail) {
-                inputFirstName.setText(selfDetail.getFirst_name());
-                inputLastName.setText(selfDetail.getLast_name());
+                inputFullName.setText(selfDetail.getFull_name());
                 inputUsername.setText(selfDetail.getUsername());
                 inputEmail.setText(selfDetail.getEmail());
-                buttonSave.setEnabled(true);
             }
 
             @Override
             public void onError() {
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
+    private boolean validateFullName() {
+        if (!fullName.contains(" ")) {
+            Snackbar.make(anchorLayout, R.string.validate_full_name, Snackbar.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validateUsername() {
+        if (username.length() < 5) {
+            Snackbar.make(anchorLayout, R.string.validate_username, Snackbar.LENGTH_LONG).show();
+            return false;
+        } else if (username.contains(" ")) {
+            Snackbar.make(anchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validateEmail() {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Snackbar.make(anchorLayout, R.string.validate_email, Snackbar.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private void saveProfile() {
-        // Menyimpan data
-        String firstName = Objects.requireNonNull(inputFirstName.getText()).toString();
-        String lastName = Objects.requireNonNull(inputLastName.getText()).toString();
-        String username = Objects.requireNonNull(inputUsername.getText()).toString();
-        String email = Objects.requireNonNull(inputEmail.getText()).toString();
+        buttonSaveProfile.setEnabled(false);
+        buttonSaveProfile.setText(R.string.loading);
 
-        // Membuat objek
-        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(
-                context,
-                firstName,
-                lastName,
-                username,
-                email
-        );
+        if (validateFullName() && validateUsername() && validateEmail()) {
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, fullName, username, email);
+            updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
+                @Override
+                public void onSuccess() {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    startActivity(intent);
+                    Objects.requireNonNull(getActivity()).finishAffinity();
+                }
 
-        // Mengirim request
-        updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
-            @Override
-            public void onSuccess() {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-                Objects.requireNonNull(getActivity()).finish();
-            }
+                @Override
+                public void onFailed(String message) {
+                    buttonSaveProfile.setEnabled(true);
+                    buttonSaveProfile.setText(R.string.save_profile);
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
 
-            @Override
-            public void onFailed(String message) {
-                buttonSave.setText(R.string.save_profile);
-                Snackbar.make(layout, message, Snackbar.LENGTH_LONG).show();
-            }
+                @Override
+                public void onError() {
+                    buttonSaveProfile.setEnabled(true);
+                    buttonSaveProfile.setText(R.string.save_profile);
+                    Snackbar.make(anchorLayout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            buttonSaveProfile.setEnabled(true);
+            buttonSaveProfile.setText(R.string.save_profile);
+        }
+    }
 
-            @Override
-            public void onError() {
-                buttonSave.setText(R.string.save_profile);
-                Snackbar.make(layout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
-            }
-        });
+    private void gotoEditPassword() {
+        if (getFragmentManager() != null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_aep_container, new EditPasswordFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
