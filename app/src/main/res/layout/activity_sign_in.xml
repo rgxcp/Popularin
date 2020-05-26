@@ -2,21 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_asi_anchor"
+    android:id="@+id/anchor_asi_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blackPrimary"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingHorizontal="32dp"
     tools:context=".activities.SignInActivity">
 
     <TextView
-        style="@style/TextSignWelcome"
-        android:text="@string/sign_welcome" />
+        android:id="@+id/text_asi_welcome"
+        style="@style/TextWelcomePrimary"
+        android:text="@string/sign_in_welcome" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -31,7 +30,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -50,6 +48,7 @@
         android:id="@+id/button_asi_signin"
         style="@style/ButtonPrimary"
         android:layout_marginTop="24dp"
+        android:enabled="false"
         android:text="@string/sign_in" />
 
 </LinearLayout>
