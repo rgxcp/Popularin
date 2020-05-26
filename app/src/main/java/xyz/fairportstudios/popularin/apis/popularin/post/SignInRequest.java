@@ -22,7 +22,11 @@ public class SignInRequest {
     private String username;
     private String password;
 
-    public SignInRequest(Context context, String username, String password) {
+    public SignInRequest(
+            Context context,
+            String username,
+            String password
+    ) {
         this.context = context;
         this.username = username;
         this.password = password;
@@ -45,20 +49,22 @@ public class SignInRequest {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    JSONObject responseObject = new JSONObject(response);
+                    int status = responseObject.getInt("status");
 
                     if (status == 515) {
-                        JSONObject jsonObjectResult = jsonObject.getJSONObject("result");
-                        String id = String.valueOf(jsonObjectResult.getInt("id"));
-                        String token = jsonObjectResult.getString("token");
+                        JSONObject resultObject = responseObject.getJSONObject("result");
+                        String id = String.valueOf(resultObject.getInt("id"));
+                        String token = resultObject.getString("token");
                         callback.onSuccess(id, token);
                     } else if (status == 616) {
                         callback.onInvalid();
-                    } else {
-                        JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
-                        String message = jsonArrayResult.get(0).toString();
+                    } else if (status == 626) {
+                        JSONArray resultArray = responseObject.getJSONArray("result");
+                        String message = resultArray.get(0).toString();
                         callback.onFailed(message);
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
