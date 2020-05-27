@@ -39,7 +39,7 @@
         <EditText
             android:id="@+id/input_frc_comment"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:autofillHints="@null"
             android:background="@drawable/bg_circle_gray"
@@ -55,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:contentDescription="@null"
-            android:src="@drawable/ic_send" />
+            android:src="@drawable/ic_send"
+            android:visibility="gone" />
     </LinearLayout>
 
 </RelativeLayout>

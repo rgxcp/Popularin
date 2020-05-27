@@ -3,6 +3,8 @@ package xyz.fairportstudios.popularin.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +39,12 @@ public class ReviewCommentFragment extends Fragment {
     // Member variable
     private Context context;
     private EditText inputComment;
+    private ImageView imageSend;
     private List<Comment> commentList;
     private ProgressBar progressBar;
     private RecyclerView recyclerComment;
     private RelativeLayout anchorLayout;
+    private String comment;
     private TextView textEmptyResult;
 
     // Constructor
@@ -58,17 +62,20 @@ public class ReviewCommentFragment extends Fragment {
         // Binding
         context = getActivity();
         inputComment = view.findViewById(R.id.input_frc_comment);
+        imageSend = view.findViewById(R.id.image_fr_send);
         anchorLayout = view.findViewById(R.id.anchor_frc_layout);
         progressBar = view.findViewById(R.id.pbr_frc_layout);
         recyclerComment = view.findViewById(R.id.recycler_frc_layout);
         textEmptyResult = view.findViewById(R.id.text_frc_empty_result);
-        ImageView imageSend = view.findViewById(R.id.image_fr_send);
 
         // Auth
         final boolean isAuth = new Auth(context).isAuth();
 
         // List
         commentList = new ArrayList<>();
+
+        // Text watcher
+        inputComment.addTextChangedListener(commentWatcher);
 
         // Activity
         imageSend.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +100,28 @@ public class ReviewCommentFragment extends Fragment {
             firstTime = false;
         }
     }
+
+    private TextWatcher commentWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Tidak digunakan
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            comment = inputComment.getText().toString();
+            if (!comment.isEmpty()) {
+                imageSend.setVisibility(View.VISIBLE);
+            } else {
+                imageSend.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // Tidak digunakan
+        }
+    };
 
     private void getComment() {
         CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerComment);
@@ -120,7 +149,6 @@ public class ReviewCommentFragment extends Fragment {
     }
 
     private void addComment() {
-        String comment = inputComment.getText().toString();
         AddCommentRequest addCommentRequest = new AddCommentRequest(context, reviewID, comment);
         addCommentRequest.sendRequest(new AddCommentRequest.APICallback() {
             @Override
