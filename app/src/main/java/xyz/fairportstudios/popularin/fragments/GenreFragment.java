@@ -1,194 +1,70 @@
 package xyz.fairportstudios.popularin.fragments;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.cardview.widget.CardView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.FilmListActivity;
+import xyz.fairportstudios.popularin.adapters.GenreAdapter;
+import xyz.fairportstudios.popularin.models.Genre;
 
 public class GenreFragment extends Fragment {
+    private Context context;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerGenre;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        CardView genreAction = view.findViewById(R.id.card_fh_action);
-        CardView genreAnimation = view.findViewById(R.id.card_fh_animation);
-        CardView genreDrama = view.findViewById(R.id.card_fh_drama);
-        CardView genreFantasy = view.findViewById(R.id.card_fh_fantasy);
-        CardView genreFiction = view.findViewById(R.id.card_fh_fiction);
-        CardView genreHorror = view.findViewById(R.id.card_fh_horror);
-        CardView genreCrime = view.findViewById(R.id.card_fh_crime);
-        CardView genreFamily = view.findViewById(R.id.card_fh_family);
-        CardView genreComedy = view.findViewById(R.id.card_fh_comedy);
-        CardView genreMystery = view.findViewById(R.id.card_fh_mystery);
-        CardView genreWar = view.findViewById(R.id.card_fh_war);
-        CardView genreAdventure = view.findViewById(R.id.card_fh_adventure);
-        CardView genreRomance = view.findViewById(R.id.card_fh_romance);
-        CardView genreHistory = view.findViewById(R.id.card_fh_history);
-        CardView genreThriller = view.findViewById(R.id.card_fh_thriller);
+        context = getActivity();
+        progressBar = view.findViewById(R.id.pbr_rr_layout);
+        recyclerGenre = view.findViewById(R.id.recycler_rr_layout);
 
-        // Activity
-        genreAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "28");
-                gotoFilmList.putExtra("GENRE_TITLE", "Aksi");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreAnimation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "16");
-                gotoFilmList.putExtra("GENRE_TITLE", "Animasi");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreDrama.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "18");
-                gotoFilmList.putExtra("GENRE_TITLE", "Drama");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreFantasy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "14");
-                gotoFilmList.putExtra("GENRE_TITLE", "Fantasi");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreFiction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "878");
-                gotoFilmList.putExtra("GENRE_TITLE", "Fiksi");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreHorror.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "27");
-                gotoFilmList.putExtra("GENRE_TITLE", "Horor");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreCrime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "80");
-                gotoFilmList.putExtra("GENRE_TITLE", "Kejahatan");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreFamily.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "10751");
-                gotoFilmList.putExtra("GENRE_TITLE", "Keluarga");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreComedy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "35");
-                gotoFilmList.putExtra("GENRE_TITLE", "Komedi");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreMystery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "9648");
-                gotoFilmList.putExtra("GENRE_TITLE", "Misteri");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreWar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "10752");
-                gotoFilmList.putExtra("GENRE_TITLE", "Perang");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreAdventure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "12");
-                gotoFilmList.putExtra("GENRE_TITLE", "Petualang");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreRomance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "10749");
-                gotoFilmList.putExtra("GENRE_TITLE", "Romansa");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "36");
-                gotoFilmList.putExtra("GENRE_TITLE", "Sejarah");
-                startActivity(gotoFilmList);
-            }
-        });
-
-        genreThriller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gotoFilmList = new Intent(getActivity(), FilmListActivity.class);
-                gotoFilmList.putExtra("GENRE_ID", "53");
-                gotoFilmList.putExtra("GENRE_TITLE", "Thriller");
-                startActivity(gotoFilmList);
-            }
-        });
+        // Genre
+        showAllGenre();
 
         return view;
+    }
+
+    private void showAllGenre() {
+        List<Genre> genreList = new ArrayList<>();
+        genreList.add(new Genre(28, getString(R.string.genre_action)));
+        genreList.add(new Genre(16, getString(R.string.genre_animation)));
+        genreList.add(new Genre(99, getString(R.string.genre_documentary)));
+        genreList.add(new Genre(18, getString(R.string.genre_drama)));
+        genreList.add(new Genre(14, getString(R.string.genre_fantasy)));
+        genreList.add(new Genre(878, getString(R.string.genre_fiction)));
+        genreList.add(new Genre(27, getString(R.string.genre_horror)));
+        genreList.add(new Genre(80, getString(R.string.genre_crime)));
+        genreList.add(new Genre(10751, getString(R.string.genre_family)));
+        genreList.add(new Genre(35, getString(R.string.genre_comedy)));
+        genreList.add(new Genre(9648, getString(R.string.genre_mystery)));
+        genreList.add(new Genre(10752, getString(R.string.genre_war)));
+        genreList.add(new Genre(12, getString(R.string.genre_adventure)));
+        genreList.add(new Genre(10749, getString(R.string.genre_romance)));
+        genreList.add(new Genre(36, getString(R.string.genre_history)));
+        genreList.add(new Genre(53, getString(R.string.genre_thriller)));
+
+        GenreAdapter genreAdapter = new GenreAdapter(context, genreList);
+        recyclerGenre.setAdapter(genreAdapter);
+        recyclerGenre.setLayoutManager(new GridLayoutManager(context, 2));
+        recyclerGenre.setHasFixedSize(true);
+        recyclerGenre.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 }
