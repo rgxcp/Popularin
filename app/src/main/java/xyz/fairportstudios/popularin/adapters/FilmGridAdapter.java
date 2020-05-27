@@ -73,7 +73,7 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         boolean isEdgeLeft = (position % 4) == 0;
         boolean isEdgeTop = position < 4;
         boolean isEdgeRight = (position % 4) == 3;
-        boolean isEdgeBottom = position > (getItemCount() - 4);
+        boolean isEdgeBottom = position >= (getItemCount() - 4);
 
         if (isEdgeLeft) {
             left = pxToDp(4);
