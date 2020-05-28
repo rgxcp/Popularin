@@ -20,16 +20,16 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class AddReviewRequest {
     private Context context;
-    private String id;
+    private String filmID;
     private String rating;
-    private String text;
+    private String review;
     private String date;
 
-    public AddReviewRequest(Context context, String id, String rating, String text, String date) {
+    public AddReviewRequest(Context context, String filmID, String rating, String review, String date) {
         this.context = context;
-        this.id = id;
+        this.filmID = filmID;
         this.rating = rating;
-        this.text = text;
+        this.review = review;
         this.date = date;
     }
 
@@ -50,14 +50,14 @@ public class AddReviewRequest {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    int status = jsonObject.getInt("status");
+                    JSONObject responseObject = new JSONObject(response);
+                    int status = responseObject.getInt("status");
 
                     if (status == 202) {
                         callback.onSuccess();
                     } else if (status == 626) {
-                        JSONArray jsonArrayResult = jsonObject.getJSONArray("result");
-                        String message = jsonArrayResult.get(0).toString();
+                        JSONArray resultArray = responseObject.getJSONArray("result");
+                        String message = resultArray.get(0).toString();
                         callback.onFailed(message);
                     } else {
                         callback.onError();
@@ -77,9 +77,9 @@ public class AddReviewRequest {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("tmdb_id", id);
+                params.put("tmdb_id", filmID);
                 params.put("rating", rating);
-                params.put("review_text", text);
+                params.put("review_detail", review);
                 params.put("watch_date", date);
                 return params;
             }
@@ -87,8 +87,8 @@ public class AddReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", auth.getAuthID());
-                headers.put("auth_token", auth.getAuthToken());
+                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("Auth-Token", auth.getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
