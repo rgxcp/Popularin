@@ -25,8 +25,8 @@ import xyz.fairportstudios.popularin.models.User;
 
 public class FollowingFragment extends Fragment {
     // Untuk fitur onCreate & onResume
-    private Integer onCreateCount = 0;
-    private Integer onResumeCount = 0;
+    // private Integer onCreateCount = 0;
+    // private Integer onResumeCount = 0;
 
     // Member variable
     private Context context;
@@ -57,10 +57,13 @@ public class FollowingFragment extends Fragment {
 
         // Mendapatkan data
         userList = new ArrayList<>();
+        getUserFollowing();
+        /*
         if (onCreateCount == 0) {
             getUserFollowing();
             onCreateCount++;
         }
+         */
 
         return view;
     }
@@ -68,10 +71,12 @@ public class FollowingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        /*
         onResumeCount++;
         if (onResumeCount >= 2) {
             getUserFollowing();
         }
+         */
     }
 
     private void getUserFollowing() {

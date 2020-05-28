@@ -25,7 +25,7 @@ import xyz.fairportstudios.popularin.models.User;
 
 public class FollowerFragment extends Fragment {
     // Untuk fitur onResume
-    private Boolean firstTime = true;
+    // private Boolean firstTime = true;
 
     // Mmeber variable
     private Context context;
@@ -54,17 +54,23 @@ public class FollowerFragment extends Fragment {
         recyclerFollower = view.findViewById(R.id.recycler_rr_layout);
         textEmptyFollower = view.findViewById(R.id.text_rr_empty_result);
 
+        // Mendapatkan data
+        userList = new ArrayList<>();
+        getUserFollower();
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        /*
         if (firstTime) {
             userList = new ArrayList<>();
             getUserFollower();
             firstTime = false;
         }
+         */
     }
 
     private void getUserFollower() {

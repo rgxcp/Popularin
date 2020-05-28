@@ -25,7 +25,7 @@ import xyz.fairportstudios.popularin.models.User;
 
 public class MutualFragment extends Fragment {
     // Untuk fitur onResume
-    private Integer onResumeCount = 0;
+    // private Integer onResumeCount = 0;
 
     // Mmeber variable
     private Context context;
@@ -56,6 +56,7 @@ public class MutualFragment extends Fragment {
 
         // Mendapatkan data
         userList = new ArrayList<>();
+        getUserMutual();
 
         return view;
     }
@@ -63,10 +64,12 @@ public class MutualFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        /*
         onResumeCount++;
         if (onResumeCount >= 1) {
             getUserMutual();
         }
+         */
     }
 
     private void getUserMutual() {
