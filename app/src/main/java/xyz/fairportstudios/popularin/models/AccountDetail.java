@@ -6,13 +6,12 @@ public class AccountDetail {
     private Integer total_favorite;
     private Integer total_review;
     private Integer total_watchlist;
-    private String joined_since;
     private String full_name;
     private String username;
     private String profile_picture;
 
     public AccountDetail() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public AccountDetail(
@@ -21,7 +20,6 @@ public class AccountDetail {
             Integer total_favorite,
             Integer total_review,
             Integer total_watchlist,
-            String joined_since,
             String full_name,
             String username,
             String profile_picture
@@ -31,7 +29,6 @@ public class AccountDetail {
         this.total_favorite = total_favorite;
         this.total_review = total_review;
         this.total_watchlist = total_watchlist;
-        this.joined_since = joined_since;
         this.full_name = full_name;
         this.username = username;
         this.profile_picture = profile_picture;
@@ -75,14 +72,6 @@ public class AccountDetail {
 
     public void setTotal_watchlist(Integer total_watchlist) {
         this.total_watchlist = total_watchlist;
-    }
-
-    public String getJoined_since() {
-        return joined_since;
-    }
-
-    public void setJoined_since(String joined_since) {
-        this.joined_since = joined_since;
     }
 
     public String getFull_name() {
