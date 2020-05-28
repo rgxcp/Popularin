@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,9 +50,11 @@ public class AccountFragment extends Fragment {
     private ImageView imageProfile;
     private ImageView imageEmptyRecentFavorite;
     private ImageView imageEmptyRecentReview;
-    private LinearLayout layoutNotFound;
     private ProgressBar progressBar;
+    private RecyclerView recyclerRecentFavorite;
+    private RecyclerView recyclerRecentReview;
     private ScrollView scrollView;
+    private String authID;
     private TextView textFullName;
     private TextView textUsername;
     private TextView textTotalReview;
@@ -58,6 +62,7 @@ public class AccountFragment extends Fragment {
     private TextView textTotalWatchlist;
     private TextView textTotalFollower;
     private TextView textTotalFollowing;
+    private TextView textNetworkError;
 
     @Nullable
     @Override
@@ -67,12 +72,13 @@ public class AccountFragment extends Fragment {
         // Binding
         context = getActivity();
         buttonSignOut = view.findViewById(R.id.button_fa_sign_out);
-        anchorLayout = view.findViewById(R.id.layout_fa_anchor);
+        anchorLayout = view.findViewById(R.id.anchor_fa_layout);
         imageProfile = view.findViewById(R.id.image_fa_profile);
         imageEmptyRecentFavorite = view.findViewById(R.id.image_fa_empty_recent_favorite);
         imageEmptyRecentReview = view.findViewById(R.id.image_fa_empty_recent_review);
-        layoutNotFound = view.findViewById(R.id.layout_fa_not_found);
         progressBar = view.findViewById(R.id.pbr_fa_layout);
+        recyclerRecentFavorite = view.findViewById(R.id.recycler_fa_recent_favorite);
+        recyclerRecentReview = view.findViewById(R.id.recycler_fa_recent_review);
         scrollView = view.findViewById(R.id.scroll_fa_layout);
         textFullName = view.findViewById(R.id.text_fa_full_name);
         textUsername = view.findViewById(R.id.text_fa_username);
@@ -81,28 +87,75 @@ public class AccountFragment extends Fragment {
         textTotalWatchlist = view.findViewById(R.id.text_fa_total_watchlist);
         textTotalFollower = view.findViewById(R.id.text_fa_total_follower);
         textTotalFollowing = view.findViewById(R.id.text_fa_total_following);
+        textNetworkError = view.findViewById(R.id.text_fa_network_error);
         Button buttonEditProfile = view.findViewById(R.id.button_fa_edit_profile);
-        RecyclerView recyclerRecentFavorite = view.findViewById(R.id.recycler_fa_recent_favorite);
-        RecyclerView recyclerRecentReview = view.findViewById(R.id.recycler_fa_recent_review);
+        LinearLayout totalReviewLayout = view.findViewById(R.id.layout_fa_total_review);
+        LinearLayout totalFavoriteLayout = view.findViewById(R.id.layout_fa_total_favorite);
+        LinearLayout totalWacthlistLayout = view.findViewById(R.id.layout_fa_total_watchlist);
+        LinearLayout totalFollowerLayout = view.findViewById(R.id.layout_fa_total_follower);
+        LinearLayout totalFollowingLayout = view.findViewById(R.id.layout_fa_total_following);
 
         // Auth
-        final String authID = new Auth(context).getAuthID();
+        authID = new Auth(context).getAuthID();
 
-        // List
-        List<RecentFavorite> recentFavoriteList = new ArrayList<>();
-        List<RecentReview> recentReviewList = new ArrayList<>();
+        // Request
+        getAccountDetail();
 
-        // Membuat objek
-        AccountDetailRequest accountDetailRequest = new AccountDetailRequest(
-                context,
-                authID,
-                recentFavoriteList,
-                recentReviewList,
-                recyclerRecentFavorite,
-                recyclerRecentReview
-        );
+        // Activity
+        totalReviewLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAccountReview();
+            }
+        });
 
-        // Mengirim request
+        totalFavoriteLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAccountFavorite();
+            }
+        });
+
+        totalWacthlistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAccountWatchlist();
+            }
+        });
+
+        totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoSocial();
+            }
+        });
+
+        totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoSocial();
+            }
+        });
+
+        buttonEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editProfile();
+            }
+        });
+
+        buttonSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
+        return view;
+    }
+
+    private void getAccountDetail() {
+        final AccountDetailRequest accountDetailRequest = new AccountDetailRequest(context, authID);
         accountDetailRequest.sendRequest(new AccountDetailRequest.APICallback() {
             @Override
             public void onSuccess(AccountDetail accountDetail) {
@@ -119,89 +172,56 @@ public class AccountFragment extends Fragment {
             }
 
             @Override
-            public void onEmptyFavorite() {
-                progressBar.setVisibility(View.GONE);
-                imageEmptyRecentFavorite.setVisibility(View.VISIBLE);
+            public void onHasFavorite(JSONArray recentFavorites) {
+                List<RecentFavorite> recentFavoriteList = new ArrayList<>();
+                accountDetailRequest.getRecentFavorites(recentFavorites, recentFavoriteList, recyclerRecentFavorite);
+                imageEmptyRecentFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onEmptyReview() {
-                progressBar.setVisibility(View.GONE);
-                imageEmptyRecentReview.setVisibility(View.VISIBLE);
+            public void onHasReview(JSONArray recentReviews) {
+                List<RecentReview> recentReviewList = new ArrayList<>();
+                accountDetailRequest.getRecentReviews(recentReviews, recentReviewList, recyclerRecentReview);
+                imageEmptyRecentReview.setVisibility(View.GONE);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                layoutNotFound.setVisibility(View.VISIBLE);
+                textNetworkError.setVisibility(View.VISIBLE);
                 Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
-        // Activity
-        textTotalReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, UserReviewActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
-            }
-        });
+    private void gotoAccountReview() {
+        Intent intent = new Intent(context, UserReviewActivity.class);
+        intent.putExtra(Popularin.USER_ID, authID);
+        startActivity(intent);
+    }
 
-        textTotalFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, UserFavoriteActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
-            }
-        });
+    private void gotoAccountFavorite() {
+        Intent intent = new Intent(context, UserFavoriteActivity.class);
+        intent.putExtra(Popularin.USER_ID, authID);
+        startActivity(intent);
+    }
 
-        textTotalWatchlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, UserWatchlistActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                startActivity(intent);
-            }
-        });
+    private void gotoAccountWatchlist() {
+        Intent intent = new Intent(context, UserWatchlistActivity.class);
+        intent.putExtra(Popularin.USER_ID, authID);
+        startActivity(intent);
+    }
 
-        textTotalFollower.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, SocialActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                intent.putExtra(Popularin.IS_SELF, true);
-                startActivity(intent);
-            }
-        });
+    private void gotoSocial() {
+        Intent intent = new Intent(context, SocialActivity.class);
+        intent.putExtra(Popularin.USER_ID, authID);
+        intent.putExtra(Popularin.IS_SELF, true);
+        startActivity(intent);
+    }
 
-        textTotalFollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, SocialActivity.class);
-                intent.putExtra(Popularin.USER_ID, authID);
-                intent.putExtra(Popularin.IS_SELF, true);
-                startActivity(intent);
-            }
-        });
-
-        buttonEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        buttonSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
-
-        return view;
+    private void editProfile() {
+        Intent intent = new Intent(context, EditProfileActivity.class);
+        startActivity(intent);
     }
 
     private void signOut() {
