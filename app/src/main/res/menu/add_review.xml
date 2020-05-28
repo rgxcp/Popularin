@@ -5,7 +5,7 @@
     <item
         android:id="@+id/menu_ar_add"
         android:icon="@drawable/ic_check"
-        android:title="Buat"
+        android:title="@string/add_review"
         app:showAsAction="always" />
 
 </menu>
