@@ -13,7 +13,7 @@ public class UserDetail {
     private String profile_picture;
 
     public UserDetail() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public UserDetail(
