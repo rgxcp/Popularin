@@ -47,27 +47,29 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
 
     @Override
     public void onBindViewHolder(@NonNull RecentFavoriteViewHolder holder, int position) {
-        // Film ID
+        // ID
         final String filmID = String.valueOf(recentFavoriteList.get(position).getTmdb_id());
+
+        // Parsing
+        final String filmTitle = recentFavoriteList.get(position).getTitle();
+        final String filmYear = new ParseDate().getYear(recentFavoriteList.get(position).getRelease_date());
+        final String filmPoster = new ParseImage().getImage(recentFavoriteList.get(position).getPoster());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .error(R.color.colorPrimary);
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mendapatkan data
-        final String title = recentFavoriteList.get(position).getTitle();
-        final String year = new ParseDate().getYear(recentFavoriteList.get(position).getRelease_date());
-        final String poster = new ParseImage().getImage(recentFavoriteList.get(position).getPoster());
-        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+        // Isi
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
             layoutParams.leftMargin = pxToDp(16);
             layoutParams.rightMargin = pxToDp(8);
-        } else if (position == recentFavoriteList.size() - 1) {
+        } else if (position == getItemCount() - 1) {
             layoutParams.rightMargin = pxToDp(16);
         } else {
             layoutParams.rightMargin = pxToDp(8);
@@ -75,7 +77,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
-        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
+        holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmDetailActivity.class);
@@ -84,11 +86,11 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
             }
         });
 
-        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
                 filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
@@ -101,12 +103,12 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
     }
 
     static class RecentFavoriteViewHolder extends RecyclerView.ViewHolder {
-        ImageView filmPoster;
+        private ImageView imageFilmPoster;
 
         RecentFavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rrf_poster);
+            imageFilmPoster = itemView.findViewById(R.id.image_rrf_poster);
         }
     }
 }

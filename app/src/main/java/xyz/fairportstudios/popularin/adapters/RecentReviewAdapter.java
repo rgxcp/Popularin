@@ -29,13 +29,13 @@ import xyz.fairportstudios.popularin.services.Popularin;
 
 public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapter.RecentReviewViewHolder> {
     private Context context;
-    private String userID;
     private List<RecentReview> recentReviewList;
+    private String userID;
 
-    public RecentReviewAdapter(Context context, String userID, List<RecentReview> recentReviewList) {
+    public RecentReviewAdapter(Context context, List<RecentReview> recentReviewList, String userID) {
         this.context = context;
-        this.userID = userID;
         this.recentReviewList = recentReviewList;
+        this.userID = userID;
     }
 
     private Integer pxToDp(Integer px) {
@@ -51,36 +51,35 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecentReviewViewHolder holder, int position) {
-        // Review ID
+        // ID
         final String reviewID = String.valueOf(recentReviewList.get(position).getId());
-
-        // Film ID
         final String filmID = String.valueOf(recentReviewList.get(position).getTmdb_id());
 
         // Auth
-        final String authID = new Auth(context).getAuthID();
-        final boolean isSelf = userID.equals(authID);
+        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
+
+        // Parsing
+        final String filmTitle = recentReviewList.get(position).getTitle();
+        final String filmYear = new ParseDate().getYear(recentReviewList.get(position).getRelease_date());
+        final String filmPoster = new ParseImage().getImage(recentReviewList.get(position).getPoster());
+        final Integer reviewStar = new ParseStar().getStar(recentReviewList.get(position).getRating());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .error(R.color.colorPrimary);
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mendapatkan data
-        final String title = recentReviewList.get(position).getTitle();
-        final String year = new ParseDate().getYear(recentReviewList.get(position).getRelease_date());
-        final String poster = new ParseImage().getImage(recentReviewList.get(position).getPoster());
-        Integer star = new ParseStar().getStar(recentReviewList.get(position).getRating());
-        holder.reviewStar.setImageResource(star);
-        Glide.with(context).load(poster).apply(requestOptions).into(holder.filmPoster);
+        // Isi
+        holder.imageReviewStar.setImageResource(reviewStar);
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
             layoutParams.leftMargin = pxToDp(16);
             layoutParams.rightMargin = pxToDp(8);
-        } else if (position == recentReviewList.size() - 1) {
+        } else if (position == getItemCount() - 1) {
             layoutParams.rightMargin = pxToDp(16);
         } else {
             layoutParams.rightMargin = pxToDp(8);
@@ -88,7 +87,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
-        holder.filmPoster.setOnClickListener(new View.OnClickListener() {
+        holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
@@ -98,11 +97,11 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
             }
         });
 
-        holder.filmPoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(filmID, title, year, poster);
+                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
                 filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
@@ -115,14 +114,14 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
     }
 
     static class RecentReviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView filmPoster;
-        ImageView reviewStar;
+        ImageView imageFilmPoster;
+        ImageView imageReviewStar;
 
         RecentReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filmPoster = itemView.findViewById(R.id.image_rrr_poster);
-            reviewStar = itemView.findViewById(R.id.image_rrr_star);
+            imageFilmPoster = itemView.findViewById(R.id.image_rrr_poster);
+            imageReviewStar = itemView.findViewById(R.id.image_rrr_star);
         }
     }
 }

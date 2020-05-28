@@ -14,7 +14,7 @@
         android:id="@+id/image_rrf_poster"
         android:layout_width="100dp"
         android:layout_height="150dp"
-        android:contentDescription="@null"
-        android:src="@color/colorPrimary" />
+        android:background="@color/colorSurface"
+        android:contentDescription="@null" />
 
 </com.github.florent37.shapeofview.shapes.RoundRectView>
