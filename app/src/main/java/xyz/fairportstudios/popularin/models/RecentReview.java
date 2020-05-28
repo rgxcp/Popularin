@@ -9,7 +9,7 @@ public class RecentReview {
     private String poster;
 
     public RecentReview() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public RecentReview(

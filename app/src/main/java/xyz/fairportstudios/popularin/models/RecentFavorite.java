@@ -7,7 +7,7 @@ public class RecentFavorite {
     private String poster;
 
     public RecentFavorite() {
-        // Empty constructor
+        // Constructor kosong
     }
 
     public RecentFavorite(
