@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_fsu_anchor"
+    android:id="@+id/anchor_fsu_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,9 +9,9 @@
         android:id="@+id/search_fsu_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_circle_gray"
+        app:queryBackground="@android:color/transparent"
         app:queryHint="@string/search_user_hint" />
 
     <ProgressBar
@@ -23,13 +23,10 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/text_fsu_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/text_fsu_message"
+        style="@style/TextMessagePrimary"
         android:layout_below="@id/search_fsu_layout"
-        android:gravity="center"
-        android:lineSpacingExtra="8dp"
-        android:text="@string/empty_result"
+        android:text="@string/not_found"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

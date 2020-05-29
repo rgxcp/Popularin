@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.Objects;
+import androidx.fragment.app.FragmentTransaction;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.adapters.PagerAdapter;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class SearchFragment extends Fragment {
 
@@ -25,16 +22,46 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Binding
-        TabLayout tabLayout = view.findViewById(R.id.tab_fs_layout);
-        ViewPager viewPager = view.findViewById(R.id.pager_fs_layout);
+        final CardView cardFilm = view.findViewById(R.id.card_fs_film);
+        final CardView cardUser = view.findViewById(R.id.card_fs_user);
 
-        // Tabbed
-        PagerAdapter pagerAdapter = new PagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), 0);
-        pagerAdapter.addFragment(new SearchFilmFragment(), "FILM");
-        pagerAdapter.addFragment(new SearchUserFragment(), "PENGGUNA");
-        viewPager.setAdapter(pagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        // Activity
+        cardFilm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoSearchFilm();
+            }
+        });
+
+        cardUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoSearchUser();
+            }
+        });
 
         return view;
+    }
+
+    private void gotoSearchFilm() {
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_am_container, new SearchFilmFragment(), Popularin.MAIN_BACK_STACK)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    private void gotoSearchUser() {
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_am_container, new SearchUserFragment(), Popularin.MAIN_BACK_STACK)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

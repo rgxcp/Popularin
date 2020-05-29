@@ -25,12 +25,11 @@ import xyz.fairportstudios.popularin.apis.popularin.get.SearchUserRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class SearchUserFragment extends Fragment {
-    private Context context;
     private List<User> userList;
     private ProgressBar progressBar;
-    private RecyclerView recyclerView;
-    private RelativeLayout layout;
-    private TextView emptyResult;
+    private RelativeLayout anchorLayout;
+    private SearchUserRequest searchUserRequest;
+    private TextView textMessage;
 
     @Nullable
     @Override
@@ -38,53 +37,57 @@ public class SearchUserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search_user, container, false);
 
         // Binding
-        context = getActivity();
         progressBar = view.findViewById(R.id.pbr_fsu_layout);
-        recyclerView = view.findViewById(R.id.recycler_fsu_layout);
-        layout = view.findViewById(R.id.layout_fsu_anchor);
-        emptyResult = view.findViewById(R.id.text_fsu_empty);
+        anchorLayout = view.findViewById(R.id.anchor_fsu_layout);
+        textMessage = view.findViewById(R.id.text_fsu_message);
+        Context context = getActivity();
+        RecyclerView recyclerUser = view.findViewById(R.id.recycler_fsu_layout);
         SearchView searchView = view.findViewById(R.id.search_fsu_layout);
 
-        // List
+        // Request
         userList = new ArrayList<>();
+        searchUserRequest = new SearchUserRequest(context, userList, recyclerUser);
 
         // Activity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                progressBar.setVisibility(View.VISIBLE);
-                emptyResult.setVisibility(View.GONE);
-
-                // GET
-                SearchUserRequest searchUserRequest = new SearchUserRequest(context, userList, recyclerView, query);
-                searchUserRequest.sendRequest(new SearchUserRequest.APICallback() {
-                    @Override
-                    public void onSuccess() {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onEmpty() {
-                        progressBar.setVisibility(View.GONE);
-                        emptyResult.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onError() {
-                        progressBar.setVisibility(View.GONE);
-                        emptyResult.setVisibility(View.VISIBLE);
-                        Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
-                    }
-                });
-                return true;
+                searchUser(query);
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return true;
+                return false;
             }
         });
 
         return view;
+    }
+
+    private void searchUser(String query) {
+        progressBar.setVisibility(View.VISIBLE);
+        textMessage.setVisibility(View.GONE);
+        userList.clear();
+
+        searchUserRequest.sendRequest(query, new SearchUserRequest.APICallback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onEmpty() {
+                progressBar.setVisibility(View.GONE);
+                textMessage.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                progressBar.setVisibility(View.GONE);
+                textMessage.setVisibility(View.VISIBLE);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }
