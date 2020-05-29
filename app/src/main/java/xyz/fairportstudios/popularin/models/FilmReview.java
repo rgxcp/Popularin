@@ -1,78 +1,86 @@
 package xyz.fairportstudios.popularin.models;
 
 public class FilmReview {
-    private Integer id;
+    private Integer review_id;
     private Integer user_id;
     private Double rating;
-    private String review_text;
-    private String review_date;
-    private String first_name;
+    private String review_detail;
+    private String timestamp;
+    private String username;
     private String profile_picture;
 
     public FilmReview() {
-        // Empty constructor
+        // Constructor kosong
     }
 
-    public FilmReview(Integer id, Integer user_id, Double rating, String review_text, String review_date, String first_name, String profile_picture) {
-        this.id = id;
+    public FilmReview(
+            Integer review_id,
+            Integer user_id,
+            Double rating,
+            String review_detail,
+            String timestamp,
+            String username,
+            String profile_picture
+    ) {
+        this.review_id = review_id;
         this.user_id = user_id;
         this.rating = rating;
-        this.review_text = review_text;
-        this.review_date = review_date;
-        this.first_name = first_name;
+        this.review_detail = review_detail;
+        this.timestamp = timestamp;
+        this.username = username;
         this.profile_picture = profile_picture;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getReview_id() {
+        return review_id;
+    }
+
+    public void setReview_id(Integer review_id) {
+        this.review_id = review_id;
     }
 
     public Integer getUser_id() {
         return user_id;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public String getReview_text() {
-        return review_text;
-    }
-
-    public String getReview_date() {
-        return review_date;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public Double getRating() {
+        return rating;
     }
 
     public void setRating(Double rating) {
         this.rating = rating;
     }
 
-    public void setReview_text(String review_text) {
-        this.review_text = review_text;
+    public String getReview_detail() {
+        return review_detail;
     }
 
-    public void setReview_date(String review_date) {
-        this.review_date = review_date;
+    public void setReview_detail(String review_detail) {
+        this.review_detail = review_detail;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
     public void setProfile_picture(String profile_picture) {
