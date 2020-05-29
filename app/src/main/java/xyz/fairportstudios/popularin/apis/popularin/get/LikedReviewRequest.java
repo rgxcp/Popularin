@@ -25,57 +25,58 @@ import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
-public class ReviewLikedRequest {
+public class LikedReviewRequest {
     private Context context;
+    private String filmID;
     private List<FilmReview> filmReviewList;
     private RecyclerView recyclerView;
 
-    public ReviewLikedRequest(Context context, List<FilmReview> filmReviewList, RecyclerView recyclerView) {
+    public LikedReviewRequest(
+            Context context,
+            String filmID,
+            List<FilmReview> filmReviewList,
+            RecyclerView recyclerView
+    ) {
         this.context = context;
+        this.filmID = filmID;
         this.filmReviewList = filmReviewList;
         this.recyclerView = recyclerView;
     }
 
     public interface APICallback {
-        void onSuccess();
+        void onSuccess(Integer lastPage);
 
         void onEmpty();
 
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.FILM
-                + "/"
-                + id
-                + "/reviews/liked?page="
-                + page;
-    }
+    public void sendRequest(Integer page, final APICallback callback) {
+        String requestURL = PopularinAPI.FILM + "/" + filmID + "/reviews/liked?page=" + page;
 
-    public void sendRequest(String requestURL, final APICallback callback) {
-        JsonObjectRequest reviewLiked = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest likedReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        JSONArray jsonArrayData = jsonObjectResult.getJSONArray("data");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
+                        int lastPage = resultObject.getInt("last_page");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
-                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
+                            JSONObject userObject = indexObject.getJSONObject("user");
 
                             FilmReview filmReview = new FilmReview();
-                            filmReview.setId(jsonObject.getInt("id"));
-                            filmReview.setUser_id(jsonObjectUser.getInt("id"));
-                            filmReview.setRating(jsonObject.getDouble("rating"));
-                            filmReview.setReview_text(jsonObject.getString("review_text"));
-                            filmReview.setReview_date(jsonObject.getString("review_date"));
-                            filmReview.setFirst_name(jsonObjectUser.getString("first_name"));
-                            filmReview.setProfile_picture(jsonObjectUser.getString("profile_picture"));
-
+                            filmReview.setReview_id(indexObject.getInt("id"));
+                            filmReview.setUser_id(userObject.getInt("id"));
+                            filmReview.setRating(indexObject.getDouble("rating"));
+                            filmReview.setReview_detail(indexObject.getString("review_detail"));
+                            filmReview.setTimestamp(indexObject.getString("timestamp"));
+                            filmReview.setUsername(userObject.getString("username"));
+                            filmReview.setProfile_picture(userObject.getString("profile_picture"));
                             filmReviewList.add(filmReview);
                         }
 
@@ -83,9 +84,11 @@ public class ReviewLikedRequest {
                         recyclerView.setAdapter(filmReviewAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
-                    } else {
+                        callback.onSuccess(lastPage);
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -102,11 +105,11 @@ public class ReviewLikedRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("auth_uid", new Auth(context).getAuthID());
+                headers.put("Auth-ID", new Auth(context).getAuthID());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(reviewLiked);
+        Volley.newRequestQueue(context).add(likedReview);
     }
 }
