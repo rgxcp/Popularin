@@ -22,6 +22,7 @@ import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.fragments.SearchFragment;
 import xyz.fairportstudios.popularin.fragments.TimelineFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class MainActivity extends AppCompatActivity {
     // Untuk fitur double press to exit
@@ -62,12 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+        Fragment mainBackStack = getSupportFragmentManager().findFragmentByTag(Popularin.MAIN_BACK_STACK);
+        if (mainBackStack != null) {
             super.onBackPressed();
         } else {
-            Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+            if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+                super.onBackPressed();
+            } else {
+                Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+            }
+            TIME_BACK_PRESSED = System.currentTimeMillis();
         }
-        TIME_BACK_PRESSED = System.currentTimeMillis();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
