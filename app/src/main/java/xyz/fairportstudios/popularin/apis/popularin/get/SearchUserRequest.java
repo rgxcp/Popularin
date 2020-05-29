@@ -26,13 +26,11 @@ public class SearchUserRequest {
     private Context context;
     private List<User> userList;
     private RecyclerView recyclerView;
-    private String query;
 
-    public SearchUserRequest(Context context, List<User> userList, RecyclerView recyclerView, String query) {
+    public SearchUserRequest(Context context, List<User> userList, RecyclerView recyclerView) {
         this.context = context;
         this.userList = userList;
         this.recyclerView = recyclerView;
-        this.query = query;
     }
 
     public interface APICallback {
@@ -43,31 +41,27 @@ public class SearchUserRequest {
         void onError();
     }
 
-    public void sendRequest(final APICallback callback) {
-        // Membersihkan array
-        userList.clear();
+    public void sendRequest(String query, final APICallback callback) {
+        String requestURL = PopularinAPI.SEARCH_USER + "/" + query;
 
-        String requestURL = PopularinAPI.SEARCH_USER + query;
-
-        JsonObjectRequest searchUserRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest searchUser = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONObject jsonObjectResult = response.getJSONObject("result");
-                    int total = jsonObjectResult.getInt("total");
+                    int status = response.getInt("status");
 
-                    if (total > 0) {
-                        JSONArray jsonArrayData = jsonObjectResult.getJSONArray("data");
+                    if (status == 101) {
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONArray dataArray = resultObject.getJSONArray("data");
 
-                        for (int index = 0; index < jsonArrayData.length(); index++) {
-                            JSONObject jsonObject = jsonArrayData.getJSONObject(index);
+                        for (int index = 0; index < dataArray.length(); index++) {
+                            JSONObject indexObject = dataArray.getJSONObject(index);
 
                             User user = new User();
-                            user.setId(jsonObject.getInt("id"));
-                            user.setFull_name(jsonObject.getString("full_name"));
-                            user.setUsername(jsonObject.getString("username"));
-                            user.setProfile_picture(jsonObject.getString("profile_picture"));
-
+                            user.setId(indexObject.getInt("id"));
+                            user.setFull_name(indexObject.getString("full_name"));
+                            user.setUsername(indexObject.getString("username"));
+                            user.setProfile_picture(indexObject.getString("profile_picture"));
                             userList.add(user);
                         }
 
@@ -76,22 +70,22 @@ public class SearchUserRequest {
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
                         recyclerView.setVisibility(View.VISIBLE);
                         callback.onSuccess();
-                    } else {
+                    } else if (status == 606) {
                         callback.onEmpty();
+                    } else {
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
             }
         });
 
-        Volley.newRequestQueue(context).add(searchUserRequest);
+        Volley.newRequestQueue(context).add(searchUser);
     }
 }

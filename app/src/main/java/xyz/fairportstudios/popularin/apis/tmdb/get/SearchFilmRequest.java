@@ -41,41 +41,29 @@ public class SearchFilmRequest {
         void onError();
     }
 
-    public String getRequestURL(String query, Integer page) {
-        return TMDbAPI.SEARCH_FILM
-                + "?api_key="
-                + TMDbAPI.API_KEY
-                + "&language=id&query="
-                + query
-                + "&page="
-                + page;
-    }
+    public void sendRequest(String query, final APICallback callback) {
+        String requestURL = TMDbAPI.SEARCH_FILM + query;
 
-    public void sendRequest(String requestURL, final APICallback callback) {
-        // Membersihkan array
-        filmList.clear();
-
-        JsonObjectRequest searchFilmRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest searchFilm = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int total = response.getInt("total_results");
 
                     if (total > 0) {
-                        JSONArray jsonArrayResults = response.getJSONArray("results");
+                        JSONArray resultArray = response.getJSONArray("results");
 
-                        for (int index = 0; index < jsonArrayResults.length(); index++) {
-                            JSONObject jsonObject = jsonArrayResults.getJSONObject(index);
-                            String language = jsonObject.getString("original_language");
+                        for (int index = 0; index < resultArray.length(); index++) {
+                            JSONObject indexObject = resultArray.getJSONObject(index);
+                            String language = indexObject.getString("original_language");
 
                             if (language.equals("id")) {
                                 Film film = new Film();
-                                film.setId(jsonObject.getInt("id"));
-                                film.setGenre_id(jsonObject.getJSONArray("genre_ids").getInt(0));
-                                film.setOriginal_title(jsonObject.getString("original_title"));
-                                film.setPoster_path(jsonObject.getString("poster_path"));
-                                film.setRelease_date(jsonObject.getString("release_date"));
-
+                                film.setId(indexObject.getInt("id"));
+                                film.setGenre_id(indexObject.getJSONArray("genre_ids").getInt(0));
+                                film.setOriginal_title(indexObject.getString("original_title"));
+                                film.setRelease_date(indexObject.getString("release_date"));
+                                film.setPoster_path(indexObject.getString("poster_path"));
                                 filmList.add(film);
                             }
                         }
@@ -105,6 +93,6 @@ public class SearchFilmRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(searchFilmRequest);
+        Volley.newRequestQueue(context).add(searchFilm);
     }
 }
