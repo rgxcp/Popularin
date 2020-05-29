@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,12 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.apis.popularin.get.ReviewSelfRequest;
+import xyz.fairportstudios.popularin.apis.popularin.get.SelfReviewRequest;
 import xyz.fairportstudios.popularin.models.FilmReview;
 
 public class SelfReviewFragment extends Fragment {
-    private CoordinatorLayout layout;
+    // Variable untuk fitur load more
+    private Integer currentPage = 1;
+    private Integer totalPage = 1;
+
+    // Variable member
+    private CoordinatorLayout anchorLayout;
     private ProgressBar progressBar;
+    private SelfReviewRequest selfReviewRequest;
+    private TextView textMessage;
+
+    // Variable untuk constructor
     private String filmID;
 
     public SelfReviewFragment(String filmID) {
@@ -37,35 +47,56 @@ public class SelfReviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        layout = view.findViewById(R.id.anchor_rr_layout);
+        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_empty_result);
         Context context = getActivity();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_rr_layout);
+        RecyclerView recyclerFilmReview = view.findViewById(R.id.recycler_rr_layout);
 
-        // List
+        // Request
         List<FilmReview> filmReviewList = new ArrayList<>();
+        selfReviewRequest = new SelfReviewRequest(context, filmID, filmReviewList, recyclerFilmReview);
+        getSelfFilmReview(1);
 
-        // GET
-        ReviewSelfRequest reviewSelfRequest = new ReviewSelfRequest(context, filmReviewList, recyclerView);
-        String requestURL = reviewSelfRequest.getRequestURL(filmID, 1);
-        reviewSelfRequest.sendRequest(requestURL, new ReviewSelfRequest.APICallback() {
+        // Activity
+        recyclerFilmReview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onSuccess() {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (currentPage < totalPage) {
+                        getSelfFilmReview(currentPage);
+                    }
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private void getSelfFilmReview(Integer page) {
+        selfReviewRequest.sendRequest(page, new SelfReviewRequest.APICallback() {
+            @Override
+            public void onSuccess(Integer lastPage) {
+                totalPage = lastPage;
+                currentPage++;
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onEmpty() {
                 progressBar.setVisibility(View.GONE);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_film_review);
             }
 
             @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(layout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_film_review);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        return view;
     }
 }
