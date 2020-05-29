@@ -68,7 +68,8 @@
             android:ellipsize="end"
             android:fontFamily="@font/jost_light"
             android:maxLines="7"
-            android:textColor="@color/colorOnSurface" />
+            android:textColor="@color/colorOnSurface"
+            android:textSize="15sp" />
 
         <View
             android:id="@+id/border_rfr_layout"
