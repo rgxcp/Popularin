@@ -21,8 +21,8 @@ import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.Popularin;
 
 public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.FilmReviewViewHolder> {
     private Context context;
@@ -46,29 +46,28 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
 
     @Override
     public void onBindViewHolder(@NonNull FilmReviewViewHolder holder, int position) {
-        // ReviewID
-        final String reviewID = String.valueOf(filmReviewList.get(position).getId());
-
-        // User ID
+        // ID
+        final String reviewID = String.valueOf(filmReviewList.get(position).getReview_id());
         final String userID = String.valueOf(filmReviewList.get(position).getUser_id());
 
         // Auth
-        final String authID = new Auth(context).getAuthID();
-        final boolean isSelf = userID.equals(authID);
+        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
 
         // Parsing
-        String date = new ParseDate().getDate(filmReviewList.get(position).getReview_date());
-        Integer star = new ParseStar().getStar(filmReviewList.get(position).getRating());
+        Integer reviewStar = new ParseStar().getStar(filmReviewList.get(position).getRating());
 
-        // Request
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        // Request gambar
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
         // Isi
-        holder.userFirstName.setText(filmReviewList.get(position).getFirst_name());
-        holder.reviewDate.setText(date);
-        holder.reviewDetail.setText(filmReviewList.get(position).getReview_text());
-        holder.reviewStar.setImageResource(star);
-        Glide.with(context).load(filmReviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.userProfile);
+        holder.textUsername.setText(filmReviewList.get(position).getUsername());
+        holder.textReviewTimestamp.setText(filmReviewList.get(position).getTimestamp());
+        holder.textReviewDetail.setText(filmReviewList.get(position).getReview_detail());
+        holder.imageReviewStar.setImageResource(reviewStar);
+        Glide.with(context).load(filmReviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -82,19 +81,19 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
-                gotoReviewDetail.putExtra("REVIEW_ID", reviewID);
-                gotoReviewDetail.putExtra("IS_SELF", isSelf);
-                context.startActivity(gotoReviewDetail);
+                Intent intent = new Intent(context, ReviewActivity.class);
+                intent.putExtra(Popularin.REVIEW_ID, reviewID);
+                intent.putExtra(Popularin.IS_SELF, isSelf);
+                context.startActivity(intent);
             }
         });
 
-        holder.userProfile.setOnClickListener(new View.OnClickListener() {
+        holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoUserDetail = new Intent(context, UserDetailActivity.class);
-                gotoUserDetail.putExtra("USER_ID", userID);
-                context.startActivity(gotoUserDetail);
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                intent.putExtra(Popularin.USER_ID, userID);
+                context.startActivity(intent);
             }
         });
     }
@@ -105,21 +104,21 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     }
 
     static class FilmReviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView userProfile;
-        ImageView reviewStar;
-        TextView userFirstName;
-        TextView reviewDate;
-        TextView reviewDetail;
+        ImageView imageUserProfile;
+        ImageView imageReviewStar;
+        TextView textUsername;
+        TextView textReviewTimestamp;
+        TextView textReviewDetail;
         View border;
 
         FilmReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userProfile = itemView.findViewById(R.id.image_rfr_profile);
-            reviewStar = itemView.findViewById(R.id.image_rfr_star);
-            userFirstName = itemView.findViewById(R.id.text_rfr_first_name);
-            reviewDate = itemView.findViewById(R.id.text_rfr_date);
-            reviewDetail = itemView.findViewById(R.id.text_rfr_review);
+            imageUserProfile = itemView.findViewById(R.id.image_rfr_profile);
+            imageReviewStar = itemView.findViewById(R.id.image_rfr_star);
+            textUsername = itemView.findViewById(R.id.text_rfr_username);
+            textReviewTimestamp = itemView.findViewById(R.id.text_rfr_timestamp);
+            textReviewDetail = itemView.findViewById(R.id.text_rfr_review);
             border = itemView.findViewById(R.id.border_rfr_layout);
         }
     }
