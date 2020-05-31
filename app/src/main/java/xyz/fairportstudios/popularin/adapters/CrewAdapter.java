@@ -41,19 +41,22 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CrewViewHolder holder, int position) {
-        // Cast ID
-        final String crewID = String.valueOf(crewList.get(position).getId());
+        // ID
+        // final String crewID = String.valueOf(crewList.get(position).getId());
 
         // Parsing
-        String profilePicture = new ParseImage().getImage(crewList.get(position).getProfile_path());
+        String crewProfile = new ParseImage().getImage(crewList.get(position).getProfile_path());
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mengisi data
-        holder.crewName.setText(crewList.get(position).getName());
-        holder.crewAs.setText(crewList.get(position).getJob());
-        Glide.with(context).load(profilePicture).apply(requestOptions).into(holder.profilePicture);
+        // Isi
+        holder.textCrewName.setText(crewList.get(position).getName());
+        holder.textCrewAs.setText(crewList.get(position).getJob());
+        Glide.with(context).load(crewProfile).apply(requestOptions).into(holder.imageCrewProfile);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -71,11 +74,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent gotoCreditDetail = new Intent(context, CreditDetailActivity.class);
-                gotoCreditDetail.putExtra("CREDIT_ID", crewID);
-                context.startActivity(gotoCreditDetail);
-                 */
+                // Belum ada
             }
         });
     }
@@ -86,16 +85,16 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
     }
 
     static class CrewViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePicture;
-        TextView crewName;
-        TextView crewAs;
+        private ImageView imageCrewProfile;
+        private TextView textCrewName;
+        private TextView textCrewAs;
 
         CrewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profilePicture = itemView.findViewById(R.id.image_rcr_profile);
-            crewName = itemView.findViewById(R.id.text_rcr_name);
-            crewAs = itemView.findViewById(R.id.text_rcr_as);
+            imageCrewProfile = itemView.findViewById(R.id.image_rcr_profile);
+            textCrewName = itemView.findViewById(R.id.text_rcr_name);
+            textCrewAs = itemView.findViewById(R.id.text_rcr_as);
         }
     }
 }

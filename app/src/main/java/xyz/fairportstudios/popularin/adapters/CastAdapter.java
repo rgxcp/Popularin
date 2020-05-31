@@ -41,26 +41,29 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CastViewHolder holder, int position) {
-        // Cast ID
-        final String castID = String.valueOf(castList.get(position).getId());
+        // ID
+        // final String castID = String.valueOf(castList.get(position).getId());
 
         // Parsing
-        String profilePicture = new ParseImage().getImage(castList.get(position).getProfile_path());
+        String castProfile = new ParseImage().getImage(castList.get(position).getProfile_path());
 
         // Request gambar
-        RequestOptions requestOptions = new RequestOptions().centerCrop().placeholder(R.color.colorPrimary).error(R.color.colorPrimary);
+        RequestOptions requestOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.colorSurface)
+                .error(R.color.colorSurface);
 
-        // Mengisi data
-        holder.castName.setText(castList.get(position).getName());
-        holder.castAs.setText(castList.get(position).getCharacter());
-        Glide.with(context).load(profilePicture).apply(requestOptions).into(holder.profilePicture);
+        // Isi
+        holder.textCastName.setText(castList.get(position).getName());
+        holder.textCastAs.setText(castList.get(position).getCharacter());
+        Glide.with(context).load(castProfile).apply(requestOptions).into(holder.imageCastProfile);
 
         // Margin
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
             layoutParams.leftMargin = pxToDp(16);
             layoutParams.rightMargin = pxToDp(8);
-        } else if (position == castList.size() - 1) {
+        } else if (position == getItemCount() - 1) {
             layoutParams.rightMargin = pxToDp(16);
         } else {
             layoutParams.rightMargin = pxToDp(8);
@@ -71,11 +74,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent gotoCreditDetail = new Intent(context, CreditDetailActivity.class);
-                gotoCreditDetail.putExtra("CREDIT_ID", castID);
-                context.startActivity(gotoCreditDetail);
-                 */
+                // Belum ada
             }
         });
     }
@@ -86,16 +85,16 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
     }
 
     static class CastViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePicture;
-        TextView castName;
-        TextView castAs;
+        private ImageView imageCastProfile;
+        private TextView textCastName;
+        private TextView textCastAs;
 
         CastViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profilePicture = itemView.findViewById(R.id.image_rcr_profile);
-            castName = itemView.findViewById(R.id.text_rcr_name);
-            castAs = itemView.findViewById(R.id.text_rcr_as);
+            imageCastProfile = itemView.findViewById(R.id.image_rcr_profile);
+            textCastName = itemView.findViewById(R.id.text_rcr_name);
+            textCastAs = itemView.findViewById(R.id.text_rcr_as);
         }
     }
 }
