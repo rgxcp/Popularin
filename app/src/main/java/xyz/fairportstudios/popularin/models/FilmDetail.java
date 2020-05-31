@@ -1,81 +1,89 @@
 package xyz.fairportstudios.popularin.models;
 
 public class FilmDetail {
+    private Integer genre_id;
     private Integer runtime;
-    private String backdrop_path;
-    private String genre;
     private String original_title;
     private String overview;
     private String poster_path;
     private String release_date;
+    private String video_key;
 
     public FilmDetail() {
-        // Empty constructor
+        // Constructor kosong
     }
 
-    public FilmDetail(Integer runtime, String backdrop_path, String genre, String original_title, String overview, String poster_path, String release_date) {
+    public FilmDetail(
+            Integer genre_id,
+            Integer runtime,
+            String original_title,
+            String overview,
+            String poster_path,
+            String release_date,
+            String video_key
+    ) {
+        this.genre_id = genre_id;
         this.runtime = runtime;
-        this.backdrop_path = backdrop_path;
-        this.genre = genre;
         this.original_title = original_title;
         this.overview = overview;
         this.poster_path = poster_path;
         this.release_date = release_date;
+        this.video_key = video_key;
+    }
+
+    public Integer getGenre_id() {
+        return genre_id;
+    }
+
+    public void setGenre_id(Integer genre_id) {
+        this.genre_id = genre_id;
     }
 
     public Integer getRuntime() {
         return runtime;
     }
 
-    public String getBackdrop_path() {
-        return backdrop_path;
-    }
-
-    public String getGenre() {
-        return genre;
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
     }
 
     public String getOriginal_title() {
         return original_title;
     }
 
-    public String getOverview() {
-        return overview;
-    }
-
-    public String getPoster_path() {
-        return poster_path;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public void setRuntime(Integer runtime) {
-        this.runtime = runtime;
-    }
-
-    public void setBackdrop_path(String backdrop_path) {
-        this.backdrop_path = backdrop_path;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
     public void setOriginal_title(String original_title) {
         this.original_title = original_title;
+    }
+
+    public String getOverview() {
+        return overview;
     }
 
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
+    public String getPoster_path() {
+        return poster_path;
+    }
+
     public void setPoster_path(String poster_path) {
         this.poster_path = poster_path;
     }
 
+    public String getRelease_date() {
+        return release_date;
+    }
+
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
+    }
+
+    public String getVideo_key() {
+        return video_key;
+    }
+
+    public void setVideo_key(String video_key) {
+        this.video_key = video_key;
     }
 }
