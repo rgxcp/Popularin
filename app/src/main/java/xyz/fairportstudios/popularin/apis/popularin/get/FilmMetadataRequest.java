@@ -26,56 +26,34 @@ public class FilmMetadataRequest {
     public interface APICallback {
         void onSuccess(FilmMetadata filmMetadata);
 
+        void onEmpty();
+
         void onError();
     }
 
     public void sendRequest(final APICallback callback) {
         String requestURL = PopularinAPI.FILM + "/" + id;
 
-        JsonObjectRequest filmMetadataRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest filmMetadata = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
-                        JSONObject jsonObjectResult = response.getJSONObject("result");
-                        // JSONObject jsonObjectFilm = jsonObjectResult.getJSONObject("film");
-                        JSONObject jsonObjectMetadata = jsonObjectResult.getJSONObject("metadata");
+                        JSONObject resultObject = response.getJSONObject("result");
+                        JSONObject metadataObject = resultObject.getJSONObject("metadata");
 
                         FilmMetadata filmMetadata = new FilmMetadata();
-                        filmMetadata.setAverage_rating(jsonObjectMetadata.getDouble("average_rating"));
-                        filmMetadata.setFavorites(jsonObjectMetadata.getInt("favorites"));
-                        filmMetadata.setReviews(jsonObjectMetadata.getInt("reviews"));
-                        filmMetadata.setWatchlists(jsonObjectMetadata.getInt("watchlists"));
-                        filmMetadata.setRate_05(jsonObjectMetadata.getInt("rate_0.5"));
-                        filmMetadata.setRate_10(jsonObjectMetadata.getInt("rate_1.0"));
-                        filmMetadata.setRate_15(jsonObjectMetadata.getInt("rate_1.5"));
-                        filmMetadata.setRate_20(jsonObjectMetadata.getInt("rate_2.0"));
-                        filmMetadata.setRate_25(jsonObjectMetadata.getInt("rate_2.5"));
-                        filmMetadata.setRate_30(jsonObjectMetadata.getInt("rate_3.0"));
-                        filmMetadata.setRate_35(jsonObjectMetadata.getInt("rate_3.5"));
-                        filmMetadata.setRate_40(jsonObjectMetadata.getInt("rate_4.0"));
-                        filmMetadata.setRate_45(jsonObjectMetadata.getInt("rate_4.5"));
-                        filmMetadata.setRate_50(jsonObjectMetadata.getInt("rate_5.0"));
+                        filmMetadata.setAverage_rating(metadataObject.getDouble("average_rating"));
+                        filmMetadata.setTotal_favorite(metadataObject.getInt("total_favorite"));
+                        filmMetadata.setTotal_review(metadataObject.getInt("total_review"));
+                        filmMetadata.setTotal_watchlist(metadataObject.getInt("total_watchlist"));
                         callback.onSuccess(filmMetadata);
+                    } else if (status == 606) {
+                        callback.onEmpty();
                     } else {
-                        FilmMetadata filmMetadata = new FilmMetadata();
-                        filmMetadata.setAverage_rating(0.0);
-                        filmMetadata.setFavorites(0);
-                        filmMetadata.setReviews(0);
-                        filmMetadata.setWatchlists(0);
-                        filmMetadata.setRate_05(0);
-                        filmMetadata.setRate_10(0);
-                        filmMetadata.setRate_15(0);
-                        filmMetadata.setRate_20(0);
-                        filmMetadata.setRate_25(0);
-                        filmMetadata.setRate_30(0);
-                        filmMetadata.setRate_35(0);
-                        filmMetadata.setRate_40(0);
-                        filmMetadata.setRate_45(0);
-                        filmMetadata.setRate_50(0);
-                        callback.onSuccess(filmMetadata);
+                        callback.onError();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
@@ -90,6 +68,6 @@ public class FilmMetadataRequest {
             }
         });
 
-        Volley.newRequestQueue(context).add(filmMetadataRequest);
+        Volley.newRequestQueue(context).add(filmMetadata);
     }
 }
