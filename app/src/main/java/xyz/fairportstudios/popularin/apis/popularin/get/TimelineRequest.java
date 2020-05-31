@@ -41,6 +41,8 @@ public class TimelineRequest {
 
         void onEmpty();
 
+        void onInvalid();
+
         void onError();
     }
 
@@ -86,6 +88,8 @@ public class TimelineRequest {
                         callback.onSuccess();
                     } else if (status == 606) {
                         callback.onEmpty();
+                    } else if (status == 616) {
+                        callback.onInvalid();
                     } else {
                         callback.onError();
                     }

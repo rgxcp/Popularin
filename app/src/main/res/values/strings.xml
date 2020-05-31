@@ -130,6 +130,7 @@
     <string name="sign_up_welcome">Halo,\nSelamat Bergabung!</string>
     <string name="social">Sosial</string>
     <string name="total">Total</string>
+    <string name="un_sync_auth">Akun tidak sinkron dengan database.\nSilahkan keluar dan masuk kembali.</string>
     <string name="user">Pengguna</string>
     <string name="user_followed">Pengguna diikuti</string>
     <string name="user_unfollowed">Berhenti mengikuti pengguna</string>

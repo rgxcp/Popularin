@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +19,13 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.TimelineRequest;
 import xyz.fairportstudios.popularin.models.Review;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class TimelineFragment extends Fragment {
     private Context context;
@@ -65,6 +69,19 @@ public class TimelineFragment extends Fragment {
             }
 
             @Override
+            public void onInvalid() {
+                progressBar.setVisibility(View.GONE);
+                textEmptyTimeline.setVisibility(View.VISIBLE);
+                textEmptyTimeline.setText(R.string.un_sync_auth);
+                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_INDEFINITE).setAction(R.string.sign_out, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signOut();
+                    }
+                }).show();
+            }
+
+            @Override
             public void onError() {
                 progressBar.setVisibility(View.GONE);
                 textEmptyTimeline.setVisibility(View.VISIBLE);
@@ -72,5 +89,14 @@ public class TimelineFragment extends Fragment {
                 Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void signOut() {
+        Auth auth = new Auth(context);
+        auth.delAuth();
+
+        Intent intent = new Intent(context, MainActivity.class);
+        startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
     }
 }
