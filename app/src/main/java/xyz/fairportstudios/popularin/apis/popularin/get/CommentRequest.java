@@ -1,10 +1,6 @@
 package xyz.fairportstudios.popularin.apis.popularin.get;
 
 import android.content.Context;
-import android.view.View;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,34 +14,31 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import xyz.fairportstudios.popularin.adapters.CommentAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
 import xyz.fairportstudios.popularin.models.Comment;
 
 public class CommentRequest {
     private Context context;
+    private Integer reviewID;
     private List<Comment> commentList;
-    private RecyclerView recyclerView;
 
-    public CommentRequest(Context context, List<Comment> commentList, RecyclerView recyclerView) {
+    public CommentRequest(Context context, Integer reviewID, List<Comment> commentList) {
         this.context = context;
+        this.reviewID = reviewID;
         this.commentList = commentList;
-        this.recyclerView = recyclerView;
     }
 
     public interface APICallback {
-        void onSuccess();
+        void onSuccess(List<Comment> comments);
 
         void onEmpty();
 
         void onError();
     }
 
-    public String getRequestURL(String id, Integer page) {
-        return PopularinAPI.REVIEW + "/" + id + "/comments?page=" + page;
-    }
+    public void sendRequest(Integer page, final APICallback callback) {
+        String requestURL = PopularinAPI.REVIEW + "/" + reviewID + "/comments?page=" + page;
 
-    public void sendRequest(String requestURL, final APICallback callback) {
         JsonObjectRequest comment = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -70,11 +63,7 @@ public class CommentRequest {
                             commentList.add(comment);
                         }
 
-                        CommentAdapter commentAdapter = new CommentAdapter(context, commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
+                        callback.onSuccess(commentList);
                     } else if (status == 606) {
                         callback.onEmpty();
                     } else {

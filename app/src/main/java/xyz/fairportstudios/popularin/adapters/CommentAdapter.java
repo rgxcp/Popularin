@@ -34,11 +34,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         this.commentList = commentList;
     }
 
-    private Integer pxToDp() {
-        float dp = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,8 +43,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     @Override
     public void onBindViewHolder(@NonNull final CommentViewHolder holder, final int position) {
         // ID
-        final String commentID = String.valueOf(commentList.get(position).getId());
-        final String userID = String.valueOf(commentList.get(position).getUser_id());
+        final Comment comment = commentList.get(position);
+        final String commentID = String.valueOf(comment.getId());
+        final String userID = String.valueOf(comment.getUser_id());
 
         // Auth
         final boolean isSelf = userID.equals(new Auth(context).getAuthID());
@@ -64,18 +60,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textUsername.setText(commentList.get(position).getUsername());
-        holder.textCommentTimestamp.setText(commentList.get(position).getTimestamp());
-        holder.textCommentDetail.setText(commentList.get(position).getComment_detail());
-        Glide.with(context).load(commentList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
-
-        // Margin
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == commentList.size() - 1) {
-            layoutParams.bottomMargin = pxToDp();
-            holder.border.setVisibility(View.GONE);
-        }
-        holder.itemView.setLayoutParams(layoutParams);
+        holder.textUsername.setText(comment.getUsername());
+        holder.textCommentTimestamp.setText(comment.getTimestamp());
+        holder.textCommentDetail.setText(comment.getComment_detail());
+        Glide.with(context).load(comment.getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
 
         // Activity
         holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +84,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                     public void onSuccess() {
                         commentList.remove(position);
                         notifyItemRemoved(position);
-                        Snackbar.make(holder.anchorLayout, R.string.comment_deleted, Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -120,7 +107,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         private TextView textUsername;
         private TextView textCommentTimestamp;
         private TextView textCommentDetail;
-        private View border;
 
         CommentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -131,7 +117,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             textUsername = itemView.findViewById(R.id.text_rc_username);
             textCommentTimestamp = itemView.findViewById(R.id.text_rc_timestamp);
             textCommentDetail = itemView.findViewById(R.id.text_rc_comment);
-            border = itemView.findViewById(R.id.layout_rr_border);
         }
     }
 }

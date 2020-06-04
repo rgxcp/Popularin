@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -36,18 +37,22 @@ public class ReviewCommentFragment extends Fragment {
     // Untuk fitur onResume
     private Boolean firstTime = true;
 
+    // Untuk fitur comment
+    private Integer page = 1;
+    private CommentAdapter commentAdapter;
+    private List<Comment> commentList = new ArrayList<>();
+
     // Member variable
     private Context context;
     private EditText inputComment;
     private ImageView imageSend;
-    private List<Comment> commentList;
     private ProgressBar progressBar;
     private RecyclerView recyclerComment;
     private RelativeLayout anchorLayout;
     private String comment;
     private TextView textEmptyResult;
 
-    // Constructor
+    // Constructor variable
     private String reviewID;
 
     public ReviewCommentFragment(String reviewID) {
@@ -71,9 +76,6 @@ public class ReviewCommentFragment extends Fragment {
         // Auth
         final boolean isAuth = new Auth(context).isAuth();
 
-        // List
-        commentList = new ArrayList<>();
-
         // Text watcher
         inputComment.addTextChangedListener(commentWatcher);
 
@@ -89,6 +91,18 @@ public class ReviewCommentFragment extends Fragment {
             }
         });
 
+        /*
+        recyclerComment.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    getComment(page);
+                }
+            }
+        });
+         */
+
         return view;
     }
 
@@ -96,8 +110,9 @@ public class ReviewCommentFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (firstTime) {
-            getComment();
+            getComment(page);
             firstTime = false;
+            page++;
         }
     }
 
@@ -123,12 +138,15 @@ public class ReviewCommentFragment extends Fragment {
         }
     };
 
-    private void getComment() {
-        CommentRequest commentRequest = new CommentRequest(context, commentList, recyclerComment);
-        String requestURL = commentRequest.getRequestURL(reviewID, 1);
-        commentRequest.sendRequest(requestURL, new CommentRequest.APICallback() {
+    private void getComment(Integer page) {
+        CommentRequest commentRequest = new CommentRequest(context, Integer.valueOf(reviewID), commentList);
+        commentRequest.sendRequest(page, new CommentRequest.APICallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(List<Comment> comments) {
+                commentAdapter = new CommentAdapter(context, comments);
+                recyclerComment.setAdapter(commentAdapter);
+                recyclerComment.setLayoutManager(new LinearLayoutManager(context));
+                recyclerComment.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -153,11 +171,10 @@ public class ReviewCommentFragment extends Fragment {
         addCommentRequest.sendRequest(new AddCommentRequest.APICallback() {
             @Override
             public void onSuccess(Comment comment) {
-                CommentAdapter commentAdapter = new CommentAdapter(context, commentList);
-                int position = commentList.size();
-                commentList.add(position, comment);
-                commentAdapter.notifyItemInserted(position);
-                Snackbar.make(anchorLayout, R.string.comment_added, Snackbar.LENGTH_SHORT).show();
+                int index = commentAdapter.getItemCount();
+                commentList.add(index, comment);
+                commentAdapter.notifyItemInserted(index);
+                recyclerComment.scrollToPosition(index - 1);
             }
 
             @Override
