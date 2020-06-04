@@ -19,7 +19,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserReviewRequest;
 import xyz.fairportstudios.popularin.models.UserReview;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserReviewActivity extends AppCompatActivity {
     private List<UserReview> userReviewList;

@@ -11,7 +11,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.FilmMetadata;
 
 public class FilmMetadataRequest {

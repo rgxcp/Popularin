@@ -28,7 +28,7 @@ import java.util.Calendar;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddReviewRequest;
 import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class AddReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Context context;

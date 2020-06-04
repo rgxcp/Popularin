@@ -20,7 +20,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.adapters.CastAdapter;
 import xyz.fairportstudios.popularin.adapters.CrewAdapter;
-import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;

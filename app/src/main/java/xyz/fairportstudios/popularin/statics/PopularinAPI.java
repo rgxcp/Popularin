@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis.popularin;
+package xyz.fairportstudios.popularin.statics;
 
 public class PopularinAPI {
     private static final String BASE = "https://popularin.fairportstudios.xyz/api";

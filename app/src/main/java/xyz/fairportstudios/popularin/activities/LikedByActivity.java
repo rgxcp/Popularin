@@ -27,7 +27,7 @@ import xyz.fairportstudios.popularin.fragments.LikeFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.LikeFromFollowingFragment;
 import xyz.fairportstudios.popularin.models.User;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class LikedByActivity extends AppCompatActivity {
     private LikeFromAllRequest likeFromAllRequest;

@@ -33,7 +33,7 @@ import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class EditReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Context context;

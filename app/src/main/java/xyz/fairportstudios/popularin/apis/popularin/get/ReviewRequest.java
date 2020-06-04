@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.adapters.ReviewAdapter;
-import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.Review;
 
 public class ReviewRequest {

@@ -19,7 +19,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.User;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context context;

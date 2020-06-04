@@ -20,7 +20,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
 import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
-import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.AccountDetail;

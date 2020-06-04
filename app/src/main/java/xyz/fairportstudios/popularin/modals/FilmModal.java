@@ -26,7 +26,7 @@ import xyz.fairportstudios.popularin.apis.popularin.post.AddFavoriteRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddWatchlistRequest;
 import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FilmModal extends BottomSheetDialogFragment {
     private double lastRate;

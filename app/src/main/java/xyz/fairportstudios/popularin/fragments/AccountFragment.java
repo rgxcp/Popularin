@@ -41,7 +41,7 @@ import xyz.fairportstudios.popularin.models.AccountDetail;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class AccountFragment extends Fragment {
     private Button buttonSignOut;

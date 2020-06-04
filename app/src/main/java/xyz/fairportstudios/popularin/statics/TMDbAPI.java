@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.apis.tmdb;
+package xyz.fairportstudios.popularin.statics;
 
 public class TMDbAPI {
     private static final String BASE = "https://api.themoviedb.org/3";

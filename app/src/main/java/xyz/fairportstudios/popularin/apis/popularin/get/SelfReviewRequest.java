@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import xyz.fairportstudios.popularin.adapters.FilmReviewAdapter;
-import xyz.fairportstudios.popularin.apis.popularin.PopularinAPI;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 

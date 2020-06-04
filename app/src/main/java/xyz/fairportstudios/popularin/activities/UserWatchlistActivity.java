@@ -19,7 +19,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserWatchlistRequest;
 import xyz.fairportstudios.popularin.models.Film;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserWatchlistActivity extends AppCompatActivity {
     private List<Film> filmList;

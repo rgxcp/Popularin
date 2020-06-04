@@ -22,7 +22,7 @@ import xyz.fairportstudios.popularin.fragments.ReviewFragment;
 import xyz.fairportstudios.popularin.fragments.SearchFragment;
 import xyz.fairportstudios.popularin.fragments.TimelineFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class MainActivity extends AppCompatActivity {
     // Untuk fitur double press to exit

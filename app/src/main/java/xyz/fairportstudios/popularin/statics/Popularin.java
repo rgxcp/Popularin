@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.services;
+package xyz.fairportstudios.popularin.statics;
 
 public class Popularin {
     public static final String DATE_PICKER = "DATE_PCIKER";

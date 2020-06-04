@@ -27,7 +27,7 @@ import xyz.fairportstudios.popularin.fragments.FavoriteFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.FavoriteFromFollowingFragment;
 import xyz.fairportstudios.popularin.models.User;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FavoritedByActivity extends AppCompatActivity {
     private FavoriteFromAllRequest favoriteFromAllRequest;

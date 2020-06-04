@@ -30,7 +30,7 @@ import xyz.fairportstudios.popularin.fragments.ReviewFromFollowingFragment;
 import xyz.fairportstudios.popularin.fragments.SelfReviewFragment;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FilmReviewActivity extends AppCompatActivity {
     // Variable untuk fitur load more

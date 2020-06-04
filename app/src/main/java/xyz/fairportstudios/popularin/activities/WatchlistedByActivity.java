@@ -27,7 +27,7 @@ import xyz.fairportstudios.popularin.fragments.WatchlistFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.WatchlistFromFollowingFragment;
 import xyz.fairportstudios.popularin.models.User;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class WatchlistedByActivity extends AppCompatActivity {
     private ProgressBar progressBar;

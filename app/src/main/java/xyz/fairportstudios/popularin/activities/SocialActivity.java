@@ -17,7 +17,7 @@ import xyz.fairportstudios.popularin.fragments.FollowerFragment;
 import xyz.fairportstudios.popularin.fragments.FollowingFragment;
 import xyz.fairportstudios.popularin.fragments.MutualFragment;
 import xyz.fairportstudios.popularin.preferences.Auth;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class SocialActivity extends AppCompatActivity {
 

@@ -1,6 +1,6 @@
 package xyz.fairportstudios.popularin.services;
 
-import xyz.fairportstudios.popularin.apis.tmdb.TMDbAPI;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class ParseImage {
     public String getImage(String path) {

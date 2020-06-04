@@ -19,7 +19,7 @@ import xyz.fairportstudios.popularin.adapters.PagerAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteReviewRequest;
 import xyz.fairportstudios.popularin.fragments.ReviewCommentFragment;
 import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
-import xyz.fairportstudios.popularin.services.Popularin;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class ReviewActivity extends AppCompatActivity {
     private Context context;
