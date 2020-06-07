@@ -2,6 +2,7 @@ package xyz.fairportstudios.popularin.statics;
 
 public class PopularinAPI {
     private static final String BASE = "https://popularin.fairportstudios.xyz/api";
+    public static final String API_TOKEN = "yegpHgSoIwstBsMc78W4wFSmatBAqD19T7kxvEljoSDaq3GWCgdNHDTub55D95dEzYKshct5peEaLniXhmSO88PoU9h8bksUbd0S";
     public static final String COMMENT = BASE + "/comment";
     public static final String FILM = BASE + "/film";
     public static final String REVIEW = BASE + "/review";

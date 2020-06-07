@@ -33,8 +33,6 @@ public class UnfollowUserRequest {
     }
 
     public void sendRequest(final APICallback callback) {
-        final Auth auth = new Auth(context);
-
         String requestURL = PopularinAPI.USER + "/" + id + "/unfollow";
 
         JsonObjectRequest unfollowUser = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
@@ -63,8 +61,8 @@ public class UnfollowUserRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Auth-ID", auth.getAuthID());
-                headers.put("Auth-Token", auth.getAuthToken());
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };

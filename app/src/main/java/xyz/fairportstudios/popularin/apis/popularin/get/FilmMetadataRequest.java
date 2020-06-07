@@ -11,8 +11,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import xyz.fairportstudios.popularin.statics.PopularinAPI;
+import java.util.HashMap;
+import java.util.Map;
+
 import xyz.fairportstudios.popularin.models.FilmMetadata;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class FilmMetadataRequest {
     private Context context;
@@ -66,7 +69,14 @@ public class FilmMetadataRequest {
                 error.printStackTrace();
                 callback.onError();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                return headers;
+            }
+        };
 
         Volley.newRequestQueue(context).add(filmMetadata);
     }

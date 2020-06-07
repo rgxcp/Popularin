@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.apis.popularin.get;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -65,6 +66,7 @@ public class ReviewDetailRequest {
                         reviewDetail.setProfile_picture(userObject.getString("profile_picture"));
                         callback.onSuccess(reviewDetail);
                     } else {
+                        Log.i("TAG", String.valueOf(response));
                         callback.onError();
                     }
                 } catch (JSONException exception) {
@@ -82,7 +84,8 @@ public class ReviewDetailRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Auth-ID", new Auth(context).getAuthID());
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };

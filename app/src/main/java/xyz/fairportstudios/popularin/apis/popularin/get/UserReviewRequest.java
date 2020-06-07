@@ -16,7 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import xyz.fairportstudios.popularin.adapters.UserReviewAdapter;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
@@ -104,7 +106,14 @@ public class UserReviewRequest {
                 error.printStackTrace();
                 callback.onError();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                return headers;
+            }
+        };
 
         Volley.newRequestQueue(context).add(userReview);
     }

@@ -62,7 +62,7 @@ public class SignOutRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Auth-ID", auth.getAuthID());
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
                 headers.put("Auth-Token", auth.getAuthToken());
                 return headers;
             }

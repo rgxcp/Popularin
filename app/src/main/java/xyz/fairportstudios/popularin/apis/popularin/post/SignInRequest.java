@@ -89,6 +89,7 @@ public class SignInRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }

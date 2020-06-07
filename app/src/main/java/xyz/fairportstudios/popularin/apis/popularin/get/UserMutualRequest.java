@@ -102,7 +102,8 @@ public class UserMutualRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Auth-ID", new Auth(context).getAuthID());
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };

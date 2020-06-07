@@ -16,14 +16,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
 import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
-import xyz.fairportstudios.popularin.statics.PopularinAPI;
+import xyz.fairportstudios.popularin.models.AccountDetail;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
-import xyz.fairportstudios.popularin.models.AccountDetail;
+import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class AccountDetailRequest {
     private Context context;
@@ -94,7 +97,14 @@ public class AccountDetailRequest {
                 error.printStackTrace();
                 callback.onError();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                return headers;
+            }
+        };
 
         Volley.newRequestQueue(context).add(accountDetail);
     }
