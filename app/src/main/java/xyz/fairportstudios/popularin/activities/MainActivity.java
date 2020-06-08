@@ -25,22 +25,26 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class MainActivity extends AppCompatActivity {
-    // Untuk fitur double press to exit
+    // Variable untuk fitur double tap to exit
     private static final int TIME_INTERVAL = 2000;
     private static long TIME_BACK_PRESSED;
 
-    // Member
+    // Variable member
     private Boolean isAuth;
-    private Context context;
     private Fragment selectedFragment;
+    private final Context context = MainActivity.this;
+    private final Fragment accountFragment = new AccountFragment();
+    private final Fragment airingFragment = new AiringFragment();
+    private final Fragment emptyAccountFragment = new EmptyAccountFragment();
+    private final Fragment genreFragment = new GenreFragment();
+    private final Fragment reviewFragment = new ReviewFragment();
+    private final Fragment searchFragment = new SearchFragment();
+    private final Fragment timelineFragment = new TimelineFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Context
-        context = MainActivity.this;
 
         // Auth
         isAuth = new Auth(context).isAuth();
@@ -51,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Menampilkan fragment otomatis sesuai kondisi
         if (isAuth) {
-            selectedFragment = new TimelineFragment();
+            selectedFragment = timelineFragment;
         } else {
-            selectedFragment = new GenreFragment();
+            selectedFragment = genreFragment;
         }
         getSupportFragmentManager()
                 .beginTransaction()
@@ -63,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // Mengecek apakah masih ada back stack dalam activity
         Fragment mainBackStack = getSupportFragmentManager().findFragmentByTag(Popularin.MAIN_BACK_STACK);
+
         if (mainBackStack != null) {
             super.onBackPressed();
         } else {
@@ -82,35 +88,35 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.menu_bn_home:
                     if (isAuth) {
-                        selectedFragment = new TimelineFragment();
+                        selectedFragment = timelineFragment;
                     } else {
-                        selectedFragment = new GenreFragment();
+                        selectedFragment = genreFragment;
                     }
                     break;
                 case R.id.menu_bn_airing:
-                    selectedFragment = new AiringFragment();
+                    selectedFragment = airingFragment;
                     break;
                 case R.id.menu_bn_review:
-                    selectedFragment = new ReviewFragment();
+                    selectedFragment = reviewFragment;
                     break;
                 case R.id.menu_bn_search:
-                    selectedFragment = new SearchFragment();
+                    selectedFragment = searchFragment;
                     break;
-                case R.id.menu_bn_acount:
+                case R.id.menu_bn_account:
                     if (isAuth) {
-                        selectedFragment = new AccountFragment();
+                        selectedFragment = accountFragment;
                     } else {
-                        selectedFragment = new EmptyAccountFragment();
+                        selectedFragment = emptyAccountFragment;
                     }
                     break;
             }
 
             if (selectedFragment != null) {
-                // Menghapus semua stack
+                // Menghapus semua back stack terlebih dahulu
                 getSupportFragmentManager()
                         .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-                // Menampilkan fragment
+                // Menampilkan fragment sesuai pilihan
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_am_container, selectedFragment)
