@@ -15,7 +15,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Pindah activity otomatis
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
