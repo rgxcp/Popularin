@@ -1,5 +1,6 @@
 package xyz.fairportstudios.popularin.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,35 +23,36 @@ public class EmptyAccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_empty_account, container, false);
 
-        // Binding
-        Button buttonSignIn = view.findViewById(R.id.button_rea_sign_in);
-        Button buttonSignUp = view.findViewById(R.id.button_rea_sign_up);
+        // Context
+        final Context context = getActivity();
 
         // Activity
+        Button buttonSignIn = view.findViewById(R.id.button_rea_sign_in);
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSignIn();
+                gotoSignIn(context);
             }
         });
 
+        Button buttonSignUp = view.findViewById(R.id.button_rea_sign_up);
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSignUp();
+                gotoSignUp(context);
             }
         });
 
         return view;
     }
 
-    private void gotoSignIn() {
-        Intent intent = new Intent(getActivity(), SignInActivity.class);
+    private void gotoSignIn(Context context) {
+        Intent intent = new Intent(context, SignInActivity.class);
         startActivity(intent);
     }
 
-    private void gotoSignUp() {
-        Intent intent = new Intent(getActivity(), SignUpActivity.class);
+    private void gotoSignUp(Context context) {
+        Intent intent = new Intent(context, SignUpActivity.class);
         startActivity(intent);
     }
 }

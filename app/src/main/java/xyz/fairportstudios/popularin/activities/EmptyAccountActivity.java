@@ -2,6 +2,7 @@ package xyz.fairportstudios.popularin.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,33 +17,34 @@ public class EmptyAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reusable_empty_account);
 
-        // Binding
-        Button buttonSignIn = findViewById(R.id.button_rea_sign_in);
-        Button buttonSignUp = findViewById(R.id.button_rea_sign_up);
+        // Context
+        final Context context = EmptyAccountActivity.this;
 
         // Activity
+        Button buttonSignIn = findViewById(R.id.button_rea_sign_in);
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSignIn();
+                gotoSignIn(context);
             }
         });
 
+        Button buttonSignUp = findViewById(R.id.button_rea_sign_up);
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSignUp();
+                gotoSignUp(context);
             }
         });
     }
 
-    private void gotoSignIn() {
-        Intent intent = new Intent(EmptyAccountActivity.this, SignInActivity.class);
+    private void gotoSignIn(Context context) {
+        Intent intent = new Intent(context, SignInActivity.class);
         startActivity(intent);
     }
 
-    private void gotoSignUp() {
-        Intent intent = new Intent(EmptyAccountActivity.this, SignUpActivity.class);
+    private void gotoSignUp(Context context) {
+        Intent intent = new Intent(context, SignUpActivity.class);
         startActivity(intent);
     }
 }
