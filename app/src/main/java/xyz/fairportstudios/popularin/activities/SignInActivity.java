@@ -95,9 +95,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private void signIn() {
         SignInRequest signInRequest = new SignInRequest(context, username, password);
-        signInRequest.sendRequest(new SignInRequest.APICallback() {
+        signInRequest.sendRequest(new SignInRequest.Callback() {
             @Override
-            public void onSuccess(String id, String token) {
+            public void onSuccess(Integer id, String token) {
                 Auth auth = new Auth(context);
                 auth.setAuth(id, token);
 
@@ -107,25 +107,27 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onInvalid() {
-                buttonSignIn.setEnabled(true);
-                buttonSignIn.setText(R.string.sign_in);
-                Snackbar.make(anchorLayout, R.string.invalid_credentials, Snackbar.LENGTH_LONG).show();
+            public void onUsernameNotFound() {
+                setSignInButtonState(true);
+                Snackbar.make(anchorLayout, R.string.username_not_found, Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onInvalidPassword() {
+                setSignInButtonState(true);
+                Snackbar.make(anchorLayout, R.string.invalid_password, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailed(String message) {
-                buttonSignIn.setEnabled(true);
-                buttonSignIn.setText(R.string.sign_in);
+                setSignInButtonState(true);
                 Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
-
             }
 
             @Override
-            public void onError() {
-                buttonSignIn.setEnabled(true);
-                buttonSignIn.setText(R.string.sign_in);
-                Snackbar.make(anchorLayout, R.string.failed_sign_in, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                setSignInButtonState(true);
+                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }
