@@ -44,17 +44,18 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class AccountFragment extends Fragment {
+    private Auth auth;
     private Button buttonSignOut;
     private Context context;
     private CoordinatorLayout anchorLayout;
     private ImageView imageProfile;
     private ImageView imageEmptyRecentFavorite;
     private ImageView imageEmptyRecentReview;
+    private Integer authID;
     private ProgressBar progressBar;
     private RecyclerView recyclerRecentFavorite;
     private RecyclerView recyclerRecentReview;
     private ScrollView scrollView;
-    private String authID;
     private TextView textFullName;
     private TextView textUsername;
     private TextView textTotalReview;
@@ -91,12 +92,13 @@ public class AccountFragment extends Fragment {
         Button buttonEditProfile = view.findViewById(R.id.button_fa_edit_profile);
         LinearLayout totalReviewLayout = view.findViewById(R.id.layout_fa_total_review);
         LinearLayout totalFavoriteLayout = view.findViewById(R.id.layout_fa_total_favorite);
-        LinearLayout totalWacthlistLayout = view.findViewById(R.id.layout_fa_total_watchlist);
+        LinearLayout totalWatchlistLayout = view.findViewById(R.id.layout_fa_total_watchlist);
         LinearLayout totalFollowerLayout = view.findViewById(R.id.layout_fa_total_follower);
         LinearLayout totalFollowingLayout = view.findViewById(R.id.layout_fa_total_following);
 
         // Auth
-        authID = new Auth(context).getAuthID();
+        auth = new Auth(context);
+        authID = auth.getAuthID();
 
         // Request
         getAccountDetail();
@@ -116,7 +118,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        totalWacthlistLayout.setOnClickListener(new View.OnClickListener() {
+        totalWatchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 gotoAccountWatchlist();
@@ -147,6 +149,7 @@ public class AccountFragment extends Fragment {
         buttonSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSignOutButtonState(false);
                 signOut();
             }
         });
@@ -224,24 +227,31 @@ public class AccountFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void signOut() {
-        buttonSignOut.setEnabled(false);
-        buttonSignOut.setText(R.string.loading);
+    private void setSignOutButtonState(Boolean state) {
+        buttonSignOut.setEnabled(state);
+        if (state) {
+            buttonSignOut.setText(R.string.sign_out);
+        } else {
+            buttonSignOut.setText(R.string.loading);
+        }
+    }
 
+    private void signOut() {
         SignOutRequest signOutRequest = new SignOutRequest(context);
-        signOutRequest.sendRequest(new SignOutRequest.APICallback() {
+        signOutRequest.sendRequest(new SignOutRequest.Callback() {
             @Override
             public void onSuccess() {
+                auth.delAuth();
+
                 Intent intent = new Intent(context, MainActivity.class);
                 startActivity(intent);
                 Objects.requireNonNull(getActivity()).finish();
             }
 
             @Override
-            public void onError() {
-                buttonSignOut.setEnabled(true);
-                buttonSignOut.setText(R.string.sign_out);
-                Snackbar.make(anchorLayout, R.string.failed_sign_out, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                setSignOutButtonState(true);
+                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }
