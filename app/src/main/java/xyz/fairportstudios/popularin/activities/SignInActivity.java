@@ -24,8 +24,8 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignInRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
+    private Context context = SignInActivity.this;
     private Button buttonSignIn;
-    private Context context;
     private LinearLayout anchorLayout;
     private String username;
     private String password;
@@ -38,8 +38,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         // Binding
-        context = SignInActivity.this;
-        buttonSignIn = findViewById(R.id.button_asi_signin);
+        buttonSignIn = findViewById(R.id.button_asi_sign_in);
         anchorLayout = findViewById(R.id.anchor_asi_layout);
         inputUsername = findViewById(R.id.input_asi_username);
         inputPassword = findViewById(R.id.input_asi_password);
@@ -60,6 +59,7 @@ public class SignInActivity extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setSignInButtonState(false);
                 signIn();
             }
         });
@@ -84,10 +84,16 @@ public class SignInActivity extends AppCompatActivity {
         }
     };
 
-    private void signIn() {
-        buttonSignIn.setEnabled(false);
-        buttonSignIn.setText(R.string.loading);
+    private void setSignInButtonState(Boolean state) {
+        buttonSignIn.setEnabled(state);
+        if (state) {
+            buttonSignIn.setText(R.string.sign_in);
+        } else {
+            buttonSignIn.setText(R.string.loading);
+        }
+    }
 
+    private void signIn() {
         SignInRequest signInRequest = new SignInRequest(context, username, password);
         signInRequest.sendRequest(new SignInRequest.APICallback() {
             @Override
