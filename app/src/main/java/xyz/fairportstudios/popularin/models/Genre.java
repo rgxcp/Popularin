@@ -2,17 +2,16 @@ package xyz.fairportstudios.popularin.models;
 
 public class Genre {
     private Integer id;
+    private Integer background;
     private String title;
-
-    public Genre() {
-        // Constructor kosong
-    }
 
     public Genre(
             Integer id,
+            Integer background,
             String title
     ) {
         this.id = id;
+        this.background = background;
         this.title = title;
     }
 
@@ -22,6 +21,14 @@ public class Genre {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getBackground() {
+        return background;
+    }
+
+    public void setBackground(Integer background) {
+        this.background = background;
     }
 
     public String getTitle() {

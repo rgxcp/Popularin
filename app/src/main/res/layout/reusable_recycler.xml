@@ -8,11 +8,13 @@
         android:id="@+id/pbr_rr_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="168dp" />
+        android:padding="170dp" />
 
     <TextView
-        android:id="@+id/text_rr_empty_result"
+        android:id="@+id/text_rr_message"
         style="@style/TextMessagePrimary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

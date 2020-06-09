@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmListActivity;
 import xyz.fairportstudios.popularin.models.Genre;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHolder> {
@@ -26,11 +28,6 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         this.genreList = genreList;
     }
 
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public GenreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,18 +36,24 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GenreViewHolder holder, int position) {
+        // Posisi
+        Genre currentItem = genreList.get(position);
+
         // Extra
-        final String genreID = String.valueOf(genreList.get(position).getId());
-        final String genreTitle = genreList.get(position).getTitle();
+        final Integer genreID = currentItem.getId();
+        final String genreTitle = currentItem.getTitle();
 
         // Isi
         holder.textGenreTitle.setText(genreTitle);
+        holder.imageGenreBackground.setImageResource(currentItem.getBackground());
 
         // Margin
-        int left = pxToDp(4);
-        int top = pxToDp(4);
-        int right = pxToDp(4);
-        int bottom = pxToDp(4);
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
+        int left = convertPixel.getDensity(4);
+        int top = convertPixel.getDensity(4);
+        int right = convertPixel.getDensity(4);
+        int bottom = convertPixel.getDensity(4);
 
         boolean isEdgeLeft = (position % 2) == 0;
         boolean isEdgeTop = position < 2;
@@ -58,19 +61,16 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         boolean isEdgeBottom = position >= (getItemCount() - 2);
 
         if (isEdgeLeft) {
-            left = pxToDp(16);
+            left = convertPixel.getDensity(16);
         }
-
         if (isEdgeTop) {
-            top = pxToDp(16);
+            top = convertPixel.getDensity(16);
         }
-
         if (isEdgeRight) {
-            right = pxToDp(16);
+            right = convertPixel.getDensity(16);
         }
-
         if (isEdgeBottom) {
-            bottom = pxToDp(16);
+            bottom = convertPixel.getDensity(16);
         }
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -96,11 +96,13 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
 
     static class GenreViewHolder extends RecyclerView.ViewHolder {
         private TextView textGenreTitle;
+        private ImageView imageGenreBackground;
 
         GenreViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textGenreTitle = itemView.findViewById(R.id.text_rg_title);
+            imageGenreBackground = itemView.findViewById(R.id.image_rg_background);
         }
     }
 }
