@@ -18,14 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
@@ -38,20 +38,19 @@ import xyz.fairportstudios.popularin.activities.UserWatchlistActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.AccountDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.SignOutRequest;
 import xyz.fairportstudios.popularin.models.AccountDetail;
-import xyz.fairportstudios.popularin.models.RecentFavorite;
-import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class AccountFragment extends Fragment {
-    private Auth auth;
+    // Variable untuk fitur swipe refresh
+    private Boolean isLoadFirstTime = true;
+
+    // Variable member
     private Button buttonSignOut;
-    private Context context;
     private CoordinatorLayout anchorLayout;
     private ImageView imageProfile;
     private ImageView imageEmptyRecentFavorite;
     private ImageView imageEmptyRecentReview;
-    private Integer authID;
     private ProgressBar progressBar;
     private RecyclerView recyclerRecentFavorite;
     private RecyclerView recyclerRecentReview;
@@ -63,15 +62,17 @@ public class AccountFragment extends Fragment {
     private TextView textTotalWatchlist;
     private TextView textTotalFollower;
     private TextView textTotalFollowing;
-    private TextView textNetworkError;
+    private TextView textMessage;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         buttonSignOut = view.findViewById(R.id.button_fa_sign_out);
         anchorLayout = view.findViewById(R.id.anchor_fa_layout);
         imageProfile = view.findViewById(R.id.image_fa_profile);
@@ -88,61 +89,62 @@ public class AccountFragment extends Fragment {
         textTotalWatchlist = view.findViewById(R.id.text_fa_total_watchlist);
         textTotalFollower = view.findViewById(R.id.text_fa_total_follower);
         textTotalFollowing = view.findViewById(R.id.text_fa_total_following);
-        textNetworkError = view.findViewById(R.id.text_fa_network_error);
+        textMessage = view.findViewById(R.id.text_fa_message);
         Button buttonEditProfile = view.findViewById(R.id.button_fa_edit_profile);
         LinearLayout totalReviewLayout = view.findViewById(R.id.layout_fa_total_review);
         LinearLayout totalFavoriteLayout = view.findViewById(R.id.layout_fa_total_favorite);
         LinearLayout totalWatchlistLayout = view.findViewById(R.id.layout_fa_total_watchlist);
         LinearLayout totalFollowerLayout = view.findViewById(R.id.layout_fa_total_follower);
         LinearLayout totalFollowingLayout = view.findViewById(R.id.layout_fa_total_following);
+        final SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.swipe_refresh_fa_layout);
 
         // Auth
-        auth = new Auth(context);
-        authID = auth.getAuthID();
+        final Auth auth = new Auth(context);
+        final Integer authID = auth.getAuthID();
 
-        // Request
-        getAccountDetail();
+        // Mendapatkan informasi diri sendiri
+        getAccountDetail(context, authID);
 
         // Activity
         totalReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoAccountReview();
+                gotoAccountReview(context, authID);
             }
         });
 
         totalFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoAccountFavorite();
+                gotoAccountFavorite(context, authID);
             }
         });
 
         totalWatchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoAccountWatchlist();
+                gotoAccountWatchlist(context, authID);
             }
         });
 
         totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSocial();
+                gotoAccountSocial(context, authID, 1);
             }
         });
 
         totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoSocial();
+                gotoAccountSocial(context, authID, 2);
             }
         });
 
         buttonEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editProfile();
+                editProfile(context);
             }
         });
 
@@ -150,18 +152,35 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 setSignOutButtonState(false);
-                signOut();
+                signOut(context, auth);
+            }
+        });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAccountDetail(context, authID);
+                swipeRefresh.setRefreshing(false);
             }
         });
 
         return view;
     }
 
-    private void getAccountDetail() {
+    private void getAccountDetail(final Context context, Integer authID) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
         final AccountDetailRequest accountDetailRequest = new AccountDetailRequest(context, authID);
-        accountDetailRequest.sendRequest(new AccountDetailRequest.APICallback() {
+        accountDetailRequest.sendRequest(new AccountDetailRequest.Callback() {
             @Override
             public void onSuccess(AccountDetail accountDetail) {
+                // Request gambar
+                RequestOptions requestOptions = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.color.colorSurface)
+                        .error(R.color.colorSurface);
+
                 textFullName.setText(accountDetail.getFull_name());
                 textUsername.setText(String.format("@%s", accountDetail.getUsername()));
                 textTotalReview.setText(String.valueOf(accountDetail.getTotal_review()));
@@ -169,60 +188,64 @@ public class AccountFragment extends Fragment {
                 textTotalWatchlist.setText(String.valueOf(accountDetail.getTotal_watchlist()));
                 textTotalFollower.setText(String.valueOf(accountDetail.getTotal_follower()));
                 textTotalFollowing.setText(String.valueOf(accountDetail.getTotal_following()));
-                Glide.with(context).load(accountDetail.getProfile_picture()).into(imageProfile);
+                Glide.with(context).load(accountDetail.getProfile_picture()).apply(requestOptions).into(imageProfile);
                 progressBar.setVisibility(View.GONE);
                 scrollView.setVisibility(View.VISIBLE);
+                isLoadFirstTime = false;
             }
 
             @Override
-            public void onHasFavorite(JSONArray recentFavorites) {
-                List<RecentFavorite> recentFavoriteList = new ArrayList<>();
-                accountDetailRequest.getRecentFavorites(recentFavorites, recentFavoriteList, recyclerRecentFavorite);
+            public void onHasFavorite(JSONArray recentFavoriteArray) {
+                accountDetailRequest.getRecentFavorites(recentFavoriteArray, recyclerRecentFavorite);
                 imageEmptyRecentFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onHasReview(JSONArray recentReviews) {
-                List<RecentReview> recentReviewList = new ArrayList<>();
-                accountDetailRequest.getRecentReviews(recentReviews, recentReviewList, recyclerRecentReview);
+            public void onHasReview(JSONArray recentReviewArray) {
+                accountDetailRequest.getRecentReviews(recentReviewArray, recyclerRecentReview);
                 imageEmptyRecentReview.setVisibility(View.GONE);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textNetworkError.setVisibility(View.VISIBLE);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (isLoadFirstTime) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
 
-    private void gotoAccountReview() {
+    private void gotoAccountReview(Context context, Integer authID) {
         Intent intent = new Intent(context, UserReviewActivity.class);
         intent.putExtra(Popularin.USER_ID, authID);
         startActivity(intent);
     }
 
-    private void gotoAccountFavorite() {
+    private void gotoAccountFavorite(Context context, Integer authID) {
         Intent intent = new Intent(context, UserFavoriteActivity.class);
         intent.putExtra(Popularin.USER_ID, authID);
         startActivity(intent);
     }
 
-    private void gotoAccountWatchlist() {
+    private void gotoAccountWatchlist(Context context, Integer authID) {
         Intent intent = new Intent(context, UserWatchlistActivity.class);
         intent.putExtra(Popularin.USER_ID, authID);
         startActivity(intent);
     }
 
-    private void gotoSocial() {
+    private void gotoAccountSocial(Context context, Integer authID, Integer viewPagerIndex) {
         Intent intent = new Intent(context, SocialActivity.class);
         intent.putExtra(Popularin.USER_ID, authID);
+        intent.putExtra(Popularin.VIEW_PAGER_INDEX, viewPagerIndex);
         intent.putExtra(Popularin.IS_SELF, true);
         startActivity(intent);
     }
 
-    private void editProfile() {
+    private void editProfile(Context context) {
         Intent intent = new Intent(context, EditProfileActivity.class);
         startActivity(intent);
     }
@@ -236,7 +259,7 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void signOut() {
+    private void signOut(final Context context, final Auth auth) {
         SignOutRequest signOutRequest = new SignOutRequest(context);
         signOutRequest.sendRequest(new SignOutRequest.Callback() {
             @Override

@@ -21,7 +21,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentReview;
-import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
@@ -30,17 +30,12 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapter.RecentReviewViewHolder> {
     private Context context;
     private List<RecentReview> recentReviewList;
-    private String userID;
+    private Boolean isSelf;
 
-    public RecentReviewAdapter(Context context, List<RecentReview> recentReviewList, String userID) {
+    public RecentReviewAdapter(Context context, List<RecentReview> recentReviewList, Boolean isSelf) {
         this.context = context;
         this.recentReviewList = recentReviewList;
-        this.userID = userID;
-    }
-
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
+        this.isSelf = isSelf;
     }
 
     @NonNull
@@ -51,18 +46,18 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecentReviewViewHolder holder, int position) {
-        // ID
-        final String reviewID = String.valueOf(recentReviewList.get(position).getId());
-        final String filmID = String.valueOf(recentReviewList.get(position).getTmdb_id());
+        // Posisi
+        RecentReview currentItem = recentReviewList.get(position);
 
-        // Auth
-        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
+        // Extra
+        final Integer reviewID = currentItem.getId();
+        final Integer filmID = currentItem.getTmdb_id();
 
         // Parsing
-        final String filmTitle = recentReviewList.get(position).getTitle();
-        final String filmYear = new ParseDate().getYear(recentReviewList.get(position).getRelease_date());
-        final String filmPoster = new ParseImage().getImage(recentReviewList.get(position).getPoster());
-        final Integer reviewStar = new ParseStar().getStar(recentReviewList.get(position).getRating());
+        final String filmTitle = currentItem.getTitle();
+        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        final String filmPoster = new ParseImage().getImage(currentItem.getPoster());
+        final Integer reviewStar = new ParseStar().getStar(currentItem.getRating());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -75,14 +70,16 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            layoutParams.leftMargin = pxToDp(16);
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.leftMargin = convertPixel.getDensity(16);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         } else if (position == getItemCount() - 1) {
-            layoutParams.rightMargin = pxToDp(16);
+            layoutParams.rightMargin = convertPixel.getDensity(16);
         } else {
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         }
         holder.itemView.setLayoutParams(layoutParams);
 
@@ -90,10 +87,10 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReviewDetail = new Intent(context, ReviewActivity.class);
-                gotoReviewDetail.putExtra(Popularin.REVIEW_ID, reviewID);
-                gotoReviewDetail.putExtra(Popularin.IS_SELF, isSelf);
-                context.startActivity(gotoReviewDetail);
+                Intent intent = new Intent(context, ReviewActivity.class);
+                intent.putExtra(Popularin.REVIEW_ID, reviewID);
+                intent.putExtra(Popularin.IS_SELF, isSelf);
+                context.startActivity(intent);
             }
         });
 
@@ -114,8 +111,8 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
     }
 
     static class RecentReviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageFilmPoster;
-        ImageView imageReviewStar;
+        private ImageView imageFilmPoster;
+        private ImageView imageReviewStar;
 
         RecentReviewViewHolder(@NonNull View itemView) {
             super(itemView);

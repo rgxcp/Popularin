@@ -21,6 +21,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
@@ -34,11 +35,6 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         this.recentFavoriteList = recentFavoriteList;
     }
 
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public RecentFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,13 +43,16 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
 
     @Override
     public void onBindViewHolder(@NonNull RecentFavoriteViewHolder holder, int position) {
-        // ID
-        final String filmID = String.valueOf(recentFavoriteList.get(position).getTmdb_id());
+        // Posisi
+        RecentFavorite currentItem = recentFavoriteList.get(position);
+
+        // Extra
+        final Integer filmID = currentItem.getTmdb_id();
 
         // Parsing
-        final String filmTitle = recentFavoriteList.get(position).getTitle();
-        final String filmYear = new ParseDate().getYear(recentFavoriteList.get(position).getRelease_date());
-        final String filmPoster = new ParseImage().getImage(recentFavoriteList.get(position).getPoster());
+        final String filmTitle = currentItem.getTitle();
+        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        final String filmPoster = new ParseImage().getImage(currentItem.getPoster());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -65,14 +64,16 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            layoutParams.leftMargin = pxToDp(16);
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.leftMargin = convertPixel.getDensity(16);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         } else if (position == getItemCount() - 1) {
-            layoutParams.rightMargin = pxToDp(16);
+            layoutParams.rightMargin = convertPixel.getDensity(16);
         } else {
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         }
         holder.itemView.setLayoutParams(layoutParams);
 
