@@ -25,7 +25,6 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignUpRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignUpActivity extends AppCompatActivity {
-    private Context context = SignUpActivity.this;
     private Button buttonSignUp;
     private LinearLayout anchorLayout;
     private String fullName;
@@ -41,6 +40,9 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        // Context
+        final Context context = SignUpActivity.this;
 
         // Binding
         buttonSignUp = findViewById(R.id.button_asu_sign_up);
@@ -69,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 setSignUpButtonState(false);
-                signUp();
+                signUp(context);
             }
         });
     }
@@ -137,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void signUp() {
+    private void signUp(final Context context) {
         if (usernameValidated() && emailValidated() && passwordValidated()) {
             SignUpRequest signUpRequest = new SignUpRequest(context, fullName, username, email, password);
             signUpRequest.sendRequest(new SignUpRequest.Callback() {

@@ -34,7 +34,6 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditProfileFragment extends Fragment {
     private Button buttonSaveProfile;
-    private Context context;
     private LinearLayout anchorLayout;
     private String fullName;
     private String username;
@@ -48,8 +47,10 @@ public class EditProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         buttonSaveProfile = view.findViewById(R.id.button_fep_save_profile);
         anchorLayout = view.findViewById(R.id.anchor_fep_layout);
         inputFullName = view.findViewById(R.id.input_fep_full_name);
@@ -66,7 +67,7 @@ public class EditProfileFragment extends Fragment {
         textWelcome.setText(spannableString);
 
         // Mendapatkan informasi diri sendiri
-        getSelfDetail();
+        getSelfDetail(context);
 
         // Text watcher
         inputFullName.addTextChangedListener(editProfileWatcher);
@@ -78,7 +79,7 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setSaveProfileButtonState(false);
-                saveProfile();
+                saveProfile(context);
             }
         });
 
@@ -112,7 +113,7 @@ public class EditProfileFragment extends Fragment {
         }
     };
 
-    private void getSelfDetail() {
+    private void getSelfDetail(Context context) {
         SelfDetailRequest selfDetailRequest = new SelfDetailRequest(context);
         selfDetailRequest.sendRequest(new SelfDetailRequest.Callback() {
             @Override
@@ -159,7 +160,7 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private void saveProfile() {
+    private void saveProfile(final Context context) {
         if (usernameValidated() && emailValidated()) {
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, fullName, username, email);
             updateProfileRequest.sendRequest(new UpdateProfileRequest.Callback() {

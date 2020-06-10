@@ -30,8 +30,10 @@ public class GenreFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
-        // Binding
+        // Context
         Context context = getActivity();
+
+        // Binding
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerGenre = view.findViewById(R.id.recycler_rr_layout);
 

@@ -30,7 +30,6 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditPasswordFragment extends Fragment {
     private Button buttonSavePassword;
-    private Context context;
     private LinearLayout anchorLayout;
     private String currentPassword;
     private String newPassword;
@@ -44,8 +43,10 @@ public class EditPasswordFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_password, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         buttonSavePassword = view.findViewById(R.id.button_fepw_save_password);
         anchorLayout = view.findViewById(R.id.anchor_fepw_layout);
         inputCurrentPassword = view.findViewById(R.id.input_fepw_current_password);
@@ -70,7 +71,7 @@ public class EditPasswordFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setSavePasswordButtonState(false);
-                savePassword();
+                savePassword(context);
             }
         });
 
@@ -121,7 +122,7 @@ public class EditPasswordFragment extends Fragment {
         }
     }
 
-    private void savePassword() {
+    private void savePassword(final Context context) {
         if (passwordValidated()) {
             UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest(context, currentPassword, newPassword, confirmPassword);
             updatePasswordRequest.sendRequest(new UpdatePasswordRequest.Callback() {
