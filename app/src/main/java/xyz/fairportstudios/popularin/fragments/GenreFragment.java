@@ -22,7 +22,6 @@ import xyz.fairportstudios.popularin.models.Genre;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class GenreFragment extends Fragment {
-    private Context context;
     private ProgressBar progressBar;
     private RecyclerView recyclerGenre;
 
@@ -32,17 +31,17 @@ public class GenreFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Binding
-        context = getActivity();
+        Context context = getActivity();
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerGenre = view.findViewById(R.id.recycler_rr_layout);
 
         // Menampilkan semua genre
-        showAllGenre();
+        showAllGenre(context);
 
         return view;
     }
 
-    private void showAllGenre() {
+    private void showAllGenre(Context context) {
         List<Genre> genreList = new ArrayList<>();
         genreList.add(new Genre(TMDbAPI.ACTION_ID, R.drawable.img_action, getString(R.string.genre_action)));
         genreList.add(new Genre(TMDbAPI.ANIMATION_ID, R.drawable.img_action, getString(R.string.genre_animation)));
