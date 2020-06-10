@@ -26,6 +26,7 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePasswordRequest;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditPasswordFragment extends Fragment {
     private Button buttonSavePassword;
@@ -68,6 +69,7 @@ public class EditPasswordFragment extends Fragment {
         buttonSavePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setSavePasswordButtonState(false);
                 savePassword();
             }
         });
@@ -95,59 +97,64 @@ public class EditPasswordFragment extends Fragment {
         }
     };
 
-    private boolean validatePassword() {
+    private boolean passwordValidated() {
         if (newPassword.length() < 8) {
-            Snackbar.make(anchorLayout, R.string.validate_new_password, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(anchorLayout, R.string.validate_new_password_length, Snackbar.LENGTH_LONG).show();
             return false;
         } else if (!confirmPassword.equals(newPassword)) {
-            Snackbar.make(anchorLayout, R.string.validate_un_match_confirm_password, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(anchorLayout, R.string.validate_confirm_password_un_match_new_password, Snackbar.LENGTH_LONG).show();
             return false;
         } else if (newPassword.equals(currentPassword)) {
-            Snackbar.make(anchorLayout, R.string.validate_match_new_password, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(anchorLayout, R.string.validate_new_password_match_current_password, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private void savePassword() {
-        buttonSavePassword.setEnabled(false);
-        buttonSavePassword.setText(R.string.loading);
+    private void setSavePasswordButtonState(Boolean state) {
+        buttonSavePassword.setEnabled(state);
+        if (state) {
+            buttonSavePassword.setText(R.string.save_password);
+        } else {
+            buttonSavePassword.setText(R.string.loading);
+        }
+    }
 
-        if (validatePassword()) {
+    private void savePassword() {
+        if (passwordValidated()) {
             UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest(context, currentPassword, newPassword, confirmPassword);
-            updatePasswordRequest.sendRequest(new UpdatePasswordRequest.APICallback() {
+            updatePasswordRequest.sendRequest(new UpdatePasswordRequest.Callback() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Integer id, String token) {
+                    Auth auth = new Auth(context);
+                    auth.setAuth(id, token);
+
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                     Objects.requireNonNull(getActivity()).finishAffinity();
                 }
 
                 @Override
-                public void onInvalid() {
-                    buttonSavePassword.setEnabled(true);
-                    buttonSavePassword.setText(R.string.save_password);
+                public void onInvalidCurrentPassword() {
+                    setSavePasswordButtonState(true);
                     Snackbar.make(anchorLayout, R.string.invalid_current_password, Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onFailed(String message) {
-                    buttonSavePassword.setEnabled(true);
-                    buttonSavePassword.setText(R.string.save_password);
+                    setSavePasswordButtonState(true);
                     Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
-                public void onError() {
-                    buttonSavePassword.setEnabled(true);
-                    buttonSavePassword.setText(R.string.save_password);
-                    Snackbar.make(anchorLayout, R.string.failed_update_password, Snackbar.LENGTH_LONG).show();
+                public void onError(String message) {
+                    setSavePasswordButtonState(true);
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             });
         } else {
-            buttonSavePassword.setEnabled(true);
-            buttonSavePassword.setText(R.string.save_password);
+            setSavePasswordButtonState(true);
         }
     }
 }

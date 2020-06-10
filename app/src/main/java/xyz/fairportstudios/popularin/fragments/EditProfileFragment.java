@@ -30,6 +30,7 @@ import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.get.SelfDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateProfileRequest;
 import xyz.fairportstudios.popularin.models.SelfDetail;
+import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditProfileFragment extends Fragment {
     private Button buttonSaveProfile;
@@ -64,7 +65,7 @@ public class EditProfileFragment extends Fragment {
         spannableString.setSpan(relativeSizeSpan, 0, 4, 0);
         textWelcome.setText(spannableString);
 
-        // Request
+        // Mendapatkan informasi diri sendiri
         getSelfDetail();
 
         // Text watcher
@@ -76,6 +77,7 @@ public class EditProfileFragment extends Fragment {
         buttonSaveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setSaveProfileButtonState(false);
                 saveProfile();
             }
         });
@@ -112,7 +114,7 @@ public class EditProfileFragment extends Fragment {
 
     private void getSelfDetail() {
         SelfDetailRequest selfDetailRequest = new SelfDetailRequest(context);
-        selfDetailRequest.sendRequest(new SelfDetailRequest.APICallback() {
+        selfDetailRequest.sendRequest(new SelfDetailRequest.Callback() {
             @Override
             public void onSuccess(SelfDetail selfDetail) {
                 inputFullName.setText(selfDetail.getFull_name());
@@ -121,24 +123,15 @@ public class EditProfileFragment extends Fragment {
             }
 
             @Override
-            public void onError() {
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
-    private boolean validateFullName() {
-        if (!fullName.contains(" ")) {
-            Snackbar.make(anchorLayout, R.string.validate_full_name, Snackbar.LENGTH_LONG).show();
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean validateUsername() {
+    private boolean usernameValidated() {
         if (username.length() < 5) {
-            Snackbar.make(anchorLayout, R.string.validate_username, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(anchorLayout, R.string.validate_username_length, Snackbar.LENGTH_LONG).show();
             return false;
         } else if (username.contains(" ")) {
             Snackbar.make(anchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
@@ -148,24 +141,33 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private boolean validateEmail() {
+    private boolean emailValidated() {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Snackbar.make(anchorLayout, R.string.validate_email, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(anchorLayout, R.string.validate_email_format, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private void saveProfile() {
-        buttonSaveProfile.setEnabled(false);
-        buttonSaveProfile.setText(R.string.loading);
+    private void setSaveProfileButtonState(Boolean state) {
+        buttonSaveProfile.setEnabled(state);
+        if (state) {
+            buttonSaveProfile.setText(R.string.save_profile);
+        } else {
+            buttonSaveProfile.setText(R.string.loading);
+        }
+    }
 
-        if (validateFullName() && validateUsername() && validateEmail()) {
+    private void saveProfile() {
+        if (usernameValidated() && emailValidated()) {
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, fullName, username, email);
-            updateProfileRequest.sendRequest(new UpdateProfileRequest.APICallback() {
+            updateProfileRequest.sendRequest(new UpdateProfileRequest.Callback() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Integer id, String token) {
+                    Auth auth = new Auth(context);
+                    auth.setAuth(id, token);
+
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                     Objects.requireNonNull(getActivity()).finishAffinity();
@@ -173,21 +175,18 @@ public class EditProfileFragment extends Fragment {
 
                 @Override
                 public void onFailed(String message) {
-                    buttonSaveProfile.setEnabled(true);
-                    buttonSaveProfile.setText(R.string.save_profile);
+                    setSaveProfileButtonState(true);
                     Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
-                public void onError() {
-                    buttonSaveProfile.setEnabled(true);
-                    buttonSaveProfile.setText(R.string.save_profile);
-                    Snackbar.make(anchorLayout, R.string.failed_update_profile, Snackbar.LENGTH_LONG).show();
+                public void onError(String message) {
+                    setSaveProfileButtonState(true);
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             });
         } else {
-            buttonSaveProfile.setEnabled(true);
-            buttonSaveProfile.setText(R.string.save_profile);
+            setSaveProfileButtonState(true);
         }
     }
 
