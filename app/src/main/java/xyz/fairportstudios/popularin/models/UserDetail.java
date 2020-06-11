@@ -1,13 +1,13 @@
 package xyz.fairportstudios.popularin.models;
 
 public class UserDetail {
-    private Boolean is_following;
     private Boolean is_follower;
-    private Integer total_following;
-    private Integer total_follower;
-    private Integer total_favorite;
+    private Boolean is_following;
     private Integer total_review;
+    private Integer total_favorite;
     private Integer total_watchlist;
+    private Integer total_follower;
+    private Integer total_following;
     private String full_name;
     private String username;
     private String profile_picture;
@@ -17,35 +17,27 @@ public class UserDetail {
     }
 
     public UserDetail(
-            Boolean is_following,
             Boolean is_follower,
-            Integer total_following,
-            Integer total_follower,
-            Integer total_favorite,
+            Boolean is_following,
             Integer total_review,
+            Integer total_favorite,
             Integer total_watchlist,
+            Integer total_follower,
+            Integer total_following,
             String full_name,
             String username,
             String profile_picture
     ) {
-        this.is_following = is_following;
         this.is_follower = is_follower;
-        this.total_following = total_following;
-        this.total_follower = total_follower;
-        this.total_favorite = total_favorite;
+        this.is_following = is_following;
         this.total_review = total_review;
+        this.total_favorite = total_favorite;
         this.total_watchlist = total_watchlist;
+        this.total_follower = total_follower;
+        this.total_following = total_following;
         this.full_name = full_name;
         this.username = username;
         this.profile_picture = profile_picture;
-    }
-
-    public Boolean getIs_following() {
-        return is_following;
-    }
-
-    public void setIs_following(Boolean is_following) {
-        this.is_following = is_following;
     }
 
     public Boolean getIs_follower() {
@@ -56,28 +48,12 @@ public class UserDetail {
         this.is_follower = is_follower;
     }
 
-    public Integer getTotal_following() {
-        return total_following;
+    public Boolean getIs_following() {
+        return is_following;
     }
 
-    public void setTotal_following(Integer total_following) {
-        this.total_following = total_following;
-    }
-
-    public Integer getTotal_follower() {
-        return total_follower;
-    }
-
-    public void setTotal_follower(Integer total_follower) {
-        this.total_follower = total_follower;
-    }
-
-    public Integer getTotal_favorite() {
-        return total_favorite;
-    }
-
-    public void setTotal_favorite(Integer total_favorite) {
-        this.total_favorite = total_favorite;
+    public void setIs_following(Boolean is_following) {
+        this.is_following = is_following;
     }
 
     public Integer getTotal_review() {
@@ -88,12 +64,36 @@ public class UserDetail {
         this.total_review = total_review;
     }
 
+    public Integer getTotal_favorite() {
+        return total_favorite;
+    }
+
+    public void setTotal_favorite(Integer total_favorite) {
+        this.total_favorite = total_favorite;
+    }
+
     public Integer getTotal_watchlist() {
         return total_watchlist;
     }
 
     public void setTotal_watchlist(Integer total_watchlist) {
         this.total_watchlist = total_watchlist;
+    }
+
+    public Integer getTotal_follower() {
+        return total_follower;
+    }
+
+    public void setTotal_follower(Integer total_follower) {
+        this.total_follower = total_follower;
+    }
+
+    public Integer getTotal_following() {
+        return total_following;
+    }
+
+    public void setTotal_following(Integer total_following) {
+        this.total_following = total_following;
     }
 
     public String getFull_name() {
