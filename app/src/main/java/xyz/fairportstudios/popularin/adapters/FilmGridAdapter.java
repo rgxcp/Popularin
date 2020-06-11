@@ -21,6 +21,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
@@ -34,11 +35,6 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         this.filmList = filmList;
     }
 
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public FilmGridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,13 +43,16 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
 
     @Override
     public void onBindViewHolder(@NonNull FilmGridViewHolder holder, int position) {
-        // ID
-        final String filmID = String.valueOf(filmList.get(position).getId());
+        // Posisi
+        Film currentItem = filmList.get(position);
+
+        // Extra
+        final Integer filmID = currentItem.getId();
 
         // Parsing
-        final String filmTitle = filmList.get(position).getOriginal_title();
-        final String filmYear = new ParseDate().getYear(filmList.get(position).getRelease_date());
-        final String filmPoster = new ParseImage().getImage(filmList.get(position).getPoster_path());
+        final String filmTitle = currentItem.getOriginal_title();
+        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        final String filmPoster = new ParseImage().getImage(currentItem.getPoster_path());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -62,13 +61,15 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
                 .error(R.color.colorSurface);
 
         // Isi
-        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imagePoster);
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Margin
-        int left = pxToDp(2);
-        int top = pxToDp(2);
-        int right = pxToDp(2);
-        int bottom = pxToDp(2);
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
+        int left = convertPixel.getDensity(4);
+        int top = convertPixel.getDensity(4);
+        int right = convertPixel.getDensity(4);
+        int bottom = convertPixel.getDensity(4);
 
         boolean isEdgeLeft = (position % 4) == 0;
         boolean isEdgeTop = position < 4;
@@ -76,19 +77,16 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         boolean isEdgeBottom = position >= (getItemCount() - 4);
 
         if (isEdgeLeft) {
-            left = pxToDp(4);
+            left = convertPixel.getDensity(8);
         }
-
         if (isEdgeTop) {
-            top = pxToDp(4);
+            top = convertPixel.getDensity(8);
         }
-
         if (isEdgeRight) {
-            right = pxToDp(4);
+            right = convertPixel.getDensity(8);
         }
-
         if (isEdgeBottom) {
-            bottom = pxToDp(4);
+            bottom = convertPixel.getDensity(8);
         }
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
@@ -96,7 +94,7 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         holder.itemView.setLayoutParams(layoutParams);
 
         // Activity
-        holder.imagePoster.setOnClickListener(new View.OnClickListener() {
+        holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmDetailActivity.class);
@@ -105,7 +103,7 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
             }
         });
 
-        holder.imagePoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
@@ -122,12 +120,12 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
     }
 
     static class FilmGridViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imagePoster;
+        private ImageView imageFilmPoster;
 
         FilmGridViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imagePoster = itemView.findViewById(R.id.image_rfg_poster);
+            imageFilmPoster = itemView.findViewById(R.id.image_rfg_poster);
         }
     }
 }
