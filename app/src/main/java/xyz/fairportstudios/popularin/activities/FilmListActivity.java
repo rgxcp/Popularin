@@ -40,8 +40,8 @@ public class FilmListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RecyclerView recyclerFilm;
     private RelativeLayout anchorLayout;
-    private String genreID;
-    private TextView textNetworkError;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +61,8 @@ public class FilmListActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        genreID = intent.getStringExtra(Popularin.GENRE_ID);
-        String genreTitle = intent.getStringExtra(Popularin.GENRE_TITLE);
+        final Integer genreID = intent.getIntExtra(Popularin.GENRE_ID, 0);
+        final String genreTitle = intent.getStringExtra(Popularin.GENRE_TITLE);
 
         // Toolbar
         toolbar.setTitle(genreTitle);
