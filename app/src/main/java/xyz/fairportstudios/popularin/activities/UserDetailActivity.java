@@ -140,14 +140,14 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 1, isSelf);
+                gotoUserSocial(context, userID, 0, isSelf);
             }
         });
 
         totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 2, isSelf);
+                gotoUserSocial(context, userID, 1, isSelf);
             }
         });
 

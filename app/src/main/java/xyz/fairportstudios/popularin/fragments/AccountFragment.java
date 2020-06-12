@@ -130,14 +130,14 @@ public class AccountFragment extends Fragment {
         totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoAccountSocial(context, authID, 1);
+                gotoAccountSocial(context, authID, 0);
             }
         });
 
         totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoAccountSocial(context, authID, 2);
+                gotoAccountSocial(context, authID, 1);
             }
         });
 
