@@ -123,7 +123,7 @@ public class FavoriteFromAllFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
-                isLoadFirstTime = false;
+                isLoading = false;
             }
 
             @Override

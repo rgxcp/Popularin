@@ -134,6 +134,7 @@ public class MutualFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
+                isLoading = false;
             }
 
             @Override

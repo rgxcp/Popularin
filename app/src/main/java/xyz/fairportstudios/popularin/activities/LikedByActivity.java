@@ -168,7 +168,7 @@ public class LikedByActivity extends AppCompatActivity {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
-                isLoadFirstTime = false;
+                isLoading = false;
             }
 
             @Override

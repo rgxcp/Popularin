@@ -123,7 +123,7 @@ public class WatchlistFromAllFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
-                isLoadFirstTime = false;
+                isLoading = false;
             }
 
             @Override

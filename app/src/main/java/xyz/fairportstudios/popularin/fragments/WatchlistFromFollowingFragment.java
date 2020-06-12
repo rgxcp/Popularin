@@ -105,6 +105,7 @@ public class WatchlistFromFollowingFragment extends Fragment {
             userList = new ArrayList<>();
             watchlistFromFollowingRequest = new WatchlistFromFollowingRequest(context, filmID);
             getWatchlistFromFollowing(context, currentPage);
+            isResumeFirsTime = false;
         }
     }
 
@@ -125,7 +126,6 @@ public class WatchlistFromFollowingFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     totalPage = pages;
                     isLoadFirstTime = false;
-                    isResumeFirsTime = false;
                 } else {
                     int insertIndex = userList.size();
                     userList.addAll(insertIndex, users);
@@ -134,7 +134,7 @@ public class WatchlistFromFollowingFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
-                isLoadFirstTime = false;
+                isLoading = false;
             }
 
             @Override

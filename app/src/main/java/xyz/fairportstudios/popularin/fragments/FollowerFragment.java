@@ -123,6 +123,7 @@ public class FollowerFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
+                isLoading = false;
             }
 
             @Override

@@ -105,6 +105,7 @@ public class FavoriteFromFollowingFragment extends Fragment {
             userList = new ArrayList<>();
             favoriteFromFollowingRequest = new FavoriteFromFollowingRequest(context, filmID);
             getFavoriteFromFollowing(context, currentPage);
+            isResumeFirsTime = false;
         }
     }
 
@@ -125,7 +126,6 @@ public class FavoriteFromFollowingFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     totalPage = pages;
                     isLoadFirstTime = false;
-                    isResumeFirsTime = false;
                 } else {
                     int insertIndex = userList.size();
                     userList.addAll(insertIndex, users);
@@ -134,7 +134,7 @@ public class FavoriteFromFollowingFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                 }
                 currentPage++;
-                isLoadFirstTime = false;
+                isLoading = false;
             }
 
             @Override
