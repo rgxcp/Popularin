@@ -112,7 +112,6 @@ public class FavoriteFromFollowingFragment extends Fragment {
         // Menghilangkan pesan setiap kali method dijalankan
         textMessage.setVisibility(View.GONE);
 
-        favoriteFromFollowingRequest = new FavoriteFromFollowingRequest(context, filmID);
         favoriteFromFollowingRequest.sendRequest(page, new FavoriteFromFollowingRequest.Callback() {
             @Override
             public void onSuccess(Integer pages, List<User> users) {
