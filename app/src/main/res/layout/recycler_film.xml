@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <com.github.florent37.shapeofview.shapes.RoundRectView
         android:layout_width="wrap_content"

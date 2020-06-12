@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,56 +22,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.FilmAdapter;
 import xyz.fairportstudios.popularin.apis.tmdb.get.AiringFilmRequest;
 import xyz.fairportstudios.popularin.models.Film;
 
 public class AiringFragment extends Fragment {
-    private Context context;
+    // Variable untuk fitur swipe refresh
+    private Boolean isLoadFirstTime = true;
+
+    // Variable member
+    private AiringFilmRequest airingFilmRequest;
     private CoordinatorLayout anchorLayout;
+    private FilmAdapter filmAdapter;
+    private List<Film> filmList;
     private ProgressBar progressBar;
     private RecyclerView recyclerFilm;
-    private TextView textEmptyResult;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerFilm = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyResult = view.findViewById(R.id.text_rr_message);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_message);
 
         // Mendapatkan data
-        getAiringFilm();
+        filmList = new ArrayList<>();
+        airingFilmRequest = new AiringFilmRequest(context);
+        getAiringFilm(context);
+
+        // Activity
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!isLoadFirstTime) {
+                    filmList.clear();
+                    filmAdapter.notifyDataSetChanged();
+                }
+                getAiringFilm(context);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
 
         return view;
     }
 
-    private void getAiringFilm() {
-        List<Film> filmList = new ArrayList<>();
-        AiringFilmRequest airingFilmRequest = new AiringFilmRequest(context, filmList, recyclerFilm);
-        airingFilmRequest.sendRequest(new AiringFilmRequest.APICallback() {
+    private void getAiringFilm(final Context context) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
+        airingFilmRequest.sendRequest(new AiringFilmRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(List<Film> films) {
+                if (isLoadFirstTime) {
+                    int insertIndex = filmList.size();
+                    filmList.addAll(insertIndex, films);
+                    filmAdapter = new FilmAdapter(context, filmList);
+                    recyclerFilm.setAdapter(filmAdapter);
+                    recyclerFilm.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerFilm.setHasFixedSize(true);
+                    recyclerFilm.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    isLoadFirstTime = false;
+                } else {
+                    int insertIndex = filmList.size();
+                    filmList.addAll(insertIndex, films);
+                    filmAdapter.notifyItemRangeInserted(insertIndex, films.size());
+                }
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
-                textEmptyResult.setText(R.string.empty_airing);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_film_airing);
             }
 
             @Override
-            public void onError() {
+            public void onError(String message) {
                 progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
-                textEmptyResult.setText(R.string.empty_airing);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_film_airing);
+                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }

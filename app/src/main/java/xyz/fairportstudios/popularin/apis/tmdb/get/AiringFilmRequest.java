@@ -1,13 +1,12 @@
 package xyz.fairportstudios.popularin.apis.tmdb.get;
 
 import android.content.Context;
-import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,33 +15,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import xyz.fairportstudios.popularin.adapters.FilmAdapter;
-import xyz.fairportstudios.popularin.statics.TMDbAPI;
+import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class AiringFilmRequest {
     private Context context;
-    private List<Film> filmList;
-    private RecyclerView recyclerView;
 
-    public AiringFilmRequest(Context context, List<Film> filmList, RecyclerView recyclerView) {
+    public AiringFilmRequest(Context context) {
         this.context = context;
-        this.filmList = filmList;
-        this.recyclerView = recyclerView;
     }
 
-    public interface APICallback {
-        void onSuccess();
+    public interface Callback {
+        void onSuccess(List<Film> films);
 
-        void onEmpty();
+        void onNotFound();
 
-        void onError();
+        void onError(String message);
     }
 
-    public void sendRequest(final APICallback callback) {
-        String requestURL = TMDbAPI.AIRING_FILM + "?api_key=" + TMDbAPI.API_KEY + "&language=id&region=ID";
+    public void sendRequest(final Callback callback) {
+        String requestURL = TMDbAPI.AIRING_FILM
+                + "?api_key="
+                + TMDbAPI.API_KEY
+                + "&language=id&region=ID";
 
         JsonObjectRequest airingFilm = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -51,6 +50,7 @@ public class AiringFilmRequest {
                     int totalResult = response.getInt("total_results");
 
                     if (totalResult > 0) {
+                        List<Film> filmList = new ArrayList<>();
                         JSONArray resultArray = response.getJSONArray("results");
 
                         for (int index = 0; index < resultArray.length(); index++) {
@@ -69,27 +69,29 @@ public class AiringFilmRequest {
                         }
 
                         if (filmList.size() > 0) {
-                            FilmAdapter filmAdapter = new FilmAdapter(context, filmList);
-                            recyclerView.setAdapter(filmAdapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                            recyclerView.setVisibility(View.VISIBLE);
-                            callback.onSuccess();
+                            callback.onSuccess(filmList);
                         } else {
-                            callback.onEmpty();
+                            callback.onNotFound();
                         }
                     } else {
-                        callback.onEmpty();
+                        callback.onNotFound();
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
+                    callback.onError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
+                if (error instanceof NetworkError || error instanceof TimeoutError) {
+                    callback.onError(context.getString(R.string.network_error));
+                } else if (error instanceof ServerError) {
+                    callback.onError(context.getString(R.string.server_error));
+                } else {
+                    callback.onError(context.getString(R.string.general_error));
+                }
             }
         });
 
