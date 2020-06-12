@@ -241,7 +241,6 @@ public class AccountFragment extends Fragment {
         Intent intent = new Intent(context, SocialActivity.class);
         intent.putExtra(Popularin.USER_ID, authID);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, viewPagerIndex);
-        intent.putExtra(Popularin.IS_SELF, true);
         startActivity(intent);
     }
 

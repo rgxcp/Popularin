@@ -140,14 +140,14 @@ public class UserDetailActivity extends AppCompatActivity {
         totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 0, isSelf);
+                gotoUserSocial(context, userID, 0);
             }
         });
 
         totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 1, isSelf);
+                gotoUserSocial(context, userID, 1);
             }
         });
 
@@ -260,11 +260,10 @@ public class UserDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void gotoUserSocial(Context context, Integer userID, Integer viewPagerIndex, Boolean isSelf) {
+    private void gotoUserSocial(Context context, Integer userID, Integer viewPagerIndex) {
         Intent intent = new Intent(context, SocialActivity.class);
         intent.putExtra(Popularin.USER_ID, userID);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, viewPagerIndex);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
         startActivity(intent);
     }
 
