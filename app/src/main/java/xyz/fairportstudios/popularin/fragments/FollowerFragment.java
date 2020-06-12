@@ -27,6 +27,9 @@ import xyz.fairportstudios.popularin.apis.popularin.get.UserFollowerRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class FollowerFragment extends Fragment {
+    // Variable untuk fitur onResume
+    private Boolean isResumeFirsTime = true;
+
     // Variable untuk fitur load more
     private Boolean isLoadFirstTime = true;
     private Boolean isLoading = true;
@@ -34,6 +37,7 @@ public class FollowerFragment extends Fragment {
     private Integer totalPage;
 
     // Variable member
+    private Context context;
     private CoordinatorLayout anchorLayout;
     private List<User> userList;
     private ProgressBar progressBar;
@@ -56,7 +60,7 @@ public class FollowerFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Context
-        final Context context = getActivity();
+        context = getActivity();
 
         // Binding
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
@@ -64,11 +68,6 @@ public class FollowerFragment extends Fragment {
         recyclerUser = view.findViewById(R.id.recycler_rr_layout);
         swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
         textMessage = view.findViewById(R.id.text_rr_message);
-
-        // Mendapatkan data awal
-        userList = new ArrayList<>();
-        userFollowerRequest = new UserFollowerRequest(context, userID);
-        getUserFollower(context, currentPage);
 
         // Activity
         recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -96,6 +95,18 @@ public class FollowerFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isResumeFirsTime) {
+            // Mendapatkan data awal
+            userList = new ArrayList<>();
+            userFollowerRequest = new UserFollowerRequest(context, userID);
+            getUserFollower(context, currentPage);
+            isResumeFirsTime = false;
+        }
     }
 
     private void getUserFollower(final Context context, Integer page) {
