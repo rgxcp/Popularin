@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,25 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserFollowerRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class FollowerFragment extends Fragment {
-    // Untuk fitur onResume
-    // private Boolean firstTime = true;
+    // Variable untuk fitur load more
+    private Boolean isLoadFirstTime = true;
+    private Boolean isLoading = true;
+    private Integer currentPage = 1;
+    private Integer totalPage;
 
-    // Mmeber variable
-    private Context context;
+    // Variable member
     private CoordinatorLayout anchorLayout;
     private List<User> userList;
     private ProgressBar progressBar;
-    private RecyclerView recyclerFollower;
-    private TextView textEmptyFollower;
+    private RecyclerView recyclerUser;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
+    private UserAdapter userAdapter;
+    private UserFollowerRequest userFollowerRequest;
 
-    // Constructor variable
-    private String userID;
+    // Variable constructor
+    private Integer userID;
 
-    public FollowerFragment(String userID) {
+    public FollowerFragment(Integer userID) {
         this.userID = userID;
     }
 
@@ -47,54 +55,92 @@ public class FollowerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        recyclerFollower = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyFollower = view.findViewById(R.id.text_rr_message);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_message);
 
-        // Mendapatkan data
+        // Mendapatkan data awal
         userList = new ArrayList<>();
-        getUserFollower();
+        userFollowerRequest = new UserFollowerRequest(context, userID);
+        getUserFollower(context, currentPage);
+
+        // Activity
+        recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading && currentPage <= totalPage) {
+                        isLoading = true;
+                        getUserFollower(context, currentPage);
+                        swipeRefresh.setRefreshing(true);
+                    }
+                }
+            }
+        });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isLoadFirstTime) {
+                    getUserFollower(context, currentPage);
+                }
+                swipeRefresh.setRefreshing(false);
+            }
+        });
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        /*
-        if (firstTime) {
-            userList = new ArrayList<>();
-            getUserFollower();
-            firstTime = false;
-        }
-         */
-    }
+    private void getUserFollower(final Context context, Integer page) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
 
-    private void getUserFollower() {
-        UserFollowerRequest userFollowerRequest = new UserFollowerRequest(context, userID, userList, recyclerFollower);
-        String requestURL = userFollowerRequest.getRequestURL(1);
-        userFollowerRequest.sendRequest(requestURL, new UserFollowerRequest.APICallback() {
+        userFollowerRequest.sendRequest(page, new UserFollowerRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer pages, List<User> users) {
+                if (isLoadFirstTime) {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter = new UserAdapter(context, userList);
+                    recyclerUser.setAdapter(userAdapter);
+                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerUser.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    totalPage = pages;
+                    isLoadFirstTime = false;
+                } else {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
+                    recyclerUser.scrollToPosition(insertIndex);
+                    swipeRefresh.setRefreshing(false);
+                }
+                currentPage++;
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
-                textEmptyFollower.setVisibility(View.VISIBLE);
-                textEmptyFollower.setText(R.string.empty_follower);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_follower);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyFollower.setVisibility(View.VISIBLE);
-                textEmptyFollower.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (isLoadFirstTime) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

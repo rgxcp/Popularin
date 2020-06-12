@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,25 +22,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserMutualRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class MutualFragment extends Fragment {
-    // Untuk fitur onResume
-    // private Integer onResumeCount = 0;
+    // Variable untuk fitur onResume
+    private Boolean isResumeFirsTime = true;
 
-    // Mmeber variable
+    // Variable untuk fitur load more
+    private Boolean isLoadFirstTime = true;
+    private Boolean isLoading = true;
+    private Integer currentPage = 1;
+    private Integer totalPage;
+
+    // Variable member
     private Context context;
     private CoordinatorLayout anchorLayout;
     private List<User> userList;
     private ProgressBar progressBar;
-    private RecyclerView recyclerMutual;
-    private TextView textEmptyMutual;
+    private RecyclerView recyclerUser;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
+    private UserAdapter userAdapter;
+    private UserMutualRequest userMutualRequest;
 
-    // Constructor variable
-    private String userID;
+    // Variable constructor
+    private Integer userID;
 
-    public MutualFragment(String userID) {
+    public MutualFragment(Integer userID) {
         this.userID = userID;
     }
 
@@ -47,16 +59,40 @@ public class MutualFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
-        // Binding
+        // Context
         context = getActivity();
+
+        // Binding
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        recyclerMutual = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyMutual = view.findViewById(R.id.text_rr_message);
+        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_message);
 
-        // Mendapatkan data
-        userList = new ArrayList<>();
-        getUserMutual();
+        // Activity
+        recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading && currentPage <= totalPage) {
+                        isLoading = true;
+                        getUserMutual(context, currentPage);
+                        swipeRefresh.setRefreshing(true);
+                    }
+                }
+            }
+        });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isLoadFirstTime) {
+                    getUserMutual(context, currentPage);
+                }
+                swipeRefresh.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -64,36 +100,58 @@ public class MutualFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        /*
-        onResumeCount++;
-        if (onResumeCount >= 1) {
-            getUserMutual();
+        if (isResumeFirsTime) {
+            // Mendapatkan data awal
+            userList = new ArrayList<>();
+            userMutualRequest = new UserMutualRequest(context, userID);
+            getUserMutual(context, currentPage);
+            isResumeFirsTime = false;
         }
-         */
     }
 
-    private void getUserMutual() {
-        UserMutualRequest userMutualRequest = new UserMutualRequest(context, userID, userList, recyclerMutual);
-        String requestURL = userMutualRequest.getRequestURL(1);
-        userMutualRequest.sendRequest(requestURL, new UserMutualRequest.APICallback() {
+    private void getUserMutual(final Context context, Integer page) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
+        userMutualRequest.sendRequest(page, new UserMutualRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer pages, List<User> users) {
+                if (isLoadFirstTime) {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter = new UserAdapter(context, userList);
+                    recyclerUser.setAdapter(userAdapter);
+                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerUser.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    totalPage = pages;
+                    isLoadFirstTime = false;
+                } else {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
+                    recyclerUser.scrollToPosition(insertIndex);
+                    swipeRefresh.setRefreshing(false);
+                }
+                currentPage++;
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
-                textEmptyMutual.setVisibility(View.VISIBLE);
-                textEmptyMutual.setText(R.string.empty_mutual);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_mutual);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyMutual.setVisibility(View.VISIBLE);
-                textEmptyMutual.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (isLoadFirstTime) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

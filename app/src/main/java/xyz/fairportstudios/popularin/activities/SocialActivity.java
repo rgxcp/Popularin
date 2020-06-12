@@ -1,5 +1,6 @@
 package xyz.fairportstudios.popularin.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +27,9 @@ public class SocialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reusable_toolbar_pager);
 
+        // Context
+        Context context = SocialActivity.this;
+
         // Binding
         TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_rtp_layout);
@@ -33,16 +37,26 @@ public class SocialActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        String userID = intent.getStringExtra(Popularin.USER_ID);
-        boolean isSelf = intent.getBooleanExtra(Popularin.IS_SELF, false);
+        Integer userID = intent.getIntExtra(Popularin.USER_ID, 0);
+        int viewPagerIndex = intent.getIntExtra(Popularin.VIEW_PAGER_INDEX, 0);
 
         // Auth
-        boolean isAuth = new Auth(this).isAuth();
+        Auth auth = new Auth(context);
+        boolean isAuth = auth.isAuth();
+        boolean isSelf = userID == auth.getAuthID();
 
         // Toolbar
         toolbar.setTitle(R.string.social);
 
-        // Tab Pager
+        // Limit page yang akan ditampilkan
+        int screenPageLimit;
+        if (isAuth && !isSelf) {
+            screenPageLimit = 3;
+        } else {
+            screenPageLimit = 2;
+        }
+
+        // Tab pager
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         pagerAdapter.addFragment(new FollowerFragment(userID), getString(R.string.follower));
         pagerAdapter.addFragment(new FollowingFragment(userID), getString(R.string.following));
@@ -50,6 +64,8 @@ public class SocialActivity extends AppCompatActivity {
             pagerAdapter.addFragment(new MutualFragment(userID), getString(R.string.mutual));
         }
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(screenPageLimit);
+        viewPager.setCurrentItem(viewPagerIndex);
         tabLayout.setupWithViewPager(viewPager);
 
         // Activity
