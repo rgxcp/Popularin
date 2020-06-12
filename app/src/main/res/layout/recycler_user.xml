@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center"
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    android:paddingVertical="8dp">
 
     <com.github.florent37.shapeofview.shapes.CircleView
         android:layout_width="wrap_content"
@@ -12,8 +14,8 @@
 
         <ImageView
             android:id="@+id/image_ru_profile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@color/colorSurface"
             android:contentDescription="@null" />
     </com.github.florent37.shapeofview.shapes.CircleView>
@@ -21,7 +23,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:orientation="vertical">
 
@@ -30,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:fontFamily="@font/jost_regular"
+            android:fontFamily="@font/jost_medium"
             android:maxLines="1"
             android:textColor="@color/colorOnBackground"
             android:textSize="15sp" />

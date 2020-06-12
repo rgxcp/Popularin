@@ -8,10 +8,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.PagerAdapter;
+import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.FavoriteFromAllRequest;
 import xyz.fairportstudios.popularin.fragments.FavoriteFromAllFragment;
 import xyz.fairportstudios.popularin.fragments.FavoriteFromFollowingFragment;
@@ -30,26 +34,37 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FavoritedByActivity extends AppCompatActivity {
+    // Variable untuk fitur load more
+    private Boolean isLoadFirstTime = true;
+    private Boolean isLoading = true;
+    private Integer currentPage = 1;
+    private Integer totalPage;
+
+    // Variable member
     private FavoriteFromAllRequest favoriteFromAllRequest;
+    private List<User> userList;
     private ProgressBar progressBar;
+    private RecyclerView recyclerUser;
     private RelativeLayout anchorLayout;
+    private SwipeRefreshLayout swipeRefresh;
     private TextView textMessage;
+    private UserAdapter userAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Binding
+        // Context
         final Context context = FavoritedByActivity.this;
 
         // Extra
         Intent intent = getIntent();
-        final String filmID = intent.getStringExtra(Popularin.FILM_ID);
+        final Integer filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
 
         // Auth
         final boolean isAuth = new Auth(context).isAuth();
 
-        // Tampilan
+        // Menampilkan layout berdasarkan kondisi
         if (isAuth) {
             setContentView(R.layout.reusable_toolbar_pager);
 
@@ -80,18 +95,19 @@ public class FavoritedByActivity extends AppCompatActivity {
 
             // Binding
             progressBar = findViewById(R.id.pbr_rtr_layout);
+            recyclerUser = findViewById(R.id.recycler_rtr_layout);
             anchorLayout = findViewById(R.id.anchor_rtr_layout);
+            swipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
             textMessage = findViewById(R.id.text_aud_message);
-            final RecyclerView recyclerUser = findViewById(R.id.recycler_rtr_layout);
-            final Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
+            Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
             // Toolbar
             toolbar.setTitle(R.string.favorited_by);
 
-            // Request
-            List<User> userList = new ArrayList<>();
-            favoriteFromAllRequest = new FavoriteFromAllRequest(context, filmID, userList, recyclerUser);
-            getFavoriteFromAll();
+            // Mendapatkan data awal
+            userList = new ArrayList<>();
+            favoriteFromAllRequest = new FavoriteFromAllRequest(context, filmID);
+            getFavoriteFromAll(context, currentPage);
 
             // Activity
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -100,30 +116,77 @@ public class FavoritedByActivity extends AppCompatActivity {
                     onBackPressed();
                 }
             });
+
+            recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (!isLoading && currentPage <= totalPage) {
+                            isLoading = true;
+                            getFavoriteFromAll(context, currentPage);
+                            swipeRefresh.setRefreshing(true);
+                        }
+                    }
+                }
+            });
+
+            swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    if (isLoadFirstTime) {
+                        getFavoriteFromAll(context, currentPage);
+                    }
+                    swipeRefresh.setRefreshing(false);
+                }
+            });
         }
     }
 
-    private void getFavoriteFromAll() {
-        String requestURL = favoriteFromAllRequest.getRequestURL(1);
-        favoriteFromAllRequest.sendRequest(requestURL, new FavoriteFromAllRequest.APICallback() {
+    private void getFavoriteFromAll(final Context context, Integer page) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
+        favoriteFromAllRequest.sendRequest(page, new FavoriteFromAllRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer pages, List<User> users) {
+                if (isLoadFirstTime) {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter = new UserAdapter(context, userList);
+                    recyclerUser.setAdapter(userAdapter);
+                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerUser.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    totalPage = pages;
+                    isLoadFirstTime = false;
+                } else {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
+                    recyclerUser.scrollToPosition(insertIndex);
+                    swipeRefresh.setRefreshing(false);
+                }
+                currentPage++;
+                isLoadFirstTime = false;
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
                 textMessage.setVisibility(View.VISIBLE);
                 textMessage.setText(R.string.empty_film_favorite);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (isLoadFirstTime) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

@@ -27,7 +27,8 @@
     <string name="empty_account">Masuk atau daftar terlebih dahulu untuk\nmenikmati semua fitur Popularin!</string>
     <string name="empty_airing">Film yang sedang tayang di bioskop\nakan tampil di disni</string>
     <string name="empty_comment">Ulasan ini belum mempunyai komen.</string>
-    <string name="empty_film_favorite">Belum ada yang memfavoritkan film ini.</string>
+    <string name="empty_film_favorite">Belum ada yang memfavoritkan film ini.\nMau jadi yang pertama?</string>
+    <string name="empty_film_favorite_from_following">Belum ada teman mu yang memfavoritkan film ini.</string>
     <string name="empty_film_review">Belum ada yang mengulas film ini.</string>
     <string name="empty_film_watchlist">Belum ada yang ingin menonton film ini.</string>
     <string name="empty_follower">Pengguna belum mempunyai pengikut.</string>

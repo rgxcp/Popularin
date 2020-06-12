@@ -30,11 +30,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.userList = userList;
     }
 
-    private Integer pxToDp() {
-        float dp = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,8 +38,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        // ID
-        final Integer userID = userList.get(position).getId();
+        // Posisi
+        User currentItem = userList.get(position);
+
+        // Extra
+        final Integer userID = currentItem.getId();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -53,16 +51,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textFullName.setText(userList.get(position).getFull_name());
-        holder.textUsername.setText(String.format("@%s", userList.get(position).getUsername()));
-        Glide.with(context).load(userList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageProfile);
-
-        // Margin
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == userList.size() - 1) {
-            layoutParams.bottomMargin = pxToDp();
-        }
-        holder.itemView.setLayoutParams(layoutParams);
+        holder.textFullName.setText(currentItem.getFull_name());
+        holder.textUsername.setText(String.format("@%s", currentItem.getUsername()));
+        Glide.with(context).load(currentItem.getProfile_picture()).apply(requestOptions).into(holder.imageProfile);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
