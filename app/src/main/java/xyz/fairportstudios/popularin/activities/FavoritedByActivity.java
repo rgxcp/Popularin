@@ -69,9 +69,9 @@ public class FavoritedByActivity extends AppCompatActivity {
             setContentView(R.layout.reusable_toolbar_pager);
 
             // Binding
-            final TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
-            final Toolbar toolbar = findViewById(R.id.toolbar_rtp_layout);
-            final ViewPager viewPager = findViewById(R.id.pager_rtp_layout);
+            TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
+            Toolbar toolbar = findViewById(R.id.toolbar_rtp_layout);
+            ViewPager viewPager = findViewById(R.id.pager_rtp_layout);
 
             // Toolbar
             toolbar.setTitle(R.string.favorited_by);
