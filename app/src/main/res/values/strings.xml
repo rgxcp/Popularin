@@ -34,10 +34,11 @@
     <string name="empty_film_watchlist_from_following">Belum ada teman mu yang ingin menonton film ini.</string>
     <string name="empty_follower">Pengguna belum mempunyai pengikut.</string>
     <string name="empty_following">Pengguna belum mengikuti siapapun.</string>
-    <string name="empty_like">Belum ada yang menyukai ulasan ini.</string>
     <string name="empty_mutual">Belum ada pengguna yang bermutual.</string>
     <string name="empty_overview">Belum ada sinopsis untuk film ini.</string>
     <string name="empty_review">Ulasan dari semua pengguna Popularin\nakan tampil di sini.</string>
+    <string name="empty_review_like">Belum ada yang menyukai ulasan ini.\nMau jadi yang pertama?</string>
+    <string name="empty_review_like_from_following">Belum ada teman mu yang menyukai ulasan ini.</string>
     <string name="empty_timeline">Ulasan dari pengguna yang kamu ikuti\nakan tampil di sini.</string>
     <string name="empty_trailer">Belum ada trailer untuk film ini.</string>
     <string name="empty_user_favorite">Pengguna belum mempunyai film favorit.</string>
