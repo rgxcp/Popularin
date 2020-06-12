@@ -57,13 +57,16 @@ public class DiscoverFilmRequest {
 
                     for (int index = 0; index < resultArray.length(); index++) {
                         JSONObject indexObject = resultArray.getJSONObject(index);
+                        String language = indexObject.getString("original_language");
 
-                        Film film = new Film();
-                        film.setId(indexObject.getInt("id"));
-                        film.setOriginal_title(indexObject.getString("original_title"));
-                        film.setRelease_date(indexObject.getString("release_date"));
-                        film.setPoster_path(indexObject.getString("poster_path"));
-                        filmList.add(film);
+                        if (language.equals("id")) {
+                            Film film = new Film();
+                            film.setId(indexObject.getInt("id"));
+                            film.setOriginal_title(indexObject.getString("original_title"));
+                            film.setRelease_date(indexObject.getString("release_date"));
+                            film.setPoster_path(indexObject.getString("poster_path"));
+                            filmList.add(film);
+                        }
                     }
 
                     callback.onSuccess(totalPage, filmList);
