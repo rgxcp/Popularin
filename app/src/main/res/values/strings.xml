@@ -30,7 +30,8 @@
     <string name="empty_film_favorite">Belum ada yang memfavoritkan film ini.\nMau jadi yang pertama?</string>
     <string name="empty_film_favorite_from_following">Belum ada teman mu yang memfavoritkan film ini.</string>
     <string name="empty_film_review">Belum ada yang mengulas film ini.</string>
-    <string name="empty_film_watchlist">Belum ada yang ingin menonton film ini.</string>
+    <string name="empty_film_watchlist">Belum ada yang ingin menonton film ini.\nMau jadi yang pertama?</string>
+    <string name="empty_film_watchlist_from_following">Belum ada teman mu yang ingin menonton film ini.</string>
     <string name="empty_follower">Pengguna belum mempunyai pengikut.</string>
     <string name="empty_following">Pengguna belum mengikuti siapapun.</string>
     <string name="empty_like">Belum ada yang menyukai ulasan ini.</string>

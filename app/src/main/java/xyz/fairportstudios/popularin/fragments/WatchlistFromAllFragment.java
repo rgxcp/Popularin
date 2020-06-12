@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,22 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.WatchlistFromAllRequest;
 import xyz.fairportstudios.popularin.models.User;
 
 public class WatchlistFromAllFragment extends Fragment {
-    // Member variable
-    private Context context;
+    // Variable untuk fitur load more
+    private Boolean isLoadFirstTime = true;
+    private Boolean isLoading = true;
+    private Integer currentPage = 1;
+    private Integer totalPage;
+
+    // Variable member
     private CoordinatorLayout anchorLayout;
     private List<User> userList;
     private ProgressBar progressBar;
     private RecyclerView recyclerUser;
-    private TextView textEmptyResult;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
+    private UserAdapter userAdapter;
+    private WatchlistFromAllRequest watchlistFromAllRequest;
 
-    // Constructor variable
-    private String filmID;
+    // Variable constructor
+    private Integer filmID;
 
-    public WatchlistFromAllFragment(String filmID) {
+    public WatchlistFromAllFragment(Integer filmID) {
         this.filmID = filmID;
     }
 
@@ -44,42 +55,93 @@ public class WatchlistFromAllFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerUser = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyResult = view.findViewById(R.id.text_rr_message);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_message);
 
-        // Mendapatkan data
+        // Mendapatkan data awal
         userList = new ArrayList<>();
-        getWatchlistFromAll();
+        watchlistFromAllRequest = new WatchlistFromAllRequest(context, filmID);
+        getWatchlistFromAll(context, currentPage);
+
+        // Activity
+        recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading && currentPage <= totalPage) {
+                        isLoading = true;
+                        getWatchlistFromAll(context, currentPage);
+                        swipeRefresh.setRefreshing(true);
+                    }
+                }
+            }
+        });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isLoadFirstTime) {
+                    getWatchlistFromAll(context, currentPage);
+                }
+                swipeRefresh.setRefreshing(false);
+            }
+        });
 
         return view;
     }
 
-    private void getWatchlistFromAll() {
-        WatchlistFromAllRequest watchlistFromAllRequest = new WatchlistFromAllRequest(context, filmID, userList, recyclerUser);
-        String requestURL = watchlistFromAllRequest.getRequestURL(1);
-        watchlistFromAllRequest.sendRequest(requestURL, new WatchlistFromAllRequest.APICallback() {
+    private void getWatchlistFromAll(final Context context, Integer page) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
+        watchlistFromAllRequest.sendRequest(page, new WatchlistFromAllRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer pages, List<User> users) {
+                if (isLoadFirstTime) {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter = new UserAdapter(context, userList);
+                    recyclerUser.setAdapter(userAdapter);
+                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerUser.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    totalPage = pages;
+                    isLoadFirstTime = false;
+                } else {
+                    int insertIndex = userList.size();
+                    userList.addAll(insertIndex, users);
+                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
+                    recyclerUser.scrollToPosition(insertIndex);
+                    swipeRefresh.setRefreshing(false);
+                }
+                currentPage++;
+                isLoadFirstTime = false;
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
-                textEmptyResult.setText(R.string.empty_film_watchlist);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_film_watchlist);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
-                textEmptyResult.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (isLoadFirstTime) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
