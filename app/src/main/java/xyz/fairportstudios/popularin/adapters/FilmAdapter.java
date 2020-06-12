@@ -36,11 +36,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         this.filmList = filmList;
     }
 
-    private Integer pxToDp() {
-        float dp = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public FilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,15 +44,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull FilmViewHolder holder, int position) {
-        // ID
-        final String filmID = String.valueOf(filmList.get(position).getId());
+        // Posisi
+        Film currentItem = filmList.get(position);
+
+        // Extra
+        final Integer filmID = currentItem.getId();
 
         // Parsing
-        final String filmTitle = filmList.get(position).getOriginal_title();
-        final String filmYear = new ParseDate().getYear(filmList.get(position).getRelease_date());
-        final String filmPoster = new ParseImage().getImage(filmList.get(position).getPoster_path());
-        final String genre = new ParseGenre().getGenre(filmList.get(position).getGenre_id());
-        final String releaseDate = new ParseDate().getDate(filmList.get(position).getRelease_date());
+        final String filmTitle = currentItem.getOriginal_title();
+        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        final String filmPoster = new ParseImage().getImage(currentItem.getPoster_path());
+        final String filmGenre = new ParseGenre().getGenre(currentItem.getGenre_id());
+        final String filmReleaseDate = new ParseDate().getDate(currentItem.getRelease_date());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -66,17 +64,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textTitle.setText(filmTitle);
-        holder.textGenre.setText(genre);
-        holder.textReleaseDate.setText(releaseDate);
-        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imagePoster);
-
-        // Margin
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == filmList.size() - 1) {
-            layoutParams.bottomMargin = pxToDp();
-        }
-        holder.itemView.setLayoutParams(layoutParams);
+        holder.textFilmTitle.setText(filmTitle);
+        holder.textFilmGenre.setText(filmGenre);
+        holder.textFilmReleaseDate.setText(filmReleaseDate);
+        Glide.with(context).load(filmPoster).apply(requestOptions).into(holder.imageFilmPoster);
 
         // Activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +79,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             }
         });
 
-        holder.imagePoster.setOnClickListener(new View.OnClickListener() {
+        holder.imageFilmPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmDetailActivity.class);
@@ -97,11 +88,11 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             }
         });
 
-        holder.imagePoster.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.imageFilmPoster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(Integer.parseInt(filmID), filmTitle, filmYear, filmPoster);
+                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
                 filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
@@ -114,18 +105,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
     }
 
     static class FilmViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imagePoster;
-        private TextView textTitle;
-        private TextView textGenre;
-        private TextView textReleaseDate;
+        private ImageView imageFilmPoster;
+        private TextView textFilmTitle;
+        private TextView textFilmGenre;
+        private TextView textFilmReleaseDate;
 
         FilmViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imagePoster = itemView.findViewById(R.id.image_rf_poster);
-            textTitle = itemView.findViewById(R.id.text_rf_title);
-            textGenre = itemView.findViewById(R.id.text_rf_genre);
-            textReleaseDate = itemView.findViewById(R.id.text_rf_release_date);
+            imageFilmPoster = itemView.findViewById(R.id.image_rf_poster);
+            textFilmTitle = itemView.findViewById(R.id.text_rf_title);
+            textFilmGenre = itemView.findViewById(R.id.text_rf_genre);
+            textFilmReleaseDate = itemView.findViewById(R.id.text_rf_release_date);
         }
     }
 }
