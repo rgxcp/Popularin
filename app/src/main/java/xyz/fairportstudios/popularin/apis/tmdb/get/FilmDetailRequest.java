@@ -6,8 +6,11 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.CastAdapter;
 import xyz.fairportstudios.popularin.adapters.CrewAdapter;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
@@ -27,35 +32,29 @@ import xyz.fairportstudios.popularin.models.FilmDetail;
 
 public class FilmDetailRequest {
     private Context context;
-    private String id;
-    private List<Cast> castList;
-    private List<Crew> crewList;
+    private Integer id;
     private RecyclerView recyclerCast;
     private RecyclerView recyclerCrew;
 
     public FilmDetailRequest(
             Context context,
-            String id,
-            List<Cast> castList,
-            List<Crew> crewList,
+            Integer id,
             RecyclerView recyclerCast,
             RecyclerView recyclerCrew
     ) {
         this.context = context;
         this.id = id;
-        this.castList = castList;
-        this.crewList = crewList;
         this.recyclerCast = recyclerCast;
         this.recyclerCrew = recyclerCrew;
     }
 
-    public interface APICallback {
+    public interface Callback {
         void onSuccess(FilmDetail filmDetail);
 
-        void onError();
+        void onError(String message);
     }
 
-    public void sendRequest(final APICallback callback) {
+    public void sendRequest(final Callback callback) {
         String requestURL = TMDbAPI.FILM_DETAIL
                 + id
                 + "?api_key="
@@ -67,25 +66,27 @@ public class FilmDetailRequest {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject creditObject = response.getJSONObject("credits");
+                    JSONArray arrayVideo = response.getJSONObject("videos").getJSONArray("results");
                     JSONArray castArray = creditObject.getJSONArray("cast");
                     JSONArray crewArray = creditObject.getJSONArray("crew");
-                    JSONArray arrayVideo = response.getJSONObject("videos").getJSONArray("results");
 
-                    // Detail film
+                    // Mendapatkan informasi film
                     FilmDetail filmDetail = new FilmDetail();
                     filmDetail.setGenre_id(response.getJSONArray("genres").getJSONObject(0).getInt("id"));
                     filmDetail.setRuntime(response.getInt("runtime"));
                     filmDetail.setOriginal_title(response.getString("original_title"));
+                    filmDetail.setRelease_date(response.getString("release_date"));
                     filmDetail.setOverview(response.getString("overview"));
                     filmDetail.setPoster_path(response.getString("poster_path"));
-                    filmDetail.setRelease_date(response.getString("release_date"));
                     if (!arrayVideo.isNull(0)) {
                         filmDetail.setVideo_key(arrayVideo.getJSONObject(0).getString("key"));
                     } else {
                         filmDetail.setVideo_key("");
                     }
 
-                    // Cast film
+                    // Mendapatkan pemain film
+                    List<Cast> castList = new ArrayList<>();
+
                     for (int index = 0; index < castArray.length(); index++) {
                         JSONObject indexObject = castArray.getJSONObject(index);
 
@@ -96,12 +97,16 @@ public class FilmDetailRequest {
                         cast.setProfile_path(indexObject.getString("profile_path"));
                         castList.add(cast);
                     }
+
                     CastAdapter castAdapter = new CastAdapter(context, castList);
                     recyclerCast.setAdapter(castAdapter);
                     recyclerCast.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                    recyclerCast.setHasFixedSize(true);
                     recyclerCast.setVisibility(View.VISIBLE);
 
-                    // Crew film
+                    // Mendapatkan kru film
+                    List<Crew> crewList = new ArrayList<>();
+
                     for (int index = 0; index < crewArray.length(); index++) {
                         JSONObject indexObject = crewArray.getJSONObject(index);
 
@@ -112,21 +117,30 @@ public class FilmDetailRequest {
                         crew.setProfile_path(indexObject.getString("profile_path"));
                         crewList.add(crew);
                     }
+
                     CrewAdapter crewAdapter = new CrewAdapter(context, crewList);
                     recyclerCrew.setAdapter(crewAdapter);
                     recyclerCrew.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                    recyclerCrew.setHasFixedSize(true);
                     recyclerCrew.setVisibility(View.VISIBLE);
+
                     callback.onSuccess(filmDetail);
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
+                    callback.onError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
+                if (error instanceof NetworkError || error instanceof TimeoutError) {
+                    callback.onError(context.getString(R.string.network_error));
+                } else if (error instanceof ServerError) {
+                    callback.onError(context.getString(R.string.server_error));
+                } else {
+                    callback.onError(context.getString(R.string.general_error));
+                }
             }
         });
 

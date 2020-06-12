@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,11 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.CreditDetailActivity;
 import xyz.fairportstudios.popularin.models.Crew;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder> {
     private Context context;
@@ -28,11 +32,6 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         this.crewList = crewList;
     }
 
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public CrewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,11 +40,14 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CrewViewHolder holder, int position) {
-        // ID
-        // final String crewID = String.valueOf(crewList.get(position).getId());
+        // Posisi
+        Crew currentItem = crewList.get(position);
+
+        // Extra
+        final Integer crewID = currentItem.getId();
 
         // Parsing
-        String crewProfile = new ParseImage().getImage(crewList.get(position).getProfile_path());
+        String crewProfile = new ParseImage().getImage(currentItem.getProfile_path());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -54,19 +56,21 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textCrewName.setText(crewList.get(position).getName());
-        holder.textCrewAs.setText(crewList.get(position).getJob());
+        holder.textCrewName.setText(currentItem.getName());
+        holder.textCrewAs.setText(currentItem.getJob());
         Glide.with(context).load(crewProfile).apply(requestOptions).into(holder.imageCrewProfile);
 
         // Margin
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            layoutParams.leftMargin = pxToDp(16);
-            layoutParams.rightMargin = pxToDp(8);
-        } else if (position == crewList.size() - 1) {
-            layoutParams.rightMargin = pxToDp(16);
+            layoutParams.leftMargin = convertPixel.getDensity(16);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
+        } else if (position == getItemCount() - 1) {
+            layoutParams.rightMargin = convertPixel.getDensity(16);
         } else {
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         }
         holder.itemView.setLayoutParams(layoutParams);
 
@@ -74,7 +78,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Belum ada
+                Intent intent = new Intent(context, CreditDetailActivity.class);
+                intent.putExtra(Popularin.CREDIT_ID, crewID);
+                context.startActivity(intent);
             }
         });
     }

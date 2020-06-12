@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,11 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.CreditDetailActivity;
 import xyz.fairportstudios.popularin.models.Cast;
+import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseImage;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
     private Context context;
@@ -28,11 +32,6 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         this.castList = castList;
     }
 
-    private Integer pxToDp(Integer px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
-    }
-
     @NonNull
     @Override
     public CastViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,11 +40,14 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CastViewHolder holder, int position) {
-        // ID
-        // final String castID = String.valueOf(castList.get(position).getId());
+        // Posisi
+        Cast currentItem = castList.get(position);
+
+        // Extra
+        final Integer castID = currentItem.getId();
 
         // Parsing
-        String castProfile = new ParseImage().getImage(castList.get(position).getProfile_path());
+        String castProfile = new ParseImage().getImage(currentItem.getProfile_path());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -54,19 +56,21 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textCastName.setText(castList.get(position).getName());
-        holder.textCastAs.setText(castList.get(position).getCharacter());
+        holder.textCastName.setText(currentItem.getName());
+        holder.textCastAs.setText(currentItem.getCharacter());
         Glide.with(context).load(castProfile).apply(requestOptions).into(holder.imageCastProfile);
 
         // Margin
+        ConvertPixel convertPixel = new ConvertPixel(context);
+
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            layoutParams.leftMargin = pxToDp(16);
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.leftMargin = convertPixel.getDensity(16);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         } else if (position == getItemCount() - 1) {
-            layoutParams.rightMargin = pxToDp(16);
+            layoutParams.rightMargin = convertPixel.getDensity(16);
         } else {
-            layoutParams.rightMargin = pxToDp(8);
+            layoutParams.rightMargin = convertPixel.getDensity(8);
         }
         holder.itemView.setLayoutParams(layoutParams);
 
@@ -74,7 +78,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Belum ada
+                Intent intent = new Intent(context, CreditDetailActivity.class);
+                intent.putExtra(Popularin.CREDIT_ID, castID);
+                context.startActivity(intent);
             }
         });
     }

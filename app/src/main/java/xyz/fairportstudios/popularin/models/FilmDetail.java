@@ -4,9 +4,9 @@ public class FilmDetail {
     private Integer genre_id;
     private Integer runtime;
     private String original_title;
+    private String release_date;
     private String overview;
     private String poster_path;
-    private String release_date;
     private String video_key;
 
     public FilmDetail() {
@@ -17,17 +17,17 @@ public class FilmDetail {
             Integer genre_id,
             Integer runtime,
             String original_title,
+            String release_date,
             String overview,
             String poster_path,
-            String release_date,
             String video_key
     ) {
         this.genre_id = genre_id;
         this.runtime = runtime;
         this.original_title = original_title;
+        this.release_date = release_date;
         this.overview = overview;
         this.poster_path = poster_path;
-        this.release_date = release_date;
         this.video_key = video_key;
     }
 
@@ -55,6 +55,14 @@ public class FilmDetail {
         this.original_title = original_title;
     }
 
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
+    }
+
     public String getOverview() {
         return overview;
     }
@@ -69,14 +77,6 @@ public class FilmDetail {
 
     public void setPoster_path(String poster_path) {
         this.poster_path = poster_path;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
     }
 
     public String getVideo_key() {
