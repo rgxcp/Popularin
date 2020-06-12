@@ -45,7 +45,7 @@ public class ReviewFragment extends Fragment {
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerReview = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyReview = view.findViewById(R.id.text_rr_empty_result);
+        textEmptyReview = view.findViewById(R.id.text_rr_message);
 
         // Request
         reviewList = new ArrayList<>();

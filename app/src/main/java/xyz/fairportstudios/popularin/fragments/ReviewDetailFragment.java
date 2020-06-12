@@ -49,7 +49,7 @@ public class ReviewDetailFragment extends Fragment {
     private ProgressBar progressBar;
     private RelativeLayout anchorLayot;
     private ScrollView scrollView;
-    private String userID;
+    private Integer userID;
     private String filmID;
     private String filmTitle;
     private String filmYear;
@@ -153,7 +153,7 @@ public class ReviewDetailFragment extends Fragment {
             @Override
             public void onSuccess(ReviewDetail reviewDetail) {
                 filmID = String.valueOf(reviewDetail.getTmdb_id());
-                userID = String.valueOf(reviewDetail.getUser_id());
+                userID = reviewDetail.getUser_id();
                 isLiked = reviewDetail.getIs_liked();
                 currentLike = reviewDetail.getTotal_like();
                 filmTitle = reviewDetail.getTitle();
@@ -195,7 +195,7 @@ public class ReviewDetailFragment extends Fragment {
 
     private void showFilmModal() {
         FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-        FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+        FilmModal filmModal = new FilmModal(Integer.parseInt(filmID), filmTitle, filmYear, filmPoster);
         filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
     }
 

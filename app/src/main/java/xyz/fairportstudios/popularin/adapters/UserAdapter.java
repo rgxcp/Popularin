@@ -44,7 +44,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         // ID
-        final String userID = String.valueOf(userList.get(position).getId());
+        final Integer userID = userList.get(position).getId();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

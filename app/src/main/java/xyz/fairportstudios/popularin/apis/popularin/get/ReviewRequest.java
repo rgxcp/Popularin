@@ -103,7 +103,7 @@ public class ReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("API-Key", PopularinAPI.API_TOKEN);
                 return headers;
             }
         };

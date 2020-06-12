@@ -41,12 +41,12 @@ public class FilmModal extends BottomSheetDialogFragment {
     private RatingBar ratingBar;
 
     // Constructor variable
-    private String id;
+    private Integer id;
     private String title;
     private String year;
     private String poster;
 
-    public FilmModal(String id, String title, String year, String poster) {
+    public FilmModal(Integer id, String title, String year, String poster) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -144,7 +144,7 @@ public class FilmModal extends BottomSheetDialogFragment {
     }
 
     private void getFilmSelf() {
-        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, id);
+        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, String.valueOf(id));
         filmSelfRequest.sendRequest(new FilmSelfRequest.APICallback() {
             @Override
             public void onSuccess(FilmSelf filmSelf) {
@@ -185,7 +185,7 @@ public class FilmModal extends BottomSheetDialogFragment {
     }
 
     private void addToFavorite() {
-        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, id);
+        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, String.valueOf(id));
         addFavoriteRequest.sendRequest(new AddFavoriteRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -202,7 +202,7 @@ public class FilmModal extends BottomSheetDialogFragment {
     }
 
     private void removeFromFavorite() {
-        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, id);
+        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, String.valueOf(id));
         deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -219,7 +219,7 @@ public class FilmModal extends BottomSheetDialogFragment {
     }
 
     private void addToWatchlist() {
-        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, id);
+        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, String.valueOf(id));
         addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
             @Override
             public void onSuccess() {
@@ -236,7 +236,7 @@ public class FilmModal extends BottomSheetDialogFragment {
     }
 
     private void removeFromWatchlist() {
-        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, id);
+        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, String.valueOf(id));
         deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.APICallback() {
             @Override
             public void onSuccess() {

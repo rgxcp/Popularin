@@ -38,7 +38,7 @@ public class UserReviewActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pbr_rtr_layout);
         recyclerReview = findViewById(R.id.recycler_rtr_layout);
         anchorLayout = findViewById(R.id.anchor_rtr_layout);
-        textEmptyResult = findViewById(R.id.text_rtr_empty_result);
+        textEmptyResult = findViewById(R.id.text_aud_message);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra

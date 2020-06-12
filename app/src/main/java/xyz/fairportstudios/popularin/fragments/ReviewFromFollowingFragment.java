@@ -49,7 +49,7 @@ public class ReviewFromFollowingFragment extends Fragment {
         // Binding
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
-        textMessage = view.findViewById(R.id.text_rr_empty_result);
+        textMessage = view.findViewById(R.id.text_rr_message);
         Context context = getActivity();
         RecyclerView recyclerFilmReview = view.findViewById(R.id.recycler_rr_layout);
 

@@ -45,7 +45,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         // ID
         final Comment comment = commentList.get(position);
         final String commentID = String.valueOf(comment.getId());
-        final String userID = String.valueOf(comment.getUser_id());
+        final Integer userID = comment.getUser_id();
 
         // Auth
         final boolean isSelf = userID.equals(new Auth(context).getAuthID());

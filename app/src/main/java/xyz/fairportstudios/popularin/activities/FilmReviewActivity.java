@@ -91,7 +91,7 @@ public class FilmReviewActivity extends AppCompatActivity {
             // Binding
             progressBar = findViewById(R.id.pbr_rtr_layout);
             anchorLayout = findViewById(R.id.anchor_rtr_layout);
-            textMessage = findViewById(R.id.text_rtr_empty_result);
+            textMessage = findViewById(R.id.text_aud_message);
             final RecyclerView recyclerFilmReview = findViewById(R.id.recycler_rtr_layout);
             final Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 

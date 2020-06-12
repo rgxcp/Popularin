@@ -48,7 +48,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     public void onBindViewHolder(@NonNull FilmReviewViewHolder holder, int position) {
         // ID
         final String reviewID = String.valueOf(filmReviewList.get(position).getReview_id());
-        final String userID = String.valueOf(filmReviewList.get(position).getUser_id());
+        final Integer userID = filmReviewList.get(position).getUser_id();
 
         // Auth
         final boolean isSelf = userID.equals(new Auth(context).getAuthID());

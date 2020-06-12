@@ -53,7 +53,7 @@ public class FollowingFragment extends Fragment {
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerFollowing = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyFollowing = view.findViewById(R.id.text_rr_empty_result);
+        textEmptyFollowing = view.findViewById(R.id.text_rr_message);
 
         // Mendapatkan data
         userList = new ArrayList<>();

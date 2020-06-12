@@ -38,7 +38,7 @@ public class UserFavoriteActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pbr_rtr_layout);
         recyclerFavorite = findViewById(R.id.recycler_rtr_layout);
         anchorLayout = findViewById(R.id.anchor_rtr_layout);
-        textEmptyFavorite = findViewById(R.id.text_rtr_empty_result);
+        textEmptyFavorite = findViewById(R.id.text_aud_message);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra

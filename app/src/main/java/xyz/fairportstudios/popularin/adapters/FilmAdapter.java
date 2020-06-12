@@ -101,7 +101,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+                FilmModal filmModal = new FilmModal(Integer.parseInt(filmID), filmTitle, filmYear, filmPoster);
                 filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }

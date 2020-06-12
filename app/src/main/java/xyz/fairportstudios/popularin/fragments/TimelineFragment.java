@@ -44,7 +44,7 @@ public class TimelineFragment extends Fragment {
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerTimeline = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyTimeline = view.findViewById(R.id.text_rr_empty_result);
+        textEmptyTimeline = view.findViewById(R.id.text_rr_message);
 
         // Request
         getTimeline();

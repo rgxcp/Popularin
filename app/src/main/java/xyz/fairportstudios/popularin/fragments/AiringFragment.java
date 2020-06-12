@@ -40,7 +40,7 @@ public class AiringFragment extends Fragment {
         anchorLayout = view.findViewById(R.id.anchor_rr_layout);
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerFilm = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyResult = view.findViewById(R.id.text_rr_empty_result);
+        textEmptyResult = view.findViewById(R.id.text_rr_message);
 
         // Mendapatkan data
         getAiringFilm();

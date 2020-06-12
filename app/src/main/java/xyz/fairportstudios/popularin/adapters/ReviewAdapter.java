@@ -55,7 +55,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         // ID
         final String reviewID = String.valueOf(reviewList.get(position).getReview_id());
         final String filmID = String.valueOf(reviewList.get(position).getTmdb_id());
-        final String userID = String.valueOf(reviewList.get(position).getUser_id());
+        final Integer userID = reviewList.get(position).getUser_id();
 
         // Auth
         final boolean isSelf = userID.equals(new Auth(context).getAuthID());
@@ -123,7 +123,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             @Override
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-                FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+                FilmModal filmModal = new FilmModal(Integer.parseInt(filmID), filmTitle, filmYear, filmPoster);
                 filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
                 return true;
             }
