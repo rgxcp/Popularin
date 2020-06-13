@@ -125,6 +125,7 @@
     <string name="save_password">Simpan Kata Sandi</string>
     <string name="save_profile">Simpan Profil</string>
     <string name="search">Cari</string>
+    <string name="search_hint">Cari apa?</string>
     <string name="search_film_hint">Judul film...</string>
     <string name="search_user_hint">Nama atau username...</string>
     <string name="self">Saya</string>
@@ -167,4 +168,5 @@
     <string name="delete_favorite_error">Gagal menghapus dari favorit, coba beberapa saat lagi ya!</string>
     <string name="add_watchlist_error">Gagal menambahkan ke dalam watchlist, coba beberapa saat lagi ya!</string>
     <string name="delete_watchlist_error">Gagal menghapus dari watchlist, coba beberapa saat lagi ya!</string>
+    <string name="empty_search_result">UPS! Apa yang kamu cari tidak ditemukan.</string>
 </resources>

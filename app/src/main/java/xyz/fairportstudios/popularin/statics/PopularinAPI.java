@@ -8,7 +8,7 @@ public class PopularinAPI {
     public static final String FILM = BASE + "/film/";
     public static final String REVIEW = BASE + "/review/";
     public static final String REVIEWS = BASE + "/reviews";
-    public static final String SEARCH_USER = BASE + "/user/search";
+    public static final String SEARCH_USER = BASE + "/user/search/";
     public static final String SELF = BASE + "/user/self";
     public static final String SIGN_IN = BASE + "/user/signin";
     public static final String SIGN_OUT = BASE + "/user/signout";

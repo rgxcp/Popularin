@@ -24,5 +24,5 @@ public class TMDbAPI {
     public static final String CREDIT = BASE + "/person/";
     public static final String DISCOVER_FILM = BASE + "/discover/movie";
     public static final String FILM_DETAIL = BASE + "/movie/";
-    public static final String SEARCH_FILM = BASE + "/search/movie?api_key=" + API_KEY + "&language=id&query=";
+    public static final String SEARCH_FILM = BASE + "/search/movie";
 }
