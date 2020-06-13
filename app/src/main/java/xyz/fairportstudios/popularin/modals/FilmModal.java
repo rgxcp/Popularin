@@ -29,28 +29,28 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FilmModal extends BottomSheetDialogFragment {
+    // Variable member
     private double lastRate;
     private float currentRate;
     private Boolean inReview;
     private Boolean inFavorite;
     private Boolean inWatchlist;
-    private Context context;
     private ImageView imageReview;
     private ImageView imageFavorite;
     private ImageView imageWatchlist;
     private RatingBar ratingBar;
 
-    // Constructor variable
-    private Integer id;
-    private String title;
-    private String year;
-    private String poster;
+    // Variable constructor
+    private Integer filmID;
+    private String filmTitle;
+    private String filmYear;
+    private String filmPoster;
 
-    public FilmModal(Integer id, String title, String year, String poster) {
-        this.id = id;
-        this.title = title;
-        this.year = year;
-        this.poster = poster;
+    public FilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
+        this.filmID = filmID;
+        this.filmTitle = filmTitle;
+        this.filmYear = filmYear;
+        this.filmPoster = filmPoster;
     }
 
     @Nullable
@@ -58,8 +58,10 @@ public class FilmModal extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.modal_film, container, false);
 
+        // Context
+        final Context context = getActivity();
+
         // Binding
-        context = getActivity();
         imageReview = view.findViewById(R.id.image_mf_review);
         imageFavorite = view.findViewById(R.id.image_mf_favorite);
         imageWatchlist = view.findViewById(R.id.image_mf_watchlist);
@@ -71,12 +73,12 @@ public class FilmModal extends BottomSheetDialogFragment {
         final boolean isAuth = new Auth(context).isAuth();
 
         // Isi
-        textFilmTitle.setText(title);
-        textFilmYear.setText(year);
+        textFilmTitle.setText(filmTitle);
+        textFilmYear.setText(filmYear);
 
-        // Status film
+        // Mendapatkan status film diri sendiri
         if (isAuth) {
-            getFilmSelf();
+            getFilmSelf(context, filmID);
         }
 
         // Activity
@@ -84,9 +86,9 @@ public class FilmModal extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    addReview();
+                    addReview(context);
                 } else {
-                    gotoEmptyAccount();
+                    gotoEmptyAccount(context);
                 }
                 dismiss();
             }
@@ -97,12 +99,12 @@ public class FilmModal extends BottomSheetDialogFragment {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!inFavorite) {
-                        addToFavorite();
+                        addToFavorite(context, filmID);
                     } else {
-                        removeFromFavorite();
+                        removeFromFavorite(context, filmID);
                     }
                 } else {
-                    gotoEmptyAccount();
+                    gotoEmptyAccount(context);
                 }
                 dismiss();
             }
@@ -113,12 +115,12 @@ public class FilmModal extends BottomSheetDialogFragment {
             public void onClick(View view) {
                 if (isAuth) {
                     if (!inWatchlist) {
-                        addToWatchlist();
+                        addToWatchlist(context, filmID);
                     } else {
-                        removeFromWatchlist();
+                        removeFromWatchlist(context, filmID);
                     }
                 } else {
-                    gotoEmptyAccount();
+                    gotoEmptyAccount(context);
                 }
                 dismiss();
             }
@@ -126,15 +128,15 @@ public class FilmModal extends BottomSheetDialogFragment {
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+            public void onRatingChanged(RatingBar ratingBar, float newRate, boolean b) {
                 if (isAuth) {
-                    if (lastRate != v) {
-                        currentRate = v;
-                        addReview();
+                    if (lastRate != newRate) {
+                        currentRate = newRate;
+                        addReview(context);
                         dismiss();
                     }
                 } else {
-                    gotoEmptyAccount();
+                    gotoEmptyAccount(context);
                     dismiss();
                 }
             }
@@ -143,9 +145,9 @@ public class FilmModal extends BottomSheetDialogFragment {
         return view;
     }
 
-    private void getFilmSelf() {
-        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, String.valueOf(id));
-        filmSelfRequest.sendRequest(new FilmSelfRequest.APICallback() {
+    private void getFilmSelf(final Context context, Integer filmID) {
+        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, filmID);
+        filmSelfRequest.sendRequest(new FilmSelfRequest.Callback() {
             @Override
             public void onSuccess(FilmSelf filmSelf) {
                 inReview = filmSelf.getIn_review();
@@ -155,98 +157,93 @@ public class FilmModal extends BottomSheetDialogFragment {
                 ratingBar.setRating((float) lastRate);
 
                 if (inReview) {
-                    imageReview.setBackgroundResource(R.drawable.ic_review_fill);
+                    imageReview.setImageResource(R.drawable.ic_fill_eye);
                 }
-
                 if (inFavorite) {
-                    imageFavorite.setBackgroundResource(R.drawable.ic_favorite_fill);
+                    imageFavorite.setImageResource(R.drawable.ic_fill_heart);
                 }
-
                 if (inWatchlist) {
-                    imageWatchlist.setBackgroundResource(R.drawable.ic_watchlist_fill);
+                    imageWatchlist.setImageResource(R.drawable.ic_fill_watchlist);
                 }
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void gotoEmptyAccount() {
+    private void gotoEmptyAccount(Context context) {
         Intent intent = new Intent(context, EmptyAccountActivity.class);
         startActivity(intent);
     }
 
-    private void addReview() {
+    private void addReview(Context context) {
         Intent intent = new Intent(context, AddReviewActivity.class);
-        intent.putExtra(Popularin.FILM_ID, id);
-        intent.putExtra(Popularin.FILM_TITLE, title);
-        intent.putExtra(Popularin.FILM_YEAR, year);
-        intent.putExtra(Popularin.FILM_POSTER, poster);
+        intent.putExtra(Popularin.FILM_ID, filmID);
+        intent.putExtra(Popularin.FILM_TITLE, filmTitle);
+        intent.putExtra(Popularin.FILM_YEAR, filmYear);
+        intent.putExtra(Popularin.FILM_POSTER, filmPoster);
         intent.putExtra(Popularin.RATING, currentRate);
         startActivity(intent);
     }
 
-    private void addToFavorite() {
-        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, String.valueOf(id));
-        addFavoriteRequest.sendRequest(new AddFavoriteRequest.APICallback() {
+    private void addToFavorite(final Context context, Integer filmID) {
+        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, filmID);
+        addFavoriteRequest.sendRequest(new AddFavoriteRequest.Callback() {
             @Override
             public void onSuccess() {
-                String message = title + " " + context.getString(R.string.added_to_favorite);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError() {
-                String message = title + " " + context.getString(R.string.failed_add_to_favorite);
+            public void onError(String message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void removeFromFavorite() {
-        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, String.valueOf(id));
-        deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.APICallback() {
+    private void removeFromFavorite(final Context context, Integer filmID) {
+        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, filmID);
+        deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.Callback() {
             @Override
             public void onSuccess() {
-                String message = title + " " + context.getString(R.string.removed_from_favorite);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError() {
-                String message = title + " " + context.getString(R.string.failed_remove_from_favorite);
+            public void onError(String message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void addToWatchlist() {
-        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, String.valueOf(id));
-        addWatchlistRequest.sendRequest(new AddWatchlistRequest.APICallback() {
+    private void addToWatchlist(final Context context, Integer filmID) {
+        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, filmID);
+        addWatchlistRequest.sendRequest(new AddWatchlistRequest.Callback() {
             @Override
             public void onSuccess() {
-                String message = title + " " + context.getString(R.string.added_to_watchlist);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.added_to_watchlist, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError() {
-                String message = title + " " + context.getString(R.string.failed_add_to_watchlist);
+            public void onError(String message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void removeFromWatchlist() {
-        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, String.valueOf(id));
-        deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.APICallback() {
+    private void removeFromWatchlist(final Context context, Integer filmID) {
+        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, filmID);
+        deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.Callback() {
             @Override
             public void onSuccess() {
-                String message = title + " " + context.getString(R.string.removed_from_watchlist);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.removed_from_watchlist, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError() {
-                String message = title + " " + context.getString(R.string.failed_remove_from_watchlist);
+            public void onError(String message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });

@@ -4,8 +4,8 @@
     <!-- Safe -->
     <string name="account">Akun</string>
     <string name="add_review">Buat Ulasan</string>
-    <string name="added_to_favorite">ditambahkan ke favorit</string>
-    <string name="added_to_watchlist">ditambahkan ke watchlist</string>
+    <string name="added_to_favorite">Film di tambahkan ke favorit</string>
+    <string name="added_to_watchlist">Film di tambahkan ke watchlist</string>
     <string name="airing">Tayang</string>
     <string name="all">Semua</string>
     <string name="cast">Pemain</string>
@@ -113,8 +113,8 @@
     <string name="rating">Rating</string>
     <string name="recent_favorite">Favorit Terbaru</string>
     <string name="recent_review">Ulasan Terbaru</string>
-    <string name="removed_from_favorite">dihapus dari favorit</string>
-    <string name="removed_from_watchlist">dihapus dari watchlist</string>
+    <string name="removed_from_favorite">Film di hapus dari favorit</string>
+    <string name="removed_from_watchlist">Film di hapus dari watchlist</string>
     <string name="review">Ulasan</string>
     <string name="review_added">Ulasan dibuat</string>
     <string name="review_deleted">Ulasan dihapus</string>
@@ -162,4 +162,9 @@
     <string name="username_not_found">Username tidak terdaftar, coba periksa lagi ya!</string>
     <string name="general_error">Gagal mengirim permintaanmu, coba beberapa saat lagi ya!</string>
     <string name="server_error">Ada kesalahan dalam server, coba beberapa saat lagi ya!</string>
+    <string name="film_self_error">Gagal mendapatkan status film, coba beberapa saat lagi ya!</string>
+    <string name="add_favorite_error">Gagal menambahkan ke dalam favorit, coba beberapa saat lagi ya!</string>
+    <string name="delete_favorite_error">Gagal menghapus dari favorit, coba beberapa saat lagi ya!</string>
+    <string name="add_watchlist_error">Gagal menambahkan ke dalam watchlist, coba beberapa saat lagi ya!</string>
+    <string name="delete_watchlist_error">Gagal menghapus dari watchlist, coba beberapa saat lagi ya!</string>
 </resources>
