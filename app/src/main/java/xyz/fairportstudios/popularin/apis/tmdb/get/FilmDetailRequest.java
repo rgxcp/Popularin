@@ -1,10 +1,6 @@
 package xyz.fairportstudios.popularin.apis.tmdb.get;
 
 import android.content.Context;
-import android.view.View;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
@@ -23,33 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.adapters.CastAdapter;
-import xyz.fairportstudios.popularin.adapters.CrewAdapter;
-import xyz.fairportstudios.popularin.statics.TMDbAPI;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmDetailRequest {
     private Context context;
     private Integer id;
-    private RecyclerView recyclerCast;
-    private RecyclerView recyclerCrew;
 
-    public FilmDetailRequest(
-            Context context,
-            Integer id,
-            RecyclerView recyclerCast,
-            RecyclerView recyclerCrew
-    ) {
+    public FilmDetailRequest(Context context, Integer id) {
         this.context = context;
         this.id = id;
-        this.recyclerCast = recyclerCast;
-        this.recyclerCrew = recyclerCrew;
     }
 
     public interface Callback {
-        void onSuccess(FilmDetail filmDetail);
+        void onSuccess(FilmDetail filmDetail, List<Cast> casts, List<Crew> crews);
 
         void onError(String message);
     }
@@ -98,12 +83,6 @@ public class FilmDetailRequest {
                         castList.add(cast);
                     }
 
-                    CastAdapter castAdapter = new CastAdapter(context, castList);
-                    recyclerCast.setAdapter(castAdapter);
-                    recyclerCast.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                    recyclerCast.setHasFixedSize(true);
-                    recyclerCast.setVisibility(View.VISIBLE);
-
                     // Mendapatkan kru film
                     List<Crew> crewList = new ArrayList<>();
 
@@ -118,13 +97,7 @@ public class FilmDetailRequest {
                         crewList.add(crew);
                     }
 
-                    CrewAdapter crewAdapter = new CrewAdapter(context, crewList);
-                    recyclerCrew.setAdapter(crewAdapter);
-                    recyclerCrew.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                    recyclerCrew.setHasFixedSize(true);
-                    recyclerCrew.setVisibility(View.VISIBLE);
-
-                    callback.onSuccess(filmDetail);
+                    callback.onSuccess(filmDetail, castList, crewList);
                 } catch (JSONException exception) {
                     exception.printStackTrace();
                     callback.onError(context.getString(R.string.general_error));

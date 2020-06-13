@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,12 +25,17 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
 import java.util.Locale;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.CastAdapter;
+import xyz.fairportstudios.popularin.adapters.CrewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.FilmMetadataRequest;
 import xyz.fairportstudios.popularin.apis.tmdb.get.FilmDetailRequest;
 import xyz.fairportstudios.popularin.modals.FilmModal;
+import xyz.fairportstudios.popularin.models.Cast;
+import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
 import xyz.fairportstudios.popularin.models.FilmMetadata;
 import xyz.fairportstudios.popularin.services.ParseDate;
@@ -162,10 +168,10 @@ public class FilmDetailActivity extends AppCompatActivity {
     }
 
     private void getFilmDetail(final Context context, Integer filmID) {
-        FilmDetailRequest filmDetailRequest = new FilmDetailRequest(context, filmID, recyclerCast, recyclerCrew);
+        FilmDetailRequest filmDetailRequest = new FilmDetailRequest(context, filmID);
         filmDetailRequest.sendRequest(new FilmDetailRequest.Callback() {
             @Override
-            public void onSuccess(FilmDetail filmDetail) {
+            public void onSuccess(FilmDetail filmDetail, List<Cast> casts, List<Crew> crews) {
                 // Setter
                 filmTitle = filmDetail.getOriginal_title();
                 genreID = filmDetail.getGenre_id();
@@ -184,7 +190,7 @@ public class FilmDetailActivity extends AppCompatActivity {
                         .placeholder(R.color.colorSurface)
                         .error(R.color.colorSurface);
 
-                // Isi
+                // Informasi film
                 toolbar.setTitle(filmTitle);
                 chipGenre.setText(genreTitle);
                 chipRuntime.setText(runtime);
@@ -195,6 +201,20 @@ public class FilmDetailActivity extends AppCompatActivity {
                     imageEmptyOverview.setVisibility(View.VISIBLE);
                 }
                 Glide.with(context).load(filmPoster).apply(requestOptions).into(imagePoster);
+
+                // Pemain film
+                CastAdapter castAdapter = new CastAdapter(context, casts);
+                recyclerCast.setAdapter(castAdapter);
+                recyclerCast.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerCast.setHasFixedSize(true);
+                recyclerCast.setVisibility(View.VISIBLE);
+
+                // Kru film
+                CrewAdapter crewAdapter = new CrewAdapter(context, crews);
+                recyclerCrew.setAdapter(crewAdapter);
+                recyclerCrew.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerCrew.setHasFixedSize(true);
+                recyclerCrew.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 anchorLayout.setVisibility(View.VISIBLE);
             }

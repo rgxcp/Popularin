@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -24,8 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
-
+import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
@@ -35,9 +35,13 @@ import xyz.fairportstudios.popularin.activities.SocialActivity;
 import xyz.fairportstudios.popularin.activities.UserFavoriteActivity;
 import xyz.fairportstudios.popularin.activities.UserReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserWatchlistActivity;
+import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
+import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.AccountDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.SignOutRequest;
 import xyz.fairportstudios.popularin.models.AccountDetail;
+import xyz.fairportstudios.popularin.models.RecentFavorite;
+import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
@@ -195,14 +199,22 @@ public class AccountFragment extends Fragment {
             }
 
             @Override
-            public void onHasFavorite(JSONArray recentFavoriteArray) {
-                accountDetailRequest.getRecentFavorites(recentFavoriteArray, recyclerRecentFavorite);
+            public void onHasRecentFavorite(List<RecentFavorite> recentFavorites) {
+                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites);
+                recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
+                recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerRecentFavorite.setHasFixedSize(true);
+                recyclerRecentFavorite.setVisibility(View.VISIBLE);
                 imageEmptyRecentFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onHasReview(JSONArray recentReviewArray) {
-                accountDetailRequest.getRecentReviews(recentReviewArray, recyclerRecentReview);
+            public void onHasRecentReview(List<RecentReview> recentReviews) {
+                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, true);
+                recyclerRecentReview.setAdapter(recentReviewAdapter);
+                recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerRecentReview.setHasFixedSize(true);
+                recyclerRecentReview.setVisibility(View.VISIBLE);
                 imageEmptyRecentReview.setVisibility(View.GONE);
             }
 

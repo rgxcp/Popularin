@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -21,12 +22,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
+import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
+import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUserRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.FollowUserRequest;
+import xyz.fairportstudios.popularin.models.RecentFavorite;
+import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
@@ -36,6 +41,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private Boolean isLoadFirstTime = true;
 
     // Variable member
+    private Boolean isSelf;
     private Boolean isFollower;
     private Boolean isFollowing;
     private Button buttonFollow;
@@ -100,7 +106,7 @@ public class UserDetailActivity extends AppCompatActivity {
         // Auth
         final Auth auth = new Auth(context);
         final Boolean isAuth = auth.isAuth();
-        final boolean isSelf = userID == auth.getAuthID();
+        isSelf = userID == auth.getAuthID();
         if (isSelf) {
             buttonFollow.setText(R.string.edit_profile);
         }
@@ -218,14 +224,22 @@ public class UserDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onHasFavorite(JSONArray recentFavoriteArray) {
-                userDetailRequest.getRecentFavorites(recentFavoriteArray, recyclerRecentFavorite);
+            public void onHasRecentFavorite(List<RecentFavorite> recentFavorites) {
+                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites);
+                recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
+                recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerRecentFavorite.setHasFixedSize(true);
+                recyclerRecentFavorite.setVisibility(View.VISIBLE);
                 imageEmptyRecentFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onHasReview(JSONArray recentReviewArray) {
-                userDetailRequest.getRecentReviews(recentReviewArray, recyclerRecentReview);
+            public void onHasRecentReview(List<RecentReview> recentReviews) {
+                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, isSelf);
+                recyclerRecentReview.setAdapter(recentReviewAdapter);
+                recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                recyclerRecentReview.setHasFixedSize(true);
+                recyclerRecentReview.setVisibility(View.VISIBLE);
                 imageEmptyRecentReview.setVisibility(View.GONE);
             }
 
