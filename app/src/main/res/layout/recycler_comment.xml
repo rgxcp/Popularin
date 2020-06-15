@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_rc_anchor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    android:padding="16dp">
 
     <com.github.florent37.shapeofview.shapes.CircleView
         android:layout_width="wrap_content"
@@ -22,7 +20,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="12dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -34,31 +32,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/text_rc_timestamp"
                 android:ellipsize="end"
-                android:fontFamily="@font/jost_regular"
+                android:fontFamily="@font/jost_medium"
                 android:maxLines="1"
                 android:textColor="@color/colorOnBackground"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/text_rc_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
                 android:fontFamily="@font/jost_light"
-                android:textSize="15sp" />
+                android:textSize="13sp" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/text_rc_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/jost_light"
-            android:textColor="@color/colorOnSurface"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/jost_regular"
             android:textSize="15sp" />
 
         <ImageView
@@ -66,18 +63,12 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="end"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@null"
-            android:src="@drawable/ic_delete"
-            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_outline_delete"
+            android:tint="@color/redPrimary"
             android:visibility="gone" />
-
-        <View
-            android:id="@+id/layout_rr_border"
-            android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/grayPrimary" />
     </LinearLayout>
 
 </LinearLayout>

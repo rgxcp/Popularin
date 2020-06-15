@@ -27,7 +27,7 @@
     <string name="empty_account">Masuk atau daftar terlebih dahulu untuk\nmenikmati semua fitur Popularin!</string>
     <string name="empty_account_favorite">Kamu belum mempunyai film favorit.</string>
     <string name="empty_account_watchlist">Kamu belum mempunyai daftar film\nyang ingin ditonton.</string>
-    <string name="empty_comment">Ulasan ini belum mempunyai komen.</string>
+    <string name="empty_comment">Belum ada komen untuk ulasan ini.\nMau jadi yang pertama?</string>
     <string name="empty_film_airing">Film yang sedang tayang di bioskop\nakan tampil di sini.</string>
     <string name="empty_film_favorite">Belum ada yang memfavoritkan film ini.\nMau jadi yang pertama?</string>
     <string name="empty_film_favorite_from_following">Belum ada teman mu yang memfavoritkan film ini.</string>
@@ -92,7 +92,7 @@
     <string name="genre_thriller">Thriller</string>
     <string name="genre_war">Perang</string>
     <string name="home">Home</string>
-    <string name="input_comment">Masukkan komen...</string>
+    <string name="input_comment_hint">Masukkan komen...</string>
     <string name="input_review">Masukkan ulasan...</string>
     <string name="invalid_credentials">Username atau kata sandi salah</string>
     <string name="invalid_current_password">Kata sandi lama mu salah, coba periksa lagi ya!</string>
@@ -117,7 +117,7 @@
     <string name="removed_from_watchlist">Film di hapus dari watchlist</string>
     <string name="review">Ulasan</string>
     <string name="review_added">Ulasan dibuat</string>
-    <string name="review_deleted">Ulasan dihapus</string>
+    <string name="review_deleted">Ulasan di hapus</string>
     <string name="review_liked">Ulasan disukai</string>
     <string name="review_unliked">Ulasan tidak disukai</string>
     <string name="review_updated">Ulasan di ubah</string>

@@ -11,16 +11,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.snackbar.Snackbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,28 +33,33 @@ import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class ReviewCommentFragment extends Fragment {
-    // Untuk fitur onResume
-    private Boolean firstTime = true;
+    // Variable untuk fitur onResume
+    private Boolean isResumeFirsTime = true;
 
-    // Untuk fitur comment
-    private Integer page = 1;
-    private CommentAdapter commentAdapter;
-    private List<Comment> commentList = new ArrayList<>();
+    // Variable untuk fitur load more
+    private Boolean isLoadFirstTimeSuccess = false;
+    private Boolean isLoading = true;
+    private Integer startPage = 1;
+    private Integer currentPage = 1;
+    private Integer totalPage;
 
-    // Member variable
+    // Variable member
     private Context context;
+    private CommentAdapter commentAdapter;
+    private CommentRequest commentRequest;
     private EditText inputComment;
     private ImageView imageSend;
+    private List<Comment> commentList;
     private ProgressBar progressBar;
     private RecyclerView recyclerComment;
-    private RelativeLayout anchorLayout;
     private String comment;
-    private TextView textEmptyResult;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView textMessage;
 
-    // Constructor variable
-    private String reviewID;
+    // Variable constructor
+    private Integer reviewID;
 
-    public ReviewCommentFragment(String reviewID) {
+    public ReviewCommentFragment(Integer reviewID) {
         this.reviewID = reviewID;
     }
 
@@ -64,17 +68,19 @@ public class ReviewCommentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_review_comment, container, false);
 
-        // Binding
+        // Context
         context = getActivity();
+
+        // Binding
         inputComment = view.findViewById(R.id.input_frc_comment);
-        imageSend = view.findViewById(R.id.image_fr_send);
-        anchorLayout = view.findViewById(R.id.anchor_frc_layout);
-        progressBar = view.findViewById(R.id.pbr_frc_layout);
-        recyclerComment = view.findViewById(R.id.recycler_frc_layout);
-        textEmptyResult = view.findViewById(R.id.text_frc_empty_result);
+        imageSend = view.findViewById(R.id.image_frc_send);
+        progressBar = view.findViewById(R.id.pbr_rr_layout);
+        recyclerComment = view.findViewById(R.id.recycler_rr_layout);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        textMessage = view.findViewById(R.id.text_rr_message);
 
         // Auth
-        final boolean isAuth = new Auth(context).isAuth();
+        final Boolean isAuth = new Auth(context).isAuth();
 
         // Text watcher
         inputComment.addTextChangedListener(commentWatcher);
@@ -91,17 +97,28 @@ public class ReviewCommentFragment extends Fragment {
             }
         });
 
-        /*
         recyclerComment.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    getComment(page);
+                    if (!isLoading && currentPage <= totalPage) {
+                        isLoading = true;
+                        swipeRefresh.setRefreshing(true);
+                        getComment(currentPage, false);
+                    }
                 }
             }
         });
-         */
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isLoading = true;
+                swipeRefresh.setRefreshing(true);
+                getComment(startPage, true);
+            }
+        });
 
         return view;
     }
@@ -109,11 +126,19 @@ public class ReviewCommentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (firstTime) {
-            getComment(page);
-            firstTime = false;
-            page++;
+        if (isResumeFirsTime) {
+            // Mendapatkan data awal
+            commentList = new ArrayList<>();
+            commentRequest = new CommentRequest(context, reviewID);
+            getComment(startPage, false);
+            isResumeFirsTime = false;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        resetState();
     }
 
     private TextWatcher commentWatcher = new TextWatcher() {
@@ -138,59 +163,99 @@ public class ReviewCommentFragment extends Fragment {
         }
     };
 
-    private void getComment(Integer page) {
-        CommentRequest commentRequest = new CommentRequest(context, Integer.valueOf(reviewID), commentList);
-        commentRequest.sendRequest(page, new CommentRequest.APICallback() {
+    private void getComment(Integer page, final Boolean refreshPage) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        textMessage.setVisibility(View.GONE);
+
+        commentRequest.sendRequest(page, new CommentRequest.Callback() {
             @Override
-            public void onSuccess(List<Comment> comments) {
-                commentAdapter = new CommentAdapter(context, comments);
-                recyclerComment.setAdapter(commentAdapter);
-                recyclerComment.setLayoutManager(new LinearLayoutManager(context));
-                recyclerComment.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer pages, List<Comment> comments) {
+                if (!isLoadFirstTimeSuccess) {
+                    int insertIndex = commentList.size();
+                    commentList.addAll(insertIndex, comments);
+                    createAdapter();
+                    progressBar.setVisibility(View.GONE);
+                    totalPage = pages;
+                    isLoadFirstTimeSuccess = true;
+                } else {
+                    if (refreshPage) {
+                        commentList.clear();
+                        commentAdapter.notifyDataSetChanged();
+                    }
+                    int insertIndex = commentList.size();
+                    commentList.addAll(insertIndex, comments);
+                    commentAdapter.notifyItemRangeInserted(insertIndex, comments.size());
+                    recyclerComment.scrollToPosition(insertIndex);
+                }
+                currentPage++;
             }
 
             @Override
-            public void onEmpty() {
+            public void onNotFound() {
                 progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
+                textMessage.setVisibility(View.VISIBLE);
+                textMessage.setText(R.string.empty_comment);
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyResult.setVisibility(View.VISIBLE);
-                textEmptyResult.setText(R.string.not_found);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (!isLoadFirstTimeSuccess) {
+                    progressBar.setVisibility(View.GONE);
+                    textMessage.setVisibility(View.VISIBLE);
+                    textMessage.setText(message);
+                } else {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
-    }
-
-    private void addComment() {
-        AddCommentRequest addCommentRequest = new AddCommentRequest(context, reviewID, comment);
-        addCommentRequest.sendRequest(new AddCommentRequest.APICallback() {
-            @Override
-            public void onSuccess(Comment comment) {
-                int index = commentAdapter.getItemCount();
-                commentList.add(index, comment);
-                commentAdapter.notifyItemInserted(index);
-                recyclerComment.scrollToPosition(index - 1);
-            }
-
-            @Override
-            public void onFailed(String message) {
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onError() {
-                Snackbar.make(anchorLayout, R.string.failed_add_comment, Snackbar.LENGTH_LONG).show();
-            }
-        });
+        isLoading = false;
+        swipeRefresh.setRefreshing(false);
     }
 
     private void gotoEmptyAccount() {
         Intent intent = new Intent(context, EmptyAccountActivity.class);
         context.startActivity(intent);
+    }
+
+    private void addComment() {
+        AddCommentRequest addCommentRequest = new AddCommentRequest(context, reviewID, comment);
+        addCommentRequest.sendRequest(new AddCommentRequest.Callback() {
+            @Override
+            public void onSuccess(Comment comment) {
+                if (!isLoadFirstTimeSuccess) {
+                    createAdapter();
+                    textMessage.setVisibility(View.GONE);
+                }
+                int insertIndex = commentList.size();
+                commentList.add(insertIndex, comment);
+                commentAdapter.notifyItemInserted(insertIndex);
+                recyclerComment.scrollToPosition(insertIndex);
+                inputComment.getText().clear();
+            }
+
+            @Override
+            public void onFailed(String message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createAdapter() {
+        commentAdapter = new CommentAdapter(context, commentList);
+        recyclerComment.setAdapter(commentAdapter);
+        recyclerComment.setLayoutManager(new LinearLayoutManager(context));
+        recyclerComment.setVisibility(View.VISIBLE);
+    }
+
+    private void resetState() {
+        isResumeFirsTime = true;
+        isLoadFirstTimeSuccess = false;
+        isLoading = true;
+        currentPage = 1;
     }
 }

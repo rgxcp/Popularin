@@ -11,12 +11,13 @@
         android:id="@+id/pbr_frd_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="168dp" />
+        android:padding="170dp" />
 
     <TextView
-        android:id="@+id/text_frd_network_error"
+        android:id="@+id/text_frd_message"
         style="@style/TextMessagePrimary"
-        android:text="@string/not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone" />
 
     <ScrollView
@@ -56,7 +57,7 @@
                     </com.github.florent37.shapeofview.shapes.CircleView>
 
                     <TextView
-                        android:id="@+id/text_frd_full_name"
+                        android:id="@+id/text_frd_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -68,40 +69,23 @@
                         android:textSize="15sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/film_frd_layout"
+                <TextView
+                    android:id="@+id/text_frd_title_year"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/user_frd_layout"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_toStartOf="@id/sov_frd_layout"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/text_frd_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/jost_medium"
-                        android:maxLength="25"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/text_frd_year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:fontFamily="@font/jost_light"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="13sp" />
-                </LinearLayout>
+                    android:fontFamily="@font/jost_medium"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="17sp" />
 
                 <ImageView
                     android:id="@+id/image_frd_star"
                     android:layout_width="70dp"
                     android:layout_height="20dp"
-                    android:layout_below="@id/film_frd_layout"
+                    android:layout_below="@id/text_frd_title_year"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_star_50" />
@@ -121,11 +105,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     app:shape_roundRect_borderColor="@color/colorPrimary"
-                    app:shape_roundRect_borderWidth="0.1dp"
-                    app:shape_roundRect_bottomLeftRadius="5dp"
-                    app:shape_roundRect_bottomRightRadius="5dp"
-                    app:shape_roundRect_topLeftRadius="5dp"
-                    app:shape_roundRect_topRightRadius="5dp">
+                    app:shape_roundRect_borderWidth="0.5dp"
+                    app:shape_roundRect_bottomLeftRadius="2dp"
+                    app:shape_roundRect_bottomRightRadius="2dp"
+                    app:shape_roundRect_topLeftRadius="2dp"
+                    app:shape_roundRect_topRightRadius="2dp">
 
                     <ImageView
                         android:id="@+id/image_frd_poster"
@@ -154,18 +138,19 @@
 
                 <ImageView
                     android:id="@+id/image_frd_like"
-                    android:layout_width="20sp"
-                    android:layout_height="20sp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_favorite_outline"
+                    android:src="@drawable/ic_outline_heart"
                     android:tint="@color/redPrimary" />
 
                 <TextView
-                    android:id="@+id/text_frd_like"
+                    android:id="@+id/text_frd_like_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:fontFamily="@font/jost_regular"
+                    android:fontFamily="@font/jost_light"
                     android:text="@string/like"
                     android:textColor="@color/colorOnBackground"
                     android:textSize="15sp" />
@@ -175,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:fontFamily="@font/jost_regular"
+                    android:fontFamily="@font/jost_light"
                     android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>

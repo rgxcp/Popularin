@@ -8,11 +8,10 @@ public class ReviewDetail {
     private Double rating;
     private String review_detail;
     private String review_date;
-    private String watch_date;
     private String title;
     private String release_date;
     private String poster;
-    private String full_name;
+    private String username;
     private String profile_picture;
 
     public ReviewDetail() {
@@ -27,11 +26,10 @@ public class ReviewDetail {
             Double rating,
             String review_detail,
             String review_date,
-            String watch_date,
             String title,
             String release_date,
             String poster,
-            String full_name,
+            String username,
             String profile_picture
     ) {
         this.tmdb_id = tmdb_id;
@@ -41,11 +39,10 @@ public class ReviewDetail {
         this.rating = rating;
         this.review_detail = review_detail;
         this.review_date = review_date;
-        this.watch_date = watch_date;
         this.title = title;
         this.release_date = release_date;
         this.poster = poster;
-        this.full_name = full_name;
+        this.username = username;
         this.profile_picture = profile_picture;
     }
 
@@ -105,14 +102,6 @@ public class ReviewDetail {
         this.review_date = review_date;
     }
 
-    public String getWatch_date() {
-        return watch_date;
-    }
-
-    public void setWatch_date(String watch_date) {
-        this.watch_date = watch_date;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -137,12 +126,12 @@ public class ReviewDetail {
         this.poster = poster;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getProfile_picture() {

@@ -6,15 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -41,11 +40,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final CommentViewHolder holder, final int position) {
-        // ID
-        final Comment comment = commentList.get(position);
-        final String commentID = String.valueOf(comment.getId());
-        final Integer userID = comment.getUser_id();
+    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        // Posisi
+        Comment currentItem = commentList.get(position);
+        final int currentPosition = position;
+
+        // Extra
+        final Integer commentID = currentItem.getId();
+        final Integer userID = currentItem.getUser_id();
 
         // Auth
         final boolean isSelf = userID.equals(new Auth(context).getAuthID());
@@ -60,10 +62,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 .error(R.color.colorSurface);
 
         // Isi
-        holder.textUsername.setText(comment.getUsername());
-        holder.textCommentTimestamp.setText(comment.getTimestamp());
-        holder.textCommentDetail.setText(comment.getComment_detail());
-        Glide.with(context).load(comment.getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
+        holder.textUsername.setText(currentItem.getUsername());
+        holder.textCommentTimestamp.setText(currentItem.getTimestamp());
+        holder.textCommentDetail.setText(currentItem.getComment_detail());
+        Glide.with(context).load(currentItem.getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
 
         // Activity
         holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
@@ -79,16 +81,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             @Override
             public void onClick(View view) {
                 DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(context, commentID);
-                deleteCommentRequest.sendRequest(new DeleteCommentRequest.APICallback() {
+                deleteCommentRequest.sendRequest(new DeleteCommentRequest.Callback() {
                     @Override
                     public void onSuccess() {
-                        commentList.remove(position);
-                        notifyItemRemoved(position);
+                        commentList.remove(currentPosition);
+                        notifyItemRemoved(currentPosition);
+                        notifyItemRangeChanged(currentPosition, getItemCount());
                     }
 
                     @Override
-                    public void onError() {
-                        Snackbar.make(holder.anchorLayout, R.string.failed_delete_comment, Snackbar.LENGTH_LONG).show();
+                    public void onError(String message) {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -103,7 +106,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     static class CommentViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageUserProfile;
         private ImageView imageDelete;
-        private LinearLayout anchorLayout;
         private TextView textUsername;
         private TextView textCommentTimestamp;
         private TextView textCommentDetail;
@@ -113,7 +115,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
             imageUserProfile = itemView.findViewById(R.id.image_rc_profile);
             imageDelete = itemView.findViewById(R.id.button_rc_delete);
-            anchorLayout = itemView.findViewById(R.id.layout_rc_anchor);
             textUsername = itemView.findViewById(R.id.text_rc_username);
             textCommentTimestamp = itemView.findViewById(R.id.text_rc_timestamp);
             textCommentDetail = itemView.findViewById(R.id.text_rc_comment);
