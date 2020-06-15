@@ -2,8 +2,11 @@ package xyz.fairportstudios.popularin.apis.popularin.put;
 
 import android.content.Context;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -15,34 +18,41 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UpdateReviewRequest {
     private Context context;
-    private String id;
-    private String rating;
-    private String review;
-    private String date;
+    private Integer id;
+    private Float rating;
+    private String reviewDetail;
+    private String watchDate;
 
-    public UpdateReviewRequest(Context context, String id, String rating, String review, String date) {
+    public UpdateReviewRequest(
+            Context context,
+            Integer id,
+            Float rating,
+            String reviewDetail,
+            String watchDate
+    ) {
         this.context = context;
         this.id = id;
         this.rating = rating;
-        this.review = review;
-        this.date = date;
+        this.reviewDetail = reviewDetail;
+        this.watchDate = watchDate;
     }
 
-    public interface APICallback {
+    public interface Callback {
         void onSuccess();
 
         void onFailed(String message);
 
-        void onError();
+        void onError(String message);
     }
 
-    public void sendRequest(final APICallback callback) {
-        String requestURL = PopularinAPI.REVIEW + "/" + id;
+    public void sendRequest(final Callback callback) {
+        String requestURL = PopularinAPI.REVIEW + id;
 
         StringRequest updateReview = new StringRequest(Request.Method.PUT, requestURL, new Response.Listener<String>() {
             @Override
@@ -55,36 +65,42 @@ public class UpdateReviewRequest {
                         callback.onSuccess();
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
-                        String message = resultArray.get(0).toString();
+                        String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError();
+                        callback.onError(context.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
+                    callback.onError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
+                if (error instanceof NetworkError || error instanceof TimeoutError) {
+                    callback.onError(context.getString(R.string.network_error));
+                } else if (error instanceof ServerError) {
+                    callback.onError(context.getString(R.string.server_error));
+                } else {
+                    callback.onError(context.getString(R.string.general_error));
+                }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("rating", rating);
-                params.put("review_detail", review);
-                params.put("watch_date", date);
+                params.put("rating", String.valueOf(rating));
+                params.put("review_detail", reviewDetail);
+                params.put("watch_date", watchDate);
                 return params;
             }
 
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("API-Key", PopularinAPI.API_KEY);
                 headers.put("Auth-Token", new Auth(context).getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;

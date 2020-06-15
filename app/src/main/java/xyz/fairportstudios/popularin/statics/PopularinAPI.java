@@ -5,6 +5,7 @@ public class PopularinAPI {
     public static final String API_TOKEN = "39ede2bffc5f3da5de35ff21dc980ad938888e914f6e04e79b03d4de4374cde9";
     public static final String API_KEY = "39ede2bffc5f3da5de35ff21dc980ad938888e914f6e04e79b03d4de4374cde9";
     public static final String ADD_COMMENT = BASE + "/comment";
+    public static final String ADD_REVIEW = BASE + "/review";
     public static final String COMMENT = BASE + "/comment/";
     public static final String FILM = BASE + "/film/";
     public static final String REVIEW = BASE + "/review/";

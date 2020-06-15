@@ -8,6 +8,7 @@ public class ReviewDetail {
     private Double rating;
     private String review_detail;
     private String review_date;
+    private String watch_date;
     private String title;
     private String release_date;
     private String poster;
@@ -26,6 +27,7 @@ public class ReviewDetail {
             Double rating,
             String review_detail,
             String review_date,
+            String watch_date,
             String title,
             String release_date,
             String poster,
@@ -39,6 +41,7 @@ public class ReviewDetail {
         this.rating = rating;
         this.review_detail = review_detail;
         this.review_date = review_date;
+        this.watch_date = watch_date;
         this.title = title;
         this.release_date = release_date;
         this.poster = poster;
@@ -100,6 +103,14 @@ public class ReviewDetail {
 
     public void setReview_date(String review_date) {
         this.review_date = review_date;
+    }
+
+    public String getWatch_date() {
+        return watch_date;
+    }
+
+    public void setWatch_date(String watch_date) {
+        this.watch_date = watch_date;
     }
 
     public String getTitle() {

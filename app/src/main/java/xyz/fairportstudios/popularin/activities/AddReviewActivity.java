@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -13,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,50 +31,38 @@ import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class AddReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
-    private Context context;
-    private EditText inputReview;
-    private Integer year;
-    private Integer month;
-    private Integer day;
-    private LinearLayout anchorLayout;
-    private RatingBar ratingBar;
-    private String filmID;
-    private String watchDate;
-    private String rating;
-    private TextView textWatchDate;
+    private EditText mInputReview;
+    private Float mRating;
+    private LinearLayout mAnchorLayout;
+    private String mWatchDate;
+    private String mReview;
+    private TextView mTextWatchDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_review);
 
+        // Context
+        final Context context = AddReviewActivity.this;
+
         // Binding
-        context = AddReviewActivity.this;
-        inputReview = findViewById(R.id.input_adr_review);
-        anchorLayout = findViewById(R.id.anchor_adr_layout);
-        ratingBar = findViewById(R.id.rbr_adr_layout);
-        textWatchDate = findViewById(R.id.text_adr_watch_date);
+        mInputReview = findViewById(R.id.input_adr_review);
+        mAnchorLayout = findViewById(R.id.anchor_adr_layout);
+        mTextWatchDate = findViewById(R.id.text_adr_watch_date);
         ImageView imageFilmPoster = findViewById(R.id.image_adr_poster);
+        RatingBar ratingBar = findViewById(R.id.rbr_adr_layout);
         TextView textFilmTitle = findViewById(R.id.text_adr_title);
         TextView textFilmYear = findViewById(R.id.text_adr_year);
         Toolbar toolbar = findViewById(R.id.toolbar_adr_layout);
 
         // Extra
         Intent intent = getIntent();
-        filmID = intent.getStringExtra(Popularin.FILM_ID);
-        String filmTitle = intent.getStringExtra(Popularin.FILM_TITLE);
-        String filmYear = intent.getStringExtra(Popularin.FILM_YEAR);
-        String filmPoster = intent.getStringExtra(Popularin.FILM_POSTER);
-
-        // Menampilkan tanggal sekarang
-        Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        watchDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+        final Integer filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
+        final String filmTitle = intent.getStringExtra(Popularin.FILM_TITLE);
+        final String filmYear = intent.getStringExtra(Popularin.FILM_YEAR);
+        final String filmPoster = intent.getStringExtra(Popularin.FILM_POSTER);
+        mRating = intent.getFloatExtra(Popularin.RATING, 0);
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
@@ -82,10 +70,13 @@ public class AddReviewActivity extends AppCompatActivity implements DatePickerDi
                 .placeholder(R.color.colorSurface)
                 .error(R.color.colorSurface);
 
-        // Menampilkan info film
+        // Menampilkan tanggal sekarang
+        getCurrentDate();
+
+        // Menampilkan info film dan rating
         textFilmTitle.setText(filmTitle);
         textFilmYear.setText(filmYear);
-        textWatchDate.setText(watchDate);
+        ratingBar.setRating(mRating);
         Glide.with(context).load(filmPoster).apply(requestOptions).into(imageFilmPoster);
 
         // Activity
@@ -99,8 +90,8 @@ public class AddReviewActivity extends AppCompatActivity implements DatePickerDi
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (validateReview() && validateRating()) {
-                    addReview();
+                if (reviewValidated() && ratingValidated()) {
+                    addReview(context, filmID);
                     return true;
                 } else {
                     return false;
@@ -108,7 +99,7 @@ public class AddReviewActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        textWatchDate.setOnClickListener(new View.OnClickListener() {
+        mTextWatchDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDatePicker();
@@ -117,23 +108,32 @@ public class AddReviewActivity extends AppCompatActivity implements DatePickerDi
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                rating = String.valueOf(v);
+            public void onRatingChanged(RatingBar ratingBar, float newRate, boolean b) {
+                mRating = newRate;
             }
         });
     }
 
     @Override
-    public void onDateSet(DatePicker datePicker, int y, int m, int d) {
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
-        year = y;
-        month = m;
-        day = d;
+        mWatchDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mTextWatchDate.setText(DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
+    }
+
+    private void getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        mWatchDate = year + "-" + (month + 1) + "-" + day;
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        watchDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
-        textWatchDate.setText(watchDate);
+        mTextWatchDate.setText(DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
     }
 
     private void showDatePicker() {
@@ -141,49 +141,42 @@ public class AddReviewActivity extends AppCompatActivity implements DatePickerDi
         datePicker.show(getSupportFragmentManager(), Popularin.DATE_PICKER);
     }
 
-    private boolean validateReview() {
-        if (inputReview.getText().toString().isEmpty()) {
-            Snackbar.make(anchorLayout, R.string.validate_review, Snackbar.LENGTH_LONG).show();
+    private boolean reviewValidated() {
+        mReview = mInputReview.getText().toString();
+        if (mReview.isEmpty()) {
+            Snackbar.make(mAnchorLayout, R.string.validate_review, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private boolean validateRating() {
-        if (ratingBar.getRating() == 0) {
-            Snackbar.make(anchorLayout, R.string.validate_rating, Snackbar.LENGTH_LONG).show();
+    private boolean ratingValidated() {
+        if (mRating == 0) {
+            Snackbar.make(mAnchorLayout, R.string.validate_rating, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private void addReview() {
-        String review = inputReview.getText().toString();
-        String date = year + "-" + (month + 1) + "-" + day;
-
-        AddReviewRequest addReviewRequest = new AddReviewRequest(context, filmID, rating, review, date);
-        addReviewRequest.sendRequest(new AddReviewRequest.APICallback() {
+    private void addReview(final Context context, Integer filmID) {
+        AddReviewRequest addReviewRequest = new AddReviewRequest(context, filmID, mRating, mReview, mWatchDate);
+        addReviewRequest.sendRequest(new AddReviewRequest.Callback() {
             @Override
             public void onSuccess() {
-                Snackbar.make(anchorLayout, R.string.review_added, Snackbar.LENGTH_SHORT).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onBackPressed();
-                    }
-                }, 1000);
+                onBackPressed();
+                Toast.makeText(context, R.string.review_added, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailed(String message) {
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
-            public void onError() {
-                Snackbar.make(anchorLayout, R.string.failed_add_review, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }

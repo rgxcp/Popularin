@@ -21,12 +21,14 @@ public class DatePickerFragment extends DialogFragment {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
                 Objects.requireNonNull(getActivity()),
                 (DatePickerDialog.OnDateSetListener) getActivity(),
                 year,
                 month,
                 day
         );
+        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+        return datePickerDialog;
     }
 }

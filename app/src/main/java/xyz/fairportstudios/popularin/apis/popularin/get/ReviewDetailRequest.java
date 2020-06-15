@@ -59,6 +59,7 @@ public class ReviewDetailRequest {
                         reviewDetail.setRating(resultObject.getDouble("rating"));
                         reviewDetail.setReview_detail(resultObject.getString("review_detail"));
                         reviewDetail.setReview_date(resultObject.getString("review_date"));
+                        reviewDetail.setWatch_date(resultObject.getString("watch_date"));
                         reviewDetail.setTitle(filmObject.getString("title"));
                         reviewDetail.setRelease_date(filmObject.getString("release_date"));
                         reviewDetail.setPoster(filmObject.getString("poster"));

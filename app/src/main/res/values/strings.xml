@@ -3,6 +3,7 @@
 
     <!-- Safe -->
     <string name="account">Akun</string>
+    <string name="add">Buat</string>
     <string name="add_review">Buat Ulasan</string>
     <string name="added_to_favorite">Film di tambahkan ke favorit</string>
     <string name="added_to_watchlist">Film di tambahkan ke watchlist</string>

@@ -8,13 +8,19 @@
     android:orientation="vertical"
     tools:context=".activities.AddReviewActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_adr_layout"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:menu="@menu/add_review"
-        app:navigationIcon="@drawable/ic_close"
-        app:title="@string/add_review" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_adr_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorBackground"
+            app:menu="@menu/add_review"
+            app:navigationIcon="@drawable/ic_close"
+            app:title="@string/add_review" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,10 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="16dp"
-            android:layout_toStartOf="@+id/sov_adr_anchor"
-            android:ellipsize="end"
+            android:layout_toStartOf="@+id/sov_adr_layout"
             android:fontFamily="@font/jost_medium"
-            android:maxLines="1"
             android:textColor="@color/colorOnBackground"
             android:textSize="17sp" />
 
@@ -40,22 +44,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_adr_title"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/jost_regular"
             android:textSize="15sp" />
 
         <com.github.florent37.shapeofview.shapes.RoundRectView
-            android:id="@+id/sov_adr_anchor"
+            android:id="@+id/sov_adr_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             app:shape_roundRect_borderColor="@color/colorPrimary"
-            app:shape_roundRect_borderWidth="0.1dp"
-            app:shape_roundRect_bottomLeftRadius="5dp"
-            app:shape_roundRect_bottomRightRadius="5dp"
-            app:shape_roundRect_topLeftRadius="5dp"
-            app:shape_roundRect_topRightRadius="5dp">
+            app:shape_roundRect_borderWidth="0.5dp"
+            app:shape_roundRect_bottomLeftRadius="2dp"
+            app:shape_roundRect_bottomRightRadius="2dp"
+            app:shape_roundRect_topLeftRadius="2dp"
+            app:shape_roundRect_topRightRadius="2dp">
 
             <ImageView
                 android:id="@+id/image_adr_poster"
@@ -68,9 +71,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.1dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="16dp"
-        android:background="@color/grayPrimary" />
+        android:background="@color/colorSurface" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -100,14 +103,14 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.1dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="16dp"
-        android:background="@color/grayPrimary" />
+        android:background="@color/colorSurface" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:paddingHorizontal="16dp">
 
         <TextView
@@ -132,9 +135,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.1dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="16dp"
-        android:background="@color/grayPrimary" />
+        android:background="@color/colorSurface" />
 
     <EditText
         android:id="@+id/input_adr_review"
@@ -148,6 +151,7 @@
         android:inputType="textMultiLine"
         android:isScrollContainer="true"
         android:padding="16dp"
-        android:textColor="@color/colorOnBackground" />
+        android:textColor="@color/colorOnBackground"
+        android:textSize="15sp" />
 
 </LinearLayout>
