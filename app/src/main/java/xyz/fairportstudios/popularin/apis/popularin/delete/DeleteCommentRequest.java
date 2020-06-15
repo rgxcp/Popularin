@@ -37,7 +37,7 @@ public class DeleteCommentRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.COMMENT + "/" + id;
+        String requestURL = PopularinAPI.COMMENT + id;
 
         JsonObjectRequest deleteComment = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override

@@ -43,7 +43,7 @@ public class AddCommentRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.COMMENT;
+        String requestURL = PopularinAPI.ADD_COMMENT;
 
         StringRequest addComment = new StringRequest(Request.Method.POST, requestURL, new Response.Listener<String>() {
             @Override
