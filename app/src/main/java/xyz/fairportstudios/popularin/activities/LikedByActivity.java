@@ -98,7 +98,7 @@ public class LikedByActivity extends AppCompatActivity {
             recyclerUser = findViewById(R.id.recycler_rtr_layout);
             anchorLayout = findViewById(R.id.anchor_rtr_layout);
             swipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
-            textMessage = findViewById(R.id.text_aud_message);
+            textMessage = findViewById(R.id.text_rtr_message);
             Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
             // Toolbar

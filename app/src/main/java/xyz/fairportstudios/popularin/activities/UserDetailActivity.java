@@ -90,7 +90,7 @@ public class UserDetailActivity extends AppCompatActivity {
         textTotalWatchlist = findViewById(R.id.text_aud_total_watchlist);
         textTotalFollower = findViewById(R.id.text_aud_total_follower);
         textTotalFollowing = findViewById(R.id.text_aud_total_following);
-        textMessage = findViewById(R.id.text_aud_message);
+        textMessage = findViewById(R.id.text_rtr_message);
         LinearLayout totalReviewLayout = findViewById(R.id.layout_aud_total_review);
         LinearLayout totalFavoriteLayout = findViewById(R.id.layout_aud_total_favorite);
         LinearLayout totalWatchlistLayout = findViewById(R.id.layout_aud_total_watchlist);
