@@ -40,7 +40,7 @@ import xyz.fairportstudios.popularin.models.FilmDetail;
 import xyz.fairportstudios.popularin.models.FilmMetadata;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ConvertGenre;
-import xyz.fairportstudios.popularin.services.ParseTime;
+import xyz.fairportstudios.popularin.services.ConvertRuntime;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
@@ -182,7 +182,7 @@ public class FilmDetailActivity extends AppCompatActivity {
                 filmYear = new ParseDate().getYear(filmDetail.getRelease_date());
                 filmPoster = TMDbAPI.IMAGE + filmDetail.getPoster_path();
                 genreTitle = new ConvertGenre().getGenreForHumans(genreID);
-                String runtime = new ParseTime().getHourMinute(filmDetail.getRuntime());
+                String runtime = new ConvertRuntime().getRuntimeForHumans(filmDetail.getRuntime());
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions()
