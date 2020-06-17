@@ -6,43 +6,41 @@ import android.content.SharedPreferences;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class Auth {
-    private Context context;
+    private Context mContext;
 
-    public Auth(Context context) {
-        this.context = context;
+    public Auth(Context mContext) {
+        this.mContext = mContext;
     }
 
     public boolean isAuth() {
-        SharedPreferences prefs = context.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
-        int UID = prefs.getInt(Popularin.AUTH_ID, 0);
-        String TOKEN = prefs.getString(Popularin.AUTH_TOKEN, "");
-
-        return UID != 0 && TOKEN != null;
+        SharedPreferences sharedPrefs = mContext.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
+        int authID = sharedPrefs.getInt(Popularin.AUTH_ID, 0);
+        String authToken = sharedPrefs.getString(Popularin.AUTH_TOKEN, "");
+        return authID != 0 && authToken != null;
     }
 
     public int getAuthID() {
-        SharedPreferences prefs = context.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
-        return prefs.getInt(Popularin.AUTH_ID, 0);
+        SharedPreferences sharedPrefs = mContext.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
+        return sharedPrefs.getInt(Popularin.AUTH_ID, 0);
     }
 
     public String getAuthToken() {
-        SharedPreferences prefs = context.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
-        return prefs.getString(Popularin.AUTH_TOKEN, "");
+        SharedPreferences sharedPrefs = mContext.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(Popularin.AUTH_TOKEN, "");
     }
 
-    public void setAuth(Integer id, String token) {
-        SharedPreferences prefs = context.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(Popularin.AUTH_ID, id);
-        editor.putString(Popularin.AUTH_TOKEN, token);
+    public void setAuth(int authID, String authToken) {
+        SharedPreferences sharedPrefs = mContext.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putInt(Popularin.AUTH_ID, authID);
+        editor.putString(Popularin.AUTH_TOKEN, authToken);
         editor.apply();
     }
 
     public void delAuth() {
-        SharedPreferences prefs = context.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(Popularin.AUTH_ID);
-        editor.remove(Popularin.AUTH_TOKEN);
+        SharedPreferences sharedPrefs = mContext.getSharedPreferences(Popularin.AUTH, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.clear();
         editor.apply();
     }
 }
