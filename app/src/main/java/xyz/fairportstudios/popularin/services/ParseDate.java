@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ParseDate {
-    public String getDate(String releaseDate) {
+    public String getDateForHumans(String date) {
         Map<String, String> months = new HashMap<>();
         months.put("01", "Januari");
         months.put("02", "Februari");
@@ -19,22 +19,22 @@ public class ParseDate {
         months.put("11", "November");
         months.put("12", "Desember");
 
-        String date = releaseDate.substring(8,10);
-        String month = releaseDate.substring(5,7);
-        String year = releaseDate.substring(0,4);
+        String day = date.substring(8, 10);
+        String month = date.substring(5, 7);
+        String year = date.substring(0, 4);
 
-        return date + " " + months.get(month) + " " + year;
+        return day + " " + months.get(month) + " " + year;
     }
 
-    public String getDay(String releaseDate) {
-        return releaseDate.substring(8,10);
+    public String getDay(String date) {
+        return date.substring(8, 10);
     }
 
-    public String getMonth(String releaseDate) {
-        return releaseDate.substring(5,7);
+    public String getMonth(String date) {
+        return date.substring(5, 7);
     }
 
-    public String getYear(String releaseDate) {
-        return releaseDate.substring(0,4);
+    public String getYear(String date) {
+        return date.substring(0, 4);
     }
 }

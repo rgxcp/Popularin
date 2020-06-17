@@ -195,7 +195,7 @@ public class ReviewDetailFragment extends Fragment {
                 filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
                 filmPoster = new ParseImage().getImage(reviewDetail.getPoster());
                 Integer reviewStar = new ParseStar().getStar(reviewDetail.getRating());
-                String reviewDate = new ParseDate().getDate(reviewDetail.getReview_date());
+                String reviewDate = new ParseDate().getDateForHumans(reviewDetail.getReview_date());
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions()
