@@ -1,7 +1,6 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,114 +11,122 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.ReviewActivity;
-import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.FilmReview;
-import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseStar;
-import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.FilmReviewViewHolder> {
-    private Context context;
-    private List<FilmReview> filmReviewList;
+    private Context mContext;
+    private List<FilmReview> mFilmReviewList;
+    private OnClickListener mOnClickListener;
 
-    public FilmReviewAdapter(Context context, List<FilmReview> filmReviewList) {
-        this.context = context;
-        this.filmReviewList = filmReviewList;
+    public FilmReviewAdapter(Context mContext, List<FilmReview> mFilmReviewList, OnClickListener mOnClickListener) {
+        this.mContext = mContext;
+        this.mFilmReviewList = mFilmReviewList;
+        this.mOnClickListener = mOnClickListener;
     }
 
-    private Integer pxToDp() {
-        float dp = 16 * context.getResources().getDisplayMetrics().density;
-        return (int) dp;
+    public interface OnClickListener {
+        void onItemClick(int position);
+
+        void onUserProfileClick(int position);
+
+        void onLikeClick(int position);
+
+        void onCommentClick(int position);
     }
 
     @NonNull
     @Override
     public FilmReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FilmReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_film_review, parent, false));
+        return new FilmReviewViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recycler_film_review, parent, false), mOnClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FilmReviewViewHolder holder, int position) {
-        // ID
-        final String reviewID = String.valueOf(filmReviewList.get(position).getReview_id());
-        final Integer userID = filmReviewList.get(position).getUser_id();
+        // Posisi
+        FilmReview currentItem = mFilmReviewList.get(position);
 
-        // Auth
-        final boolean isSelf = userID.equals(new Auth(context).getAuthID());
+        // Like status
+        if (currentItem.getIs_liked()) {
+            holder.mImageLike.setImageResource(R.drawable.ic_fill_heart);
+        } else {
+            holder.mImageLike.setImageResource(R.drawable.ic_outline_heart);
+        }
+
+        // Border
+        if (position == getItemCount() - 1) {
+            holder.mBorder.setVisibility(View.INVISIBLE);
+        } else {
+            holder.mBorder.setVisibility(View.VISIBLE);
+        }
 
         // Parsing
-        Integer reviewStar = new ParseStar().getStar(filmReviewList.get(position).getRating());
-
-        // Request gambar
-        RequestOptions requestOptions = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.colorSurface)
-                .error(R.color.colorSurface);
+        final Integer reviewStar = new ParseStar().getStar(currentItem.getRating());
 
         // Isi
-        holder.textUsername.setText(filmReviewList.get(position).getUsername());
-        holder.textReviewTimestamp.setText(filmReviewList.get(position).getTimestamp());
-        holder.textReviewDetail.setText(filmReviewList.get(position).getReview_detail());
-        holder.imageReviewStar.setImageResource(reviewStar);
-        Glide.with(context).load(filmReviewList.get(position).getProfile_picture()).apply(requestOptions).into(holder.imageUserProfile);
-
-        // Margin
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == filmReviewList.size() - 1) {
-            layoutParams.bottomMargin = pxToDp();
-            holder.border.setVisibility(View.GONE);
-        }
-        holder.itemView.setLayoutParams(layoutParams);
-
-        // Activity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ReviewActivity.class);
-                intent.putExtra(Popularin.REVIEW_ID, reviewID);
-                intent.putExtra(Popularin.IS_SELF, isSelf);
-                context.startActivity(intent);
-            }
-        });
-
-        holder.imageUserProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, UserDetailActivity.class);
-                intent.putExtra(Popularin.USER_ID, userID);
-                context.startActivity(intent);
-            }
-        });
+        holder.mTextUsername.setText(currentItem.getUsername());
+        holder.mTextReviewDetail.setText(currentItem.getReview_detail());
+        holder.mTextTotalLike.setText(String.valueOf(currentItem.getTotal_like()));
+        holder.mTextTotalComment.setText(String.valueOf(currentItem.getTotal_comment()));
+        holder.mTextReviewTimestamp.setText(currentItem.getTimestamp());
+        holder.mImageReviewStar.setImageResource(reviewStar);
+        Glide.with(mContext).load(currentItem.getProfile_picture()).into(holder.mImageUserProfile);
     }
 
     @Override
     public int getItemCount() {
-        return filmReviewList.size();
+        return mFilmReviewList.size();
     }
 
-    static class FilmReviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageUserProfile;
-        ImageView imageReviewStar;
-        TextView textUsername;
-        TextView textReviewTimestamp;
-        TextView textReviewDetail;
-        View border;
+    static class FilmReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView mImageUserProfile;
+        private ImageView mImageReviewStar;
+        private ImageView mImageLike;
+        private ImageView mImageComment;
+        private TextView mTextUsername;
+        private TextView mTextReviewDetail;
+        private TextView mTextTotalLike;
+        private TextView mTextTotalComment;
+        private TextView mTextReviewTimestamp;
+        private View mBorder;
+        private OnClickListener mOnClickListener;
 
-        FilmReviewViewHolder(@NonNull View itemView) {
+        FilmReviewViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
 
-            imageUserProfile = itemView.findViewById(R.id.image_rfr_profile);
-            imageReviewStar = itemView.findViewById(R.id.image_rfr_star);
-            textUsername = itemView.findViewById(R.id.text_rfr_username);
-            textReviewTimestamp = itemView.findViewById(R.id.text_rfr_timestamp);
-            textReviewDetail = itemView.findViewById(R.id.text_rfr_review);
-            border = itemView.findViewById(R.id.border_rfr_layout);
+            mImageUserProfile = itemView.findViewById(R.id.image_rfr_profile);
+            mImageReviewStar = itemView.findViewById(R.id.image_rfr_star);
+            mImageLike = itemView.findViewById(R.id.image_rfr_like);
+            mImageComment = itemView.findViewById(R.id.image_rfr_comment);
+            mTextUsername = itemView.findViewById(R.id.text_rfr_username);
+            mTextReviewDetail = itemView.findViewById(R.id.text_rfr_review);
+            mTextTotalLike = itemView.findViewById(R.id.text_rfr_total_like);
+            mTextTotalComment = itemView.findViewById(R.id.text_rfr_total_comment);
+            mTextReviewTimestamp = itemView.findViewById(R.id.text_rfr_timestamp);
+            mBorder = itemView.findViewById(R.id.border_rfr_layout);
+            mOnClickListener = onClickListener;
+
+            itemView.setOnClickListener(this);
+            mImageUserProfile.setOnClickListener(this);
+            mImageLike.setOnClickListener(this);
+            mImageComment.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v == itemView) {
+                mOnClickListener.onItemClick(getAdapterPosition());
+            } else if (v == mImageUserProfile) {
+                mOnClickListener.onUserProfileClick(getAdapterPosition());
+            } else if (v == mImageLike) {
+                mOnClickListener.onLikeClick(getAdapterPosition());
+            } else if (v == mImageComment) {
+                mOnClickListener.onCommentClick(getAdapterPosition());
+            }
         }
     }
 }

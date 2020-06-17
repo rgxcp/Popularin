@@ -1,13 +1,12 @@
 package xyz.fairportstudios.popularin.apis.popularin.get;
 
 import android.content.Context;
-import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,62 +15,58 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xyz.fairportstudios.popularin.adapters.FilmReviewAdapter;
-import xyz.fairportstudios.popularin.statics.PopularinAPI;
+import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.FilmReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
-public class LikedReviewRequest {
+public class LikedFilmReviewRequest {
     private Context context;
-    private String filmID;
-    private List<FilmReview> filmReviewList;
-    private RecyclerView recyclerView;
+    private Integer id;
 
-    public LikedReviewRequest(
-            Context context,
-            String filmID,
-            List<FilmReview> filmReviewList,
-            RecyclerView recyclerView
-    ) {
+    public LikedFilmReviewRequest(Context context, Integer id) {
         this.context = context;
-        this.filmID = filmID;
-        this.filmReviewList = filmReviewList;
-        this.recyclerView = recyclerView;
+        this.id = id;
     }
 
-    public interface APICallback {
-        void onSuccess(Integer lastPage);
+    public interface Callback {
+        void onSuccess(Integer totalPage, List<FilmReview> filmReviewList);
 
-        void onEmpty();
+        void onNotFound();
 
-        void onError();
+        void onError(String message);
     }
 
-    public void sendRequest(Integer page, final APICallback callback) {
-        String requestURL = PopularinAPI.FILM + "/" + filmID + "/reviews/liked?page=" + page;
+    public void sendRequest(Integer page, final Callback callback) {
+        String requestURL = PopularinAPI.FILM + id + "/reviews/liked?page=" + page;
 
-        JsonObjectRequest likedReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest likedFilmReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int status = response.getInt("status");
 
                     if (status == 101) {
+                        List<FilmReview> filmReviewList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        int lastPage = resultObject.getInt("last_page");
+                        Integer totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject userObject = indexObject.getJSONObject("user");
 
                             FilmReview filmReview = new FilmReview();
-                            filmReview.setReview_id(indexObject.getInt("id"));
+                            filmReview.setId(indexObject.getInt("id"));
                             filmReview.setUser_id(userObject.getInt("id"));
+                            filmReview.setTotal_like(indexObject.getInt("total_like"));
+                            filmReview.setTotal_comment(indexObject.getInt("total_comment"));
+                            filmReview.setIs_liked(indexObject.getBoolean("is_liked"));
                             filmReview.setRating(indexObject.getDouble("rating"));
                             filmReview.setReview_detail(indexObject.getString("review_detail"));
                             filmReview.setTimestamp(indexObject.getString("timestamp"));
@@ -80,37 +75,39 @@ public class LikedReviewRequest {
                             filmReviewList.add(filmReview);
                         }
 
-                        FilmReviewAdapter filmReviewAdapter = new FilmReviewAdapter(context, filmReviewList);
-                        recyclerView.setAdapter(filmReviewAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess(lastPage);
+                        callback.onSuccess(totalPage, filmReviewList);
                     } else if (status == 606) {
-                        callback.onEmpty();
+                        callback.onNotFound();
                     } else {
-                        callback.onError();
+                        callback.onError(context.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
+                    callback.onError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
+                if (error instanceof NetworkError || error instanceof TimeoutError) {
+                    callback.onError(context.getString(R.string.network_error));
+                } else if (error instanceof ServerError) {
+                    callback.onError(context.getString(R.string.server_error));
+                } else {
+                    callback.onError(context.getString(R.string.general_error));
+                }
             }
         }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("API-Key", PopularinAPI.API_KEY);
                 headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(likedReview);
+        Volley.newRequestQueue(context).add(likedFilmReview);
     }
 }

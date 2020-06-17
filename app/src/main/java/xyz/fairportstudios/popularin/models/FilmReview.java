@@ -1,8 +1,11 @@
 package xyz.fairportstudios.popularin.models;
 
 public class FilmReview {
-    private Integer review_id;
+    private Integer id;
     private Integer user_id;
+    private Integer total_like;
+    private Integer total_comment;
+    private Boolean is_liked;
     private Double rating;
     private String review_detail;
     private String timestamp;
@@ -14,16 +17,22 @@ public class FilmReview {
     }
 
     public FilmReview(
-            Integer review_id,
+            Integer id,
             Integer user_id,
+            Integer total_like,
+            Integer total_comment,
+            Boolean is_liked,
             Double rating,
             String review_detail,
             String timestamp,
             String username,
             String profile_picture
     ) {
-        this.review_id = review_id;
+        this.id = id;
         this.user_id = user_id;
+        this.total_like = total_like;
+        this.total_comment = total_comment;
+        this.is_liked = is_liked;
         this.rating = rating;
         this.review_detail = review_detail;
         this.timestamp = timestamp;
@@ -31,12 +40,12 @@ public class FilmReview {
         this.profile_picture = profile_picture;
     }
 
-    public Integer getReview_id() {
-        return review_id;
+    public Integer getId() {
+        return id;
     }
 
-    public void setReview_id(Integer review_id) {
-        this.review_id = review_id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getUser_id() {
@@ -45,6 +54,30 @@ public class FilmReview {
 
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public Integer getTotal_like() {
+        return total_like;
+    }
+
+    public void setTotal_like(Integer total_like) {
+        this.total_like = total_like;
+    }
+
+    public Integer getTotal_comment() {
+        return total_comment;
+    }
+
+    public void setTotal_comment(Integer total_comment) {
+        this.total_comment = total_comment;
+    }
+
+    public Boolean getIs_liked() {
+        return is_liked;
+    }
+
+    public void setIs_liked(Boolean is_liked) {
+        this.is_liked = is_liked;
     }
 
     public Double getRating() {
