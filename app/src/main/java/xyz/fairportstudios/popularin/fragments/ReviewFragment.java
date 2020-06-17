@@ -48,7 +48,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     private Integer mTotalPage;
 
     // Variable member
-    private Context context;
+    private Context mContext;
     private Boolean mIsAuth;
     private CoordinatorLayout mAnchorLayout;
     private Integer mAuthID;
@@ -68,7 +68,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Context
-        context = getActivity();
+        mContext = getActivity();
 
         // Binding
         mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
@@ -78,14 +78,14 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
         mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Auth
-        Auth auth = new Auth(context);
+        Auth auth = new Auth(mContext);
         mIsAuth = auth.isAuth();
         mAuthID = auth.getAuthID();
 
         // Mendapatkan data awal
         mOnClickListener = this;
         mReviewList = new ArrayList<>();
-        mReviewRequest = new ReviewRequest(context);
+        mReviewRequest = new ReviewRequest(mContext);
         getReview(mStartPage, false);
 
         // Activity
@@ -193,9 +193,9 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
                 if (!mIsLoadFirstTimeSuccess) {
                     int insertIndex = mReviewList.size();
                     mReviewList.addAll(insertIndex, reviewList);
-                    mReviewAdapter = new ReviewAdapter(context, mReviewList, mOnClickListener);
+                    mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnClickListener);
                     mRecyclerReview.setAdapter(mReviewAdapter);
-                    mRecyclerReview.setLayoutManager(new LinearLayoutManager(context));
+                    mRecyclerReview.setLayoutManager(new LinearLayoutManager(mContext));
                     mRecyclerReview.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     mTotalPage = totalPage;
@@ -239,7 +239,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     private void gotoReviewDetail(Integer reviewID, Boolean isSelf) {
-        Intent intent = new Intent(context, ReviewActivity.class);
+        Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, reviewID);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 0);
@@ -247,7 +247,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     private void gotoReviewComment(Integer reviewID, Boolean isSelf) {
-        Intent intent = new Intent(context, ReviewActivity.class);
+        Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, reviewID);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
@@ -255,26 +255,26 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     private void gotoUserDetail(Integer userID) {
-        Intent intent = new Intent(context, UserDetailActivity.class);
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
         intent.putExtra(Popularin.USER_ID, userID);
         startActivity(intent);
     }
 
     private void gotoFilmDetail(Integer filmID) {
-        Intent intent = new Intent(context, FilmDetailActivity.class);
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
         intent.putExtra(Popularin.FILM_ID, filmID);
         startActivity(intent);
     }
 
     private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
-        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
         FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
         filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
     }
 
     private void likeReview(Integer reviewID, final Integer position) {
         // Mengirim request
-        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, reviewID);
         likeReviewRequest.sendRequest(new LikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -296,7 +296,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
 
     private void unlikeReview(Integer reviewID, final Integer position) {
         // Mengirim request
-        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, reviewID);
         unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -317,7 +317,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     private void gotoEmptyAccount() {
-        Intent intent = new Intent(context, EmptyAccountActivity.class);
+        Intent intent = new Intent(mContext, EmptyAccountActivity.class);
         startActivity(intent);
     }
 

@@ -49,7 +49,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     private Integer mTotalPage;
 
     // Variable member
-    private Context context;
+    private Context mContext;
     private CoordinatorLayout mAnchorLayout;
     private Integer mAuthID;
     private Integer mTotalLike;
@@ -68,7 +68,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Context
-        context = getActivity();
+        mContext = getActivity();
 
         // Binding
         mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
@@ -78,12 +78,12 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
         mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Auth
-        mAuthID = new Auth(context).getAuthID();
+        mAuthID = new Auth(mContext).getAuthID();
 
         // Mendapatkan data awal
         mOnClickListener = this;
         mReviewList = new ArrayList<>();
-        mTimelineRequest = new TimelineRequest(context);
+        mTimelineRequest = new TimelineRequest(mContext);
         getTimeline(mStartPage, false);
 
         // Activity
@@ -186,9 +186,9 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
                 if (!mIsLoadFirstTimeSuccess) {
                     int insertIndex = mReviewList.size();
                     mReviewList.addAll(insertIndex, reviewList);
-                    mReviewAdapter = new ReviewAdapter(context, mReviewList, mOnClickListener);
+                    mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnClickListener);
                     mRecyclerTimeline.setAdapter(mReviewAdapter);
-                    mRecyclerTimeline.setLayoutManager(new LinearLayoutManager(context));
+                    mRecyclerTimeline.setLayoutManager(new LinearLayoutManager(mContext));
                     mRecyclerTimeline.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     mTotalPage = totalPage;
@@ -249,7 +249,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     private void gotoReviewDetail(Integer reviewID, Boolean isSelf) {
-        Intent intent = new Intent(context, ReviewActivity.class);
+        Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, reviewID);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 0);
@@ -257,7 +257,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     private void gotoReviewComment(Integer reviewID, Boolean isSelf) {
-        Intent intent = new Intent(context, ReviewActivity.class);
+        Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, reviewID);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
@@ -265,26 +265,26 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     private void gotoUserDetail(Integer userID) {
-        Intent intent = new Intent(context, UserDetailActivity.class);
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
         intent.putExtra(Popularin.USER_ID, userID);
         startActivity(intent);
     }
 
     private void gotoFilmDetail(Integer filmID) {
-        Intent intent = new Intent(context, FilmDetailActivity.class);
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
         intent.putExtra(Popularin.FILM_ID, filmID);
         startActivity(intent);
     }
 
     private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
-        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
         FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
         filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
     }
 
     private void likeReview(Integer reviewID, final Integer position) {
         // Mengirim request
-        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, reviewID);
         likeReviewRequest.sendRequest(new LikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -306,7 +306,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
 
     private void unlikeReview(Integer reviewID, final Integer position) {
         // Mengirim request
-        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, reviewID);
         unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -327,10 +327,10 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     private void signOut() {
-        Auth auth = new Auth(context);
+        Auth auth = new Auth(mContext);
         auth.delAuth();
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(mContext, MainActivity.class);
         startActivity(intent);
         Objects.requireNonNull(getActivity()).finish();
     }
