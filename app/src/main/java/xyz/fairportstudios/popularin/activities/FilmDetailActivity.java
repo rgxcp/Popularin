@@ -252,12 +252,12 @@ public class FilmDetailActivity extends AppCompatActivity {
     }
 
     private void playTrailer(String key) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Popularin.YOUTUBE_VIDEO + key));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Popularin.YOUTUBE_VIDEO_URL + key));
         startActivity(intent);
     }
 
     private void searchTrailer(String query) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Popularin.YOUTUBE_SEARCH + query));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Popularin.YOUTUBE_SEARCH_URL + query));
         startActivity(intent);
     }
 
@@ -288,6 +288,6 @@ public class FilmDetailActivity extends AppCompatActivity {
 
     private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
         FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
-        filmModal.show(getSupportFragmentManager(), Popularin.FILM_STATUS_MODAL);
+        filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
     }
 }

@@ -271,7 +271,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
 
     private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
         FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
-        filmModal.show(getSupportFragmentManager(), Popularin.FILM_STATUS_MODAL);
+        filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
     }
 
     private void likeReview(Integer reviewID, final Integer position) {

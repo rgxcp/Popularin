@@ -279,7 +279,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
         FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
         FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
-        filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+        filmModal.show(fragmentManager, Popularin.FILM_MODAL);
     }
 
     private void likeReview(Integer reviewID, final Integer position) {

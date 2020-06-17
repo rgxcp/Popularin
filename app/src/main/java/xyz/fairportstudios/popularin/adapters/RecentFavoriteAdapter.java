@@ -92,7 +92,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
             public boolean onLongClick(View view) {
                 FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
                 FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
-                filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+                filmModal.show(fragmentManager, Popularin.FILM_MODAL);
                 return true;
             }
         });
