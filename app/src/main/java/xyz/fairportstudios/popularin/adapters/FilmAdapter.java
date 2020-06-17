@@ -23,7 +23,7 @@ import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseGenre;
+import xyz.fairportstudios.popularin.services.ConvertGenre;
 import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
@@ -54,7 +54,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         final String filmTitle = currentItem.getOriginal_title();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
         final String filmPoster = new ParseImage().getImage(currentItem.getPoster_path());
-        final String filmGenre = new ParseGenre().getGenre(currentItem.getGenre_id());
+        final String filmGenre = new ConvertGenre().getGenreForHumans(currentItem.getGenre_id());
         final String filmReleaseDate = new ParseDate().getDateForHumans(currentItem.getRelease_date());
 
         // Request gambar
