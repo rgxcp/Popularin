@@ -1,13 +1,12 @@
 package xyz.fairportstudios.popularin.apis.popularin.get;
 
 import android.content.Context;
-import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,48 +15,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xyz.fairportstudios.popularin.adapters.UserReviewAdapter;
-import xyz.fairportstudios.popularin.statics.PopularinAPI;
+import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserReviewRequest {
     private Context context;
-    private String id;
-    private List<UserReview> userReviewList;
-    private RecyclerView recyclerView;
+    private Integer id;
 
-    public UserReviewRequest(
-            Context context,
-            String id,
-            List<UserReview> userReviewList,
-            RecyclerView recyclerView
-    ) {
+    public UserReviewRequest(Context context, Integer id) {
         this.context = context;
         this.id = id;
-        this.userReviewList = userReviewList;
-        this.recyclerView = recyclerView;
     }
 
-    public interface APICallback {
-        void onSuccess();
+    public interface Callback {
+        void onSuccess(Integer totalPage, List<UserReview> userReviewList);
 
-        void onEmpty();
+        void onNotFound();
 
-        void onError();
+        void onError(String message);
     }
 
-    public String getRequestURL(Integer page) {
-        return PopularinAPI.USER + "/" + id + "/reviews?page=" + page;
-    }
-
-    public void sendRequest(String requestURL, final APICallback callback) {
-        // Auth
-        final boolean isSelf = id.equals(new Auth(context).getAuthID());
+    public void sendRequest(Integer page, final Callback callback) {
+        String requestURL = PopularinAPI.USER + id + "/reviews?page=" + page;
 
         JsonObjectRequest userReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -66,8 +52,10 @@ public class UserReviewRequest {
                     int status = response.getInt("status");
 
                     if (status == 101) {
+                        List<UserReview> userReviewList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
+                        Integer totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
@@ -76,6 +64,9 @@ public class UserReviewRequest {
                             UserReview userReview = new UserReview();
                             userReview.setId(indexObject.getInt("id"));
                             userReview.setTmdb_id(filmObject.getInt("tmdb_id"));
+                            userReview.setTotal_like(indexObject.getInt("total_like"));
+                            userReview.setTotal_comment(indexObject.getInt("total_comment"));
+                            userReview.setIs_liked(indexObject.getBoolean("is_liked"));
                             userReview.setRating(indexObject.getDouble("rating"));
                             userReview.setReview_detail(indexObject.getString("review_detail"));
                             userReview.setTimestamp(indexObject.getString("timestamp"));
@@ -85,32 +76,35 @@ public class UserReviewRequest {
                             userReviewList.add(userReview);
                         }
 
-                        UserReviewAdapter userReviewAdapter = new UserReviewAdapter(context, userReviewList, isSelf);
-                        recyclerView.setAdapter(userReviewAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setVisibility(View.VISIBLE);
-                        callback.onSuccess();
+                        callback.onSuccess(totalPage, userReviewList);
                     } else if (status == 606) {
-                        callback.onEmpty();
+                        callback.onNotFound();
                     } else {
-                        callback.onError();
+                        callback.onError(context.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError();
+                    callback.onError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                callback.onError();
+                if (error instanceof NetworkError || error instanceof TimeoutError) {
+                    callback.onError(context.getString(R.string.network_error));
+                } else if (error instanceof ServerError) {
+                    callback.onError(context.getString(R.string.server_error));
+                } else {
+                    callback.onError(context.getString(R.string.general_error));
+                }
             }
         }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Token", PopularinAPI.API_TOKEN);
+                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
         };

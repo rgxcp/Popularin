@@ -45,6 +45,7 @@
     <string name="empty_timeline">Ulasan dari pengguna yang kamu ikuti\nakan tampil di sini.</string>
     <string name="empty_trailer">Belum ada trailer untuk film ini.</string>
     <string name="empty_user_favorite">Pengguna belum mempunyai film favorit.</string>
+    <string name="empty_self_review">Kamu belum mempunyai ulasan.</string>
     <string name="empty_user_review">Pengguna belum mempunyai ulasan.</string>
     <string name="empty_user_watchlist">Pengguna belum mempunyai daftar film\nyang ingin ditonton.</string>
     <string name="failed_add_comment">Gagal memberi komen</string>
