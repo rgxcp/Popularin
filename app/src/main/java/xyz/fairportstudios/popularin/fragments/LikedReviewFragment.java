@@ -212,7 +212,12 @@ public class LikedReviewFragment extends Fragment implements FilmReviewAdapter.O
 
             @Override
             public void onNotFound() {
-                mProgressBar.setVisibility(View.GONE);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mFilmReviewList.clear();
+                    mFilmReviewAdapter.notifyDataSetChanged();
+                }
                 mTextMessage.setVisibility(View.VISIBLE);
                 mTextMessage.setText(R.string.empty_liked_film_review);
             }
