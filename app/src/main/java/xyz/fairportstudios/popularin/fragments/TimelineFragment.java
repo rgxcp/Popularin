@@ -13,7 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -22,58 +26,205 @@ import java.util.List;
 import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.MainActivity;
+import xyz.fairportstudios.popularin.activities.ReviewActivity;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.adapters.ReviewAdapter;
+import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.TimelineRequest;
+import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.ParseDate;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickListener {
+    // Variable untuk fitur load more
+    private Boolean mIsLoadFirstTimeSuccess = false;
+    private Boolean mIsLoading = true;
+    private Integer mStartPage = 1;
+    private Integer mCurrentPage = 1;
+    private Integer mTotalPage;
+
+    // Variable member
     private Context context;
-    private CoordinatorLayout anchorLayout;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerTimeline;
-    private TextView textEmptyTimeline;
+    private CoordinatorLayout mAnchorLayout;
+    private Integer mAuthID;
+    private Integer mTotalLike;
+    private List<Review> mReviewList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerTimeline;
+    private ReviewAdapter mReviewAdapter;
+    private ReviewAdapter.OnClickListener mOnClickListener;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextMessage;
+    private TimelineRequest mTimelineRequest;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
-        // Binding
+        // Context
         context = getActivity();
-        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
-        progressBar = view.findViewById(R.id.pbr_rr_layout);
-        recyclerTimeline = view.findViewById(R.id.recycler_rr_layout);
-        textEmptyTimeline = view.findViewById(R.id.text_rr_message);
 
-        // Request
-        getTimeline();
+        // Binding
+        mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
+        mProgressBar = view.findViewById(R.id.pbr_rr_layout);
+        mRecyclerTimeline = view.findViewById(R.id.recycler_rr_layout);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        mTextMessage = view.findViewById(R.id.text_rr_message);
+
+        // Auth
+        mAuthID = new Auth(context).getAuthID();
+
+        // Mendapatkan data awal
+        mOnClickListener = this;
+        mReviewList = new ArrayList<>();
+        mTimelineRequest = new TimelineRequest(context);
+        getTimeline(mStartPage, false);
+
+        // Activity
+        mRecyclerTimeline.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!mIsLoading && mCurrentPage <= mTotalPage) {
+                        mIsLoading = true;
+                        mSwipeRefresh.setRefreshing(true);
+                        getTimeline(mCurrentPage, false);
+                    }
+                }
+            }
+        });
+
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mIsLoading = true;
+                mSwipeRefresh.setRefreshing(true);
+                getTimeline(mStartPage, true);
+            }
+        });
 
         return view;
     }
 
-    private void getTimeline() {
-        List<Review> reviewList = new ArrayList<>();
-        TimelineRequest timelineRequest = new TimelineRequest(context, reviewList, recyclerTimeline);
-        timelineRequest.sendRequest(new TimelineRequest.APICallback() {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        resetState();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer reviewID = currentItem.getId();
+        Boolean isSelf = currentItem.getUser_id().equals(mAuthID);
+        gotoReviewDetail(reviewID, isSelf);
+    }
+
+    @Override
+    public void onUserProfileClicked(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer userID = currentItem.getUser_id();
+        gotoUserDetail(userID);
+    }
+
+    @Override
+    public void onFilmPosterClick(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer filmID = currentItem.getTmdb_id();
+        gotoFilmDetail(filmID);
+    }
+
+    @Override
+    public void onFilmPosterLongClick(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer filmID = currentItem.getTmdb_id();
+        String filmTitle = currentItem.getTitle();
+        String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        String filmPoster = currentItem.getPoster();
+        showFilmModal(filmID, filmTitle, filmYear, filmPoster);
+    }
+
+    @Override
+    public void onLikeClick(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer reviewID = currentItem.getId();
+        Boolean isLiked = currentItem.getIs_liked();
+        mTotalLike = currentItem.getTotal_like();
+
+        if (!mIsLoading) {
+            mIsLoading = true;
+            if (isLiked) {
+                unlikeReview(reviewID, position);
+            } else {
+                likeReview(reviewID, position);
+            }
+        }
+    }
+
+    @Override
+    public void onCommentClick(int position) {
+        Review currentItem = mReviewList.get(position);
+        Integer reviewID = currentItem.getId();
+        Boolean isSelf = currentItem.getUser_id().equals(mAuthID);
+        gotoReviewComment(reviewID, isSelf);
+    }
+
+    private void getTimeline(Integer page, final Boolean refreshPage) {
+        // Menghilangkan pesan setiap kali method dijalankan
+        mTextMessage.setVisibility(View.GONE);
+
+        mTimelineRequest.sendRequest(page, new TimelineRequest.Callback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void onSuccess(Integer totalPage, List<Review> reviewList) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    int insertIndex = mReviewList.size();
+                    mReviewList.addAll(insertIndex, reviewList);
+                    mReviewAdapter = new ReviewAdapter(context, mReviewList, mOnClickListener);
+                    mRecyclerTimeline.setAdapter(mReviewAdapter);
+                    mRecyclerTimeline.setLayoutManager(new LinearLayoutManager(context));
+                    mRecyclerTimeline.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mTotalPage = totalPage;
+                    mIsLoadFirstTimeSuccess = true;
+                } else {
+                    if (refreshPage) {
+                        mCurrentPage = 1;
+                        mReviewList.clear();
+                        mReviewAdapter.notifyDataSetChanged();
+                    }
+                    int insertIndex = mReviewList.size();
+                    mReviewList.addAll(insertIndex, reviewList);
+                    mReviewAdapter.notifyItemChanged(insertIndex - 1);
+                    mReviewAdapter.notifyItemRangeInserted(insertIndex, reviewList.size());
+                    mRecyclerTimeline.scrollToPosition(insertIndex);
+                }
+                mCurrentPage++;
             }
 
             @Override
-            public void onEmpty() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyTimeline.setVisibility(View.VISIBLE);
-                textEmptyTimeline.setText(R.string.empty_timeline);
+            public void onNotFound() {
+                if (mIsLoadFirstTimeSuccess) {
+                    mReviewList.clear();
+                    mReviewAdapter.notifyDataSetChanged();
+                }
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_timeline);
             }
 
             @Override
-            public void onInvalid() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyTimeline.setVisibility(View.VISIBLE);
-                textEmptyTimeline.setText(R.string.un_sync_auth);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_INDEFINITE).setAction(R.string.sign_out, new View.OnClickListener() {
+            public void onUnauthenticated() {
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_timeline);
+                Snackbar.make(mAnchorLayout, R.string.un_sync_auth, Snackbar.LENGTH_INDEFINITE).setAction(R.string.sign_out, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         signOut();
@@ -82,13 +233,97 @@ public class TimelineFragment extends Fragment {
             }
 
             @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                textEmptyTimeline.setVisibility(View.VISIBLE);
-                textEmptyTimeline.setText(R.string.empty_timeline);
-                Snackbar.make(anchorLayout, R.string.network_error, Snackbar.LENGTH_LONG).show();
+            public void onError(String message) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(R.string.empty_timeline);
+                }
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoReviewDetail(Integer reviewID, Boolean isSelf) {
+        Intent intent = new Intent(context, ReviewActivity.class);
+        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.VIEW_PAGER_INDEX, 0);
+        startActivity(intent);
+    }
+
+    private void gotoReviewComment(Integer reviewID, Boolean isSelf) {
+        Intent intent = new Intent(context, ReviewActivity.class);
+        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
+        startActivity(intent);
+    }
+
+    private void gotoUserDetail(Integer userID) {
+        Intent intent = new Intent(context, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void gotoFilmDetail(Integer filmID) {
+        Intent intent = new Intent(context, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, filmID);
+        startActivity(intent);
+    }
+
+    private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
+        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+        filmModal.show(fragmentManager, Popularin.FILM_STATUS_MODAL);
+    }
+
+    private void likeReview(Integer reviewID, final Integer position) {
+        // Mengirim request
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(context, reviewID);
+        likeReviewRequest.sendRequest(new LikeReviewRequest.Callback() {
+            @Override
+            public void onSuccess() {
+                mTotalLike++;
+                mReviewList.get(position).setIs_liked(true);
+                mReviewList.get(position).setTotal_like(mTotalLike);
+                mReviewAdapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onError(String message) {
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        // Memberhentikan loading
+        mIsLoading = false;
+    }
+
+    private void unlikeReview(Integer reviewID, final Integer position) {
+        // Mengirim request
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(context, reviewID);
+        unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.Callback() {
+            @Override
+            public void onSuccess() {
+                mTotalLike--;
+                mReviewList.get(position).setIs_liked(false);
+                mReviewList.get(position).setTotal_like(mTotalLike);
+                mReviewAdapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onError(String message) {
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 
     private void signOut() {
@@ -98,5 +333,11 @@ public class TimelineFragment extends Fragment {
         Intent intent = new Intent(context, MainActivity.class);
         startActivity(intent);
         Objects.requireNonNull(getActivity()).finish();
+    }
+
+    private void resetState() {
+        mIsLoadFirstTimeSuccess = false;
+        mIsLoading = true;
+        mCurrentPage = 1;
     }
 }
