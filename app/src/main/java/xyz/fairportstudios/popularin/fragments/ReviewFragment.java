@@ -279,8 +279,9 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
             @Override
             public void onSuccess() {
                 mTotalLike++;
-                mReviewList.get(position).setIs_liked(true);
-                mReviewList.get(position).setTotal_like(mTotalLike);
+                Review currentItem = mReviewList.get(position);
+                currentItem.setIs_liked(true);
+                currentItem.setTotal_like(mTotalLike);
                 mReviewAdapter.notifyItemChanged(position);
             }
 
@@ -301,8 +302,9 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
             @Override
             public void onSuccess() {
                 mTotalLike--;
-                mReviewList.get(position).setIs_liked(false);
-                mReviewList.get(position).setTotal_like(mTotalLike);
+                Review currentItem = mReviewList.get(position);
+                currentItem.setIs_liked(false);
+                currentItem.setTotal_like(mTotalLike);
                 mReviewAdapter.notifyItemChanged(position);
             }
 
