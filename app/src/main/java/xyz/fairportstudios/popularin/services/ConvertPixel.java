@@ -3,14 +3,14 @@ package xyz.fairportstudios.popularin.services;
 import android.content.Context;
 
 public class ConvertPixel {
-    private Context context;
+    private Context mContext;
 
-    public ConvertPixel(Context context) {
-        this.context = context;
+    public ConvertPixel(Context mContext) {
+        this.mContext = mContext;
     }
 
-    public Integer getDensity(int px) {
-        float dp = px * context.getResources().getDisplayMetrics().density;
+    public int getDensity(int px) {
+        float dp = px * mContext.getResources().getDisplayMetrics().density;
         return (int) dp;
     }
 }
