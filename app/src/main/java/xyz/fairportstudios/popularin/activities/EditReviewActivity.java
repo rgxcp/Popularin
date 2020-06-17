@@ -33,8 +33,8 @@ import xyz.fairportstudios.popularin.apis.popularin.put.UpdateReviewRequest;
 import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class EditReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private EditText mInputReview;
@@ -133,7 +133,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
                 mRating = reviewDetail.getRating().floatValue();
                 mReview = reviewDetail.getReview_detail();
                 String filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
-                String filmPoster = new ParseImage().getImage(reviewDetail.getPoster());
+                String filmPoster = TMDbAPI.IMAGE + reviewDetail.getPoster();
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions()

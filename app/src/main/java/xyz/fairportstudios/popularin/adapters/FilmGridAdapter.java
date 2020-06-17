@@ -23,8 +23,8 @@ import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGridViewHolder> {
     private Context context;
@@ -52,7 +52,7 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         // Parsing
         final String filmTitle = currentItem.getOriginal_title();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = new ParseImage().getImage(currentItem.getPoster_path());
+        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster_path();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

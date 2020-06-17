@@ -38,9 +38,9 @@ import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseStar;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class ReviewDetailFragment extends Fragment {
     // Variable untuk fitur onResume
@@ -193,7 +193,7 @@ public class ReviewDetailFragment extends Fragment {
                 totalLike = reviewDetail.getTotal_like();
                 filmTitle = reviewDetail.getTitle();
                 filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
-                filmPoster = new ParseImage().getImage(reviewDetail.getPoster());
+                filmPoster = TMDbAPI.IMAGE + reviewDetail.getPoster();
                 Integer reviewStar = new ParseStar().getStar(reviewDetail.getRating());
                 String reviewDate = new ParseDate().getDateForHumans(reviewDetail.getReview_date());
 

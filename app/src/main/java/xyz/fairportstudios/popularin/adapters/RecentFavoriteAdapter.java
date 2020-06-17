@@ -23,8 +23,8 @@ import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAdapter.RecentFavoriteViewHolder> {
     private Context context;
@@ -52,7 +52,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         // Parsing
         final String filmTitle = currentItem.getTitle();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = new ParseImage().getImage(currentItem.getPoster());
+        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

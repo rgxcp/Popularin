@@ -20,8 +20,8 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.CreditDetailActivity;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.services.ConvertPixel;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
     private Context context;
@@ -47,7 +47,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         final Integer castID = currentItem.getId();
 
         // Parsing
-        String castProfile = new ParseImage().getImage(currentItem.getProfile_path());
+        String castProfile = TMDbAPI.IMAGE + currentItem.getProfile_path();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

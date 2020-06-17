@@ -40,9 +40,9 @@ import xyz.fairportstudios.popularin.models.FilmDetail;
 import xyz.fairportstudios.popularin.models.FilmMetadata;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ConvertGenre;
-import xyz.fairportstudios.popularin.services.ParseImage;
 import xyz.fairportstudios.popularin.services.ParseTime;
 import xyz.fairportstudios.popularin.statics.Popularin;
+import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmDetailActivity extends AppCompatActivity {
     private Chip chipGenre;
@@ -180,7 +180,7 @@ public class FilmDetailActivity extends AppCompatActivity {
 
                 // Parsing
                 filmYear = new ParseDate().getYear(filmDetail.getRelease_date());
-                filmPoster = new ParseImage().getImage(filmDetail.getPoster_path());
+                filmPoster = TMDbAPI.IMAGE + filmDetail.getPoster_path();
                 genreTitle = new ConvertGenre().getGenreForHumans(genreID);
                 String runtime = new ParseTime().getHourMinute(filmDetail.getRuntime());
 
