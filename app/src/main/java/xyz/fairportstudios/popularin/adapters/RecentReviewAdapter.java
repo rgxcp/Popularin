@@ -23,7 +23,7 @@ import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.services.ConvertPixel;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.ConvertRating;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
@@ -57,7 +57,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         final String filmTitle = currentItem.getTitle();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
         final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster();
-        final Integer reviewStar = new ParseStar().getStar(currentItem.getRating());
+        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

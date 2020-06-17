@@ -17,7 +17,7 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.UserReview;
 import xyz.fairportstudios.popularin.services.ParseDate;
-import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.ConvertRating;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.UserReviewViewHolder> {
@@ -69,7 +69,7 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         }
 
         // Parsing
-        final Integer reviewStar = new ParseStar().getStar(currentItem.getRating());
+        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
         final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster();
 

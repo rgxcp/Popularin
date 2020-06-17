@@ -5,8 +5,8 @@ import java.util.Map;
 
 import xyz.fairportstudios.popularin.R;
 
-public class ParseStar {
-    public Integer getStar(Double rating) {
+public class ConvertRating {
+    public Integer getStar(double rating) {
         Map<Double, Integer> stars = new HashMap<>();
         stars.put(0.5, R.drawable.ic_star_05);
         stars.put(1.0, R.drawable.ic_star_10);

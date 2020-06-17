@@ -16,7 +16,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.FilmReview;
-import xyz.fairportstudios.popularin.services.ParseStar;
+import xyz.fairportstudios.popularin.services.ConvertRating;
 
 public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.FilmReviewViewHolder> {
     private Context mContext;
@@ -65,7 +65,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         }
 
         // Parsing
-        final Integer reviewStar = new ParseStar().getStar(currentItem.getRating());
+        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
 
         // Isi
         holder.mTextUsername.setText(currentItem.getUsername());
