@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,18 @@ public class GenreFragment extends Fragment {
         // Binding
         progressBar = view.findViewById(R.id.pbr_rr_layout);
         recyclerGenre = view.findViewById(R.id.recycler_rr_layout);
+        final SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
 
         // Menampilkan semua genre
         showAllGenre(context);
+
+        // Activity
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresh.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -46,21 +56,21 @@ public class GenreFragment extends Fragment {
     private void showAllGenre(Context context) {
         List<Genre> genreList = new ArrayList<>();
         genreList.add(new Genre(TMDbAPI.ACTION_ID, R.drawable.img_action, getString(R.string.genre_action)));
-        genreList.add(new Genre(TMDbAPI.ANIMATION_ID, R.drawable.img_action, getString(R.string.genre_animation)));
-        genreList.add(new Genre(TMDbAPI.DOCUMENTARY_ID, R.drawable.img_action, getString(R.string.genre_documentary)));
-        genreList.add(new Genre(TMDbAPI.DRAMA_ID, R.drawable.img_action, getString(R.string.genre_drama)));
-        genreList.add(new Genre(TMDbAPI.FANTASY_ID, R.drawable.img_action, getString(R.string.genre_fantasy)));
-        genreList.add(new Genre(TMDbAPI.FICTION_ID, R.drawable.img_action, getString(R.string.genre_fiction)));
-        genreList.add(new Genre(TMDbAPI.HORROR_ID, R.drawable.img_action, getString(R.string.genre_horror)));
-        genreList.add(new Genre(TMDbAPI.CRIME_ID, R.drawable.img_action, getString(R.string.genre_crime)));
-        genreList.add(new Genre(TMDbAPI.FAMILY_ID, R.drawable.img_action, getString(R.string.genre_family)));
-        genreList.add(new Genre(TMDbAPI.COMEDY_ID, R.drawable.img_action, getString(R.string.genre_comedy)));
-        genreList.add(new Genre(TMDbAPI.MYSTERY_ID, R.drawable.img_action, getString(R.string.genre_mystery)));
-        genreList.add(new Genre(TMDbAPI.WAR_ID, R.drawable.img_action, getString(R.string.genre_war)));
-        genreList.add(new Genre(TMDbAPI.ADVENTURE_ID, R.drawable.img_action, getString(R.string.genre_adventure)));
-        genreList.add(new Genre(TMDbAPI.ROMANCE_ID, R.drawable.img_action, getString(R.string.genre_romance)));
-        genreList.add(new Genre(TMDbAPI.HISTORY_ID, R.drawable.img_action, getString(R.string.genre_history)));
-        genreList.add(new Genre(TMDbAPI.THRILLER_ID, R.drawable.img_action, getString(R.string.genre_thriller)));
+        genreList.add(new Genre(TMDbAPI.ANIMATION_ID, R.drawable.img_animation, getString(R.string.genre_animation)));
+        genreList.add(new Genre(TMDbAPI.DOCUMENTARY_ID, R.drawable.img_documentary, getString(R.string.genre_documentary)));
+        genreList.add(new Genre(TMDbAPI.DRAMA_ID, R.drawable.img_drama, getString(R.string.genre_drama)));
+        genreList.add(new Genre(TMDbAPI.FANTASY_ID, R.drawable.img_fantasy, getString(R.string.genre_fantasy)));
+        genreList.add(new Genre(TMDbAPI.FICTION_ID, R.drawable.img_fiction, getString(R.string.genre_fiction)));
+        genreList.add(new Genre(TMDbAPI.HORROR_ID, R.drawable.img_horror, getString(R.string.genre_horror)));
+        genreList.add(new Genre(TMDbAPI.CRIME_ID, R.drawable.img_crime, getString(R.string.genre_crime)));
+        genreList.add(new Genre(TMDbAPI.FAMILY_ID, R.drawable.img_family, getString(R.string.genre_family)));
+        genreList.add(new Genre(TMDbAPI.COMEDY_ID, R.drawable.img_comedy, getString(R.string.genre_comedy)));
+        genreList.add(new Genre(TMDbAPI.MYSTERY_ID, R.drawable.img_mystery, getString(R.string.genre_mystery)));
+        genreList.add(new Genre(TMDbAPI.WAR_ID, R.drawable.img_war, getString(R.string.genre_war)));
+        genreList.add(new Genre(TMDbAPI.ADVENTURE_ID, R.drawable.img_adventure, getString(R.string.genre_adventure)));
+        genreList.add(new Genre(TMDbAPI.ROMANCE_ID, R.drawable.img_romance, getString(R.string.genre_romance)));
+        genreList.add(new Genre(TMDbAPI.HISTORY_ID, R.drawable.img_history, getString(R.string.genre_history)));
+        genreList.add(new Genre(TMDbAPI.THRILLER_ID, R.drawable.img_thriller, getString(R.string.genre_thriller)));
 
         GenreAdapter genreAdapter = new GenreAdapter(context, genreList);
         recyclerGenre.setAdapter(genreAdapter);
