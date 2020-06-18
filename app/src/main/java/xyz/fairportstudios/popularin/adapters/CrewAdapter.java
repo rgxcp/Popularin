@@ -47,7 +47,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         final Integer crewID = currentItem.getId();
 
         // Parsing
-        String crewProfile = TMDbAPI.IMAGE + currentItem.getProfile_path();
+        String crewProfile = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getProfile_path();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

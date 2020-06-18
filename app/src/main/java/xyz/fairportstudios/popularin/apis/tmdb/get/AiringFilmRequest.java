@@ -38,7 +38,7 @@ public class AiringFilmRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = TMDbAPI.AIRING_FILM
+        String requestURL = TMDbAPI.AIRING
                 + "?api_key="
                 + TMDbAPI.API_KEY
                 + "&language=id&region=ID";

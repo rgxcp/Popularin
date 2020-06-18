@@ -180,7 +180,7 @@ public class FilmDetailActivity extends AppCompatActivity {
 
                 // Parsing
                 filmYear = new ParseDate().getYear(filmDetail.getRelease_date());
-                filmPoster = TMDbAPI.IMAGE + filmDetail.getPoster_path();
+                filmPoster = TMDbAPI.BASE_LARGE_IMAGE_URL + filmDetail.getPoster_path();
                 genreTitle = new ConvertGenre().getGenreForHumans(genreID);
                 String runtime = new ConvertRuntime().getRuntimeForHumans(filmDetail.getRuntime());
 

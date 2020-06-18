@@ -133,7 +133,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
                 mRating = reviewDetail.getRating().floatValue();
                 mReview = reviewDetail.getReview_detail();
                 String filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
-                String filmPoster = TMDbAPI.IMAGE + reviewDetail.getPoster();
+                String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + reviewDetail.getPoster();
 
                 // Request gambar
                 RequestOptions requestOptions = new RequestOptions()

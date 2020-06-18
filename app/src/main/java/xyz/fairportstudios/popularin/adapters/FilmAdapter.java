@@ -53,7 +53,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         // Parsing
         final String filmTitle = currentItem.getOriginal_title();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster_path();
+        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster_path();
         final String filmGenre = new ConvertGenre().getGenreForHumans(currentItem.getGenre_id());
         final String filmReleaseDate = new ParseDate().getDateForHumans(currentItem.getRelease_date());
 

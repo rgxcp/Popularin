@@ -73,7 +73,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         // Parsing
         final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster();
+        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
 
         // Isi
         holder.mTextFilmTitleYear.setText(String.format("%s (%s)", currentItem.getTitle(), filmYear));

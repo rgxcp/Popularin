@@ -52,7 +52,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         // Parsing
         final String filmTitle = currentItem.getTitle();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster();
+        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

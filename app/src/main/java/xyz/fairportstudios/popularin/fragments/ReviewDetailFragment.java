@@ -193,7 +193,7 @@ public class ReviewDetailFragment extends Fragment {
                 totalLike = reviewDetail.getTotal_like();
                 filmTitle = reviewDetail.getTitle();
                 filmYear = new ParseDate().getYear(reviewDetail.getRelease_date());
-                filmPoster = TMDbAPI.IMAGE + reviewDetail.getPoster();
+                filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + reviewDetail.getPoster();
                 Integer reviewStar = new ConvertRating().getStar(reviewDetail.getRating());
                 String reviewDate = new ParseDate().getDateForHumans(reviewDetail.getReview_date());
 

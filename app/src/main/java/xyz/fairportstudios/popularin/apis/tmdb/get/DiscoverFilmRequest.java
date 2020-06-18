@@ -38,7 +38,7 @@ public class DiscoverFilmRequest {
     }
 
     public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = TMDbAPI.DISCOVER_FILM
+        String requestURL = TMDbAPI.DISCOVER
                 + "?api_key="
                 + TMDbAPI.API_KEY
                 + "&language=id&sort_by=popularity.desc&page="

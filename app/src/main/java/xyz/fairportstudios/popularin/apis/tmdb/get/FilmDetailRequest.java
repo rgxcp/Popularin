@@ -40,7 +40,7 @@ public class FilmDetailRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = TMDbAPI.FILM_DETAIL
+        String requestURL = TMDbAPI.FILM
                 + id
                 + "?api_key="
                 + TMDbAPI.API_KEY

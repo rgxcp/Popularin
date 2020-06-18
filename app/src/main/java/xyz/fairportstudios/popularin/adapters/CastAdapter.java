@@ -47,7 +47,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         final Integer castID = currentItem.getId();
 
         // Parsing
-        String castProfile = TMDbAPI.IMAGE + currentItem.getProfile_path();
+        String castProfile = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getProfile_path();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()

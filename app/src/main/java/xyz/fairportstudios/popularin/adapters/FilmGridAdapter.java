@@ -52,7 +52,7 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         // Parsing
         final String filmTitle = currentItem.getOriginal_title();
         final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.IMAGE + currentItem.getPoster_path();
+        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster_path();
 
         // Request gambar
         RequestOptions requestOptions = new RequestOptions()
