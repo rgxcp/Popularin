@@ -80,6 +80,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
             public void onClick(View view) {
                 Intent intent = new Intent(context, CreditDetailActivity.class);
                 intent.putExtra(Popularin.CREDIT_ID, castID);
+                intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
                 context.startActivity(intent);
             }
         });

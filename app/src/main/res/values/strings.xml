@@ -9,11 +9,13 @@
     <string name="added_to_watchlist">Film di tambahkan ke watchlist</string>
     <string name="airing">Tayang</string>
     <string name="all">Semua</string>
+    <string name="bio">Bio</string>
     <string name="cast">Pemain</string>
     <string name="comment">Komen</string>
     <string name="comment_added">Komen terkirim</string>
     <string name="comment_deleted">Komen dihapus</string>
     <string name="confirm_password">Konfirmasi Sandi</string>
+    <string name="credit">Kredit</string>
     <string name="crew">Kru</string>
     <string name="current_password">Kata Sandi Lama</string>
     <string name="delete">Hapus</string>
@@ -29,6 +31,8 @@
     <string name="empty_account_favorite">Kamu belum mempunyai film favorit.</string>
     <string name="empty_account_watchlist">Kamu belum mempunyai daftar film\nyang ingin ditonton.</string>
     <string name="empty_comment">Belum ada komen untuk ulasan ini.\nMau jadi yang pertama?</string>
+    <string name="empty_credit_film_as_cast">Belum membintangi film apapun.</string>
+    <string name="empty_credit_film_as_crew">Belum membuat film apapun.</string>
     <string name="empty_film_airing">Film yang sedang tayang di bioskop\nakan tampil di sini.</string>
     <string name="empty_film_favorite">Belum ada yang memfavoritkan film ini.\nMau jadi yang pertama?</string>
     <string name="empty_film_favorite_from_following">Belum ada teman mu yang memfavoritkan film ini.</string>

@@ -80,6 +80,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
             public void onClick(View view) {
                 Intent intent = new Intent(context, CreditDetailActivity.class);
                 intent.putExtra(Popularin.CREDIT_ID, crewID);
+                intent.putExtra(Popularin.VIEW_PAGER_INDEX, 2);
                 context.startActivity(intent);
             }
         });
