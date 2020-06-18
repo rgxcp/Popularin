@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class SignUpRequest {
@@ -103,7 +104,7 @@ public class SignUpRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("API-Key", APIKey.POPULARIN_API_KEY);
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }

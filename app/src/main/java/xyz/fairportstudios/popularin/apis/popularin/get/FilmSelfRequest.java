@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
@@ -79,7 +80,7 @@ public class FilmSelfRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("API-Key", APIKey.POPULARIN_API_KEY);
                 headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }

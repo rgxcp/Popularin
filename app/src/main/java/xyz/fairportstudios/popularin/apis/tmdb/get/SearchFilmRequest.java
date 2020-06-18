@@ -20,6 +20,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class SearchFilmRequest {
@@ -40,7 +41,7 @@ public class SearchFilmRequest {
     public void sendRequest(String query, final Callback callback) {
         String requestURL = TMDbAPI.SEARCH_FILM
                 + "?api_key="
-                + TMDbAPI.API_KEY
+                + APIKey.TMDB_API_KEY
                 + "&language=id&query="
                 + query
                 + "&region=ID";

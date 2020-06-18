@@ -22,6 +22,7 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmDetailRequest {
@@ -43,7 +44,7 @@ public class FilmDetailRequest {
         String requestURL = TMDbAPI.FILM
                 + id
                 + "?api_key="
-                + TMDbAPI.API_KEY
+                + APIKey.TMDB_API_KEY
                 + "&language=id&append_to_response=credits%2Cvideos";
 
         JsonObjectRequest filmDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {

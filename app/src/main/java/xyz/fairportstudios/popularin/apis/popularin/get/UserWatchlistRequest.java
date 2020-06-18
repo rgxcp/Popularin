@@ -22,6 +22,7 @@ import java.util.Map;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserWatchlistRequest {
@@ -96,7 +97,7 @@ public class UserWatchlistRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("API-Key", APIKey.POPULARIN_API_KEY);
                 return headers;
             }
         };

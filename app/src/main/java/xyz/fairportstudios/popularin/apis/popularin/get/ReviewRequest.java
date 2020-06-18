@@ -23,6 +23,7 @@ import java.util.Map;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
@@ -106,7 +107,7 @@ public class ReviewRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("API-Key", APIKey.POPULARIN_API_KEY);
                 headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }

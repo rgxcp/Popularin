@@ -20,6 +20,7 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class AiringFilmRequest {
@@ -40,7 +41,7 @@ public class AiringFilmRequest {
     public void sendRequest(final Callback callback) {
         String requestURL = TMDbAPI.AIRING
                 + "?api_key="
-                + TMDbAPI.API_KEY
+                + APIKey.TMDB_API_KEY
                 + "&language=id&region=ID";
 
         JsonObjectRequest airingFilm = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {

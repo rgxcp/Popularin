@@ -25,6 +25,7 @@ import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserDetailRequest {
@@ -139,7 +140,7 @@ public class UserDetailRequest {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("API-Key", PopularinAPI.API_KEY);
+                headers.put("API-Key", APIKey.POPULARIN_API_KEY);
                 headers.put("Auth-Token", new Auth(context).getAuthToken());
                 return headers;
             }
