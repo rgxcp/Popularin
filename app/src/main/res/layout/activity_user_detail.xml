@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBackground"
-            app:navigationIcon="@drawable/ic_back"
+            app:navigationIcon="@drawable/ic_fill_back"
             app:title="@string/profile" />
     </com.google.android.material.appbar.AppBarLayout>
 

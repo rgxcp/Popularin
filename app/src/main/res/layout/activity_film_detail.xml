@@ -48,7 +48,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:background="@drawable/bg_gradient_bw" />
+                    android:background="@drawable/bg_gradient_black" />
 
                 <ImageView
                     android:id="@+id/image_afd_play"
@@ -57,7 +57,7 @@
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_play"
+                    android:src="@drawable/ic_fill_play"
                     app:layout_collapseMode="parallax" />
 
                 <androidx.appcompat.widget.Toolbar
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/ic_back" />
+                    app:navigationIcon="@drawable/ic_fill_back" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -274,7 +274,7 @@
                     android:background="@drawable/bg_rounded_gray"
                     android:contentDescription="@null"
                     android:padding="8dp"
-                    android:src="@drawable/vc_not_found"
+                    android:src="@drawable/vc_empty_result"
                     android:visibility="gone" />
 
                 <TextView
@@ -321,7 +321,7 @@
             android:layout_gravity="end|bottom"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add" />
+            android:src="@drawable/ic_fill_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

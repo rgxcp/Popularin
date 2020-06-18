@@ -9,7 +9,7 @@
         android:id="@+id/toolbar_rtp_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/ic_back" />
+        app:navigationIcon="@drawable/ic_fill_back" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_rtp_layout"

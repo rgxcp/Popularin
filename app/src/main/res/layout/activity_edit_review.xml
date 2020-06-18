@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBackground"
             app:menu="@menu/edit_review"
-            app:navigationIcon="@drawable/ic_close"
+            app:navigationIcon="@drawable/ic_fill_close"
             app:title="@string/edit_review" />
     </com.google.android.material.appbar.AppBarLayout>
 
