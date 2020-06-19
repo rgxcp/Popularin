@@ -8,7 +8,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,52 +25,55 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 public class MainActivity extends AppCompatActivity {
     // Variable untuk fitur double tap to exit
     private static final int TIME_INTERVAL = 2000;
-    private static long TIME_BACK_PRESSED;
+    private static long sTimeBackPressed;
 
     // Variable member
-    private Boolean isAuth;
-    private Fragment selectedFragment;
-    private final Context context = MainActivity.this;
-    private final Fragment accountFragment = new AccountFragment();
-    private final Fragment airingFragment = new AiringFragment();
-    private final Fragment emptyAccountFragment = new EmptyAccountFragment();
-    private final Fragment genreFragment = new GenreFragment();
-    private final Fragment reviewFragment = new ReviewFragment();
-    private final Fragment searchFragment = new SearchFragment();
-    private final Fragment timelineFragment = new TimelineFragment();
+    private Context mContext;
+    private Boolean mIsAuth;
+    private Fragment mSelectedFragment;
+    private final Fragment mAccountFragment = new AccountFragment();
+    private final Fragment mAiringFragment = new AiringFragment();
+    private final Fragment mEmptyAccountFragment = new EmptyAccountFragment();
+    private final Fragment mGenreFragment = new GenreFragment();
+    private final Fragment mReviewFragment = new ReviewFragment();
+    private final Fragment mSearchFragment = new SearchFragment();
+    private final Fragment mTimelineFragment = new TimelineFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Context
+        mContext = MainActivity.this;
+
         // Auth
-        isAuth = new Auth(context).isAuth();
+        mIsAuth = new Auth(mContext).isAuth();
 
         // Bottom navigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation_am_layout);
         bottomNavigation.setOnNavigationItemSelectedListener(listener);
 
         // Menampilkan fragment otomatis sesuai kondisi
-        if (isAuth) {
-            selectedFragment = timelineFragment;
+        if (mIsAuth) {
+            mSelectedFragment = mTimelineFragment;
         } else {
-            selectedFragment = genreFragment;
+            mSelectedFragment = mGenreFragment;
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_am_container, selectedFragment)
+                .replace(R.id.fragment_am_container, mSelectedFragment)
                 .commit();
     }
 
     @Override
     public void onBackPressed() {
-        if (TIME_INTERVAL + TIME_BACK_PRESSED > System.currentTimeMillis()) {
+        if (TIME_INTERVAL + sTimeBackPressed > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            Toast.makeText(context, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.press_once_more_to_exit, Toast.LENGTH_SHORT).show();
         }
-        TIME_BACK_PRESSED = System.currentTimeMillis();
+        sTimeBackPressed = System.currentTimeMillis();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -79,39 +81,35 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.menu_bn_home:
-                    if (isAuth) {
-                        selectedFragment = timelineFragment;
+                    if (mIsAuth) {
+                        mSelectedFragment = mTimelineFragment;
                     } else {
-                        selectedFragment = genreFragment;
+                        mSelectedFragment = mGenreFragment;
                     }
                     break;
                 case R.id.menu_bn_airing:
-                    selectedFragment = airingFragment;
+                    mSelectedFragment = mAiringFragment;
                     break;
                 case R.id.menu_bn_review:
-                    selectedFragment = reviewFragment;
+                    mSelectedFragment = mReviewFragment;
                     break;
                 case R.id.menu_bn_search:
-                    selectedFragment = searchFragment;
+                    mSelectedFragment = mSearchFragment;
                     break;
                 case R.id.menu_bn_account:
-                    if (isAuth) {
-                        selectedFragment = accountFragment;
+                    if (mIsAuth) {
+                        mSelectedFragment = mAccountFragment;
                     } else {
-                        selectedFragment = emptyAccountFragment;
+                        mSelectedFragment = mEmptyAccountFragment;
                     }
                     break;
             }
 
-            if (selectedFragment != null) {
-                // Menghapus semua back stack terlebih dahulu
-                getSupportFragmentManager()
-                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
+            if (mSelectedFragment != null) {
                 // Menampilkan fragment sesuai pilihan
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_am_container, selectedFragment)
+                        .replace(R.id.fragment_am_container, mSelectedFragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
             }
