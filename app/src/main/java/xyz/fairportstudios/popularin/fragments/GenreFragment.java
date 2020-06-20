@@ -64,7 +64,9 @@ public class GenreFragment extends Fragment implements GenreAdapter.OnClickListe
     @Override
     public void onItemClick(int position) {
         Genre currentItem = mGenreList.get(position);
-        gotoFilmList(currentItem.getId(), currentItem.getTitle());
+        int id = currentItem.getId();
+        String title = currentItem.getTitle();
+        gotoFilmList(id, title);
     }
 
     private void showGenre() {
