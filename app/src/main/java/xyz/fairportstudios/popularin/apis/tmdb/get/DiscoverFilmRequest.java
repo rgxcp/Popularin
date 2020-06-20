@@ -24,28 +24,28 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class DiscoverFilmRequest {
-    private Context context;
-    private Integer genreID;
+    private Context mContext;
+    private int mGenreID;
 
-    public DiscoverFilmRequest(Context context, Integer genreID) {
-        this.context = context;
-        this.genreID = genreID;
+    public DiscoverFilmRequest(Context context, int genreID) {
+        mContext = context;
+        mGenreID = genreID;
     }
 
     public interface Callback {
-        void onSuccess(Integer pages, List<Film> films);
+        void onSuccess(int totalPage, List<Film> filmList);
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
+    public void sendRequest(int page, final Callback callback) {
         String requestURL = TMDbAPI.DISCOVER
                 + "?api_key="
                 + APIKey.TMDB_API_KEY
-                + "&language=id&sort_by=popularity.desc&page="
+                + "&language=id&region=ID&sort_by=popularity.desc&page="
                 + page
                 + "&release_date.gte=2000-01-01&with_genres="
-                + genreID
+                + mGenreID
                 + "&with_original_language=id";
 
         JsonObjectRequest discoverFilm = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
@@ -54,26 +54,26 @@ public class DiscoverFilmRequest {
                 try {
                     List<Film> filmList = new ArrayList<>();
                     JSONArray resultArray = response.getJSONArray("results");
-                    Integer totalPage = response.getInt("total_pages");
+                    int totalPage = response.getInt("total_pages");
 
                     for (int index = 0; index < resultArray.length(); index++) {
                         JSONObject indexObject = resultArray.getJSONObject(index);
-                        String language = indexObject.getString("original_language");
 
-                        if (language.equals("id")) {
-                            Film film = new Film();
-                            film.setId(indexObject.getInt("id"));
-                            film.setOriginal_title(indexObject.getString("original_title"));
-                            film.setRelease_date(indexObject.getString("release_date"));
-                            film.setPoster_path(indexObject.getString("poster_path"));
-                            filmList.add(film);
-                        }
+                        Film film = new Film(
+                                indexObject.getInt("id"),
+                                indexObject.getJSONArray("genre_ids").getInt(0),
+                                indexObject.getString("original_title"),
+                                indexObject.getString("release_date"),
+                                indexObject.getString("poster_path")
+                        );
+
+                        filmList.add(film);
                     }
 
                     callback.onSuccess(totalPage, filmList);
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -81,15 +81,15 @@ public class DiscoverFilmRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         });
 
-        Volley.newRequestQueue(context).add(discoverFilm);
+        Volley.newRequestQueue(mContext).add(discoverFilm);
     }
 }
