@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -18,21 +21,27 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmGridAdapter;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.services.ParseDate;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class CreditFilmAsCastFragment extends Fragment {
+public class CreditFilmAsCastFragment extends Fragment implements FilmGridAdapter.OnClickListener {
     // Variable member
+    private Context mContext;
+    private FilmGridAdapter.OnClickListener mOnClickListener;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerFilm;
     private SwipeRefreshLayout mSwipeRefresh;
     private TextView mTextMessage;
 
     // Variable constructor
-    private List<Film> filmAsCastList;
+    private List<Film> mFilmAsCastList;
 
     public CreditFilmAsCastFragment(List<Film> filmAsCastList) {
-        this.filmAsCastList = filmAsCastList;
+        mFilmAsCastList = filmAsCastList;
     }
 
     @Nullable
@@ -41,7 +50,7 @@ public class CreditFilmAsCastFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Context
-        Context context = getActivity();
+        mContext = getActivity();
 
         // Binding
         mProgressBar = view.findViewById(R.id.pbr_rr_layout);
@@ -50,7 +59,8 @@ public class CreditFilmAsCastFragment extends Fragment {
         mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Mendapatkan data
-        getFilmAsCast(context);
+        mOnClickListener = this;
+        getFilmAsCast(mContext);
 
         // Activity
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -63,9 +73,26 @@ public class CreditFilmAsCastFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onItemClick(int position) {
+        Film currentItem = mFilmAsCastList.get(position);
+        int id = currentItem.getId();
+        gotoFilmDetail(id);
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        Film currentItem = mFilmAsCastList.get(position);
+        int id = currentItem.getId();
+        String title = currentItem.getOriginal_title();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster_path();
+        showFilmModal(id, title, year, poster);
+    }
+
     private void getFilmAsCast(Context context) {
-        if (!filmAsCastList.isEmpty()) {
-            FilmGridAdapter filmGridAdapter = new FilmGridAdapter(context, filmAsCastList);
+        if (!mFilmAsCastList.isEmpty()) {
+            FilmGridAdapter filmGridAdapter = new FilmGridAdapter(context, mFilmAsCastList, mOnClickListener);
             mRecyclerFilm.setAdapter(filmGridAdapter);
             mRecyclerFilm.setLayoutManager(new GridLayoutManager(context, 4));
             mRecyclerFilm.setHasFixedSize(true);
@@ -76,5 +103,17 @@ public class CreditFilmAsCastFragment extends Fragment {
             mTextMessage.setVisibility(View.VISIBLE);
             mTextMessage.setText(R.string.empty_credit_film_as_cast);
         }
+    }
+
+    private void gotoFilmDetail(int id) {
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
+        startActivity(intent);
+    }
+
+    private void showFilmModal(int id, String title, String year, String poster) {
+        FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
+        FilmModal filmModal = new FilmModal(id, title, year, poster);
+        filmModal.show(fragmentManager, Popularin.FILM_MODAL);
     }
 }

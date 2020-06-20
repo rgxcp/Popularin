@@ -23,25 +23,30 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.adapters.FilmGridAdapter;
 import xyz.fairportstudios.popularin.apis.tmdb.get.DiscoverFilmRequest;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class FilmListActivity extends AppCompatActivity {
+public class FilmListActivity extends AppCompatActivity implements FilmGridAdapter.OnClickListener {
     // Variable untuk fitur load more
-    private Boolean isLoadFirstTime = true;
-    private Boolean isLoading = true;
-    private Integer currentPage = 1;
-    private Integer totalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
-    private DiscoverFilmRequest discoverFilmRequest;
-    private FilmGridAdapter filmGridAdapter;
-    private List<Film> filmList;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerFilm;
-    private RelativeLayout anchorLayout;
-    private SwipeRefreshLayout swipeRefresh;
-    private TextView textMessage;
+    private Context mContext;
+    private DiscoverFilmRequest mDiscoverFilmRequest;
+    private FilmGridAdapter mFilmGridAdapter;
+    private FilmGridAdapter.OnClickListener mOnClickListener;
+    private List<Film> mFilmList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerFilm;
+    private RelativeLayout mAnchorLayout;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,28 +54,29 @@ public class FilmListActivity extends AppCompatActivity {
         setContentView(R.layout.reusable_toolbar_recycler);
 
         // Context
-        final Context context = FilmListActivity.this;
+        mContext = FilmListActivity.this;
 
         // Binding
-        progressBar = findViewById(R.id.pbr_rtr_layout);
-        recyclerFilm = findViewById(R.id.recycler_rtr_layout);
-        anchorLayout = findViewById(R.id.anchor_rtr_layout);
-        swipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
-        textMessage = findViewById(R.id.text_rtr_message);
+        mProgressBar = findViewById(R.id.pbr_rtr_layout);
+        mRecyclerFilm = findViewById(R.id.recycler_rtr_layout);
+        mAnchorLayout = findViewById(R.id.anchor_rtr_layout);
+        mSwipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
+        mTextMessage = findViewById(R.id.text_rtr_message);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
         // Extra
         Intent intent = getIntent();
-        final Integer genreID = intent.getIntExtra(Popularin.GENRE_ID, 0);
-        final String genreTitle = intent.getStringExtra(Popularin.GENRE_TITLE);
+        int genreID = intent.getIntExtra(Popularin.GENRE_ID, 0);
+        String genreTitle = intent.getStringExtra(Popularin.GENRE_TITLE);
 
         // Toolbar
         toolbar.setTitle(genreTitle);
 
         // Mendapatkan data awal
-        filmList = new ArrayList<>();
-        discoverFilmRequest = new DiscoverFilmRequest(context, genreID);
-        discoverFilm(context, currentPage);
+        mOnClickListener = this;
+        mFilmList = new ArrayList<>();
+        mDiscoverFilmRequest = new DiscoverFilmRequest(mContext, genreID);
+        discoverFilm(mStartPage, false);
 
         // Activity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -80,69 +86,101 @@ public class FilmListActivity extends AppCompatActivity {
             }
         });
 
-        recyclerFilm.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerFilm.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading && currentPage <= totalPage) {
-                        isLoading = true;
-                        discoverFilm(context, currentPage);
-                        swipeRefresh.setRefreshing(true);
+                    if (!mIsLoading && mCurrentPage <= mTotalPage) {
+                        mIsLoading = true;
+                        mSwipeRefresh.setRefreshing(true);
+                        discoverFilm(mCurrentPage, false);
                     }
                 }
             }
         });
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isLoadFirstTime) {
-                    discoverFilm(context, currentPage);
-                }
-                swipeRefresh.setRefreshing(false);
+                mIsLoading = true;
+                mSwipeRefresh.setRefreshing(true);
+                discoverFilm(mStartPage, true);
             }
         });
     }
 
-    private void discoverFilm(final Context context, Integer page) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        textMessage.setVisibility(View.GONE);
+    @Override
+    public void onItemClick(int position) {
+        Film currentItem = mFilmList.get(position);
+        int id = currentItem.getId();
+        gotoFilmDetail(id);
+    }
 
-        discoverFilmRequest.sendRequest(page, new DiscoverFilmRequest.Callback() {
+    @Override
+    public void onItemLongClick(int position) {
+        Film currentItem = mFilmList.get(position);
+        int id = currentItem.getId();
+        String title = currentItem.getOriginal_title();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster_path();
+        showFilmModal(id, title, year, poster);
+    }
+
+    private void discoverFilm(int page, final boolean refreshPage) {
+        mDiscoverFilmRequest.sendRequest(page, new DiscoverFilmRequest.Callback() {
             @Override
-            public void onSuccess(Integer pages, List<Film> films) {
-                if (isLoadFirstTime) {
-                    int insertIndex = filmList.size();
-                    filmList.addAll(insertIndex, films);
-                    filmGridAdapter = new FilmGridAdapter(context, filmList);
-                    recyclerFilm.setAdapter(filmGridAdapter);
-                    recyclerFilm.setLayoutManager(new GridLayoutManager(context, 4));
-                    recyclerFilm.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    totalPage = pages;
-                    isLoadFirstTime = false;
+            public void onSuccess(int totalPage, List<Film> filmList) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    int insertIndex = mFilmList.size();
+                    mFilmList.addAll(insertIndex, filmList);
+                    mFilmGridAdapter = new FilmGridAdapter(mContext, mFilmList, mOnClickListener);
+                    mRecyclerFilm.setAdapter(mFilmGridAdapter);
+                    mRecyclerFilm.setLayoutManager(new GridLayoutManager(mContext, 4));
+                    mRecyclerFilm.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.GONE);
+                    mTotalPage = totalPage;
+                    mIsLoadFirstTimeSuccess = true;
                 } else {
-                    int insertIndex = filmList.size();
-                    filmList.addAll(insertIndex, films);
-                    filmGridAdapter.notifyItemRangeInserted(insertIndex, films.size());
-                    recyclerFilm.scrollToPosition(insertIndex);
-                    swipeRefresh.setRefreshing(false);
+                    if (refreshPage) {
+                        mCurrentPage = 1;
+                        mFilmList.clear();
+                        mFilmGridAdapter.notifyDataSetChanged();
+                    }
+                    int insertIndex = mFilmList.size();
+                    mFilmList.addAll(insertIndex, filmList);
+                    mFilmGridAdapter.notifyItemRangeInserted(insertIndex, filmList.size());
+                    mRecyclerFilm.scrollToPosition(insertIndex);
                 }
-                currentPage++;
-                isLoading = false;
+                mCurrentPage++;
             }
 
             @Override
             public void onError(String message) {
-                if (isLoadFirstTime) {
-                    progressBar.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.VISIBLE);
-                    textMessage.setText(message);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
                 } else {
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoFilmDetail(int id) {
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
+        startActivity(intent);
+    }
+
+    private void showFilmModal(int id, String title, String year, String poster) {
+        FilmModal filmModal = new FilmModal(id, title, year, poster);
+        filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
     }
 }
