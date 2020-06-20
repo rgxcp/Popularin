@@ -27,24 +27,24 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserMutualRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mUserID;
 
-    public UserMutualRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public UserMutualRequest(Context context, int userID) {
+        mContext = context;
+        mUserID = userID;
     }
 
     public interface Callback {
-        void onSuccess(Integer pages, List<User> users);
+        void onSuccess(int totalPage, List<User> userList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = PopularinAPI.USER + id + "/mutuals?page=" + page;
+    public void sendRequest(int page, final Callback callback) {
+        String requestURL = PopularinAPI.USER + mUserID + "/mutuals?page=" + page;
 
         JsonObjectRequest userMutual = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -56,7 +56,7 @@ public class UserMutualRequest {
                         List<User> userList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
@@ -75,11 +75,11 @@ public class UserMutualRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -87,11 +87,11 @@ public class UserMutualRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -99,11 +99,11 @@ public class UserMutualRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(userMutual);
+        Volley.newRequestQueue(mContext).add(userMutual);
     }
 }

@@ -26,14 +26,14 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class SearchUserRequest {
-    private Context context;
+    private Context mContext;
 
     public SearchUserRequest(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     public interface Callback {
-        void onSuccess(List<User> users);
+        void onSuccess(List<User> userList);
 
         void onNotFound();
 
@@ -71,11 +71,11 @@ public class SearchUserRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -83,11 +83,11 @@ public class SearchUserRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -99,6 +99,6 @@ public class SearchUserRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(searchUser);
+        Volley.newRequestQueue(mContext).add(searchUser);
     }
 }

@@ -26,24 +26,24 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class LikeFromAllRequest {
-    private Context context;
-    private Integer reviewID;
+    private Context mContext;
+    private int mReviewID;
 
-    public LikeFromAllRequest(Context context, Integer reviewID) {
-        this.context = context;
-        this.reviewID = reviewID;
+    public LikeFromAllRequest(Context context, int reviewID) {
+        mContext = context;
+        mReviewID = reviewID;
     }
 
     public interface Callback {
-        void onSuccess(Integer pages, List<User> users);
+        void onSuccess(int totalPage, List<User> userList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = PopularinAPI.REVIEW + reviewID + "/likes/from/all?page=" + page;
+    public void sendRequest(int page, final Callback callback) {
+        String requestURL = PopularinAPI.REVIEW + mReviewID + "/likes/from/all?page=" + page;
 
         JsonObjectRequest likeFromAll = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -55,7 +55,7 @@ public class LikeFromAllRequest {
                         List<User> userList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
@@ -75,11 +75,11 @@ public class LikeFromAllRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -87,11 +87,11 @@ public class LikeFromAllRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -103,6 +103,6 @@ public class LikeFromAllRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(likeFromAll);
+        Volley.newRequestQueue(mContext).add(likeFromAll);
     }
 }
