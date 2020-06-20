@@ -61,11 +61,13 @@ public class UserFollowerRequest {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject followerObject = indexObject.getJSONObject("follower");
 
-                            User user = new User();
-                            user.setId(followerObject.getInt("id"));
-                            user.setFull_name(followerObject.getString("full_name"));
-                            user.setUsername(followerObject.getString("username"));
-                            user.setProfile_picture(followerObject.getString("profile_picture"));
+                            User user = new User(
+                                    followerObject.getInt("id"),
+                                    followerObject.getString("full_name"),
+                                    followerObject.getString("username"),
+                                    followerObject.getString("profile_picture")
+                            );
+
                             userList.add(user);
                         }
 

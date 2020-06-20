@@ -57,11 +57,13 @@ public class SearchUserRequest {
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
 
-                            User user = new User();
-                            user.setId(indexObject.getInt("id"));
-                            user.setFull_name(indexObject.getString("full_name"));
-                            user.setUsername(indexObject.getString("username"));
-                            user.setProfile_picture(indexObject.getString("profile_picture"));
+                            User user = new User(
+                                    indexObject.getInt("id"),
+                                    indexObject.getString("full_name"),
+                                    indexObject.getString("username"),
+                                    indexObject.getString("profile_picture")
+                            );
+
                             userList.add(user);
                         }
 

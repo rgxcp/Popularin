@@ -62,11 +62,13 @@ public class WatchlistFromFollowingRequest {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject userObject = indexObject.getJSONObject("user");
 
-                            User user = new User();
-                            user.setId(userObject.getInt("id"));
-                            user.setFull_name(userObject.getString("full_name"));
-                            user.setUsername(userObject.getString("username"));
-                            user.setProfile_picture(userObject.getString("profile_picture"));
+                            User user = new User(
+                                    userObject.getInt("id"),
+                                    userObject.getString("full_name"),
+                                    userObject.getString("username"),
+                                    userObject.getString("profile_picture")
+                            );
+
                             userList.add(user);
                         }
 
