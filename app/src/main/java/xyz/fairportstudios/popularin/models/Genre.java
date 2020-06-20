@@ -1,41 +1,25 @@
 package xyz.fairportstudios.popularin.models;
 
 public class Genre {
-    private Integer id;
-    private Integer background;
-    private String title;
+    private int mId;
+    private int mBackground;
+    private String mTitle;
 
-    public Genre(
-            Integer id,
-            Integer background,
-            String title
-    ) {
-        this.id = id;
-        this.background = background;
-        this.title = title;
+    public Genre(int id, int background, String title) {
+        mId = id;
+        mBackground = background;
+        mTitle = title;
     }
 
-    public Integer getId() {
-        return id;
+    public int getId() {
+        return mId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getBackground() {
-        return background;
-    }
-
-    public void setBackground(Integer background) {
-        this.background = background;
+    public int getBackground() {
+        return mBackground;
     }
 
     public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+        return mTitle;
     }
 }
