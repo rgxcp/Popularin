@@ -1,7 +1,6 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,76 +11,71 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.models.User;
-import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    private Context context;
-    private List<User> userList;
+    private Context mContext;
+    private List<User> mUserList;
+    private OnClickListener mOnClickListener;
 
-    public UserAdapter(Context context, List<User> userList) {
-        this.context = context;
-        this.userList = userList;
+    public UserAdapter(Context context, List<User> userList, OnClickListener onClickListener) {
+        mContext = context;
+        mUserList = userList;
+        mOnClickListener = onClickListener;
+    }
+
+    public interface OnClickListener {
+        void onItemClick(int position);
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_user, parent, false));
+        return new UserViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recycler_user, parent, false), mOnClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         // Posisi
-        User currentItem = userList.get(position);
-
-        // Extra
-        final Integer userID = currentItem.getId();
-
-        // Request gambar
-        RequestOptions requestOptions = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.colorSurface)
-                .error(R.color.colorSurface);
+        User currentItem = mUserList.get(position);
 
         // Isi
-        holder.textFullName.setText(currentItem.getFull_name());
-        holder.textUsername.setText(String.format("@%s", currentItem.getUsername()));
-        Glide.with(context).load(currentItem.getProfile_picture()).apply(requestOptions).into(holder.imageProfile);
-
-        // Activity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, UserDetailActivity.class);
-                intent.putExtra(Popularin.USER_ID, userID);
-                context.startActivity(intent);
-            }
-        });
+        holder.mTextFullName.setText(currentItem.getFull_name());
+        holder.mTextUsername.setText(String.format("@%s", currentItem.getUsername()));
+        Glide.with(mContext).load(currentItem.getProfile_picture()).into(holder.mImageProfile);
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return mUserList.size();
     }
 
-    static class UserViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageProfile;
-        private TextView textFullName;
-        private TextView textUsername;
+    static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView mImageProfile;
+        private TextView mTextFullName;
+        private TextView mTextUsername;
+        private OnClickListener mOnClickListener;
 
-        UserViewHolder(@NonNull View itemView) {
+        UserViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
 
-            imageProfile = itemView.findViewById(R.id.image_ru_profile);
-            textFullName = itemView.findViewById(R.id.text_ru_full_name);
-            textUsername = itemView.findViewById(R.id.text_ru_username);
+            mImageProfile = itemView.findViewById(R.id.image_ru_profile);
+            mTextFullName = itemView.findViewById(R.id.text_ru_full_name);
+            mTextUsername = itemView.findViewById(R.id.text_ru_username);
+            mOnClickListener = onClickListener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v == itemView) {
+                mOnClickListener.onItemClick(getAdapterPosition());
+            }
         }
     }
 }

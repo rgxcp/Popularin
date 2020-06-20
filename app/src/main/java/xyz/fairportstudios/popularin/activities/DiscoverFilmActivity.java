@@ -139,7 +139,6 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
                     mRecyclerFilm.setLayoutManager(new GridLayoutManager(mContext, 4));
                     mRecyclerFilm.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
-                    mTextMessage.setVisibility(View.GONE);
                     mTotalPage = totalPage;
                     mIsLoadFirstTimeSuccess = true;
                 } else {
@@ -153,6 +152,7 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
                     mFilmGridAdapter.notifyItemRangeInserted(insertIndex, filmList.size());
                     mRecyclerFilm.scrollToPosition(insertIndex);
                 }
+                mTextMessage.setVisibility(View.GONE);
                 mCurrentPage++;
             }
 

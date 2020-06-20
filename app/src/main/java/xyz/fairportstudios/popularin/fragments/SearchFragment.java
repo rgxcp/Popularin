@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,22 +24,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmAdapter;
 import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.SearchUserRequest;
 import xyz.fairportstudios.popularin.apis.tmdb.get.SearchFilmRequest;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements UserAdapter.OnClickListener {
     // Variable untuk fitur search
     private Boolean isSearchFilmFirstTime;
     private Boolean isSearchUserFirstTime;
 
     // Variable member
+    private Context mContext;
     private FilmAdapter filmAdapter;
     private List<Film> filmList;
-    private List<User> userList;
+    private List<User> mUserList;
     private ProgressBar progressBar;
     private RecyclerView recyclerSearch;
     private SearchFilmRequest searchFilmRequest;
@@ -46,6 +50,7 @@ public class SearchFragment extends Fragment {
     private String searchQuery;
     private TextView textMessage;
     private UserAdapter userAdapter;
+    private UserAdapter.OnClickListener mOnClickListener;
 
     @Nullable
     @Override
@@ -53,7 +58,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Context
-        final Context context = getActivity();
+        mContext = getActivity();
 
         // Binding
         progressBar = view.findViewById(R.id.pbr_fs_layout);
@@ -65,6 +70,7 @@ public class SearchFragment extends Fragment {
         final LinearLayout searchInLayout = view.findViewById(R.id.layout_fs_search_in);
 
         // Assign variable untuk fitur search setiap kali fragment di buat
+        mOnClickListener = this;
         isSearchFilmFirstTime = true;
         isSearchUserFirstTime = true;
 
@@ -99,11 +105,11 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 if (isSearchFilmFirstTime) {
                     filmList = new ArrayList<>();
-                    searchFilmRequest = new SearchFilmRequest(context);
+                    searchFilmRequest = new SearchFilmRequest(mContext);
                 }
                 searchInLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                searchFilm(context, searchQuery);
+                searchFilm(mContext, searchQuery);
             }
         });
 
@@ -111,16 +117,23 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (isSearchUserFirstTime) {
-                    userList = new ArrayList<>();
-                    searchUserRequest = new SearchUserRequest(context);
+                    mUserList = new ArrayList<>();
+                    searchUserRequest = new SearchUserRequest(mContext);
                 }
                 searchInLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                searchUser(context, searchQuery);
+                searchUser(searchQuery);
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        User currentItem = mUserList.get(position);
+        int id = currentItem.getId();
+        gotoUserDetail(id);
     }
 
     private void searchFilm(final Context context, String query) {
@@ -162,21 +175,21 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private void searchUser(final Context context, String query) {
+    private void searchUser(String query) {
         searchUserRequest.sendRequest(query, new SearchUserRequest.Callback() {
             @Override
             public void onSuccess(List<User> users) {
                 if (isSearchUserFirstTime) {
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
-                    userAdapter = new UserAdapter(context, userList);
-                    recyclerSearch.setLayoutManager(new LinearLayoutManager(context));
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, users);
+                    userAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);
+                    recyclerSearch.setLayoutManager(new LinearLayoutManager(mContext));
                     isSearchUserFirstTime = false;
                 } else {
-                    userList.clear();
+                    mUserList.clear();
                     userAdapter.notifyDataSetChanged();
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, users);
                     userAdapter.notifyItemRangeInserted(insertIndex, users.size());
                 }
                 recyclerSearch.setAdapter(userAdapter);
@@ -198,5 +211,11 @@ public class SearchFragment extends Fragment {
                 textMessage.setText(message);
             }
         });
+    }
+
+    private void gotoUserDetail(int id) {
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
     }
 }

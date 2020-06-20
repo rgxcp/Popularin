@@ -1,6 +1,7 @@
 package xyz.fairportstudios.popularin.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,32 +23,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.FavoriteFromAllRequest;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class FavoriteFromAllFragment extends Fragment {
+public class FavoriteFromAllFragment extends Fragment implements UserAdapter.OnClickListener {
     // Variable untuk fitur load more
-    private Boolean isLoadFirstTime = true;
-    private Boolean isLoading = true;
-    private Integer currentPage = 1;
-    private Integer totalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
-    private CoordinatorLayout anchorLayout;
-    private FavoriteFromAllRequest favoriteFromAllRequest;
-    private List<User> userList;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerUser;
-    private SwipeRefreshLayout swipeRefresh;
-    private TextView textMessage;
-    private UserAdapter userAdapter;
+    private Context mContext;
+    private CoordinatorLayout mAnchorLayout;
+    private FavoriteFromAllRequest mFavoriteFromAllRequest;
+    private List<User> mUserList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerUser;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextMessage;
+    private UserAdapter mUserAdapter;
+    private UserAdapter.OnClickListener mOnClickListener;
 
     // Variable constructor
-    private Integer filmID;
+    private int mFilmID;
 
-    public FavoriteFromAllFragment(Integer filmID) {
-        this.filmID = filmID;
+    public FavoriteFromAllFragment(int filmID) {
+        mFilmID = filmID;
     }
 
     @Nullable
@@ -56,93 +62,117 @@ public class FavoriteFromAllFragment extends Fragment {
         View view = inflater.inflate(R.layout.reusable_recycler, container, false);
 
         // Context
-        final Context context = getActivity();
+        mContext = getActivity();
 
         // Binding
-        anchorLayout = view.findViewById(R.id.anchor_rr_layout);
-        progressBar = view.findViewById(R.id.pbr_rr_layout);
-        recyclerUser = view.findViewById(R.id.recycler_rr_layout);
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
-        textMessage = view.findViewById(R.id.text_rr_message);
+        mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
+        mProgressBar = view.findViewById(R.id.pbr_rr_layout);
+        mRecyclerUser = view.findViewById(R.id.recycler_rr_layout);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Mendapatkan data awal
-        userList = new ArrayList<>();
-        favoriteFromAllRequest = new FavoriteFromAllRequest(context, filmID);
-        getFavoriteFromAll(context, currentPage);
+        mOnClickListener = this;
+        mUserList = new ArrayList<>();
+        mFavoriteFromAllRequest = new FavoriteFromAllRequest(mContext, mFilmID);
+        getFavoriteFromAll(mStartPage, false);
 
         // Activity
-        recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading && currentPage <= totalPage) {
-                        isLoading = true;
-                        getFavoriteFromAll(context, currentPage);
-                        swipeRefresh.setRefreshing(true);
+                    if (!mIsLoading && mCurrentPage <= mTotalPage) {
+                        mIsLoading = true;
+                        mSwipeRefresh.setRefreshing(true);
+                        getFavoriteFromAll(mCurrentPage, false);
                     }
                 }
             }
         });
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isLoadFirstTime) {
-                    getFavoriteFromAll(context, currentPage);
-                }
-                swipeRefresh.setRefreshing(false);
+                mIsLoading = true;
+                mSwipeRefresh.setRefreshing(true);
+                getFavoriteFromAll(mStartPage, true);
             }
         });
 
         return view;
     }
 
-    private void getFavoriteFromAll(final Context context, Integer page) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        textMessage.setVisibility(View.GONE);
+    @Override
+    public void onItemClick(int position) {
+        User currentItem = mUserList.get(position);
+        int id = currentItem.getId();
+        gotoUserDetail(id);
+    }
 
-        favoriteFromAllRequest.sendRequest(page, new FavoriteFromAllRequest.Callback() {
+    private void getFavoriteFromAll(int page, final boolean refreshPage) {
+        mFavoriteFromAllRequest.sendRequest(page, new FavoriteFromAllRequest.Callback() {
             @Override
-            public void onSuccess(Integer pages, List<User> users) {
-                if (isLoadFirstTime) {
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
-                    userAdapter = new UserAdapter(context, userList);
-                    recyclerUser.setAdapter(userAdapter);
-                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
-                    recyclerUser.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    totalPage = pages;
-                    isLoadFirstTime = false;
+            public void onSuccess(int totalPage, List<User> userList) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);
+                    mRecyclerUser.setAdapter(mUserAdapter);
+                    mRecyclerUser.setLayoutManager(new LinearLayoutManager(mContext));
+                    mRecyclerUser.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mTotalPage = totalPage;
+                    mIsLoadFirstTimeSuccess = true;
                 } else {
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
-                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
-                    recyclerUser.scrollToPosition(insertIndex);
-                    swipeRefresh.setRefreshing(false);
+                    if (refreshPage) {
+                        mCurrentPage = 1;
+                        mUserList.clear();
+                        mUserAdapter.notifyDataSetChanged();
+                    }
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter.notifyItemRangeInserted(insertIndex, userList.size());
+                    mRecyclerUser.scrollToPosition(insertIndex);
                 }
-                currentPage++;
-                isLoading = false;
+                mTextMessage.setVisibility(View.GONE);
+                mCurrentPage++;
             }
 
             @Override
             public void onNotFound() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.empty_film_favorite);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mCurrentPage = 1;
+                    mUserList.clear();
+                    mUserAdapter.notifyDataSetChanged();
+                }
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_film_favorite);
             }
 
             @Override
             public void onError(String message) {
-                if (isLoadFirstTime) {
-                    progressBar.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.VISIBLE);
-                    textMessage.setText(message);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
                 } else {
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoUserDetail(int id) {
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
     }
 }

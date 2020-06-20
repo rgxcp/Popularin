@@ -33,36 +33,39 @@ import xyz.fairportstudios.popularin.models.User;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class FavoritedByActivity extends AppCompatActivity {
+public class FavoritedByActivity extends AppCompatActivity implements UserAdapter.OnClickListener {
     // Variable untuk fitur load more
-    private Boolean isLoadFirstTime = true;
-    private Boolean isLoading = true;
-    private Integer currentPage = 1;
-    private Integer totalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
-    private FavoriteFromAllRequest favoriteFromAllRequest;
-    private List<User> userList;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerUser;
-    private RelativeLayout anchorLayout;
-    private SwipeRefreshLayout swipeRefresh;
-    private TextView textMessage;
-    private UserAdapter userAdapter;
+    private Context mContext;
+    private FavoriteFromAllRequest mFavoriteFromAllRequest;
+    private List<User> mUserList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerUser;
+    private RelativeLayout mAnchorLayout;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextMessage;
+    private UserAdapter mUserAdapter;
+    private UserAdapter.OnClickListener mOnClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Context
-        final Context context = FavoritedByActivity.this;
+        mContext = FavoritedByActivity.this;
 
         // Extra
         Intent intent = getIntent();
-        final Integer filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
+        int filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
 
         // Auth
-        final boolean isAuth = new Auth(context).isAuth();
+        boolean isAuth = new Auth(mContext).isAuth();
 
         // Menampilkan layout berdasarkan kondisi
         if (isAuth) {
@@ -94,20 +97,21 @@ public class FavoritedByActivity extends AppCompatActivity {
             setContentView(R.layout.reusable_toolbar_recycler);
 
             // Binding
-            progressBar = findViewById(R.id.pbr_rtr_layout);
-            recyclerUser = findViewById(R.id.recycler_rtr_layout);
-            anchorLayout = findViewById(R.id.anchor_rtr_layout);
-            swipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
-            textMessage = findViewById(R.id.text_rtr_message);
+            mProgressBar = findViewById(R.id.pbr_rtr_layout);
+            mRecyclerUser = findViewById(R.id.recycler_rtr_layout);
+            mAnchorLayout = findViewById(R.id.anchor_rtr_layout);
+            mSwipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
+            mTextMessage = findViewById(R.id.text_rtr_message);
             Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
             // Toolbar
             toolbar.setTitle(R.string.favorited_by);
 
             // Mendapatkan data awal
-            userList = new ArrayList<>();
-            favoriteFromAllRequest = new FavoriteFromAllRequest(context, filmID);
-            getFavoriteFromAll(context, currentPage);
+            mOnClickListener = this;
+            mUserList = new ArrayList<>();
+            mFavoriteFromAllRequest = new FavoriteFromAllRequest(mContext, filmID);
+            getFavoriteFromAll(mStartPage, false);
 
             // Activity
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -117,77 +121,100 @@ public class FavoritedByActivity extends AppCompatActivity {
                 }
             });
 
-            recyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            mRecyclerUser.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (!isLoading && currentPage <= totalPage) {
-                            isLoading = true;
-                            getFavoriteFromAll(context, currentPage);
-                            swipeRefresh.setRefreshing(true);
+                        if (!mIsLoading && mCurrentPage <= mTotalPage) {
+                            mIsLoading = true;
+                            mSwipeRefresh.setRefreshing(true);
+                            getFavoriteFromAll(mCurrentPage, false);
                         }
                     }
                 }
             });
 
-            swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    if (isLoadFirstTime) {
-                        getFavoriteFromAll(context, currentPage);
-                    }
-                    swipeRefresh.setRefreshing(false);
+                    mIsLoading = true;
+                    mSwipeRefresh.setRefreshing(true);
+                    getFavoriteFromAll(mStartPage, true);
                 }
             });
         }
     }
 
-    private void getFavoriteFromAll(final Context context, Integer page) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        textMessage.setVisibility(View.GONE);
+    @Override
+    public void onItemClick(int position) {
+        User currentItem = mUserList.get(position);
+        int id = currentItem.getId();
+        gotoUserDetail(id);
+    }
 
-        favoriteFromAllRequest.sendRequest(page, new FavoriteFromAllRequest.Callback() {
+    private void getFavoriteFromAll(int page, final boolean refreshPage) {
+        mFavoriteFromAllRequest.sendRequest(page, new FavoriteFromAllRequest.Callback() {
             @Override
-            public void onSuccess(Integer pages, List<User> users) {
-                if (isLoadFirstTime) {
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
-                    userAdapter = new UserAdapter(context, userList);
-                    recyclerUser.setAdapter(userAdapter);
-                    recyclerUser.setLayoutManager(new LinearLayoutManager(context));
-                    recyclerUser.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    totalPage = pages;
-                    isLoadFirstTime = false;
+            public void onSuccess(int totalPage, List<User> userList) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);
+                    mRecyclerUser.setAdapter(mUserAdapter);
+                    mRecyclerUser.setLayoutManager(new LinearLayoutManager(mContext));
+                    mRecyclerUser.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mTotalPage = totalPage;
+                    mIsLoadFirstTimeSuccess = true;
                 } else {
-                    int insertIndex = userList.size();
-                    userList.addAll(insertIndex, users);
-                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
-                    recyclerUser.scrollToPosition(insertIndex);
-                    swipeRefresh.setRefreshing(false);
+                    if (refreshPage) {
+                        mCurrentPage = 1;
+                        mUserList.clear();
+                        mUserAdapter.notifyDataSetChanged();
+                    }
+                    int insertIndex = mUserList.size();
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter.notifyItemRangeInserted(insertIndex, userList.size());
+                    mRecyclerUser.scrollToPosition(insertIndex);
                 }
-                currentPage++;
-                isLoading = false;
+                mTextMessage.setVisibility(View.GONE);
+                mCurrentPage++;
             }
 
             @Override
             public void onNotFound() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.empty_film_favorite);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mCurrentPage = 1;
+                    mUserList.clear();
+                    mUserAdapter.notifyDataSetChanged();
+                }
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_film_favorite);
             }
 
             @Override
             public void onError(String message) {
-                if (isLoadFirstTime) {
-                    progressBar.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.VISIBLE);
-                    textMessage.setText(message);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
                 } else {
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoUserDetail(int id) {
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
     }
 }
