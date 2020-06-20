@@ -28,7 +28,7 @@ import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class FilmListActivity extends AppCompatActivity implements FilmGridAdapter.OnClickListener {
+public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridAdapter.OnClickListener {
     // Variable untuk fitur load more
     private boolean mIsLoading = true;
     private boolean mIsLoadFirstTimeSuccess = false;
@@ -54,7 +54,7 @@ public class FilmListActivity extends AppCompatActivity implements FilmGridAdapt
         setContentView(R.layout.reusable_toolbar_recycler);
 
         // Context
-        mContext = FilmListActivity.this;
+        mContext = DiscoverFilmActivity.this;
 
         // Binding
         mProgressBar = findViewById(R.id.pbr_rtr_layout);

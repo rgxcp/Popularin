@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.FilmListActivity;
+import xyz.fairportstudios.popularin.activities.DiscoverFilmActivity;
 import xyz.fairportstudios.popularin.adapters.GenreAdapter;
 import xyz.fairportstudios.popularin.models.Genre;
 import xyz.fairportstudios.popularin.statics.Popularin;
@@ -66,7 +66,7 @@ public class GenreFragment extends Fragment implements GenreAdapter.OnClickListe
         Genre currentItem = mGenreList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getTitle();
-        gotoFilmList(id, title);
+        gotoDiscoverFilm(id, title);
     }
 
     private void showGenre() {
@@ -95,8 +95,8 @@ public class GenreFragment extends Fragment implements GenreAdapter.OnClickListe
         mProgressBar.setVisibility(View.GONE);
     }
 
-    private void gotoFilmList(int id, String title) {
-        Intent intent = new Intent(mContext, FilmListActivity.class);
+    private void gotoDiscoverFilm(int id, String title) {
+        Intent intent = new Intent(mContext, DiscoverFilmActivity.class);
         intent.putExtra(Popularin.GENRE_ID, id);
         intent.putExtra(Popularin.GENRE_TITLE, title);
         startActivity(intent);

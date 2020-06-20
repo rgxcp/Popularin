@@ -14,12 +14,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.AddReviewActivity" />
         <activity android:name=".activities.CreditDetailActivity" />
+        <activity android:name=".activities.DiscoverFilmActivity" />
         <activity android:name=".activities.EditProfileActivity" />
         <activity android:name=".activities.EditReviewActivity" />
         <activity android:name=".activities.EmptyAccountActivity" />
         <activity android:name=".activities.FavoritedByActivity" />
         <activity android:name=".activities.FilmDetailActivity" />
-        <activity android:name=".activities.FilmListActivity" />
         <activity android:name=".activities.FilmReviewActivity" />
         <activity android:name=".activities.LikedByActivity" />
         <activity android:name=".activities.MainActivity" />

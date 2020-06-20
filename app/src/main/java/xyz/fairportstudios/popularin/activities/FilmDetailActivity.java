@@ -134,7 +134,7 @@ public class FilmDetailActivity extends AppCompatActivity {
         chipGenre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoFilmList(context, genreID, genreTitle);
+                gotoDiscoverFilm(context, genreID, genreTitle);
             }
         });
 
@@ -261,8 +261,8 @@ public class FilmDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void gotoFilmList(Context context, Integer genreID, String genreTitle) {
-        Intent intent = new Intent(context, FilmListActivity.class);
+    private void gotoDiscoverFilm(Context context, Integer genreID, String genreTitle) {
+        Intent intent = new Intent(context, DiscoverFilmActivity.class);
         intent.putExtra(Popularin.GENRE_ID, genreID);
         intent.putExtra(Popularin.GENRE_TITLE, genreTitle);
         startActivity(intent);
