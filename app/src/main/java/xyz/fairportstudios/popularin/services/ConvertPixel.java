@@ -5,8 +5,8 @@ import android.content.Context;
 public class ConvertPixel {
     private Context mContext;
 
-    public ConvertPixel(Context mContext) {
-        this.mContext = mContext;
+    public ConvertPixel(Context context) {
+        mContext = context;
     }
 
     public int getDensity(int px) {
