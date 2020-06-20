@@ -59,12 +59,13 @@ public class AiringFilmRequest {
                             String language = indexObject.getString("original_language");
 
                             if (language.equals("id")) {
-                                Film film = new Film();
-                                film.setId(indexObject.getInt("id"));
-                                film.setGenre_id(indexObject.getJSONArray("genre_ids").getInt(0));
-                                film.setOriginal_title(indexObject.getString("original_title"));
-                                film.setRelease_date(indexObject.getString("release_date"));
-                                film.setPoster_path(indexObject.getString("poster_path"));
+                                Film film = new Film(
+                                        indexObject.getInt("id"),
+                                        indexObject.getJSONArray("genre_ids").getInt(0),
+                                        indexObject.getString("original_title"),
+                                        indexObject.getString("release_date"),
+                                        indexObject.getString("poster_path")
+                                );
                                 filmList.add(film);
                             }
                         }
