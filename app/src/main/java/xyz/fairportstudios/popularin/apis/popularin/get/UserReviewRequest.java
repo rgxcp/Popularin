@@ -27,24 +27,24 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserReviewRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mUserID;
 
-    public UserReviewRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public UserReviewRequest(Context context, int userID) {
+        mContext = context;
+        mUserID = userID;
     }
 
     public interface Callback {
-        void onSuccess(Integer totalPage, List<UserReview> userReviewList);
+        void onSuccess(int totalPage, List<UserReview> userReviewList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = PopularinAPI.USER + id + "/reviews?page=" + page;
+    public void sendRequest(int page, final Callback callback) {
+        String requestURL = PopularinAPI.USER + mUserID + "/reviews?page=" + page;
 
         JsonObjectRequest userReview = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -56,24 +56,26 @@ public class UserReviewRequest {
                         List<UserReview> userReviewList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject filmObject = indexObject.getJSONObject("film");
 
-                            UserReview userReview = new UserReview();
-                            userReview.setId(indexObject.getInt("id"));
-                            userReview.setTmdb_id(filmObject.getInt("tmdb_id"));
-                            userReview.setTotal_like(indexObject.getInt("total_like"));
-                            userReview.setTotal_comment(indexObject.getInt("total_comment"));
-                            userReview.setIs_liked(indexObject.getBoolean("is_liked"));
-                            userReview.setRating(indexObject.getDouble("rating"));
-                            userReview.setReview_detail(indexObject.getString("review_detail"));
-                            userReview.setTimestamp(indexObject.getString("timestamp"));
-                            userReview.setTitle(filmObject.getString("title"));
-                            userReview.setRelease_date(filmObject.getString("release_date"));
-                            userReview.setPoster(filmObject.getString("poster"));
+                            UserReview userReview = new UserReview(
+                                    indexObject.getInt("id"),
+                                    filmObject.getInt("tmdb_id"),
+                                    indexObject.getInt("total_like"),
+                                    indexObject.getInt("total_comment"),
+                                    indexObject.getBoolean("is_liked"),
+                                    indexObject.getDouble("rating"),
+                                    indexObject.getString("review_detail"),
+                                    indexObject.getString("timestamp"),
+                                    filmObject.getString("title"),
+                                    filmObject.getString("release_date"),
+                                    filmObject.getString("poster")
+                            );
+
                             userReviewList.add(userReview);
                         }
 
@@ -81,11 +83,11 @@ public class UserReviewRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -93,11 +95,11 @@ public class UserReviewRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -105,11 +107,11 @@ public class UserReviewRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(userReview);
+        Volley.newRequestQueue(mContext).add(userReview);
     }
 }
