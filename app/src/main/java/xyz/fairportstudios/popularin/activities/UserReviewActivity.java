@@ -33,19 +33,17 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserReviewActivity extends AppCompatActivity implements UserReviewAdapter.OnClickListener {
     // Variable untuk fitur load more
-    private Boolean mIsLoadFirstTimeSuccess = false;
-    private Boolean mIsLoading = true;
-    private Integer mStartPage = 1;
-    private Integer mCurrentPage = 1;
-    private Integer mTotalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
     private Context mContext;
-    private Boolean mIsAuth;
-    private Boolean mIsSelf;
-    private Integer mUserID;
-    private Integer mAuthID;
-    private Integer mTotalLike;
+    private boolean mIsAuth;
+    private boolean mIsSelf;
+    private int mTotalLike;
     private List<UserReview> mUserReviewList;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerUserReview;
@@ -74,13 +72,12 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
 
         // Extra
         Intent intent = getIntent();
-        mUserID = intent.getIntExtra(Popularin.USER_ID, 0);
+        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
 
         // Auth
         Auth auth = new Auth(mContext);
         mIsAuth = auth.isAuth();
-        mAuthID = auth.getAuthID();
-        mIsSelf = mAuthID.equals(mUserID);
+        mIsSelf = userID == auth.getAuthID();
 
         // Toolbar
         toolbar.setTitle(R.string.review);
@@ -88,7 +85,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
         // Mendapatkan data awal
         mOnClickListener = this;
         mUserReviewList = new ArrayList<>();
-        mUserReviewRequest = new UserReviewRequest(mContext, mUserID);
+        mUserReviewRequest = new UserReviewRequest(mContext, userID);
         getUserReview(mStartPage, false);
 
         // Activity
@@ -124,50 +121,43 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        resetState();
-    }
-
-    @Override
     public void onItemClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
-        Integer reviewID = currentItem.getId();
-        Boolean isSelf = mUserID.equals(mAuthID);
-        gotoReviewDetail(reviewID, isSelf);
+        int id = currentItem.getId();
+        gotoReviewDetail(id, mIsSelf);
     }
 
     @Override
     public void onFilmPosterClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
-        Integer filmID = currentItem.getTmdb_id();
-        gotoFilmDetail(filmID);
+        int id = currentItem.getTmdb_id();
+        gotoFilmDetail(id);
     }
 
     @Override
     public void onFilmPosterLongClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
-        Integer filmID = currentItem.getTmdb_id();
-        String filmTitle = currentItem.getTitle();
-        String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        String filmPoster = currentItem.getPoster();
-        showFilmModal(filmID, filmTitle, filmYear, filmPoster);
+        int id = currentItem.getTmdb_id();
+        String title = currentItem.getTitle();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster();
+        showFilmModal(id, title, year, poster);
     }
 
     @Override
     public void onLikeClick(int position) {
         if (mIsAuth) {
             UserReview currentItem = mUserReviewList.get(position);
-            Integer reviewID = currentItem.getId();
-            Boolean isLiked = currentItem.getIs_liked();
+            int id = currentItem.getId();
+            boolean isLiked = currentItem.getIs_liked();
             mTotalLike = currentItem.getTotal_like();
 
             if (!mIsLoading) {
                 mIsLoading = true;
-                if (isLiked) {
-                    unlikeReview(reviewID, position);
+                if (!isLiked) {
+                    likeReview(id, position);
                 } else {
-                    likeReview(reviewID, position);
+                    unlikeReview(id, position);
                 }
             }
         } else {
@@ -178,19 +168,14 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     @Override
     public void onCommentClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
-        Integer reviewID = currentItem.getId();
-        Boolean isSelf = mUserID.equals(mAuthID);
-        gotoReviewComment(reviewID, isSelf);
+        int id = currentItem.getId();
+        gotoReviewComment(id, mIsSelf);
     }
 
-    private void getUserReview(Integer page, final Boolean refreshPage) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        mTextMessage.setVisibility(View.GONE);
-
-        // Mengirim request
+    private void getUserReview(int page, final boolean refreshPage) {
         mUserReviewRequest.sendRequest(page, new UserReviewRequest.Callback() {
             @Override
-            public void onSuccess(Integer totalPage, List<UserReview> userReviewList) {
+            public void onSuccess(int totalPage, List<UserReview> userReviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
                     int insertIndex = mUserReviewList.size();
                     mUserReviewList.addAll(insertIndex, userReviewList);
@@ -213,12 +198,19 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
                     mUserReviewAdapter.notifyItemRangeInserted(insertIndex, userReviewList.size());
                     mRecyclerUserReview.scrollToPosition(insertIndex);
                 }
+                mTextMessage.setVisibility(View.GONE);
                 mCurrentPage++;
             }
 
             @Override
             public void onNotFound() {
-                mProgressBar.setVisibility(View.GONE);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mCurrentPage = 1;
+                    mUserReviewList.clear();
+                    mUserReviewAdapter.notifyDataSetChanged();
+                }
                 mTextMessage.setVisibility(View.VISIBLE);
                 if (mIsSelf) {
                     mTextMessage.setText(R.string.empty_self_review);
@@ -247,36 +239,34 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
         mSwipeRefresh.setRefreshing(false);
     }
 
-    private void gotoReviewDetail(Integer reviewID, Boolean isSelf) {
+    private void gotoReviewDetail(int id, boolean isSelf) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
-        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.REVIEW_ID, id);
         intent.putExtra(Popularin.IS_SELF, isSelf);
-        intent.putExtra(Popularin.VIEW_PAGER_INDEX, 0);
         startActivity(intent);
     }
 
-    private void gotoReviewComment(Integer reviewID, Boolean isSelf) {
+    private void gotoReviewComment(int id, boolean isSelf) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
-        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.REVIEW_ID, id);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
         startActivity(intent);
     }
 
-    private void gotoFilmDetail(Integer filmID) {
+    private void gotoFilmDetail(int id) {
         Intent intent = new Intent(mContext, FilmDetailActivity.class);
-        intent.putExtra(Popularin.FILM_ID, filmID);
+        intent.putExtra(Popularin.FILM_ID, id);
         startActivity(intent);
     }
 
-    private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
-        FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+    private void showFilmModal(int id, String title, String year, String poster) {
+        FilmModal filmModal = new FilmModal(id, title, year, poster);
         filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
     }
 
-    private void likeReview(Integer reviewID, final Integer position) {
-        // Mengirim request
-        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, reviewID);
+    private void likeReview(int id, final int position) {
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, id);
         likeReviewRequest.sendRequest(new LikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -297,9 +287,8 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
         mIsLoading = false;
     }
 
-    private void unlikeReview(Integer reviewID, final Integer position) {
-        // Mengirim request
-        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, reviewID);
+    private void unlikeReview(int id, final int position) {
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, id);
         unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -323,11 +312,5 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     private void gotoEmptyAccount() {
         Intent intent = new Intent(mContext, EmptyAccountActivity.class);
         startActivity(intent);
-    }
-
-    private void resetState() {
-        mIsLoadFirstTimeSuccess = false;
-        mIsLoading = true;
-        mCurrentPage = 1;
     }
 }
