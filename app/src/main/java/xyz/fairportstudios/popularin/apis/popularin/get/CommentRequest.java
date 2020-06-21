@@ -26,24 +26,24 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.models.Comment;
 
 public class CommentRequest {
-    private Context context;
-    private Integer reviewID;
+    private Context mContext;
+    private int mReviewID;
 
-    public CommentRequest(Context context, Integer reviewID) {
-        this.context = context;
-        this.reviewID = reviewID;
+    public CommentRequest(Context context, int reviewID) {
+        mContext = context;
+        mReviewID = reviewID;
     }
 
     public interface Callback {
-        void onSuccess(Integer pages, List<Comment> comments);
+        void onSuccess(int totalPage, List<Comment> commentList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = PopularinAPI.REVIEW + reviewID + "/comments?page=" + page;
+    public void sendRequest(int page, final Callback callback) {
+        String requestURL = PopularinAPI.REVIEW + mReviewID + "/comments?page=" + page;
 
         JsonObjectRequest comment = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -55,19 +55,21 @@ public class CommentRequest {
                         List<Comment> commentList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject userObject = indexObject.getJSONObject("user");
 
-                            Comment comment = new Comment();
-                            comment.setId(indexObject.getInt("id"));
-                            comment.setUser_id(userObject.getInt("id"));
-                            comment.setComment_detail(indexObject.getString("comment_detail"));
-                            comment.setTimestamp(indexObject.getString("timestamp"));
-                            comment.setUsername(userObject.getString("username"));
-                            comment.setProfile_picture(userObject.getString("profile_picture"));
+                            Comment comment = new Comment(
+                                    indexObject.getInt("id"),
+                                    userObject.getInt("id"),
+                                    indexObject.getString("comment_detail"),
+                                    indexObject.getString("timestamp"),
+                                    userObject.getString("username"),
+                                    userObject.getString("profile_picture")
+                            );
+
                             commentList.add(comment);
                         }
 
@@ -75,11 +77,11 @@ public class CommentRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -87,11 +89,11 @@ public class CommentRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -103,6 +105,6 @@ public class CommentRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(comment);
+        Volley.newRequestQueue(mContext).add(comment);
     }
 }

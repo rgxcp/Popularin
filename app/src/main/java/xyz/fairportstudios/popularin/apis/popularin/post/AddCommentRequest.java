@@ -25,14 +25,14 @@ import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class AddCommentRequest {
-    private Context context;
-    private Integer reviewID;
-    private String commentDetail;
+    private Context mContext;
+    private int mReviewID;
+    private String mCommentDetail;
 
-    public AddCommentRequest(Context context, Integer reviewID, String commentDetail) {
-        this.context = context;
-        this.reviewID = reviewID;
-        this.commentDetail = commentDetail;
+    public AddCommentRequest(Context context, int reviewID, String commentDetail) {
+        mContext = context;
+        mReviewID = reviewID;
+        mCommentDetail = commentDetail;
     }
 
     public interface Callback {
@@ -57,24 +57,26 @@ public class AddCommentRequest {
                         JSONObject resultObject = responseObject.getJSONObject("result");
                         JSONObject userObject = resultObject.getJSONObject("user");
 
-                        Comment comment = new Comment();
-                        comment.setId(resultObject.getInt("id"));
-                        comment.setUser_id(userObject.getInt("id"));
-                        comment.setComment_detail(resultObject.getString("comment_detail"));
-                        comment.setTimestamp(resultObject.getString("timestamp"));
-                        comment.setUsername(userObject.getString("username"));
-                        comment.setProfile_picture(userObject.getString("profile_picture"));
+                        Comment comment = new Comment(
+                                resultObject.getInt("id"),
+                                userObject.getInt("id"),
+                                resultObject.getString("comment_detail"),
+                                resultObject.getString("timestamp"),
+                                userObject.getString("username"),
+                                userObject.getString("profile_picture")
+                        );
+
                         callback.onSuccess(comment);
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
                         String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -82,19 +84,19 @@ public class AddCommentRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("review_id", String.valueOf(reviewID));
-                params.put("comment_detail", commentDetail);
+                params.put("review_id", String.valueOf(mReviewID));
+                params.put("comment_detail", mCommentDetail);
                 return params;
             }
 
@@ -102,12 +104,12 @@ public class AddCommentRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(addComment);
+        Volley.newRequestQueue(mContext).add(addComment);
     }
 }

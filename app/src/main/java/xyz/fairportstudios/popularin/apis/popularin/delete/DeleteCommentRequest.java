@@ -23,12 +23,12 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class DeleteCommentRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mCommentID;
 
-    public DeleteCommentRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public DeleteCommentRequest(Context context, int commentID) {
+        mContext = context;
+        mCommentID = commentID;
     }
 
     public interface Callback {
@@ -38,7 +38,7 @@ public class DeleteCommentRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.COMMENT + id;
+        String requestURL = PopularinAPI.COMMENT + mCommentID;
 
         JsonObjectRequest deleteComment = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -49,11 +49,11 @@ public class DeleteCommentRequest {
                     if (status == 404) {
                         callback.onSuccess();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -61,11 +61,11 @@ public class DeleteCommentRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -73,11 +73,11 @@ public class DeleteCommentRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(deleteComment);
+        Volley.newRequestQueue(mContext).add(deleteComment);
     }
 }

@@ -24,12 +24,12 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class ReviewDetailRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mReviewID;
 
-    public ReviewDetailRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public ReviewDetailRequest(Context context, int reviewID) {
+        mContext = context;
+        mReviewID = reviewID;
     }
 
     public interface Callback {
@@ -39,7 +39,7 @@ public class ReviewDetailRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.REVIEW + id;
+        String requestURL = PopularinAPI.REVIEW + mReviewID;
 
         JsonObjectRequest reviewDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -52,27 +52,29 @@ public class ReviewDetailRequest {
                         JSONObject filmObject = resultObject.getJSONObject("film");
                         JSONObject userObject = resultObject.getJSONObject("user");
 
-                        ReviewDetail reviewDetail = new ReviewDetail();
-                        reviewDetail.setTmdb_id(filmObject.getInt("tmdb_id"));
-                        reviewDetail.setUser_id(userObject.getInt("id"));
-                        reviewDetail.setTotal_like(resultObject.getInt("total_like"));
-                        reviewDetail.setIs_liked(resultObject.getBoolean("is_liked"));
-                        reviewDetail.setRating(resultObject.getDouble("rating"));
-                        reviewDetail.setReview_detail(resultObject.getString("review_detail"));
-                        reviewDetail.setReview_date(resultObject.getString("review_date"));
-                        reviewDetail.setWatch_date(resultObject.getString("watch_date"));
-                        reviewDetail.setTitle(filmObject.getString("title"));
-                        reviewDetail.setRelease_date(filmObject.getString("release_date"));
-                        reviewDetail.setPoster(filmObject.getString("poster"));
-                        reviewDetail.setUsername(userObject.getString("username"));
-                        reviewDetail.setProfile_picture(userObject.getString("profile_picture"));
+                        ReviewDetail reviewDetail = new ReviewDetail(
+                                filmObject.getInt("tmdb_id"),
+                                userObject.getInt("id"),
+                                resultObject.getInt("total_like"),
+                                resultObject.getBoolean("is_liked"),
+                                resultObject.getDouble("rating"),
+                                resultObject.getString("review_detail"),
+                                resultObject.getString("review_date"),
+                                resultObject.getString("watch_date"),
+                                filmObject.getString("title"),
+                                filmObject.getString("release_date"),
+                                filmObject.getString("poster"),
+                                userObject.getString("username"),
+                                userObject.getString("profile_picture")
+                        );
+
                         callback.onSuccess(reviewDetail);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -80,11 +82,11 @@ public class ReviewDetailRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -92,11 +94,11 @@ public class ReviewDetailRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(reviewDetail);
+        Volley.newRequestQueue(mContext).add(reviewDetail);
     }
 }
