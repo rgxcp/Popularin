@@ -35,25 +35,22 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter.OnClickListener {
-    // Variable untuk fitur onResume
-    private Boolean isResumeFirsTime = true;
-
     // Variable untuk fitur load more
-    private Boolean mIsLoadFirstTimeSuccess = false;
-    private Boolean mIsLoading = true;
-    private Integer mStartPage = 1;
-    private Integer mCurrentPage = 1;
-    private Integer mTotalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
+    private boolean mIsAuth;
+    private int mAuthID;
+    private int mTotalLike;
     private Context mContext;
-    private Boolean mIsAuth;
     private CoordinatorLayout mAnchorLayout;
     private FilmReviewAdapter mFilmReviewAdapter;
     private FilmReviewAdapter.OnClickListener mOnClickListener;
     private FilmReviewFromAllRequest mFilmReviewFromAllRequest;
-    private Integer mAuthID;
-    private Integer mTotalLike;
     private List<FilmReview> mFilmReviewList;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerFilmReview;
@@ -61,10 +58,10 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     private TextView mTextMessage;
 
     // Variable constructor
-    private Integer filmID;
+    private int mFilmID;
 
-    public ReviewFromAllFragment(Integer filmID) {
-        this.filmID = filmID;
+    public ReviewFromAllFragment(int filmID) {
+        mFilmID = filmID;
     }
 
     @Nullable
@@ -86,6 +83,12 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
         Auth auth = new Auth(mContext);
         mIsAuth = auth.isAuth();
         mAuthID = auth.getAuthID();
+
+        // Mendapatkan data awal
+        mOnClickListener = this;
+        mFilmReviewList = new ArrayList<>();
+        mFilmReviewFromAllRequest = new FilmReviewFromAllRequest(mContext, mFilmID);
+        getFilmReviewFromAll(mStartPage, false);
 
         // Activity
         mRecyclerFilmReview.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,53 +118,34 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (isResumeFirsTime) {
-            // Mendapatkan data awal
-            mOnClickListener = this;
-            mFilmReviewList = new ArrayList<>();
-            mFilmReviewFromAllRequest = new FilmReviewFromAllRequest(mContext, filmID);
-            getFilmReviewFromAll(mStartPage, false);
-            isResumeFirsTime = false;
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        resetState();
-    }
-
-    @Override
     public void onItemClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
-        Integer reviewID = currentItem.getId();
-        Boolean isSelf = currentItem.getUser_id().equals(mAuthID);
-        gotoReviewDetail(reviewID, isSelf);
+        int id = currentItem.getId();
+        boolean isSelf = currentItem.getUser_id() == mAuthID;
+        gotoReviewDetail(id, isSelf);
     }
 
     @Override
     public void onUserProfileClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
-        Integer userID = currentItem.getUser_id();
-        gotoUserDetail(userID);
+        int id = currentItem.getUser_id();
+        gotoUserDetail(id);
     }
 
     @Override
     public void onLikeClick(int position) {
         if (mIsAuth) {
             FilmReview currentItem = mFilmReviewList.get(position);
-            Integer reviewID = currentItem.getId();
-            Boolean isLiked = currentItem.getIs_liked();
+            int id = currentItem.getId();
+            boolean isLiked = currentItem.getIs_liked();
             mTotalLike = currentItem.getTotal_like();
 
             if (!mIsLoading) {
                 mIsLoading = true;
-                if (isLiked) {
-                    unlikeReview(reviewID, position);
+                if (!isLiked) {
+                    likeReview(id, position);
                 } else {
-                    likeReview(reviewID, position);
+                    unlikeReview(id, position);
                 }
             }
         } else {
@@ -172,19 +156,15 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     @Override
     public void onCommentClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
-        Integer reviewID = currentItem.getId();
-        Boolean isSelf = currentItem.getUser_id().equals(mAuthID);
-        gotoReviewComment(reviewID, isSelf);
+        int id = currentItem.getId();
+        boolean isSelf = currentItem.getUser_id() == mAuthID;
+        gotoReviewComment(id, isSelf);
     }
 
-    private void getFilmReviewFromAll(Integer page, final Boolean refreshPage) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        mTextMessage.setVisibility(View.GONE);
-
-        // Mengirim request
+    private void getFilmReviewFromAll(int page, final boolean refreshPage) {
         mFilmReviewFromAllRequest.sendRequest(page, new FilmReviewFromAllRequest.Callback() {
             @Override
-            public void onSuccess(Integer totalPage, List<FilmReview> filmReviewList) {
+            public void onSuccess(int totalPage, List<FilmReview> filmReviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
                     int insertIndex = mFilmReviewList.size();
                     mFilmReviewList.addAll(insertIndex, filmReviewList);
@@ -207,12 +187,19 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
                     mFilmReviewAdapter.notifyItemRangeInserted(insertIndex, filmReviewList.size());
                     mRecyclerFilmReview.scrollToPosition(insertIndex);
                 }
+                mTextMessage.setVisibility(View.GONE);
                 mCurrentPage++;
             }
 
             @Override
             public void onNotFound() {
-                mProgressBar.setVisibility(View.GONE);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mCurrentPage = 1;
+                    mFilmReviewList.clear();
+                    mFilmReviewAdapter.notifyDataSetChanged();
+                }
                 mTextMessage.setVisibility(View.VISIBLE);
                 mTextMessage.setText(R.string.empty_film_review);
             }
@@ -233,31 +220,29 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
         mSwipeRefresh.setRefreshing(false);
     }
 
-    private void gotoReviewDetail(Integer reviewID, Boolean isSelf) {
+    private void gotoReviewDetail(int id, boolean isSelf) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
-        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.REVIEW_ID, id);
         intent.putExtra(Popularin.IS_SELF, isSelf);
-        intent.putExtra(Popularin.VIEW_PAGER_INDEX, 0);
         startActivity(intent);
     }
 
-    private void gotoReviewComment(Integer reviewID, Boolean isSelf) {
+    private void gotoReviewComment(int id, boolean isSelf) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
-        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.REVIEW_ID, id);
         intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
         startActivity(intent);
     }
 
-    private void gotoUserDetail(Integer userID) {
+    private void gotoUserDetail(int id) {
         Intent intent = new Intent(mContext, UserDetailActivity.class);
-        intent.putExtra(Popularin.USER_ID, userID);
+        intent.putExtra(Popularin.USER_ID, id);
         startActivity(intent);
     }
 
-    private void likeReview(Integer reviewID, final Integer position) {
-        // Mengirim request
-        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, reviewID);
+    private void likeReview(int id, final int position) {
+        LikeReviewRequest likeReviewRequest = new LikeReviewRequest(mContext, id);
         likeReviewRequest.sendRequest(new LikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -278,9 +263,8 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
         mIsLoading = false;
     }
 
-    private void unlikeReview(Integer reviewID, final Integer position) {
-        // Mengirim request
-        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, reviewID);
+    private void unlikeReview(int id, final int position) {
+        UnlikeReviewRequest unlikeReviewRequest = new UnlikeReviewRequest(mContext, id);
         unlikeReviewRequest.sendRequest(new UnlikeReviewRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -304,11 +288,5 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     private void gotoEmptyAccount() {
         Intent intent = new Intent(mContext, EmptyAccountActivity.class);
         startActivity(intent);
-    }
-
-    private void resetState() {
-        mIsLoadFirstTimeSuccess = false;
-        mIsLoading = true;
-        mCurrentPage = 1;
     }
 }
