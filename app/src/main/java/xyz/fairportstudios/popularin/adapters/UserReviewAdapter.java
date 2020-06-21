@@ -25,10 +25,10 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
     private List<UserReview> mUserReviewList;
     private OnClickListener mOnClickListener;
 
-    public UserReviewAdapter(Context mContext, List<UserReview> mUserReviewList, OnClickListener mOnClickListener) {
-        this.mContext = mContext;
-        this.mUserReviewList = mUserReviewList;
-        this.mOnClickListener = mOnClickListener;
+    public UserReviewAdapter(Context context, List<UserReview> userReviewList, OnClickListener onClickListener) {
+        mContext = context;
+        mUserReviewList = userReviewList;
+        mOnClickListener = onClickListener;
     }
 
     public interface OnClickListener {
@@ -69,9 +69,9 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         }
 
         // Parsing
-        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
-        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
+        int reviewStar = new ConvertRating().getStar(currentItem.getRating());
+        String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
 
         // Isi
         holder.mTextFilmTitleYear.setText(String.format("%s (%s)", currentItem.getTitle(), filmYear));
