@@ -23,10 +23,10 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     private List<FilmReview> mFilmReviewList;
     private OnClickListener mOnClickListener;
 
-    public FilmReviewAdapter(Context mContext, List<FilmReview> mFilmReviewList, OnClickListener mOnClickListener) {
-        this.mContext = mContext;
-        this.mFilmReviewList = mFilmReviewList;
-        this.mOnClickListener = mOnClickListener;
+    public FilmReviewAdapter(Context context, List<FilmReview> filmReviewList, OnClickListener onClickListener) {
+        mContext = context;
+        mFilmReviewList = filmReviewList;
+        mOnClickListener = onClickListener;
     }
 
     public interface OnClickListener {
@@ -65,7 +65,7 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         }
 
         // Parsing
-        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
+        int reviewStar = new ConvertRating().getStar(currentItem.getRating());
 
         // Isi
         holder.mTextUsername.setText(currentItem.getUsername());
