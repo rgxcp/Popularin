@@ -40,10 +40,10 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     private int mTotalPage;
 
     // Variable member
-    private Context mContext;
     private boolean mIsAuth;
     private boolean mIsSelf;
     private int mTotalLike;
+    private Context mContext;
     private List<UserReview> mUserReviewList;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerUserReview;

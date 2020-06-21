@@ -48,10 +48,10 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     private int mTotalPage;
 
     // Variable member
-    private Context mContext;
     private boolean mIsAuth;
     private int mAuthID;
     private int mTotalLike;
+    private Context mContext;
     private CoordinatorLayout mAnchorLayout;
     private List<Review> mReviewList;
     private ProgressBar mProgressBar;
@@ -182,7 +182,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
         gotoReviewComment(id, isSelf);
     }
 
-    private void getReview(int page, final Boolean refreshPage) {
+    private void getReview(int page, final boolean refreshPage) {
         mReviewRequest.sendRequest(page, new ReviewRequest.Callback() {
             @Override
             public void onSuccess(int totalPage, List<Review> reviewList) {

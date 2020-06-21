@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private static long sTimeBackPressed;
 
     // Variable member
+    private boolean mIsAuth;
     private Context mContext;
-    private Boolean mIsAuth;
     private Fragment mSelectedFragment;
     private final Fragment mAccountFragment = new AccountFragment();
     private final Fragment mAiringFragment = new AiringFragment();

@@ -49,9 +49,9 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     private int mTotalPage;
 
     // Variable member
-    private Context mContext;
     private int mAuthID;
     private int mTotalLike;
+    private Context mContext;
     private CoordinatorLayout mAnchorLayout;
     private List<Review> mReviewList;
     private ProgressBar mProgressBar;
