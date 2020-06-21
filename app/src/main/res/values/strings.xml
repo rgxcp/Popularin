@@ -28,8 +28,8 @@
     <string name="edit_review">Ubah Ulasan</string>
     <string name="email">Email</string>
     <string name="empty_account">Masuk atau daftar terlebih dahulu untuk\nmenikmati semua fitur Popularin!</string>
-    <string name="empty_account_favorite">Kamu belum mempunyai film favorit.</string>
-    <string name="empty_account_watchlist">Kamu belum mempunyai daftar film\nyang ingin ditonton.</string>
+    <string name="empty_self_favorite">Kamu belum mempunyai film favorit.</string>
+    <string name="empty_self_watchlist">Kamu belum mempunyai daftar film\nyang ingin ditonton.</string>
     <string name="empty_comment">Belum ada komen untuk ulasan ini.\nMau jadi yang pertama?</string>
     <string name="empty_credit_film_as_cast">Belum membintangi film apapun.</string>
     <string name="empty_credit_film_as_crew">Belum membuat film apapun.</string>
