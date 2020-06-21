@@ -116,6 +116,12 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        resetState();
+    }
+
+    @Override
     public void onItemClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
@@ -315,5 +321,11 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     private void gotoEmptyAccount() {
         Intent intent = new Intent(mContext, EmptyAccountActivity.class);
         startActivity(intent);
+    }
+
+    private void resetState() {
+        mIsLoading = true;
+        mIsLoadFirstTimeSuccess = false;
+        mCurrentPage = 1;
     }
 }

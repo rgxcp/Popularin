@@ -114,6 +114,12 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        resetState();
+    }
+
+    @Override
     public void onItemClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
@@ -326,5 +332,11 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
         Intent intent = new Intent(mContext, MainActivity.class);
         startActivity(intent);
         Objects.requireNonNull(getActivity()).finish();
+    }
+
+    private void resetState() {
+        mIsLoading = true;
+        mIsLoadFirstTimeSuccess = false;
+        mCurrentPage = 1;
     }
 }
