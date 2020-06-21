@@ -26,24 +26,24 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UserFavoriteRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mUserID;
 
-    public UserFavoriteRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public UserFavoriteRequest(Context context, int userID) {
+        mContext = context;
+        mUserID = userID;
     }
 
     public interface Callback {
-        void onSuccess(Integer pages, List<Film> films);
+        void onSuccess(int totalPage, List<Film> filmList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
-        String requestURL = PopularinAPI.USER + id + "/favorites?page=" + page;
+    public void sendRequest(int page, final Callback callback) {
+        String requestURL = PopularinAPI.USER + mUserID + "/favorites?page=" + page;
 
         JsonObjectRequest userFavorite = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -55,7 +55,7 @@ public class UserFavoriteRequest {
                         List<Film> filmList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
@@ -68,6 +68,7 @@ public class UserFavoriteRequest {
                                     filmObject.getString("release_date"),
                                     filmObject.getString("poster")
                             );
+
                             filmList.add(film);
                         }
 
@@ -75,11 +76,11 @@ public class UserFavoriteRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -87,11 +88,11 @@ public class UserFavoriteRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -103,6 +104,6 @@ public class UserFavoriteRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(userFavorite);
+        Volley.newRequestQueue(mContext).add(userFavorite);
     }
 }
