@@ -16,8 +16,8 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Review;
-import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ConvertRating;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
@@ -25,16 +25,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     private List<Review> mReviewList;
     private OnClickListener mOnClickListener;
 
-    public ReviewAdapter(Context mContext, List<Review> mReviewList, OnClickListener mOnClickListener) {
-        this.mContext = mContext;
-        this.mReviewList = mReviewList;
-        this.mOnClickListener = mOnClickListener;
+    public ReviewAdapter(Context context, List<Review> reviewList, OnClickListener onClickListener) {
+        mContext = context;
+        mReviewList = reviewList;
+        mOnClickListener = onClickListener;
     }
 
     public interface OnClickListener {
         void onItemClick(int position);
 
-        void onUserProfileClicked(int position);
+        void onUserProfileClick(int position);
 
         void onFilmPosterClick(int position);
 
@@ -71,9 +71,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         }
 
         // Parsing
-        final Integer reviewStar = new ConvertRating().getStar(currentItem.getRating());
-        final String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
-        final String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
+        int reviewStar = new ConvertRating().getStar(currentItem.getRating());
+        String filmYear = new ParseDate().getYear(currentItem.getRelease_date());
+        String filmPoster = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getPoster();
 
         // Isi
         holder.mTextFilmTitleYear.setText(String.format("%s (%s)", currentItem.getTitle(), filmYear));
@@ -137,7 +137,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             if (v == itemView) {
                 mOnClickListener.onItemClick(getAdapterPosition());
             } else if (v == mImageUserProfile) {
-                mOnClickListener.onUserProfileClicked(getAdapterPosition());
+                mOnClickListener.onUserProfileClick(getAdapterPosition());
             } else if (v == mImageFilmPoster) {
                 mOnClickListener.onFilmPosterClick(getAdapterPosition());
             } else if (v == mImageLike) {
