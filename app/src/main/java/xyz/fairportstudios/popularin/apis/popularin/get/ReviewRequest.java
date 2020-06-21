@@ -24,25 +24,24 @@ import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.secrets.APIKey;
-import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class ReviewRequest {
-    private Context context;
+    private Context mContext;
 
     public ReviewRequest(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     public interface Callback {
-        void onSuccess(Integer totalPage, List<Review> reviewList);
+        void onSuccess(int totalPage, List<Review> reviewList);
 
         void onNotFound();
 
         void onError(String message);
     }
 
-    public void sendRequest(Integer page, final Callback callback) {
+    public void sendRequest(int page, final Callback callback) {
         String requestURL = PopularinAPI.REVIEWS + "?page=" + page;
 
         JsonObjectRequest review = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
@@ -55,28 +54,30 @@ public class ReviewRequest {
                         List<Review> reviewList = new ArrayList<>();
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONArray dataArray = resultObject.getJSONArray("data");
-                        Integer totalPage = resultObject.getInt("last_page");
+                        int totalPage = resultObject.getInt("last_page");
 
                         for (int index = 0; index < dataArray.length(); index++) {
                             JSONObject indexObject = dataArray.getJSONObject(index);
                             JSONObject filmObject = indexObject.getJSONObject("film");
                             JSONObject userObject = indexObject.getJSONObject("user");
 
-                            Review review = new Review();
-                            review.setId(indexObject.getInt("id"));
-                            review.setTmdb_id(filmObject.getInt("tmdb_id"));
-                            review.setUser_id(userObject.getInt("id"));
-                            review.setTotal_like(indexObject.getInt("total_like"));
-                            review.setTotal_comment(indexObject.getInt("total_comment"));
-                            review.setIs_liked(indexObject.getBoolean("is_liked"));
-                            review.setRating(indexObject.getDouble("rating"));
-                            review.setReview_detail(indexObject.getString("review_detail"));
-                            review.setTimestamp(indexObject.getString("timestamp"));
-                            review.setTitle(filmObject.getString("title"));
-                            review.setRelease_date(filmObject.getString("release_date"));
-                            review.setPoster(filmObject.getString("poster"));
-                            review.setUsername(userObject.getString("username"));
-                            review.setProfile_picture(userObject.getString("profile_picture"));
+                            Review review = new Review(
+                                    indexObject.getInt("id"),
+                                    filmObject.getInt("tmdb_id"),
+                                    userObject.getInt("id"),
+                                    indexObject.getInt("total_like"),
+                                    indexObject.getInt("total_comment"),
+                                    indexObject.getBoolean("is_liked"),
+                                    indexObject.getDouble("rating"),
+                                    indexObject.getString("review_detail"),
+                                    indexObject.getString("timestamp"),
+                                    filmObject.getString("title"),
+                                    filmObject.getString("release_date"),
+                                    filmObject.getString("poster"),
+                                    userObject.getString("username"),
+                                    userObject.getString("profile_picture")
+                            );
+
                             reviewList.add(review);
                         }
 
@@ -84,11 +85,11 @@ public class ReviewRequest {
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -96,11 +97,11 @@ public class ReviewRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -108,11 +109,11 @@ public class ReviewRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(review);
+        Volley.newRequestQueue(mContext).add(review);
     }
 }
