@@ -26,41 +26,46 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
+import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.CommentAdapter;
+import xyz.fairportstudios.popularin.apis.popularin.delete.DeleteCommentRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.CommentRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.AddCommentRequest;
 import xyz.fairportstudios.popularin.models.Comment;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class ReviewCommentFragment extends Fragment {
+public class ReviewCommentFragment extends Fragment implements CommentAdapter.OnClickListener {
     // Variable untuk fitur onResume
-    private Boolean isResumeFirsTime = true;
+    private boolean mIsResumeFirsTime = true;
 
     // Variable untuk fitur load more
-    private Boolean isLoadFirstTimeSuccess = false;
-    private Boolean isLoading = true;
-    private Integer startPage = 1;
-    private Integer currentPage = 1;
-    private Integer totalPage;
+    private boolean mIsLoading = true;
+    private boolean mIsLoadFirstTimeSuccess = false;
+    private int mStartPage = 1;
+    private int mCurrentPage = 1;
+    private int mTotalPage;
 
     // Variable member
-    private Context context;
-    private CommentAdapter commentAdapter;
-    private CommentRequest commentRequest;
-    private EditText inputComment;
-    private ImageView imageSend;
-    private List<Comment> commentList;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerComment;
-    private String comment;
-    private SwipeRefreshLayout swipeRefresh;
-    private TextView textMessage;
+    private int mAuthID;
+    private Context mContext;
+    private CommentAdapter mCommentAdapter;
+    private CommentAdapter.OnClickListener mOnClickListener;
+    private CommentRequest mCommentRequest;
+    private EditText mInputComment;
+    private ImageView mImageSend;
+    private List<Comment> mCommentList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerComment;
+    private String mComment;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextMessage;
 
     // Variable constructor
-    private Integer reviewID;
+    private int mReviewID;
 
-    public ReviewCommentFragment(Integer reviewID) {
-        this.reviewID = reviewID;
+    public ReviewCommentFragment(int reviewID) {
+        mReviewID = reviewID;
     }
 
     @Nullable
@@ -69,54 +74,58 @@ public class ReviewCommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_review_comment, container, false);
 
         // Context
-        context = getActivity();
+        mContext = getActivity();
 
         // Binding
-        inputComment = view.findViewById(R.id.input_frc_comment);
-        imageSend = view.findViewById(R.id.image_frc_send);
-        progressBar = view.findViewById(R.id.pbr_rr_layout);
-        recyclerComment = view.findViewById(R.id.recycler_rr_layout);
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
-        textMessage = view.findViewById(R.id.text_rr_message);
+        mInputComment = view.findViewById(R.id.input_frc_comment);
+        mImageSend = view.findViewById(R.id.image_frc_send);
+        mProgressBar = view.findViewById(R.id.pbr_rr_layout);
+        mRecyclerComment = view.findViewById(R.id.recycler_rr_layout);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
+        mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Auth
-        final Boolean isAuth = new Auth(context).isAuth();
+        Auth auth = new Auth(mContext);
+        mAuthID = auth.getAuthID();
+        final boolean isAuth = new Auth(mContext).isAuth();
 
         // Text watcher
-        inputComment.addTextChangedListener(commentWatcher);
+        mInputComment.addTextChangedListener(commentWatcher);
 
         // Activity
-        imageSend.setOnClickListener(new View.OnClickListener() {
+        mImageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    addComment();
+                    if (!mIsLoading) {
+                        addComment();
+                    }
                 } else {
                     gotoEmptyAccount();
                 }
             }
         });
 
-        recyclerComment.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerComment.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading && currentPage <= totalPage) {
-                        isLoading = true;
-                        swipeRefresh.setRefreshing(true);
-                        getComment(currentPage, false);
+                    if (!mIsLoading && mCurrentPage <= mTotalPage) {
+                        mIsLoading = true;
+                        mSwipeRefresh.setRefreshing(true);
+                        getComment(mCurrentPage, false);
                     }
                 }
             }
         });
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isLoading = true;
-                swipeRefresh.setRefreshing(true);
-                getComment(startPage, true);
+                mIsLoading = true;
+                mSwipeRefresh.setRefreshing(true);
+                getComment(mStartPage, true);
             }
         });
 
@@ -126,19 +135,30 @@ public class ReviewCommentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isResumeFirsTime) {
+        if (mIsResumeFirsTime) {
             // Mendapatkan data awal
-            commentList = new ArrayList<>();
-            commentRequest = new CommentRequest(context, reviewID);
-            getComment(startPage, false);
-            isResumeFirsTime = false;
+            mIsResumeFirsTime = false;
+            mOnClickListener = this;
+            mCommentList = new ArrayList<>();
+            mCommentRequest = new CommentRequest(mContext, mReviewID);
+            getComment(mStartPage, false);
         }
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        resetState();
+    public void onProfileClick(int position) {
+        Comment currentItem = mCommentList.get(position);
+        int id = currentItem.getUser_id();
+        gotoUserDetail(id);
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+        Comment currentItem = mCommentList.get(position);
+        int id = currentItem.getId();
+        if (!mIsLoading) {
+            deleteComment(id, position);
+        }
     }
 
     private TextWatcher commentWatcher = new TextWatcher() {
@@ -149,11 +169,11 @@ public class ReviewCommentFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            comment = inputComment.getText().toString();
-            if (!comment.isEmpty()) {
-                imageSend.setVisibility(View.VISIBLE);
+            mComment = mInputComment.getText().toString();
+            if (!mComment.isEmpty()) {
+                mImageSend.setVisibility(View.VISIBLE);
             } else {
-                imageSend.setVisibility(View.GONE);
+                mImageSend.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -163,99 +183,131 @@ public class ReviewCommentFragment extends Fragment {
         }
     };
 
-    private void getComment(Integer page, final Boolean refreshPage) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        textMessage.setVisibility(View.GONE);
+    private void createAdapter() {
+        mCommentAdapter = new CommentAdapter(mContext, mAuthID, mCommentList, mOnClickListener);
+        mRecyclerComment.setAdapter(mCommentAdapter);
+        mRecyclerComment.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerComment.setVisibility(View.VISIBLE);
+    }
 
-        commentRequest.sendRequest(page, new CommentRequest.Callback() {
+    private void getComment(int page, final boolean refreshPage) {
+        mCommentRequest.sendRequest(page, new CommentRequest.Callback() {
             @Override
-            public void onSuccess(Integer pages, List<Comment> comments) {
-                if (!isLoadFirstTimeSuccess) {
-                    int insertIndex = commentList.size();
-                    commentList.addAll(insertIndex, comments);
+            public void onSuccess(int totalPage, List<Comment> commentList) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    int insertIndex = mCommentList.size();
+                    mCommentList.addAll(insertIndex, commentList);
                     createAdapter();
-                    progressBar.setVisibility(View.GONE);
-                    totalPage = pages;
-                    isLoadFirstTimeSuccess = true;
+                    mProgressBar.setVisibility(View.GONE);
+                    mTotalPage = totalPage;
+                    mIsLoadFirstTimeSuccess = true;
                 } else {
                     if (refreshPage) {
-                        commentList.clear();
-                        commentAdapter.notifyDataSetChanged();
+                        mCurrentPage = 1;
+                        mCommentList.clear();
+                        mCommentAdapter.notifyDataSetChanged();
                     }
-                    int insertIndex = commentList.size();
-                    commentList.addAll(insertIndex, comments);
-                    commentAdapter.notifyItemRangeInserted(insertIndex, comments.size());
-                    recyclerComment.scrollToPosition(insertIndex);
+                    int insertIndex = mCommentList.size();
+                    mCommentList.addAll(insertIndex, commentList);
+                    mCommentAdapter.notifyItemRangeInserted(insertIndex, commentList.size());
+                    mRecyclerComment.scrollToPosition(insertIndex);
                 }
-                currentPage++;
+                mTextMessage.setVisibility(View.GONE);
+                mCurrentPage++;
             }
 
             @Override
             public void onNotFound() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.empty_comment);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mCurrentPage = 1;
+                    mCommentList.clear();
+                    mCommentAdapter.notifyDataSetChanged();
+                }
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_comment);
             }
 
             @Override
             public void onError(String message) {
-                if (!isLoadFirstTimeSuccess) {
-                    progressBar.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.VISIBLE);
-                    textMessage.setText(message);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
                 } else {
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        isLoading = false;
-        swipeRefresh.setRefreshing(false);
-    }
 
-    private void gotoEmptyAccount() {
-        Intent intent = new Intent(context, EmptyAccountActivity.class);
-        context.startActivity(intent);
+        // Memberhentikan loading
+        mIsLoading = false;
+        mSwipeRefresh.setRefreshing(false);
     }
 
     private void addComment() {
-        AddCommentRequest addCommentRequest = new AddCommentRequest(context, reviewID, comment);
+        AddCommentRequest addCommentRequest = new AddCommentRequest(mContext, mReviewID, mComment);
         addCommentRequest.sendRequest(new AddCommentRequest.Callback() {
             @Override
             public void onSuccess(Comment comment) {
-                if (!isLoadFirstTimeSuccess) {
+                int insertIndex = mCommentList.size();
+                mCommentList.add(insertIndex, comment);
+                if (!mIsLoadFirstTimeSuccess) {
                     createAdapter();
-                    textMessage.setVisibility(View.GONE);
+                    mIsLoadFirstTimeSuccess = true;
                 }
-                int insertIndex = commentList.size();
-                commentList.add(insertIndex, comment);
-                commentAdapter.notifyItemInserted(insertIndex);
-                recyclerComment.scrollToPosition(insertIndex);
-                inputComment.getText().clear();
+                mCommentAdapter.notifyItemInserted(insertIndex);
+                mRecyclerComment.scrollToPosition(insertIndex);
+                mTextMessage.setVisibility(View.GONE);
+                mInputComment.getText().clear();
             }
 
             @Override
             public void onFailed(String message) {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(String message) {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 
-    private void createAdapter() {
-        commentAdapter = new CommentAdapter(context, commentList);
-        recyclerComment.setAdapter(commentAdapter);
-        recyclerComment.setLayoutManager(new LinearLayoutManager(context));
-        recyclerComment.setVisibility(View.VISIBLE);
+    private void deleteComment(final int id, final int position) {
+        DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(mContext, id);
+        deleteCommentRequest.sendRequest(new DeleteCommentRequest.Callback() {
+            @Override
+            public void onSuccess() {
+                mCommentList.remove(position);
+                mCommentAdapter.notifyItemRemoved(position);
+                if (mCommentList.isEmpty()) {
+                    mTextMessage.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 
-    private void resetState() {
-        isResumeFirsTime = true;
-        isLoadFirstTimeSuccess = false;
-        isLoading = true;
-        currentPage = 1;
+    private void gotoUserDetail(int id) {
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
+    }
+
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(mContext, EmptyAccountActivity.class);
+        mContext.startActivity(intent);
     }
 }
