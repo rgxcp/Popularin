@@ -1,56 +1,36 @@
 package xyz.fairportstudios.popularin.models;
 
 public class Cast {
-    private Integer id;
-    private String character;
-    private String name;
-    private String profile_path;
-
-    public Cast() {
-        // Constructor kosong
-    }
+    private int mId;
+    private String mName;
+    private String mCharacter;
+    private String mProfile_path;
 
     public Cast(
-            Integer id,
-            String character,
+            int id,
             String name,
+            String character,
             String profile_path
     ) {
-        this.id = id;
-        this.character = character;
-        this.name = name;
-        this.profile_path = profile_path;
+        mId = id;
+        mName = name;
+        mCharacter = character;
+        mProfile_path = profile_path;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(String character) {
-        this.character = character;
+    public int getId() {
+        return mId;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getCharacter() {
+        return mCharacter;
     }
 
     public String getProfile_path() {
-        return profile_path;
-    }
-
-    public void setProfile_path(String profile_path) {
-        this.profile_path = profile_path;
+        return mProfile_path;
     }
 }

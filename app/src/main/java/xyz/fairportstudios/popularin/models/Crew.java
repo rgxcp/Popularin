@@ -1,56 +1,36 @@
 package xyz.fairportstudios.popularin.models;
 
 public class Crew {
-    private Integer id;
-    private String job;
-    private String name;
-    private String profile_path;
-
-    public Crew() {
-        // Constructor kosong
-    }
+    private int mId;
+    private String mName;
+    private String mJob;
+    private String mProfile_path;
 
     public Crew(
-            Integer id,
-            String job,
+            int id,
             String name,
+            String job,
             String profile_path
     ) {
-        this.id = id;
-        this.job = job;
-        this.name = name;
-        this.profile_path = profile_path;
+        mId = id;
+        mName = name;
+        mJob = job;
+        mProfile_path = profile_path;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
+    public int getId() {
+        return mId;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getJob() {
+        return mJob;
     }
 
     public String getProfile_path() {
-        return profile_path;
-    }
-
-    public void setProfile_path(String profile_path) {
-        this.profile_path = profile_path;
+        return mProfile_path;
     }
 }

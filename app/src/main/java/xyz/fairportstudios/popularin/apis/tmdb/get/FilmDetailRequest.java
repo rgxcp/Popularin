@@ -76,11 +76,13 @@ public class FilmDetailRequest {
                     for (int index = 0; index < castArray.length(); index++) {
                         JSONObject indexObject = castArray.getJSONObject(index);
 
-                        Cast cast = new Cast();
-                        cast.setId(indexObject.getInt("id"));
-                        cast.setCharacter(indexObject.getString("character"));
-                        cast.setName(indexObject.getString("name"));
-                        cast.setProfile_path(indexObject.getString("profile_path"));
+                        Cast cast = new Cast(
+                                indexObject.getInt("id"),
+                                indexObject.getString("name"),
+                                indexObject.getString("character"),
+                                indexObject.getString("profile_path")
+                        );
+
                         castList.add(cast);
                     }
 
@@ -90,11 +92,13 @@ public class FilmDetailRequest {
                     for (int index = 0; index < crewArray.length(); index++) {
                         JSONObject indexObject = crewArray.getJSONObject(index);
 
-                        Crew crew = new Crew();
-                        crew.setId(indexObject.getInt("id"));
-                        crew.setJob(indexObject.getString("job"));
-                        crew.setName(indexObject.getString("name"));
-                        crew.setProfile_path(indexObject.getString("profile_path"));
+                        Crew crew = new Crew(
+                                indexObject.getInt("id"),
+                                indexObject.getString("name"),
+                                indexObject.getString("job"),
+                                indexObject.getString("profile_path")
+                        );
+
                         crewList.add(crew);
                     }
 
