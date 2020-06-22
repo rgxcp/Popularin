@@ -57,16 +57,8 @@ public class ReviewDetail {
         return mTotal_like;
     }
 
-    public void setTotal_like(int total_like) {
-        mTotal_like = total_like;
-    }
-
     public boolean getIs_liked() {
         return mIs_liked;
-    }
-
-    public void setIs_liked(boolean is_liked) {
-        mIs_liked = is_liked;
     }
 
     public double getRating() {
