@@ -31,7 +31,7 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FollowerFragment extends Fragment implements UserAdapter.OnClickListener {
     // Variable untuk fitur onResume
-    private boolean mIsResumeFirsTime = true;
+    private boolean mIsResumeFirstTime = true;
 
     // Variable untuk fitur load more
     private boolean mIsLoading = true;
@@ -104,9 +104,9 @@ public class FollowerFragment extends Fragment implements UserAdapter.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        if (mIsResumeFirsTime) {
+        if (mIsResumeFirstTime) {
             // Mendapatkan data awal
-            mIsResumeFirsTime = false;
+            mIsResumeFirstTime = false;
             mOnClickListener = this;
             mUserList = new ArrayList<>();
             mUserFollowerRequest = new UserFollowerRequest(mContext, mUserID);

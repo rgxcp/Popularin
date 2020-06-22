@@ -36,7 +36,7 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.OnClickListener {
     // Variable untuk fitur onResume
-    private boolean isResumeFirsTime = true;
+    private boolean isResumeFirstTime = true;
 
     // Variable untuk fitur load more
     private boolean mIsLoading = true;
@@ -117,9 +117,9 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
     @Override
     public void onResume() {
         super.onResume();
-        if (isResumeFirsTime) {
+        if (isResumeFirstTime) {
             // Mendapatkan data awal
-            isResumeFirsTime = false;
+            isResumeFirstTime = false;
             mOnClickListener = this;
             mFilmReviewList = new ArrayList<>();
             mSelfFilmReviewRequest = new SelfFilmReviewRequest(mContext, mFilmID);
