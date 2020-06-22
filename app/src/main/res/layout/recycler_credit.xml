@@ -17,7 +17,8 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:background="@color/colorSurface"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            android:scaleType="centerCrop" />
     </com.github.florent37.shapeofview.shapes.CircleView>
 
     <TextView
