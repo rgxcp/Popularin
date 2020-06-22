@@ -25,6 +25,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,7 +45,7 @@ import xyz.fairportstudios.popularin.services.ConvertRuntime;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
-public class FilmDetailActivity extends AppCompatActivity {
+public class FilmDetailActivity extends AppCompatActivity implements CastAdapter.OnClickListener, CrewAdapter.OnClickListener {
     private Chip chipGenre;
     private Chip chipRuntime;
     private Chip chipRating;
@@ -67,12 +68,19 @@ public class FilmDetailActivity extends AppCompatActivity {
     private TextView textMessage;
     private Toolbar toolbar;
 
+    private Context mContext;
+    private CastAdapter.OnClickListener mOnCastClickListener;
+    private CrewAdapter.OnClickListener mOnCrewClickListener;
+    private List<Cast> mCastList;
+    private List<Crew> mCrewList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_detail);
 
         // Context
+        mContext = FilmDetailActivity.this;
         final Context context = FilmDetailActivity.this;
 
         // Binding
@@ -107,6 +115,8 @@ public class FilmDetailActivity extends AppCompatActivity {
         collapsingToolbar.setExpandedTitleTypeface(typeface);
 
         // Mendapatkan detail film
+        mOnCastClickListener = this;
+        mOnCrewClickListener = this;
         getFilmDetail(context, filmID);
 
         // Mendapatkan metadata film
@@ -167,11 +177,36 @@ public class FilmDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onCastClick(int position) {
+        Cast currentItem = mCastList.get(position);
+        int id = currentItem.getId();
+        gotoCredit(id, 1);
+    }
+
+    @Override
+    public void onCrewClick(int position) {
+        Crew currentItem = mCrewList.get(position);
+        int id = currentItem.getId();
+        gotoCredit(id, 2);
+    }
+
+    private void gotoCredit(int id, int index) {
+        Intent intent = new Intent(mContext, CreditDetailActivity.class);
+        intent.putExtra(Popularin.CREDIT_ID, id);
+        intent.putExtra(Popularin.VIEW_PAGER_INDEX, index);
+        startActivity(intent);
+    }
+
     private void getFilmDetail(final Context context, Integer filmID) {
         FilmDetailRequest filmDetailRequest = new FilmDetailRequest(context, filmID);
         filmDetailRequest.sendRequest(new FilmDetailRequest.Callback() {
             @Override
             public void onSuccess(FilmDetail filmDetail, List<Cast> casts, List<Crew> crews) {
+                mCastList = new ArrayList<>();
+                mCrewList = new ArrayList<>();
+                mCastList.addAll(casts);
+                mCrewList.addAll(crews);
                 // Setter
                 filmTitle = filmDetail.getOriginal_title();
                 genreID = filmDetail.getGenre_id();
@@ -203,14 +238,14 @@ public class FilmDetailActivity extends AppCompatActivity {
                 Glide.with(context).load(filmPoster).apply(requestOptions).into(imagePoster);
 
                 // Pemain film
-                CastAdapter castAdapter = new CastAdapter(context, casts);
+                CastAdapter castAdapter = new CastAdapter(context, casts, mOnCastClickListener);
                 recyclerCast.setAdapter(castAdapter);
                 recyclerCast.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerCast.setHasFixedSize(true);
                 recyclerCast.setVisibility(View.VISIBLE);
 
                 // Kru film
-                CrewAdapter crewAdapter = new CrewAdapter(context, crews);
+                CrewAdapter crewAdapter = new CrewAdapter(context, crews, mOnCrewClickListener);
                 recyclerCrew.setAdapter(crewAdapter);
                 recyclerCrew.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerCrew.setHasFixedSize(true);

@@ -1,7 +1,6 @@
 package xyz.fairportstudios.popularin.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,96 +11,99 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.CreditDetailActivity;
 import xyz.fairportstudios.popularin.models.Crew;
-import xyz.fairportstudios.popularin.services.ConvertPixel;
-import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder> {
-    private Context context;
-    private List<Crew> crewList;
+    private Context mContext;
+    private List<Crew> mCrewList;
+    private OnClickListener mOnClickListener;
 
-    public CrewAdapter(Context context, List<Crew> crewList) {
-        this.context = context;
-        this.crewList = crewList;
+    public CrewAdapter(Context context, List<Crew> crewList, OnClickListener onClickListener) {
+        mContext = context;
+        mCrewList = crewList;
+        mOnClickListener = onClickListener;
+    }
+
+    public interface OnClickListener {
+        void onCrewClick(int position);
+    }
+
+    public int getDensity(int px) {
+        float dp = px * mContext.getResources().getDisplayMetrics().density;
+        return (int) dp;
     }
 
     @NonNull
     @Override
     public CrewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CrewViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_credit, parent, false));
+        return new CrewViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recycler_credit, parent, false), mOnClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CrewViewHolder holder, int position) {
         // Posisi
-        Crew currentItem = crewList.get(position);
-
-        // Extra
-        final Integer crewID = currentItem.getId();
+        Crew currentItem = mCrewList.get(position);
 
         // Parsing
-        String crewProfile = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getProfile_path();
-
-        // Request gambar
-        RequestOptions requestOptions = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.colorSurface)
-                .error(R.color.colorSurface);
+        String profile = TMDbAPI.BASE_SMALL_IMAGE_URL + currentItem.getProfile_path();
 
         // Isi
-        holder.textCrewName.setText(currentItem.getName());
-        holder.textCrewAs.setText(currentItem.getJob());
-        Glide.with(context).load(crewProfile).apply(requestOptions).into(holder.imageCrewProfile);
+        holder.mTextName.setText(currentItem.getName());
+        holder.mTextAs.setText(currentItem.getJob());
+        Glide.with(mContext).load(profile).into(holder.mImageProfile);
 
         // Margin
-        ConvertPixel convertPixel = new ConvertPixel(context);
+        int left = getDensity(6);
+        int right = getDensity(6);
+
+        boolean isEdgeLeft = position == 0;
+        boolean isEdgeRight = position == getItemCount() - 1;
+
+        if (isEdgeLeft) {
+            left = getDensity(16);
+        }
+        if (isEdgeRight) {
+            right = getDensity(16);
+        }
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0) {
-            layoutParams.leftMargin = convertPixel.getDensity(16);
-            layoutParams.rightMargin = convertPixel.getDensity(8);
-        } else if (position == getItemCount() - 1) {
-            layoutParams.rightMargin = convertPixel.getDensity(16);
-        } else {
-            layoutParams.rightMargin = convertPixel.getDensity(8);
-        }
+        layoutParams.setMarginStart(left);
+        layoutParams.setMarginEnd(right);
         holder.itemView.setLayoutParams(layoutParams);
-
-        // Activity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, CreditDetailActivity.class);
-                intent.putExtra(Popularin.CREDIT_ID, crewID);
-                intent.putExtra(Popularin.VIEW_PAGER_INDEX, 2);
-                context.startActivity(intent);
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return crewList.size();
+        return mCrewList.size();
     }
 
-    static class CrewViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageCrewProfile;
-        private TextView textCrewName;
-        private TextView textCrewAs;
+    static class CrewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView mImageProfile;
+        private TextView mTextName;
+        private TextView mTextAs;
+        private OnClickListener mOnClickListener;
 
-        CrewViewHolder(@NonNull View itemView) {
+        CrewViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
 
-            imageCrewProfile = itemView.findViewById(R.id.image_rcr_profile);
-            textCrewName = itemView.findViewById(R.id.text_rcr_name);
-            textCrewAs = itemView.findViewById(R.id.text_rcr_as);
+            mImageProfile = itemView.findViewById(R.id.image_rcr_profile);
+            mTextName = itemView.findViewById(R.id.text_rcr_name);
+            mTextAs = itemView.findViewById(R.id.text_rcr_as);
+            mOnClickListener = onClickListener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v == itemView) {
+                mOnClickListener.onCrewClick(getAdapterPosition());
+            }
         }
     }
 }
