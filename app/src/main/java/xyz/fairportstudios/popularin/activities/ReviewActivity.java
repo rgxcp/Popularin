@@ -22,7 +22,8 @@ import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class ReviewActivity extends AppCompatActivity {
-    private Toolbar toolbar;
+    // Variable member
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +34,18 @@ public class ReviewActivity extends AppCompatActivity {
         Context context = ReviewActivity.this;
 
         // Binding
-        toolbar = findViewById(R.id.toolbar_rtp_layout);
+        mToolbar = findViewById(R.id.toolbar_rtp_layout);
         TabLayout tabLayout = findViewById(R.id.tab_rtp_layout);
         ViewPager viewPager = findViewById(R.id.pager_rtp_layout);
 
         // Extra
         Intent intent = getIntent();
-        Integer reviewID = intent.getIntExtra(Popularin.REVIEW_ID, 0);
+        int reviewID = intent.getIntExtra(Popularin.REVIEW_ID, 0);
         int viewPagerIndex = intent.getIntExtra(Popularin.VIEW_PAGER_INDEX, 0);
         boolean isSelf = intent.getBooleanExtra(Popularin.IS_SELF, false);
 
         // Toolbar
-        toolbar.setTitle(R.string.review);
+        mToolbar.setTitle(R.string.review);
         if (isSelf) {
             addToolbarMenu(context, reviewID);
         }
@@ -58,7 +59,7 @@ public class ReviewActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         // Activity
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
@@ -66,33 +67,33 @@ public class ReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void addToolbarMenu(final Context context, final Integer reviewID) {
-        toolbar.inflateMenu(R.menu.review_detail);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+    private void addToolbarMenu(final Context context, final int id) {
+        mToolbar.inflateMenu(R.menu.review_detail);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_rd_edit:
-                        editReview(context, reviewID);
+                        editReview(context, id);
                         return true;
                     case R.id.menu_rd_delete:
-                        deleteReview(context, reviewID);
+                        deleteReview(context, id);
                         return true;
                     default:
-                        return true;
+                        return false;
                 }
             }
         });
     }
 
-    private void editReview(Context context, Integer reviewID) {
+    private void editReview(Context context, int id) {
         Intent intent = new Intent(context, EditReviewActivity.class);
-        intent.putExtra(Popularin.REVIEW_ID, reviewID);
+        intent.putExtra(Popularin.REVIEW_ID, id);
         startActivity(intent);
     }
 
-    private void deleteReview(final Context context, Integer reviewID) {
-        DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, reviewID);
+    private void deleteReview(final Context context, int id) {
+        DeleteReviewRequest deleteReviewRequest = new DeleteReviewRequest(context, id);
         deleteReviewRequest.sendRequest(new DeleteReviewRequest.Callback() {
             @Override
             public void onSuccess() {
