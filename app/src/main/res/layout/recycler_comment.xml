@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    android:padding="16dp">
 
     <com.github.florent37.shapeofview.shapes.CircleView
         android:layout_width="wrap_content"
@@ -61,7 +60,7 @@
             android:textSize="15sp" />
 
         <ImageView
-            android:id="@+id/button_rc_delete"
+            android:id="@+id/image_rc_delete"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="end"
@@ -71,13 +70,6 @@
             android:src="@drawable/ic_outline_delete"
             android:tint="@color/redPrimary"
             android:visibility="gone" />
-
-        <View
-            android:id="@+id/border_rc_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/grayPrimary" />
     </LinearLayout>
 
 </LinearLayout>
