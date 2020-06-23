@@ -82,11 +82,13 @@ public class AccountDetailRequest {
                                 JSONObject indexObject = recentFavoriteArray.getJSONObject(index);
                                 JSONObject filmObject = indexObject.getJSONObject("film");
 
-                                RecentFavorite recentFavorite = new RecentFavorite();
-                                recentFavorite.setTmdb_id(filmObject.getInt("tmdb_id"));
-                                recentFavorite.setTitle(filmObject.getString("title"));
-                                recentFavorite.setRelease_date(filmObject.getString("release_date"));
-                                recentFavorite.setPoster(filmObject.getString("poster"));
+                                RecentFavorite recentFavorite = new RecentFavorite(
+                                        filmObject.getInt("tmdb_id"),
+                                        filmObject.getString("title"),
+                                        filmObject.getString("release_date"),
+                                        filmObject.getString("poster")
+                                );
+
                                 recentFavoriteList.add(recentFavorite);
                             }
 
@@ -101,13 +103,15 @@ public class AccountDetailRequest {
                                 JSONObject indexObject = recentReviewArray.getJSONObject(index);
                                 JSONObject filmObject = indexObject.getJSONObject("film");
 
-                                RecentReview recentReview = new RecentReview();
-                                recentReview.setId(indexObject.getInt("id"));
-                                recentReview.setTmdb_id(filmObject.getInt("tmdb_id"));
-                                recentReview.setRating(indexObject.getDouble("rating"));
-                                recentReview.setTitle(filmObject.getString("title"));
-                                recentReview.setRelease_date(filmObject.getString("release_date"));
-                                recentReview.setPoster(filmObject.getString("poster"));
+                                RecentReview recentReview = new RecentReview(
+                                        indexObject.getInt("id"),
+                                        filmObject.getInt("tmdb_id"),
+                                        indexObject.getDouble("rating"),
+                                        filmObject.getString("title"),
+                                        filmObject.getString("release_date"),
+                                        filmObject.getString("poster")
+                                );
+
                                 recentReviewList.add(recentReview);
                             }
 

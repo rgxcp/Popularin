@@ -1,56 +1,36 @@
 package xyz.fairportstudios.popularin.models;
 
 public class RecentFavorite {
-    private Integer tmdb_id;
-    private String title;
-    private String release_date;
-    private String poster;
-
-    public RecentFavorite() {
-        // Constructor kosong
-    }
+    private int mTmdb_id;
+    private String mTitle;
+    private String mRelease_date;
+    private String mPoster;
 
     public RecentFavorite(
-            Integer tmdb_id,
+            int tmdb_id,
             String title,
             String release_date,
             String poster
     ) {
-        this.tmdb_id = tmdb_id;
-        this.title = title;
-        this.release_date = release_date;
-        this.poster = poster;
+        mTmdb_id = tmdb_id;
+        mTitle = title;
+        mRelease_date = release_date;
+        mPoster = poster;
     }
 
-    public Integer getTmdb_id() {
-        return tmdb_id;
-    }
-
-    public void setTmdb_id(Integer tmdb_id) {
-        this.tmdb_id = tmdb_id;
+    public int getTmdb_id() {
+        return mTmdb_id;
     }
 
     public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+        return mTitle;
     }
 
     public String getRelease_date() {
-        return release_date;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
+        return mRelease_date;
     }
 
     public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
+        return mPoster;
     }
 }
