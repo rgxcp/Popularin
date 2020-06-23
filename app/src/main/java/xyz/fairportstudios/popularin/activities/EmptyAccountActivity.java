@@ -20,8 +20,11 @@ public class EmptyAccountActivity extends AppCompatActivity {
         // Context
         final Context context = EmptyAccountActivity.this;
 
-        // Activity
+        // Binding
         Button buttonSignIn = findViewById(R.id.button_rea_sign_in);
+        Button buttonSignUp = findViewById(R.id.button_rea_sign_up);
+
+        // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,7 +32,6 @@ public class EmptyAccountActivity extends AppCompatActivity {
             }
         });
 
-        Button buttonSignUp = findViewById(R.id.button_rea_sign_up);
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

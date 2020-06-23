@@ -26,8 +26,11 @@ public class EmptyAccountFragment extends Fragment {
         // Context
         final Context context = getActivity();
 
-        // Activity
+        // Binding
         Button buttonSignIn = view.findViewById(R.id.button_rea_sign_in);
+        Button buttonSignUp = view.findViewById(R.id.button_rea_sign_up);
+
+        // Activity
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,7 +38,6 @@ public class EmptyAccountFragment extends Fragment {
             }
         });
 
-        Button buttonSignUp = view.findViewById(R.id.button_rea_sign_up);
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
