@@ -36,7 +36,7 @@ import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class UserDetailActivity extends AppCompatActivity {
+public class UserDetailActivity extends AppCompatActivity implements RecentFavoriteAdapter.OnClickListener, RecentReviewAdapter.OnClickListener {
     // Variable untuk fitur swipe refresh
     private Boolean isLoadFirstTime = true;
 
@@ -63,6 +63,9 @@ public class UserDetailActivity extends AppCompatActivity {
     private TextView textTotalFollower;
     private TextView textTotalFollowing;
     private TextView textMessage;
+
+    private RecentFavoriteAdapter.OnClickListener mOnRecentFavoriteClickListener;
+    private RecentReviewAdapter.OnClickListener mOnRecentReviewClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,8 @@ public class UserDetailActivity extends AppCompatActivity {
         }
 
         // Mendapatkan informasi pengguna
+        mOnRecentFavoriteClickListener = this;
+        mOnRecentReviewClickListener = this;
         getUserDetail(context, userID);
 
         // Activity
@@ -185,6 +190,26 @@ public class UserDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRecentFavoriteItemClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentFavoritePosterLongClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentReviewItemClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentReviewPosterLongClick(int position) {
+
+    }
+
     private void getUserDetail(final Context context, Integer userID) {
         // Menghilangkan pesan setiap kali method dijalankan
         textMessage.setVisibility(View.GONE);
@@ -225,7 +250,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
             @Override
             public void onHasRecentFavorite(List<RecentFavorite> recentFavorites) {
-                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites);
+                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites, mOnRecentFavoriteClickListener);
                 recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
                 recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerRecentFavorite.setHasFixedSize(true);
@@ -235,7 +260,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
             @Override
             public void onHasRecentReview(List<RecentReview> recentReviews) {
-                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, isSelf);
+                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, mOnRecentReviewClickListener);
                 recyclerRecentReview.setAdapter(recentReviewAdapter);
                 recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerRecentReview.setHasFixedSize(true);

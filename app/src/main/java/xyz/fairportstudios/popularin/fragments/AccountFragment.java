@@ -45,7 +45,7 @@ import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class AccountFragment extends Fragment {
+public class AccountFragment extends Fragment implements RecentFavoriteAdapter.OnClickListener, RecentReviewAdapter.OnClickListener {
     // Variable untuk fitur swipe refresh
     private Boolean isLoadFirstTime = true;
 
@@ -67,6 +67,9 @@ public class AccountFragment extends Fragment {
     private TextView textTotalFollower;
     private TextView textTotalFollowing;
     private TextView textMessage;
+
+    private RecentFavoriteAdapter.OnClickListener mOnRecentFavoriteClickListener;
+    private RecentReviewAdapter.OnClickListener mOnRecentReviewClickListener;
 
     @Nullable
     @Override
@@ -107,6 +110,8 @@ public class AccountFragment extends Fragment {
         final Integer authID = auth.getAuthID();
 
         // Mendapatkan informasi diri sendiri
+        mOnRecentFavoriteClickListener = this;
+        mOnRecentReviewClickListener = this;
         getAccountDetail(context, authID);
 
         // Activity
@@ -171,6 +176,26 @@ public class AccountFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onRecentFavoriteItemClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentFavoritePosterLongClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentReviewItemClick(int position) {
+
+    }
+
+    @Override
+    public void onRecentReviewPosterLongClick(int position) {
+
+    }
+
     private void getAccountDetail(final Context context, Integer authID) {
         // Menghilangkan pesan setiap kali method dijalankan
         textMessage.setVisibility(View.GONE);
@@ -200,7 +225,7 @@ public class AccountFragment extends Fragment {
 
             @Override
             public void onHasRecentFavorite(List<RecentFavorite> recentFavorites) {
-                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites);
+                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites, mOnRecentFavoriteClickListener);
                 recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
                 recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerRecentFavorite.setHasFixedSize(true);
@@ -210,7 +235,7 @@ public class AccountFragment extends Fragment {
 
             @Override
             public void onHasRecentReview(List<RecentReview> recentReviews) {
-                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, true);
+                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, mOnRecentReviewClickListener);
                 recyclerRecentReview.setAdapter(recentReviewAdapter);
                 recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
                 recyclerRecentReview.setHasFixedSize(true);
