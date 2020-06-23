@@ -43,13 +43,13 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/image_mf_review"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_centerHorizontal="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_outline_eye"
@@ -59,7 +59,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/image_mf_review"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/review"
@@ -70,13 +69,13 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/image_mf_favorite"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_centerHorizontal="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_outline_heart"
@@ -86,7 +85,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/image_mf_favorite"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/favorite"
@@ -97,13 +95,13 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/image_mf_watchlist"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_centerHorizontal="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_outline_watchlist"
@@ -113,7 +111,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/image_mf_watchlist"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/jost_regular"
                 android:text="@string/watchlist"

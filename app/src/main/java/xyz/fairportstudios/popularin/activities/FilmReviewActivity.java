@@ -113,7 +113,7 @@ public class FilmReviewActivity extends AppCompatActivity implements FilmReviewA
             mRecyclerFilmReview = findViewById(R.id.recycler_rtr_layout);
             mAnchorLayout = findViewById(R.id.anchor_rtr_layout);
             mSwipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
-            mTextMessage = findViewById(R.id.text_rtr_message);
+            mTextMessage = findViewById(R.id.text_aud_message);
             Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
 
             // Toolbar

@@ -26,7 +26,7 @@
         android:padding="170dp" />
 
     <TextView
-        android:id="@+id/text_rtr_message"
+        android:id="@+id/text_aud_message"
         style="@style/TextMessagePrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
