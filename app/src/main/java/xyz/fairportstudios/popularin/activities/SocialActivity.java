@@ -37,7 +37,7 @@ public class SocialActivity extends AppCompatActivity {
 
         // Extra
         Intent intent = getIntent();
-        Integer userID = intent.getIntExtra(Popularin.USER_ID, 0);
+        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
         int viewPagerIndex = intent.getIntExtra(Popularin.VIEW_PAGER_INDEX, 0);
 
         // Auth
