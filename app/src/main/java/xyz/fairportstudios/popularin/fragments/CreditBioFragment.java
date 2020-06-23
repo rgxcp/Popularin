@@ -21,14 +21,14 @@ import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class CreditBioFragment extends Fragment {
     // Variable member
-    ImageView mImageProfile;
-    TextView mTextBio;
+    private ImageView mImageProfile;
+    private TextView mTextBio;
 
     // Variable constructor
-    private CreditDetail creditDetail;
+    private CreditDetail mCreditDetail;
 
     public CreditBioFragment(CreditDetail creditDetail) {
-        this.creditDetail = creditDetail;
+        mCreditDetail = creditDetail;
     }
 
     @Nullable
@@ -50,7 +50,12 @@ public class CreditBioFragment extends Fragment {
     }
 
     private void getCreditBio(Context context) {
-        mTextBio.setText(new ParseBio().getBioForHumans(creditDetail));
-        Glide.with(context).load(TMDbAPI.BASE_SMALL_IMAGE_URL + creditDetail.getProfile_path()).into(mImageProfile);
+        // Parsing
+        String bio = new ParseBio().getBioForHumans(mCreditDetail);
+        String profile = TMDbAPI.BASE_SMALL_IMAGE_URL + mCreditDetail.getProfile_path();
+
+        // Isi
+        mTextBio.setText(bio);
+        Glide.with(context).load(profile).into(mImageProfile);
     }
 }

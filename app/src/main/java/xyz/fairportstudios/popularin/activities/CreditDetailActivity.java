@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -27,8 +28,9 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class CreditDetailActivity extends AppCompatActivity {
     // Variable member
-    TabLayout mTabLayout;
-    ViewPager mViewPager;
+    private LinearLayout mAnchorLayout;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +41,15 @@ public class CreditDetailActivity extends AppCompatActivity {
         Context context = CreditDetailActivity.this;
 
         // Binding
+        mAnchorLayout = findViewById(R.id.anchor_rtp_layout);
         mTabLayout = findViewById(R.id.tab_rtp_layout);
         mViewPager = findViewById(R.id.pager_rtp_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_rtp_layout);
 
         // Extra
         Intent intent = getIntent();
-        Integer creditID = intent.getIntExtra(Popularin.CREDIT_ID, 0);
-        Integer viewPagerIndex = intent.getIntExtra(Popularin.VIEW_PAGER_INDEX, 0);
+        int creditID = intent.getIntExtra(Popularin.CREDIT_ID, 0);
+        int viewPagerIndex = intent.getIntExtra(Popularin.VIEW_PAGER_INDEX, 0);
 
         // Toolbar
         toolbar.setTitle(R.string.credit);
@@ -63,8 +66,8 @@ public class CreditDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void getCreditDetail(final Context context, Integer creditID, final Integer viewPagerIndex) {
-        CreditDetailRequest creditDetailRequest = new CreditDetailRequest(context, creditID);
+    private void getCreditDetail(final Context context, final int id, final int viewPagerIndex) {
+        CreditDetailRequest creditDetailRequest = new CreditDetailRequest(context, id);
         creditDetailRequest.sendRequest(new CreditDetailRequest.Callback() {
             @Override
             public void onSuccess(CreditDetail creditDetail, List<Film> filmAsCastList, List<Film> filmAsCrewList) {
@@ -81,7 +84,12 @@ public class CreditDetailActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_INDEFINITE).setAction(R.string.retry, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getCreditDetail(context, id, viewPagerIndex);
+                    }
+                }).show();
             }
         });
     }

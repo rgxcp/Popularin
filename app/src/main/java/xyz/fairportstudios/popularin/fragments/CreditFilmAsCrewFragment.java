@@ -34,7 +34,6 @@ public class CreditFilmAsCrewFragment extends Fragment implements FilmGridAdapte
     private FilmGridAdapter.OnClickListener mOnClickListener;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerFilm;
-    private SwipeRefreshLayout mSwipeRefresh;
     private TextView mTextMessage;
 
     // Variable constructor
@@ -55,18 +54,18 @@ public class CreditFilmAsCrewFragment extends Fragment implements FilmGridAdapte
         // Binding
         mProgressBar = view.findViewById(R.id.pbr_rr_layout);
         mRecyclerFilm = view.findViewById(R.id.recycler_rr_layout);
-        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
         mTextMessage = view.findViewById(R.id.text_rr_message);
+        final SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
 
         // Mendapatkan data
         mOnClickListener = this;
-        getFilmAsCrew(mContext);
+        getFilmAsCrew();
 
         // Activity
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mSwipeRefresh.setRefreshing(false);
+                swipeRefresh.setRefreshing(false);
             }
         });
 
@@ -90,11 +89,11 @@ public class CreditFilmAsCrewFragment extends Fragment implements FilmGridAdapte
         showFilmModal(id, title, year, poster);
     }
 
-    private void getFilmAsCrew(Context context) {
+    private void getFilmAsCrew() {
         if (!mFilmAsCrewList.isEmpty()) {
-            FilmGridAdapter filmGridAdapter = new FilmGridAdapter(context, mFilmAsCrewList, mOnClickListener);
+            FilmGridAdapter filmGridAdapter = new FilmGridAdapter(mContext, mFilmAsCrewList, mOnClickListener);
             mRecyclerFilm.setAdapter(filmGridAdapter);
-            mRecyclerFilm.setLayoutManager(new GridLayoutManager(context, 4));
+            mRecyclerFilm.setLayoutManager(new GridLayoutManager(mContext, 4));
             mRecyclerFilm.setHasFixedSize(true);
             mRecyclerFilm.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
