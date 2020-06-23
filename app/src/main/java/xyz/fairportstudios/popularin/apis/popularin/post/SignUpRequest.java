@@ -23,11 +23,11 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class SignUpRequest {
-    private Context context;
-    private String fullName;
-    private String username;
-    private String email;
-    private String password;
+    private Context mContext;
+    private String mFullName;
+    private String mUsername;
+    private String mEmail;
+    private String mPassword;
 
     public SignUpRequest(
             Context context,
@@ -36,15 +36,15 @@ public class SignUpRequest {
             String email,
             String password
     ) {
-        this.context = context;
-        this.fullName = fullName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
+        mContext = context;
+        mFullName = fullName;
+        mUsername = username;
+        mEmail = email;
+        mPassword = password;
     }
 
     public interface Callback {
-        void onSuccess(Integer id, String token);
+        void onSuccess(int id, String token);
 
         void onFailed(String message);
 
@@ -63,19 +63,19 @@ public class SignUpRequest {
 
                     if (status == 505) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        Integer id = resultObject.getInt("id");
+                        int id = resultObject.getInt("id");
                         String token = resultObject.getString("api_token");
                         callback.onSuccess(id, token);
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
-                        String message = resultArray.get(0).toString();
+                        String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -83,21 +83,21 @@ public class SignUpRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("full_name", fullName);
-                params.put("username", username);
-                params.put("email", email);
-                params.put("password", password);
+                params.put("full_name", mFullName);
+                params.put("username", mUsername);
+                params.put("email", mEmail);
+                params.put("password", mPassword);
                 return params;
             }
 
@@ -110,6 +110,6 @@ public class SignUpRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(signUp);
+        Volley.newRequestQueue(mContext).add(signUp);
     }
 }

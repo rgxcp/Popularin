@@ -24,10 +24,10 @@ import xyz.fairportstudios.popularin.models.SelfDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SelfDetailRequest {
-    private Context context;
+    private Context mContext;
 
     public SelfDetailRequest(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     public interface Callback {
@@ -48,17 +48,19 @@ public class SelfDetailRequest {
                     if (status == 101) {
                         JSONObject resultObject = response.getJSONObject("result");
 
-                        SelfDetail selfDetail = new SelfDetail();
-                        selfDetail.setFull_name(resultObject.getString("full_name"));
-                        selfDetail.setUsername(resultObject.getString("username"));
-                        selfDetail.setEmail(resultObject.getString("email"));
+                        SelfDetail selfDetail = new SelfDetail(
+                                resultObject.getString("full_name"),
+                                resultObject.getString("username"),
+                                resultObject.getString("email")
+                        );
+
                         callback.onSuccess(selfDetail);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -66,11 +68,11 @@ public class SelfDetailRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -78,11 +80,11 @@ public class SelfDetailRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(selfDetail);
+        Volley.newRequestQueue(mContext).add(selfDetail);
     }
 }

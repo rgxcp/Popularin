@@ -23,10 +23,10 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignOutRequest {
-    private Context context;
+    private Context mContext;
 
     public SignOutRequest(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     public interface Callback {
@@ -47,11 +47,11 @@ public class SignOutRequest {
                     if (status == 525) {
                         callback.onSuccess();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -59,11 +59,11 @@ public class SignOutRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -71,11 +71,11 @@ public class SignOutRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(signOut);
+        Volley.newRequestQueue(mContext).add(signOut);
     }
 }

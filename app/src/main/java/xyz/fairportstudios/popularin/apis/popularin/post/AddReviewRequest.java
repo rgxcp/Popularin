@@ -25,23 +25,23 @@ import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class AddReviewRequest {
     private Context context;
-    private Integer tmdbID;
-    private Float rating;
-    private String reviewDetail;
-    private String watchDate;
+    private int mFilmID;
+    private float mRating;
+    private String mReviewDetail;
+    private String mWatchDate;
 
     public AddReviewRequest(
             Context context,
-            Integer tmdbID,
-            Float rating,
+            int filmID,
+            float rating,
             String reviewDetail,
             String watchDate
     ) {
         this.context = context;
-        this.tmdbID = tmdbID;
-        this.rating = rating;
-        this.reviewDetail = reviewDetail;
-        this.watchDate = watchDate;
+        mFilmID = filmID;
+        mRating = rating;
+        mReviewDetail = reviewDetail;
+        mWatchDate = watchDate;
     }
 
     public interface Callback {
@@ -92,10 +92,10 @@ public class AddReviewRequest {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("tmdb_id", String.valueOf(tmdbID));
-                params.put("rating", String.valueOf(rating));
-                params.put("review_detail", reviewDetail);
-                params.put("watch_date", watchDate);
+                params.put("tmdb_id", String.valueOf(mFilmID));
+                params.put("rating", String.valueOf(mRating));
+                params.put("review_detail", mReviewDetail);
+                params.put("watch_date", mWatchDate);
                 return params;
             }
 

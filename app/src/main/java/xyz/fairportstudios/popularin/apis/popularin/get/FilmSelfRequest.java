@@ -24,12 +24,12 @@ import xyz.fairportstudios.popularin.models.FilmSelf;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class FilmSelfRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mFilmID;
 
-    public FilmSelfRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public FilmSelfRequest(Context context, int filmID) {
+        mContext = context;
+        mFilmID = filmID;
     }
 
     public interface Callback {
@@ -39,7 +39,7 @@ public class FilmSelfRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.FILM + id + "/self";
+        String requestURL = PopularinAPI.FILM + mFilmID + "/self";
 
         JsonObjectRequest filmSelf = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -50,18 +50,20 @@ public class FilmSelfRequest {
                     if (status == 101) {
                         JSONObject resultObject = response.getJSONObject("result");
 
-                        FilmSelf filmSelf = new FilmSelf();
-                        filmSelf.setIn_review(resultObject.getBoolean("in_review"));
-                        filmSelf.setIn_favorite(resultObject.getBoolean("in_favorite"));
-                        filmSelf.setIn_watchlist(resultObject.getBoolean("in_watchlist"));
-                        filmSelf.setLast_rate(resultObject.getDouble("last_rate"));
+                        FilmSelf filmSelf = new FilmSelf(
+                                resultObject.getBoolean("in_review"),
+                                resultObject.getBoolean("in_favorite"),
+                                resultObject.getBoolean("in_watchlist"),
+                                resultObject.getDouble("last_rate")
+                        );
+
                         callback.onSuccess(filmSelf);
                     } else {
-                        callback.onError(context.getString(R.string.film_self_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.film_self_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -69,11 +71,11 @@ public class FilmSelfRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.film_self_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -81,11 +83,11 @@ public class FilmSelfRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(filmSelf);
+        Volley.newRequestQueue(mContext).add(filmSelf);
     }
 }

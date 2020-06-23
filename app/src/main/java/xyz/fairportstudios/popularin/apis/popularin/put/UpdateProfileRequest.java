@@ -24,10 +24,10 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class UpdateProfileRequest {
-    private Context context;
-    private String fullName;
-    private String username;
-    private String email;
+    private Context mContext;
+    private String mFullName;
+    private String mUsername;
+    private String mEmail;
 
     public UpdateProfileRequest(
             Context context,
@@ -35,14 +35,14 @@ public class UpdateProfileRequest {
             String username,
             String email
     ) {
-        this.context = context;
-        this.fullName = fullName;
-        this.username = username;
-        this.email = email;
+        mContext = context;
+        mFullName = fullName;
+        mUsername = username;
+        mEmail = email;
     }
 
     public interface Callback {
-        void onSuccess(Integer id, String token);
+        void onSuccess(int id, String token);
 
         void onFailed(String message);
 
@@ -61,19 +61,19 @@ public class UpdateProfileRequest {
 
                     if (status == 303) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        Integer id = resultObject.getInt("id");
+                        int id = resultObject.getInt("id");
                         String token = resultObject.getString("api_token");
                         callback.onSuccess(id, token);
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
-                        String message = resultArray.get(0).toString();
+                        String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -81,20 +81,20 @@ public class UpdateProfileRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("full_name", fullName);
-                params.put("username", username);
-                params.put("email", email);
+                params.put("full_name", mFullName);
+                params.put("username", mUsername);
+                params.put("email", mEmail);
                 return params;
             }
 
@@ -102,12 +102,12 @@ public class UpdateProfileRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(updateProfile);
+        Volley.newRequestQueue(mContext).add(updateProfile);
     }
 }

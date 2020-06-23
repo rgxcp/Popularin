@@ -26,23 +26,23 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmDetailRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mFilmID;
 
-    public FilmDetailRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public FilmDetailRequest(Context context, int FilmID) {
+        mContext = context;
+        mFilmID = FilmID;
     }
 
     public interface Callback {
-        void onSuccess(FilmDetail filmDetail, List<Cast> casts, List<Crew> crews);
+        void onSuccess(FilmDetail filmDetail, List<Cast> castList, List<Crew> crewList);
 
         void onError(String message);
     }
 
     public void sendRequest(final Callback callback) {
         String requestURL = TMDbAPI.FILM
-                + id
+                + mFilmID
                 + "?api_key="
                 + APIKey.TMDB_API_KEY
                 + "&language=id&append_to_response=credits%2Cvideos";
@@ -52,60 +52,60 @@ public class FilmDetailRequest {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject creditObject = response.getJSONObject("credits");
-                    JSONArray arrayVideo = response.getJSONObject("videos").getJSONArray("results");
+                    JSONObject videoObject = response.getJSONObject("videos");
                     JSONArray castArray = creditObject.getJSONArray("cast");
                     JSONArray crewArray = creditObject.getJSONArray("crew");
+                    JSONArray videoArray = videoObject.getJSONArray("results");
 
-                    // Mendapatkan informasi film
-                    FilmDetail filmDetail = new FilmDetail();
-                    filmDetail.setGenre_id(response.getJSONArray("genres").getJSONObject(0).getInt("id"));
-                    filmDetail.setRuntime(response.getInt("runtime"));
-                    filmDetail.setOriginal_title(response.getString("original_title"));
-                    filmDetail.setRelease_date(response.getString("release_date"));
-                    filmDetail.setOverview(response.getString("overview"));
-                    filmDetail.setPoster_path(response.getString("poster_path"));
-                    if (!arrayVideo.isNull(0)) {
-                        filmDetail.setVideo_key(arrayVideo.getJSONObject(0).getString("key"));
-                    } else {
-                        filmDetail.setVideo_key("");
-                    }
+                    // Detail
+                    FilmDetail filmDetail = new FilmDetail(
+                            response.getJSONArray("genres").getInt(0),
+                            response.getInt("runtime"),
+                            response.getString("original_title"),
+                            response.getString("release_date"),
+                            response.getString("overview"),
+                            response.getString("poster_path"),
+                            videoArray.getJSONObject(0).getString("key")
+                    );
 
-                    // Mendapatkan pemain film
+                    // Cast
                     List<Cast> castList = new ArrayList<>();
+                    if (castArray.length() != 0) {
+                        for (int index = 0; index < castArray.length(); index++) {
+                            JSONObject indexObject = castArray.getJSONObject(index);
 
-                    for (int index = 0; index < castArray.length(); index++) {
-                        JSONObject indexObject = castArray.getJSONObject(index);
+                            Cast cast = new Cast(
+                                    indexObject.getInt("id"),
+                                    indexObject.getString("name"),
+                                    indexObject.getString("character"),
+                                    indexObject.getString("profile_path")
+                            );
 
-                        Cast cast = new Cast(
-                                indexObject.getInt("id"),
-                                indexObject.getString("name"),
-                                indexObject.getString("character"),
-                                indexObject.getString("profile_path")
-                        );
-
-                        castList.add(cast);
+                            castList.add(cast);
+                        }
                     }
 
-                    // Mendapatkan kru film
+                    // Crew
                     List<Crew> crewList = new ArrayList<>();
+                    if (crewArray.length() != 0) {
+                        for (int index = 0; index < crewArray.length(); index++) {
+                            JSONObject indexObject = crewArray.getJSONObject(index);
 
-                    for (int index = 0; index < crewArray.length(); index++) {
-                        JSONObject indexObject = crewArray.getJSONObject(index);
+                            Crew crew = new Crew(
+                                    indexObject.getInt("id"),
+                                    indexObject.getString("name"),
+                                    indexObject.getString("job"),
+                                    indexObject.getString("profile_path")
+                            );
 
-                        Crew crew = new Crew(
-                                indexObject.getInt("id"),
-                                indexObject.getString("name"),
-                                indexObject.getString("job"),
-                                indexObject.getString("profile_path")
-                        );
-
-                        crewList.add(crew);
+                            crewList.add(crew);
+                        }
                     }
 
                     callback.onSuccess(filmDetail, castList, crewList);
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -113,15 +113,15 @@ public class FilmDetailRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         });
 
-        Volley.newRequestQueue(context).add(filmDetail);
+        Volley.newRequestQueue(mContext).add(filmDetail);
     }
 }

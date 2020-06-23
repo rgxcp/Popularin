@@ -24,10 +24,10 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UpdatePasswordRequest {
-    private Context context;
-    private String currentPassword;
-    private String newPassword;
-    private String confirmPassword;
+    private Context mContext;
+    private String mCurrentPassword;
+    private String mNewPassword;
+    private String mConfirmPassword;
 
     public UpdatePasswordRequest(
             Context context,
@@ -35,14 +35,14 @@ public class UpdatePasswordRequest {
             String newPassword,
             String confirmPassword
     ) {
-        this.context = context;
-        this.currentPassword = currentPassword;
-        this.newPassword = newPassword;
-        this.confirmPassword = confirmPassword;
+        mContext = context;
+        mCurrentPassword = currentPassword;
+        mNewPassword = newPassword;
+        mConfirmPassword = confirmPassword;
     }
 
     public interface Callback {
-        void onSuccess(Integer id, String token);
+        void onSuccess(int id, String token);
 
         void onInvalidCurrentPassword();
 
@@ -63,21 +63,21 @@ public class UpdatePasswordRequest {
 
                     if (status == 303) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        Integer id = resultObject.getInt("id");
+                        int id = resultObject.getInt("id");
                         String token = resultObject.getString("api_token");
                         callback.onSuccess(id, token);
                     } else if (status == 616) {
                         callback.onInvalidCurrentPassword();
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
-                        String message = resultArray.get(0).toString();
+                        String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -85,20 +85,20 @@ public class UpdatePasswordRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("current_password", currentPassword);
-                params.put("new_password", newPassword);
-                params.put("confirm_password", confirmPassword);
+                params.put("current_password", mCurrentPassword);
+                params.put("new_password", mNewPassword);
+                params.put("confirm_password", mConfirmPassword);
                 return params;
             }
 
@@ -106,12 +106,12 @@ public class UpdatePasswordRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(updatePassword);
+        Volley.newRequestQueue(mContext).add(updatePassword);
     }
 }

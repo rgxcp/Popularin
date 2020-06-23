@@ -28,26 +28,26 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class AccountDetailRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mUserID;
 
-    public AccountDetailRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public AccountDetailRequest(Context context, int userID) {
+        mContext = context;
+        mUserID = userID;
     }
 
     public interface Callback {
         void onSuccess(AccountDetail accountDetail);
 
-        void onHasRecentFavorite(List<RecentFavorite> recentFavorites);
+        void onHasRecentFavorite(List<RecentFavorite> recentFavoriteList);
 
-        void onHasRecentReview(List<RecentReview> recentReviews);
+        void onHasRecentReview(List<RecentReview> recentReviewList);
 
         void onError(String message);
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.USER + id;
+        String requestURL = PopularinAPI.USER + mUserID;
 
         JsonObjectRequest accountDetail = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -60,23 +60,26 @@ public class AccountDetailRequest {
                         JSONObject userObject = resultObject.getJSONObject("user");
                         JSONObject metadataObject = resultObject.getJSONObject("metadata");
                         JSONObject activityObject = resultObject.getJSONObject("activity");
-                        int totalFavorite = metadataObject.getInt("total_favorite");
-                        int totalReview = metadataObject.getInt("total_review");
+                        JSONArray recentFavoriteArray = activityObject.getJSONArray("recent_favorites");
+                        JSONArray recentReviewArray = activityObject.getJSONArray("recent_reviews");
 
-                        AccountDetail accountDetail = new AccountDetail();
-                        accountDetail.setTotal_review(totalReview);
-                        accountDetail.setTotal_favorite(totalFavorite);
-                        accountDetail.setTotal_watchlist(metadataObject.getInt("total_watchlist"));
-                        accountDetail.setTotal_follower(metadataObject.getInt("total_follower"));
-                        accountDetail.setTotal_following(metadataObject.getInt("total_following"));
-                        accountDetail.setFull_name(userObject.getString("full_name"));
-                        accountDetail.setUsername(userObject.getString("username"));
-                        accountDetail.setProfile_picture(userObject.getString("profile_picture"));
+                        // Detail
+                        AccountDetail accountDetail = new AccountDetail(
+                                metadataObject.getInt("total_review"),
+                                metadataObject.getInt("total_favorite"),
+                                metadataObject.getInt("total_watchlist"),
+                                metadataObject.getInt("total_follower"),
+                                metadataObject.getInt("total_following"),
+                                userObject.getString("full_name"),
+                                userObject.getString("username"),
+                                userObject.getString("profile_picture")
+                        );
+
                         callback.onSuccess(accountDetail);
 
-                        if (totalFavorite > 0) {
+                        // Favorite
+                        if (recentFavoriteArray.length() != 0) {
                             List<RecentFavorite> recentFavoriteList = new ArrayList<>();
-                            JSONArray recentFavoriteArray = activityObject.getJSONArray("recent_favorites");
 
                             for (int index = 0; index < recentFavoriteArray.length(); index++) {
                                 JSONObject indexObject = recentFavoriteArray.getJSONObject(index);
@@ -95,9 +98,9 @@ public class AccountDetailRequest {
                             callback.onHasRecentFavorite(recentFavoriteList);
                         }
 
-                        if (totalReview > 0) {
+                        // Review
+                        if (recentReviewArray.length() != 0) {
                             List<RecentReview> recentReviewList = new ArrayList<>();
-                            JSONArray recentReviewArray = activityObject.getJSONArray("recent_reviews");
 
                             for (int index = 0; index < recentReviewArray.length(); index++) {
                                 JSONObject indexObject = recentReviewArray.getJSONObject(index);
@@ -118,11 +121,11 @@ public class AccountDetailRequest {
                             callback.onHasRecentReview(recentReviewList);
                         }
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -130,11 +133,11 @@ public class AccountDetailRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -146,6 +149,6 @@ public class AccountDetailRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(accountDetail);
+        Volley.newRequestQueue(mContext).add(accountDetail);
     }
 }

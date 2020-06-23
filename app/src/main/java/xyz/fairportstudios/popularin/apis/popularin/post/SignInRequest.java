@@ -23,24 +23,20 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class SignInRequest {
-    private Context context;
-    private String username;
-    private String password;
+    private Context mContext;
+    private String mUsername;
+    private String mPassword;
 
-    public SignInRequest(
-            Context context,
-            String username,
-            String password
-    ) {
-        this.context = context;
-        this.username = username;
-        this.password = password;
+    public SignInRequest(Context context, String username, String password) {
+        mContext = context;
+        mUsername = username;
+        mPassword = password;
     }
 
     public interface Callback {
-        void onSuccess(Integer id, String token);
+        void onSuccess(int id, String token);
 
-        void onUsernameNotFound();
+        void onInvalidUsername();
 
         void onInvalidPassword();
 
@@ -61,23 +57,23 @@ public class SignInRequest {
 
                     if (status == 515) {
                         JSONObject resultObject = responseObject.getJSONObject("result");
-                        Integer id = resultObject.getInt("id");
+                        int id = resultObject.getInt("id");
                         String token = resultObject.getString("api_token");
                         callback.onSuccess(id, token);
                     } else if (status == 606) {
-                        callback.onUsernameNotFound();
+                        callback.onInvalidUsername();
                     } else if (status == 616) {
                         callback.onInvalidPassword();
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
-                        String message = resultArray.get(0).toString();
+                        String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -85,19 +81,19 @@ public class SignInRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
+                params.put("username", mUsername);
+                params.put("password", mPassword);
                 return params;
             }
 
@@ -110,6 +106,6 @@ public class SignInRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(signIn);
+        Volley.newRequestQueue(mContext).add(signIn);
     }
 }

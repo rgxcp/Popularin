@@ -24,24 +24,24 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class UpdateReviewRequest {
-    private Context context;
-    private Integer id;
-    private Float rating;
-    private String reviewDetail;
-    private String watchDate;
+    private Context mContext;
+    private int mReviewID;
+    private float mRating;
+    private String mReviewDetail;
+    private String mWatchDate;
 
     public UpdateReviewRequest(
             Context context,
-            Integer id,
-            Float rating,
+            int reviewID,
+            float rating,
             String reviewDetail,
             String watchDate
     ) {
-        this.context = context;
-        this.id = id;
-        this.rating = rating;
-        this.reviewDetail = reviewDetail;
-        this.watchDate = watchDate;
+        mContext = context;
+        mReviewID = reviewID;
+        mRating = rating;
+        mReviewDetail = reviewDetail;
+        mWatchDate = watchDate;
     }
 
     public interface Callback {
@@ -53,7 +53,7 @@ public class UpdateReviewRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.REVIEW + id;
+        String requestURL = PopularinAPI.REVIEW + mReviewID;
 
         StringRequest updateReview = new StringRequest(Request.Method.PUT, requestURL, new Response.Listener<String>() {
             @Override
@@ -69,11 +69,11 @@ public class UpdateReviewRequest {
                         String message = resultArray.getString(0);
                         callback.onFailed(message);
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -81,20 +81,20 @@ public class UpdateReviewRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
             @Override
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("rating", String.valueOf(rating));
-                params.put("review_detail", reviewDetail);
-                params.put("watch_date", watchDate);
+                params.put("rating", String.valueOf(mRating));
+                params.put("review_detail", mReviewDetail);
+                params.put("watch_date", mWatchDate);
                 return params;
             }
 
@@ -102,12 +102,12 @@ public class UpdateReviewRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(updateReview);
+        Volley.newRequestQueue(mContext).add(updateReview);
     }
 }

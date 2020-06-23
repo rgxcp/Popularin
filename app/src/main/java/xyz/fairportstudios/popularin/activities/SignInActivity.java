@@ -109,7 +109,7 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUsernameNotFound() {
+            public void onInvalidUsername() {
                 setSignInButtonState(true);
                 Snackbar.make(anchorLayout, R.string.username_not_found, Snackbar.LENGTH_LONG).show();
             }

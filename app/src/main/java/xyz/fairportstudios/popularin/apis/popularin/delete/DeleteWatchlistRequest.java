@@ -23,12 +23,12 @@ import xyz.fairportstudios.popularin.statics.PopularinAPI;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class DeleteWatchlistRequest {
-    private Context context;
-    private Integer filmID;
+    private Context mContext;
+    private int mFilmID;
 
-    public DeleteWatchlistRequest(Context context, Integer filmID) {
-        this.context = context;
-        this.filmID = filmID;
+    public DeleteWatchlistRequest(Context context, int filmID) {
+        mContext = context;
+        mFilmID = filmID;
     }
 
     public interface Callback {
@@ -38,7 +38,7 @@ public class DeleteWatchlistRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.FILM + filmID + "/unwatchlist";
+        String requestURL = PopularinAPI.FILM + mFilmID + "/unwatchlist";
 
         JsonObjectRequest deleteWatchlist = new JsonObjectRequest(Request.Method.DELETE, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -49,11 +49,11 @@ public class DeleteWatchlistRequest {
                     if (status == 404) {
                         callback.onSuccess();
                     } else {
-                        callback.onError(context.getString(R.string.delete_watchlist_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.delete_watchlist_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -61,11 +61,11 @@ public class DeleteWatchlistRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.delete_watchlist_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -73,11 +73,11 @@ public class DeleteWatchlistRequest {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("API-Key", APIKey.POPULARIN_API_KEY);
-                headers.put("Auth-Token", new Auth(context).getAuthToken());
+                headers.put("Auth-Token", new Auth(mContext).getAuthToken());
                 return headers;
             }
         };
 
-        Volley.newRequestQueue(context).add(deleteWatchlist);
+        Volley.newRequestQueue(mContext).add(deleteWatchlist);
     }
 }

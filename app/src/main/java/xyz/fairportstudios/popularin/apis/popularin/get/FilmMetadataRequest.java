@@ -23,12 +23,12 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.PopularinAPI;
 
 public class FilmMetadataRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mFilmID;
 
-    public FilmMetadataRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public FilmMetadataRequest(Context context, int filmID) {
+        mContext = context;
+        mFilmID = filmID;
     }
 
     public interface Callback {
@@ -40,7 +40,7 @@ public class FilmMetadataRequest {
     }
 
     public void sendRequest(final Callback callback) {
-        String requestURL = PopularinAPI.FILM + id;
+        String requestURL = PopularinAPI.FILM + mFilmID;
 
         JsonObjectRequest filmMetadata = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -52,20 +52,22 @@ public class FilmMetadataRequest {
                         JSONObject resultObject = response.getJSONObject("result");
                         JSONObject metadataObject = resultObject.getJSONObject("metadata");
 
-                        FilmMetadata filmMetadata = new FilmMetadata();
-                        filmMetadata.setAverage_rating(metadataObject.getDouble("average_rating"));
-                        filmMetadata.setTotal_review(metadataObject.getInt("total_review"));
-                        filmMetadata.setTotal_favorite(metadataObject.getInt("total_favorite"));
-                        filmMetadata.setTotal_watchlist(metadataObject.getInt("total_watchlist"));
+                        FilmMetadata filmMetadata = new FilmMetadata(
+                                metadataObject.getDouble("average_rating"),
+                                metadataObject.getInt("total_review"),
+                                metadataObject.getInt("total_favorite"),
+                                metadataObject.getInt("total_watchlist")
+                        );
+
                         callback.onSuccess(filmMetadata);
                     } else if (status == 606) {
                         callback.onNotFound();
                     } else {
-                        callback.onError(context.getString(R.string.general_error));
+                        callback.onError(mContext.getString(R.string.general_error));
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -73,11 +75,11 @@ public class FilmMetadataRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }) {
@@ -89,6 +91,6 @@ public class FilmMetadataRequest {
             }
         };
 
-        Volley.newRequestQueue(context).add(filmMetadata);
+        Volley.newRequestQueue(mContext).add(filmMetadata);
     }
 }

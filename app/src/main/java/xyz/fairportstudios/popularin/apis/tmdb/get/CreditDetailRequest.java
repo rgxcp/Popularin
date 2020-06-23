@@ -25,12 +25,12 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class CreditDetailRequest {
-    private Context context;
-    private Integer id;
+    private Context mContext;
+    private int mCreditID;
 
-    public CreditDetailRequest(Context context, Integer id) {
-        this.context = context;
-        this.id = id;
+    public CreditDetailRequest(Context context, int creditID) {
+        mContext = context;
+        mCreditID = creditID;
     }
 
     public interface Callback {
@@ -41,7 +41,7 @@ public class CreditDetailRequest {
 
     public void sendRequest(final Callback callback) {
         String requestURL = TMDbAPI.CREDIT
-                + id
+                + mCreditID
                 + "?api_key="
                 + APIKey.TMDB_API_KEY
                 + "&language=id&append_to_response=movie_credits";
@@ -50,17 +50,21 @@ public class CreditDetailRequest {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    CreditDetail creditDetail = new CreditDetail();
-                    creditDetail.setName(response.getString("name"));
-                    creditDetail.setKnown_for_department(response.getString("known_for_department"));
-                    creditDetail.setBirthday(response.getString("birthday"));
-                    creditDetail.setPlace_of_birth(response.getString("place_of_birth"));
-                    creditDetail.setProfile_path(response.getString("profile_path"));
-
                     JSONObject movieCreditObject = response.getJSONObject("movie_credits");
-                    JSONArray castArray = movieCreditObject.getJSONArray("cast");
+
+                    // Bio
+                    CreditDetail creditDetail = new CreditDetail(
+                            response.getString("name"),
+                            response.getString("known_for_department"),
+                            response.getString("birthday"),
+                            response.getString("place_of_birth"),
+                            response.getString("profile_path")
+                    );
+
+                    // Cast
                     List<Film> filmAsCastList = new ArrayList<>();
-                    if (!castArray.isNull(0)) {
+                    JSONArray castArray = movieCreditObject.getJSONArray("cast");
+                    if (castArray.length() != 0) {
                         for (int index = 0; index < castArray.length(); index++) {
                             JSONObject indexObject = castArray.getJSONObject(index);
                             String language = indexObject.getString("original_language");
@@ -73,14 +77,16 @@ public class CreditDetailRequest {
                                         indexObject.getString("release_date"),
                                         indexObject.getString("poster_path")
                                 );
+
                                 filmAsCastList.add(film);
                             }
                         }
                     }
 
-                    JSONArray crewArray = movieCreditObject.getJSONArray("crew");
+                    // Crew
                     List<Film> filmAsCrewList = new ArrayList<>();
-                    if (!crewArray.isNull(0)) {
+                    JSONArray crewArray = movieCreditObject.getJSONArray("crew");
+                    if (crewArray.length() != 0) {
                         for (int index = 0; index < crewArray.length(); index++) {
                             JSONObject indexObject = crewArray.getJSONObject(index);
                             String language = indexObject.getString("original_language");
@@ -93,6 +99,7 @@ public class CreditDetailRequest {
                                         indexObject.getString("release_date"),
                                         indexObject.getString("poster_path")
                                 );
+
                                 filmAsCrewList.add(film);
                             }
                         }
@@ -101,7 +108,7 @@ public class CreditDetailRequest {
                     callback.onSuccess(creditDetail, filmAsCastList, filmAsCrewList);
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -109,15 +116,15 @@ public class CreditDetailRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         });
 
-        Volley.newRequestQueue(context).add(creditDetail);
+        Volley.newRequestQueue(mContext).add(creditDetail);
     }
 }
