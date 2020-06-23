@@ -1,122 +1,78 @@
 package xyz.fairportstudios.popularin.models;
 
 public class UserDetail {
-    private Boolean is_follower;
-    private Boolean is_following;
-    private Integer total_review;
-    private Integer total_favorite;
-    private Integer total_watchlist;
-    private Integer total_follower;
-    private Integer total_following;
-    private String full_name;
-    private String username;
-    private String profile_picture;
-
-    public UserDetail() {
-        // Constructor kosong
-    }
+    private boolean mIs_follower;
+    private boolean mIs_following;
+    private int mTotal_review;
+    private int mTotal_favorite;
+    private int mTotal_watchlist;
+    private int mTotal_follower;
+    private int mTotal_following;
+    private String mFull_name;
+    private String mUsername;
+    private String mProfile_picture;
 
     public UserDetail(
-            Boolean is_follower,
-            Boolean is_following,
-            Integer total_review,
-            Integer total_favorite,
-            Integer total_watchlist,
-            Integer total_follower,
-            Integer total_following,
+            boolean is_follower,
+            boolean is_following,
+            int total_review,
+            int total_favorite,
+            int total_watchlist,
+            int total_follower,
+            int total_following,
             String full_name,
             String username,
             String profile_picture
     ) {
-        this.is_follower = is_follower;
-        this.is_following = is_following;
-        this.total_review = total_review;
-        this.total_favorite = total_favorite;
-        this.total_watchlist = total_watchlist;
-        this.total_follower = total_follower;
-        this.total_following = total_following;
-        this.full_name = full_name;
-        this.username = username;
-        this.profile_picture = profile_picture;
+        mIs_follower = is_follower;
+        mIs_following = is_following;
+        mTotal_review = total_review;
+        mTotal_favorite = total_favorite;
+        mTotal_watchlist = total_watchlist;
+        mTotal_follower = total_follower;
+        mTotal_following = total_following;
+        mFull_name = full_name;
+        mUsername = username;
+        mProfile_picture = profile_picture;
     }
 
-    public Boolean getIs_follower() {
-        return is_follower;
+    public boolean getIs_follower() {
+        return mIs_follower;
     }
 
-    public void setIs_follower(Boolean is_follower) {
-        this.is_follower = is_follower;
+    public boolean getIs_following() {
+        return mIs_following;
     }
 
-    public Boolean getIs_following() {
-        return is_following;
+    public int getTotal_review() {
+        return mTotal_review;
     }
 
-    public void setIs_following(Boolean is_following) {
-        this.is_following = is_following;
+    public int getTotal_favorite() {
+        return mTotal_favorite;
     }
 
-    public Integer getTotal_review() {
-        return total_review;
+    public int getTotal_watchlist() {
+        return mTotal_watchlist;
     }
 
-    public void setTotal_review(Integer total_review) {
-        this.total_review = total_review;
+    public int getTotal_follower() {
+        return mTotal_follower;
     }
 
-    public Integer getTotal_favorite() {
-        return total_favorite;
-    }
-
-    public void setTotal_favorite(Integer total_favorite) {
-        this.total_favorite = total_favorite;
-    }
-
-    public Integer getTotal_watchlist() {
-        return total_watchlist;
-    }
-
-    public void setTotal_watchlist(Integer total_watchlist) {
-        this.total_watchlist = total_watchlist;
-    }
-
-    public Integer getTotal_follower() {
-        return total_follower;
-    }
-
-    public void setTotal_follower(Integer total_follower) {
-        this.total_follower = total_follower;
-    }
-
-    public Integer getTotal_following() {
-        return total_following;
-    }
-
-    public void setTotal_following(Integer total_following) {
-        this.total_following = total_following;
+    public int getTotal_following() {
+        return mTotal_following;
     }
 
     public String getFull_name() {
-        return full_name;
-    }
-
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+        return mFull_name;
     }
 
     public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        return mUsername;
     }
 
     public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
+        return mProfile_picture;
     }
 }

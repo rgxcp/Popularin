@@ -1,56 +1,36 @@
 package xyz.fairportstudios.popularin.models;
 
 public class FilmMetadata {
-    private Double average_rating;
-    private Integer total_review;
-    private Integer total_favorite;
-    private Integer total_watchlist;
-
-    public FilmMetadata() {
-        // Constructor kosong
-    }
+    private double mAverage_rating;
+    private int mTotal_review;
+    private int mTotal_favorite;
+    private int mTotal_watchlist;
 
     public FilmMetadata(
-            Double average_rating,
-            Integer total_review,
-            Integer total_favorite,
-            Integer total_watchlist
+            double average_rating,
+            int total_review,
+            int total_favorite,
+            int total_watchlist
     ) {
-        this.average_rating = average_rating;
-        this.total_review = total_review;
-        this.total_favorite = total_favorite;
-        this.total_watchlist = total_watchlist;
+        mAverage_rating = average_rating;
+        mTotal_review = total_review;
+        mTotal_favorite = total_favorite;
+        mTotal_watchlist = total_watchlist;
     }
 
-    public Double getAverage_rating() {
-        return average_rating;
+    public double getAverage_rating() {
+        return mAverage_rating;
     }
 
-    public void setAverage_rating(Double average_rating) {
-        this.average_rating = average_rating;
+    public int getTotal_review() {
+        return mTotal_review;
     }
 
-    public Integer getTotal_review() {
-        return total_review;
+    public int getTotal_favorite() {
+        return mTotal_favorite;
     }
 
-    public void setTotal_review(Integer total_review) {
-        this.total_review = total_review;
-    }
-
-    public Integer getTotal_favorite() {
-        return total_favorite;
-    }
-
-    public void setTotal_favorite(Integer total_favorite) {
-        this.total_favorite = total_favorite;
-    }
-
-    public Integer getTotal_watchlist() {
-        return total_watchlist;
-    }
-
-    public void setTotal_watchlist(Integer total_watchlist) {
-        this.total_watchlist = total_watchlist;
+    public int getTotal_watchlist() {
+        return mTotal_watchlist;
     }
 }

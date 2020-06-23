@@ -1,56 +1,36 @@
 package xyz.fairportstudios.popularin.models;
 
 public class FilmSelf {
-    private Boolean in_review;
-    private Boolean in_favorite;
-    private Boolean in_watchlist;
-    private Double last_rate;
-
-    public FilmSelf() {
-        // Constructor kosong
-    }
+    private boolean mIn_review;
+    private boolean mIn_favorite;
+    private boolean mIn_watchlist;
+    private double mLast_rate;
 
     public FilmSelf(
-            Boolean in_review,
-            Boolean in_favorite,
-            Boolean in_watchlist,
-            Double last_rate
+            boolean in_review,
+            boolean in_favorite,
+            boolean in_watchlist,
+            double last_rate
     ) {
-        this.in_review = in_review;
-        this.in_favorite = in_favorite;
-        this.in_watchlist = in_watchlist;
-        this.last_rate = last_rate;
+        mIn_review = in_review;
+        mIn_favorite = in_favorite;
+        mIn_watchlist = in_watchlist;
+        mLast_rate = last_rate;
     }
 
-    public Boolean getIn_review() {
-        return in_review;
+    public boolean getIn_review() {
+        return mIn_review;
     }
 
-    public void setIn_review(Boolean in_review) {
-        this.in_review = in_review;
+    public boolean getIn_favorite() {
+        return mIn_favorite;
     }
 
-    public Boolean getIn_favorite() {
-        return in_favorite;
+    public boolean getIn_watchlist() {
+        return mIn_watchlist;
     }
 
-    public void setIn_favorite(Boolean in_favorite) {
-        this.in_favorite = in_favorite;
-    }
-
-    public Boolean getIn_watchlist() {
-        return in_watchlist;
-    }
-
-    public void setIn_watchlist(Boolean in_watchlist) {
-        this.in_watchlist = in_watchlist;
-    }
-
-    public Double getLast_rate() {
-        return last_rate;
-    }
-
-    public void setLast_rate(Double last_rate) {
-        this.last_rate = last_rate;
+    public double getLast_rate() {
+        return mLast_rate;
     }
 }
