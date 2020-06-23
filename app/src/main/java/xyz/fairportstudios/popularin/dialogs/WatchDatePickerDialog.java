@@ -1,4 +1,4 @@
-package xyz.fairportstudios.popularin.fragments;
+package xyz.fairportstudios.popularin.dialogs;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class DatePickerFragment extends DialogFragment {
+public class WatchDatePickerDialog extends DialogFragment {
 
     @NonNull
     @Override
@@ -28,7 +28,9 @@ public class DatePickerFragment extends DialogFragment {
                 month,
                 day
         );
+
         datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+
         return datePickerDialog;
     }
 }

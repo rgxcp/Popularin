@@ -1,6 +1,5 @@
 package xyz.fairportstudios.popularin.activities;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,13 +28,13 @@ import java.util.Calendar;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.apis.popularin.get.ReviewDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdateReviewRequest;
-import xyz.fairportstudios.popularin.fragments.DatePickerFragment;
+import xyz.fairportstudios.popularin.dialogs.WatchDatePickerDialog;
 import xyz.fairportstudios.popularin.models.ReviewDetail;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
-public class EditReviewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class EditReviewActivity extends AppCompatActivity implements android.app.DatePickerDialog.OnDateSetListener {
     // Variable member
     private float mRating;
     private EditText mInputReview;
@@ -171,7 +170,7 @@ public class EditReviewActivity extends AppCompatActivity implements DatePickerD
     }
 
     private void showDatePicker() {
-        DialogFragment datePicker = new DatePickerFragment();
+        DialogFragment datePicker = new WatchDatePickerDialog();
         datePicker.show(getSupportFragmentManager(), Popularin.DATE_PICKER);
     }
 
