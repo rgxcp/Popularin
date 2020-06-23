@@ -170,7 +170,7 @@
     <string name="zero_watchlist">0 Watchlist</string>
 
     <string name="invalid_password">Kata sandi mu salah, coba periksa lagi ya!</string>
-    <string name="username_not_found">Username tidak terdaftar, coba periksa lagi ya!</string>
+    <string name="invalid_username">Username tidak terdaftar, coba periksa lagi ya!</string>
     <string name="general_error">Gagal mengirim permintaanmu, coba beberapa saat lagi ya!</string>
     <string name="server_error">Ada kesalahan dalam server, coba beberapa saat lagi ya!</string>
     <string name="film_self_error">Gagal mendapatkan status film, coba beberapa saat lagi ya!</string>

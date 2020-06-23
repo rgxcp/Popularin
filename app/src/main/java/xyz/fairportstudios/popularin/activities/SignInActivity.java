@@ -24,12 +24,16 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignInRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignInActivity extends AppCompatActivity {
-    private Button buttonSignIn;
-    private LinearLayout anchorLayout;
-    private String username;
-    private String password;
-    private TextInputEditText inputUsername;
-    private TextInputEditText inputPassword;
+    // Variable untuk fitur load
+    private boolean mIsLoading = false;
+
+    // Variable member
+    private Button mButtonSignIn;
+    private LinearLayout mAnchorLayout;
+    private String mUsername;
+    private String mPassword;
+    private TextInputEditText mInputUsername;
+    private TextInputEditText mInputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +44,43 @@ public class SignInActivity extends AppCompatActivity {
         final Context context = SignInActivity.this;
 
         // Binding
-        buttonSignIn = findViewById(R.id.button_asi_sign_in);
-        anchorLayout = findViewById(R.id.anchor_asi_layout);
-        inputUsername = findViewById(R.id.input_asi_username);
-        inputPassword = findViewById(R.id.input_asi_password);
+        mButtonSignIn = findViewById(R.id.button_asi_sign_in);
+        mAnchorLayout = findViewById(R.id.anchor_asi_layout);
+        mInputUsername = findViewById(R.id.input_asi_username);
+        mInputPassword = findViewById(R.id.input_asi_password);
         TextView textWelcome = findViewById(R.id.text_asi_welcome);
 
         // Pesan
-        String welcome = getString(R.string.sign_in_welcome);
-        SpannableString spannableString = new SpannableString(welcome);
-        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
-        spannableString.setSpan(relativeSizeSpan, 0, 5, 0);
-        textWelcome.setText(spannableString);
+        textWelcome.setText(getWelcomeMessage());
 
         // Text watcher
-        inputUsername.addTextChangedListener(signInWatcher);
-        inputPassword.addTextChangedListener(signInWatcher);
+        mInputUsername.addTextChangedListener(signInWatcher);
+        mInputPassword.addTextChangedListener(signInWatcher);
 
         // Activity
-        buttonSignIn.setOnClickListener(new View.OnClickListener() {
+        mButtonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mIsLoading = true;
                 setSignInButtonState(false);
                 signIn(context);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mIsLoading) {
+            super.onBackPressed();
+        }
+    }
+
+    private SpannableString getWelcomeMessage() {
+        String welcome = getString(R.string.sign_in_welcome);
+        SpannableString spannableString = new SpannableString(welcome);
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
+        spannableString.setSpan(relativeSizeSpan, 0, 5, 0);
+        return spannableString;
     }
 
     private TextWatcher signInWatcher = new TextWatcher() {
@@ -75,9 +91,9 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            username = Objects.requireNonNull(inputUsername.getText()).toString();
-            password = Objects.requireNonNull(inputPassword.getText()).toString();
-            buttonSignIn.setEnabled(!username.isEmpty() && !password.isEmpty());
+            mUsername = Objects.requireNonNull(mInputUsername.getText()).toString();
+            mPassword = Objects.requireNonNull(mInputPassword.getText()).toString();
+            mButtonSignIn.setEnabled(!mUsername.isEmpty() && !mPassword.isEmpty());
         }
 
         @Override
@@ -86,20 +102,20 @@ public class SignInActivity extends AppCompatActivity {
         }
     };
 
-    private void setSignInButtonState(Boolean state) {
-        buttonSignIn.setEnabled(state);
-        if (state) {
-            buttonSignIn.setText(R.string.sign_in);
+    private void setSignInButtonState(boolean enable) {
+        mButtonSignIn.setEnabled(enable);
+        if (enable) {
+            mButtonSignIn.setText(R.string.sign_in);
         } else {
-            buttonSignIn.setText(R.string.loading);
+            mButtonSignIn.setText(R.string.loading);
         }
     }
 
     private void signIn(final Context context) {
-        SignInRequest signInRequest = new SignInRequest(context, username, password);
+        SignInRequest signInRequest = new SignInRequest(context, mUsername, mPassword);
         signInRequest.sendRequest(new SignInRequest.Callback() {
             @Override
-            public void onSuccess(Integer id, String token) {
+            public void onSuccess(int id, String token) {
                 Auth auth = new Auth(context);
                 auth.setAuth(id, token);
 
@@ -111,26 +127,29 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onInvalidUsername() {
                 setSignInButtonState(true);
-                Snackbar.make(anchorLayout, R.string.username_not_found, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, R.string.invalid_username, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onInvalidPassword() {
                 setSignInButtonState(true);
-                Snackbar.make(anchorLayout, R.string.invalid_password, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, R.string.invalid_password, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailed(String message) {
                 setSignInButtonState(true);
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(String message) {
                 setSignInButtonState(true);
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

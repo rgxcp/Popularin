@@ -25,16 +25,20 @@ import xyz.fairportstudios.popularin.apis.popularin.post.SignUpRequest;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class SignUpActivity extends AppCompatActivity {
-    private Button buttonSignUp;
-    private LinearLayout anchorLayout;
-    private String fullName;
-    private String username;
-    private String email;
-    private String password;
-    private TextInputEditText inputFullName;
-    private TextInputEditText inputUsername;
-    private TextInputEditText inputEmail;
-    private TextInputEditText inputPassword;
+    // Variable untuk fitur load
+    private boolean mIsLoading = false;
+
+    // Variable member
+    private Button mButtonSignUp;
+    private LinearLayout mAnchorLayout;
+    private String mFullName;
+    private String mUsername;
+    private String mEmail;
+    private String mPassword;
+    private TextInputEditText mInputFullName;
+    private TextInputEditText mInputUsername;
+    private TextInputEditText mInputEmail;
+    private TextInputEditText mInputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,35 +49,47 @@ public class SignUpActivity extends AppCompatActivity {
         final Context context = SignUpActivity.this;
 
         // Binding
-        buttonSignUp = findViewById(R.id.button_asu_sign_up);
-        anchorLayout = findViewById(R.id.anchor_asu_layout);
-        inputFullName = findViewById(R.id.input_asu_full_name);
-        inputUsername = findViewById(R.id.input_asu_username);
-        inputEmail = findViewById(R.id.input_asu_email);
-        inputPassword = findViewById(R.id.input_asu_password);
+        mButtonSignUp = findViewById(R.id.button_asu_sign_up);
+        mAnchorLayout = findViewById(R.id.anchor_asu_layout);
+        mInputFullName = findViewById(R.id.input_asu_full_name);
+        mInputUsername = findViewById(R.id.input_asu_username);
+        mInputEmail = findViewById(R.id.input_asu_email);
+        mInputPassword = findViewById(R.id.input_asu_password);
         TextView textWelcome = findViewById(R.id.text_asu_welcome);
 
         // Pesan
-        String welcome = getString(R.string.sign_up_welcome);
-        SpannableString spannableString = new SpannableString(welcome);
-        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
-        spannableString.setSpan(relativeSizeSpan, 0, 5, 0);
-        textWelcome.setText(spannableString);
+        textWelcome.setText(getWelcomeMessage());
 
         // Text watcher
-        inputFullName.addTextChangedListener(signUpWatcher);
-        inputUsername.addTextChangedListener(signUpWatcher);
-        inputEmail.addTextChangedListener(signUpWatcher);
-        inputPassword.addTextChangedListener(signUpWatcher);
+        mInputFullName.addTextChangedListener(signUpWatcher);
+        mInputUsername.addTextChangedListener(signUpWatcher);
+        mInputEmail.addTextChangedListener(signUpWatcher);
+        mInputPassword.addTextChangedListener(signUpWatcher);
 
         // Activity
-        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+        mButtonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mIsLoading = true;
                 setSignUpButtonState(false);
                 signUp(context);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mIsLoading) {
+            super.onBackPressed();
+        }
+    }
+
+    private SpannableString getWelcomeMessage() {
+        String welcome = getString(R.string.sign_up_welcome);
+        SpannableString spannableString = new SpannableString(welcome);
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
+        spannableString.setSpan(relativeSizeSpan, 0, 5, 0);
+        return spannableString;
     }
 
     private TextWatcher signUpWatcher = new TextWatcher() {
@@ -84,11 +100,11 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            fullName = Objects.requireNonNull(inputFullName.getText()).toString();
-            username = Objects.requireNonNull(inputUsername.getText()).toString();
-            email = Objects.requireNonNull(inputEmail.getText()).toString();
-            password = Objects.requireNonNull(inputPassword.getText()).toString();
-            buttonSignUp.setEnabled(!fullName.isEmpty() && !username.isEmpty() && !email.isEmpty() && !password.isEmpty());
+            mFullName = Objects.requireNonNull(mInputFullName.getText()).toString();
+            mUsername = Objects.requireNonNull(mInputUsername.getText()).toString();
+            mEmail = Objects.requireNonNull(mInputEmail.getText()).toString();
+            mPassword = Objects.requireNonNull(mInputPassword.getText()).toString();
+            mButtonSignUp.setEnabled(!mFullName.isEmpty() && !mUsername.isEmpty() && !mEmail.isEmpty() && !mPassword.isEmpty());
         }
 
         @Override
@@ -98,11 +114,11 @@ public class SignUpActivity extends AppCompatActivity {
     };
 
     private boolean usernameValidated() {
-        if (username.length() < 5) {
-            Snackbar.make(anchorLayout, R.string.validate_username_length, Snackbar.LENGTH_LONG).show();
+        if (mUsername.length() < 5) {
+            Snackbar.make(mAnchorLayout, R.string.validate_username_length, Snackbar.LENGTH_LONG).show();
             return false;
-        } else if (username.contains(" ")) {
-            Snackbar.make(anchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
+        } else if (mUsername.contains(" ")) {
+            Snackbar.make(mAnchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -110,8 +126,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean emailValidated() {
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Snackbar.make(anchorLayout, R.string.validate_email_format, Snackbar.LENGTH_LONG).show();
+        if (!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches()) {
+            Snackbar.make(mAnchorLayout, R.string.validate_email_format, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -119,32 +135,32 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean passwordValidated() {
-        if (password.length() < 8) {
-            Snackbar.make(anchorLayout, R.string.validate_password_length, Snackbar.LENGTH_LONG).show();
+        if (mPassword.length() < 8) {
+            Snackbar.make(mAnchorLayout, R.string.validate_password_length, Snackbar.LENGTH_LONG).show();
             return false;
-        } else if (password.equals(username)) {
-            Snackbar.make(anchorLayout, R.string.validate_username_match_password, Snackbar.LENGTH_LONG).show();
+        } else if (mPassword.equals(mUsername)) {
+            Snackbar.make(mAnchorLayout, R.string.validate_username_match_password, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private void setSignUpButtonState(Boolean state) {
-        buttonSignUp.setEnabled(state);
-        if (state) {
-            buttonSignUp.setText(R.string.sign_up);
+    private void setSignUpButtonState(boolean enable) {
+        mButtonSignUp.setEnabled(enable);
+        if (enable) {
+            mButtonSignUp.setText(R.string.sign_up);
         } else {
-            buttonSignUp.setText(R.string.loading);
+            mButtonSignUp.setText(R.string.loading);
         }
     }
 
     private void signUp(final Context context) {
         if (usernameValidated() && emailValidated() && passwordValidated()) {
-            SignUpRequest signUpRequest = new SignUpRequest(context, fullName, username, email, password);
+            SignUpRequest signUpRequest = new SignUpRequest(context, mFullName, mUsername, mEmail, mPassword);
             signUpRequest.sendRequest(new SignUpRequest.Callback() {
                 @Override
-                public void onSuccess(Integer id, String token) {
+                public void onSuccess(int id, String token) {
                     Auth auth = new Auth(context);
                     auth.setAuth(id, token);
 
@@ -156,17 +172,20 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onFailed(String message) {
                     setSignUpButtonState(true);
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onError(String message) {
                     setSignUpButtonState(true);
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             });
         } else {
             setSignUpButtonState(true);
         }
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

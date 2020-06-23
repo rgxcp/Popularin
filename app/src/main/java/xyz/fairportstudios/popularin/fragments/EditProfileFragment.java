@@ -33,14 +33,15 @@ import xyz.fairportstudios.popularin.models.SelfDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditProfileFragment extends Fragment {
-    private Button buttonSaveProfile;
-    private LinearLayout anchorLayout;
-    private String fullName;
-    private String username;
-    private String email;
-    private TextInputEditText inputFullName;
-    private TextInputEditText inputUsername;
-    private TextInputEditText inputEmail;
+    // Variable member
+    private Button mButtonSaveProfile;
+    private LinearLayout mAnchorLayout;
+    private String mFullName;
+    private String mUsername;
+    private String mEmail;
+    private TextInputEditText mInputFullName;
+    private TextInputEditText mInputUsername;
+    private TextInputEditText mInputEmail;
 
     @Nullable
     @Override
@@ -51,31 +52,27 @@ public class EditProfileFragment extends Fragment {
         final Context context = getActivity();
 
         // Binding
-        buttonSaveProfile = view.findViewById(R.id.button_fep_save_profile);
-        anchorLayout = view.findViewById(R.id.anchor_fep_layout);
-        inputFullName = view.findViewById(R.id.input_fep_full_name);
-        inputUsername = view.findViewById(R.id.input_fep_username);
-        inputEmail = view.findViewById(R.id.input_fep_email);
+        mButtonSaveProfile = view.findViewById(R.id.button_fep_save_profile);
+        mAnchorLayout = view.findViewById(R.id.anchor_fep_layout);
+        mInputFullName = view.findViewById(R.id.input_fep_full_name);
+        mInputUsername = view.findViewById(R.id.input_fep_username);
+        mInputEmail = view.findViewById(R.id.input_fep_email);
         Button buttonEditPassword = view.findViewById(R.id.button_fep_edit_password);
         TextView textWelcome = view.findViewById(R.id.text_fep_welcome);
 
         // Pesan
-        String welcome = getString(R.string.edit_profile_welcome);
-        SpannableString spannableString = new SpannableString(welcome);
-        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
-        spannableString.setSpan(relativeSizeSpan, 0, 4, 0);
-        textWelcome.setText(spannableString);
+        textWelcome.setText(getWelcomeMessage());
 
-        // Mendapatkan informasi diri sendiri
+        // Menampilkan data diri awal
         getSelfDetail(context);
 
         // Text watcher
-        inputFullName.addTextChangedListener(editProfileWatcher);
-        inputUsername.addTextChangedListener(editProfileWatcher);
-        inputEmail.addTextChangedListener(editProfileWatcher);
+        mInputFullName.addTextChangedListener(editProfileWatcher);
+        mInputUsername.addTextChangedListener(editProfileWatcher);
+        mInputEmail.addTextChangedListener(editProfileWatcher);
 
         // Activity
-        buttonSaveProfile.setOnClickListener(new View.OnClickListener() {
+        mButtonSaveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setSaveProfileButtonState(false);
@@ -93,6 +90,14 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
+    private SpannableString getWelcomeMessage() {
+        String welcome = getString(R.string.edit_profile_welcome);
+        SpannableString spannableString = new SpannableString(welcome);
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
+        spannableString.setSpan(relativeSizeSpan, 0, 4, 0);
+        return spannableString;
+    }
+
     private TextWatcher editProfileWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -101,10 +106,10 @@ public class EditProfileFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            fullName = Objects.requireNonNull(inputFullName.getText()).toString();
-            username = Objects.requireNonNull(inputUsername.getText()).toString();
-            email = Objects.requireNonNull(inputEmail.getText()).toString();
-            buttonSaveProfile.setEnabled(!fullName.isEmpty() && !username.isEmpty() && !email.isEmpty());
+            mFullName = Objects.requireNonNull(mInputFullName.getText()).toString();
+            mUsername = Objects.requireNonNull(mInputUsername.getText()).toString();
+            mEmail = Objects.requireNonNull(mInputEmail.getText()).toString();
+            mButtonSaveProfile.setEnabled(!mFullName.isEmpty() && !mUsername.isEmpty() && !mEmail.isEmpty());
         }
 
         @Override
@@ -118,24 +123,24 @@ public class EditProfileFragment extends Fragment {
         selfDetailRequest.sendRequest(new SelfDetailRequest.Callback() {
             @Override
             public void onSuccess(SelfDetail selfDetail) {
-                inputFullName.setText(selfDetail.getFull_name());
-                inputUsername.setText(selfDetail.getUsername());
-                inputEmail.setText(selfDetail.getEmail());
+                mInputFullName.setText(selfDetail.getFull_name());
+                mInputUsername.setText(selfDetail.getUsername());
+                mInputEmail.setText(selfDetail.getEmail());
             }
 
             @Override
             public void onError(String message) {
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     private boolean usernameValidated() {
-        if (username.length() < 5) {
-            Snackbar.make(anchorLayout, R.string.validate_username_length, Snackbar.LENGTH_LONG).show();
+        if (mUsername.length() < 5) {
+            Snackbar.make(mAnchorLayout, R.string.validate_username_length, Snackbar.LENGTH_LONG).show();
             return false;
-        } else if (username.contains(" ")) {
-            Snackbar.make(anchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
+        } else if (mUsername.contains(" ")) {
+            Snackbar.make(mAnchorLayout, R.string.validate_alpha_dash, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -143,29 +148,29 @@ public class EditProfileFragment extends Fragment {
     }
 
     private boolean emailValidated() {
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Snackbar.make(anchorLayout, R.string.validate_email_format, Snackbar.LENGTH_LONG).show();
+        if (!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches()) {
+            Snackbar.make(mAnchorLayout, R.string.validate_email_format, Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
         }
     }
 
-    private void setSaveProfileButtonState(Boolean state) {
-        buttonSaveProfile.setEnabled(state);
-        if (state) {
-            buttonSaveProfile.setText(R.string.save_profile);
+    private void setSaveProfileButtonState(boolean enable) {
+        mButtonSaveProfile.setEnabled(enable);
+        if (enable) {
+            mButtonSaveProfile.setText(R.string.save_profile);
         } else {
-            buttonSaveProfile.setText(R.string.loading);
+            mButtonSaveProfile.setText(R.string.loading);
         }
     }
 
     private void saveProfile(final Context context) {
         if (usernameValidated() && emailValidated()) {
-            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, fullName, username, email);
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(context, mFullName, mUsername, mEmail);
             updateProfileRequest.sendRequest(new UpdateProfileRequest.Callback() {
                 @Override
-                public void onSuccess(Integer id, String token) {
+                public void onSuccess(int id, String token) {
                     Auth auth = new Auth(context);
                     auth.setAuth(id, token);
 
@@ -177,13 +182,13 @@ public class EditProfileFragment extends Fragment {
                 @Override
                 public void onFailed(String message) {
                     setSaveProfileButtonState(true);
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onError(String message) {
                     setSaveProfileButtonState(true);
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             });
         } else {
