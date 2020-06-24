@@ -31,7 +31,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
     public interface OnClickListener {
         void onRecentFavoriteItemClick(int position);
 
-        void onRecentFavoritePosterLongClick(int position);
+        void onRecentFavoriteItemLongClick(int position);
     }
 
     public int getDensity(int px) {
@@ -57,8 +57,8 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
         Glide.with(mContext).load(poster).into(holder.mImagePoster);
 
         // Margin
-        int left = getDensity(8);
-        int right = getDensity(8);
+        int left = getDensity(4);
+        int right = getDensity(4);
 
         boolean isEdgeLeft = position == 0;
         boolean isEdgeRight = position == getItemCount() - 1;
@@ -92,7 +92,7 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
             mOnClickListener = onClickListener;
 
             itemView.setOnClickListener(this);
-            mImagePoster.setOnLongClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -104,8 +104,8 @@ public class RecentFavoriteAdapter extends RecyclerView.Adapter<RecentFavoriteAd
 
         @Override
         public boolean onLongClick(View v) {
-            if (v == mImagePoster) {
-                mOnClickListener.onRecentFavoritePosterLongClick(getAdapterPosition());
+            if (v == itemView) {
+                mOnClickListener.onRecentFavoriteItemLongClick(getAdapterPosition());
             }
             return true;
         }

@@ -61,15 +61,15 @@ public class UserDetailRequest {
                         JSONObject userObject = resultObject.getJSONObject("user");
                         JSONObject metadataObject = resultObject.getJSONObject("metadata");
                         JSONObject activityObject = resultObject.getJSONObject("activity");
-                        JSONArray recentFavoriteArray = activityObject.getJSONArray("recent_favorites");
-                        JSONArray recentReviewArray = activityObject.getJSONArray("recent_reviews");
+                        int totalFavorite = metadataObject.getInt("total_favorite");
+                        int totalReview = metadataObject.getInt("total_review");
 
                         // Detail
                         UserDetail userDetail = new UserDetail(
                                 metadataObject.getBoolean("is_follower"),
                                 metadataObject.getBoolean("is_following"),
-                                metadataObject.getInt("total_review"),
-                                metadataObject.getInt("total_favorite"),
+                                totalReview,
+                                totalFavorite,
                                 metadataObject.getInt("total_watchlist"),
                                 metadataObject.getInt("total_follower"),
                                 metadataObject.getInt("total_following"),
@@ -81,8 +81,9 @@ public class UserDetailRequest {
                         callback.onSuccess(userDetail);
 
                         // Favorite
-                        if (recentFavoriteArray.length() != 0) {
+                        if (totalFavorite > 0) {
                             List<RecentFavorite> recentFavoriteList = new ArrayList<>();
+                            JSONArray recentFavoriteArray = activityObject.getJSONArray("recent_favorites");
 
                             for (int index = 0; index < recentFavoriteArray.length(); index++) {
                                 JSONObject indexObject = recentFavoriteArray.getJSONObject(index);
@@ -102,8 +103,9 @@ public class UserDetailRequest {
                         }
 
                         // Review
-                        if (recentReviewArray.length() != 0) {
+                        if (totalReview > 0) {
                             List<RecentReview> recentReviewList = new ArrayList<>();
+                            JSONArray recentReviewArray = activityObject.getJSONArray("recent_reviews");
 
                             for (int index = 0; index < recentReviewArray.length(); index++) {
                                 JSONObject indexObject = recentReviewArray.getJSONObject(index);

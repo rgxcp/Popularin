@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
@@ -30,42 +30,47 @@ import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnfollowUserRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.UserDetailRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.FollowUserRequest;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
 import xyz.fairportstudios.popularin.models.RecentReview;
 import xyz.fairportstudios.popularin.models.UserDetail;
 import xyz.fairportstudios.popularin.preferences.Auth;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class UserDetailActivity extends AppCompatActivity implements RecentFavoriteAdapter.OnClickListener, RecentReviewAdapter.OnClickListener {
-    // Variable untuk fitur swipe refresh
-    private Boolean isLoadFirstTime = true;
+    // Variable untuk fitur load
+    private boolean mIsLoadFirstTimeSuccess = false;
 
     // Variable member
-    private Boolean isSelf;
-    private Boolean isFollower;
-    private Boolean isFollowing;
-    private Button buttonFollow;
-    private ImageView imageProfile;
-    private ImageView imageEmptyRecentFavorite;
-    private ImageView imageEmptyRecentReview;
-    private Integer totalFollower;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerRecentFavorite;
-    private RecyclerView recyclerRecentReview;
-    private RelativeLayout anchorLayout;
-    private ScrollView scrollView;
-    private TextView textFullName;
-    private TextView textUsername;
-    private TextView textFollowMe;
-    private TextView textTotalReview;
-    private TextView textTotalFavorite;
-    private TextView textTotalWatchlist;
-    private TextView textTotalFollower;
-    private TextView textTotalFollowing;
-    private TextView textMessage;
-
+    private boolean mIsSelf;
+    private boolean mIsFollower;
+    private boolean mIsFollowing;
+    private int mTotalFollower;
+    private Context mContext;
+    private Button mButtonFollow;
+    private ImageView mImageProfile;
+    private ImageView mImageEmptyRecentFavorite;
+    private ImageView mImageEmptyRecentReview;
+    private List<RecentFavorite> mRecentFavoriteList;
+    private List<RecentReview> mRecentReviewList;
+    private ProgressBar mProgressBar;
     private RecentFavoriteAdapter.OnClickListener mOnRecentFavoriteClickListener;
     private RecentReviewAdapter.OnClickListener mOnRecentReviewClickListener;
+    private RecyclerView mRecyclerRecentFavorite;
+    private RecyclerView mRecyclerRecentReview;
+    private RelativeLayout mAnchorLayout;
+    private ScrollView mScrollView;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextFullName;
+    private TextView mTextUsername;
+    private TextView mTextFollowMe;
+    private TextView mTextTotalReview;
+    private TextView mTextTotalFavorite;
+    private TextView mTextTotalWatchlist;
+    private TextView mTextTotalFollower;
+    private TextView mTextTotalFollowing;
+    private TextView mTextMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,51 +78,51 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
         setContentView(R.layout.activity_user_detail);
 
         // Context
-        final Context context = UserDetailActivity.this;
+        mContext = UserDetailActivity.this;
 
         // Binding
-        buttonFollow = findViewById(R.id.button_aud_follow);
-        imageProfile = findViewById(R.id.image_aud_profile);
-        imageEmptyRecentFavorite = findViewById(R.id.image_aud_empty_recent_favorite);
-        imageEmptyRecentReview = findViewById(R.id.image_aud_empty_recent_review);
-        progressBar = findViewById(R.id.pbr_aud_layout);
-        recyclerRecentFavorite = findViewById(R.id.recycler_aud_recent_favorite);
-        recyclerRecentReview = findViewById(R.id.recycler_aud_recent_review);
-        anchorLayout = findViewById(R.id.anchor_aud_layout);
-        scrollView = findViewById(R.id.scroll_aud_layout);
-        textFullName = findViewById(R.id.text_aud_full_name);
-        textUsername = findViewById(R.id.text_aud_username);
-        textFollowMe = findViewById(R.id.text_aud_follow_me);
-        textTotalReview = findViewById(R.id.text_aud_total_review);
-        textTotalFavorite = findViewById(R.id.text_aud_total_favorite);
-        textTotalWatchlist = findViewById(R.id.text_aud_total_watchlist);
-        textTotalFollower = findViewById(R.id.text_aud_total_follower);
-        textTotalFollowing = findViewById(R.id.text_aud_total_following);
-        textMessage = findViewById(R.id.text_aud_message);
+        mButtonFollow = findViewById(R.id.button_aud_follow);
+        mImageProfile = findViewById(R.id.image_aud_profile);
+        mImageEmptyRecentFavorite = findViewById(R.id.image_aud_empty_recent_favorite);
+        mImageEmptyRecentReview = findViewById(R.id.image_aud_empty_recent_review);
+        mProgressBar = findViewById(R.id.pbr_aud_layout);
+        mRecyclerRecentFavorite = findViewById(R.id.recycler_aud_recent_favorite);
+        mRecyclerRecentReview = findViewById(R.id.recycler_aud_recent_review);
+        mAnchorLayout = findViewById(R.id.anchor_aud_layout);
+        mScrollView = findViewById(R.id.scroll_aud_layout);
+        mSwipeRefresh = findViewById(R.id.swipe_refresh_aud_layout);
+        mTextFullName = findViewById(R.id.text_aud_full_name);
+        mTextUsername = findViewById(R.id.text_aud_username);
+        mTextFollowMe = findViewById(R.id.text_aud_follow_me);
+        mTextTotalReview = findViewById(R.id.text_aud_total_review);
+        mTextTotalFavorite = findViewById(R.id.text_aud_total_favorite);
+        mTextTotalWatchlist = findViewById(R.id.text_aud_total_watchlist);
+        mTextTotalFollower = findViewById(R.id.text_aud_total_follower);
+        mTextTotalFollowing = findViewById(R.id.text_aud_total_following);
+        mTextMessage = findViewById(R.id.text_aud_message);
         LinearLayout totalReviewLayout = findViewById(R.id.layout_aud_total_review);
         LinearLayout totalFavoriteLayout = findViewById(R.id.layout_aud_total_favorite);
         LinearLayout totalWatchlistLayout = findViewById(R.id.layout_aud_total_watchlist);
         LinearLayout totalFollowerLayout = findViewById(R.id.layout_aud_total_follower);
         LinearLayout totalFollowingLayout = findViewById(R.id.layout_aud_total_following);
         Toolbar toolbar = findViewById(R.id.toolbar_aud_layout);
-        final SwipeRefreshLayout swipeRefresh = findViewById(R.id.swipe_refresh_aud_layout);
 
         // Extra
         Intent intent = getIntent();
         final int userID = intent.getIntExtra(Popularin.USER_ID, 0);
 
         // Auth
-        final Auth auth = new Auth(context);
-        final Boolean isAuth = auth.isAuth();
-        isSelf = userID == auth.getAuthID();
-        if (isSelf) {
-            buttonFollow.setText(R.string.edit_profile);
+        Auth auth = new Auth(mContext);
+        final boolean isAuth = auth.isAuth();
+        mIsSelf = userID == auth.getAuthID();
+        if (mIsSelf) {
+            mButtonFollow.setText(R.string.edit_profile);
         }
 
-        // Mendapatkan informasi pengguna
+        // Mendapatkan data
         mOnRecentFavoriteClickListener = this;
         mOnRecentReviewClickListener = this;
-        getUserDetail(context, userID);
+        getUserDetail(userID);
 
         // Activity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -130,189 +135,223 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
         totalReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserReview(context, userID);
+                gotoUserReview(userID);
             }
         });
 
         totalFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserFavorite(context, userID);
+                gotoUserFavorite(userID);
             }
         });
 
         totalWatchlistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserWatchlist(context, userID);
+                gotoUserWatchlist(userID);
             }
         });
 
         totalFollowerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 0);
+                gotoUserSocial(userID, 0);
             }
         });
 
         totalFollowingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoUserSocial(context, userID, 1);
+                gotoUserSocial(userID, 1);
             }
         });
 
-        buttonFollow.setOnClickListener(new View.OnClickListener() {
+        mButtonFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isAuth && isSelf) {
-                    gotoEditProfile(context);
-                } else if (isAuth) {
-                    if (!isFollowing) {
+                if (isAuth && !mIsSelf) {
+                    if (!mIsFollowing) {
                         setFollowButtonState(false, FollowingState.LOADING);
-                        followUser(context, userID);
+                        followUser(userID);
                     } else {
                         setFollowButtonState(false, FollowingState.LOADING);
-                        unfollowUser(context, userID);
+                        unfollowUser(userID);
                     }
+                } else if (isAuth) {
+                    gotoEditProfile();
                 } else {
-                    gotoEmptyAccount(context);
+                    gotoEmptyAccount();
                 }
             }
         });
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getUserDetail(context, userID);
-                swipeRefresh.setRefreshing(false);
+                mSwipeRefresh.setRefreshing(true);
+                getUserDetail(userID);
             }
         });
     }
 
     @Override
     public void onRecentFavoriteItemClick(int position) {
-
+        RecentFavorite currentItem = mRecentFavoriteList.get(position);
+        int id = currentItem.getTmdb_id();
+        gotoFilmDetail(id);
     }
 
     @Override
-    public void onRecentFavoritePosterLongClick(int position) {
-
+    public void onRecentFavoriteItemLongClick(int position) {
+        RecentFavorite currentItem = mRecentFavoriteList.get(position);
+        int id = currentItem.getTmdb_id();
+        String title = currentItem.getTitle();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster();
+        showFilmModal(id, title, year, poster);
     }
 
     @Override
     public void onRecentReviewItemClick(int position) {
-
+        RecentReview currentItem = mRecentReviewList.get(position);
+        int id = currentItem.getId();
+        gotoReviewDetail(id);
     }
 
     @Override
-    public void onRecentReviewPosterLongClick(int position) {
-
+    public void onRecentReviewItemLongClick(int position) {
+        RecentReview currentItem = mRecentReviewList.get(position);
+        int id = currentItem.getTmdb_id();
+        String title = currentItem.getTitle();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster();
+        showFilmModal(id, title, year, poster);
     }
 
-    private void getUserDetail(final Context context, Integer userID) {
-        // Menghilangkan pesan setiap kali method dijalankan
-        textMessage.setVisibility(View.GONE);
-
-        final UserDetailRequest userDetailRequest = new UserDetailRequest(context, userID);
+    private void getUserDetail(int id) {
+        final UserDetailRequest userDetailRequest = new UserDetailRequest(mContext, id);
         userDetailRequest.sendRequest(new UserDetailRequest.Callback() {
             @Override
             public void onSuccess(UserDetail userDetail) {
                 // Following status
-                totalFollower = userDetail.getTotal_follower();
-                isFollower = userDetail.getIs_follower();
-                isFollowing = userDetail.getIs_following();
-                if (isFollower) {
-                    textFollowMe.setVisibility(View.VISIBLE);
+                mIsFollower = userDetail.getIs_follower();
+                mIsFollowing = userDetail.getIs_following();
+                if (mIsFollower) {
+                    mTextFollowMe.setVisibility(View.VISIBLE);
+                } else {
+                    mTextFollowMe.setVisibility(View.GONE);
                 }
-                if (isFollowing) {
-                    buttonFollow.setText(R.string.following);
+                if (mIsFollowing) {
+                    mButtonFollow.setText(R.string.following);
                 }
 
-                // Request gambar
-                RequestOptions requestOptions = new RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.colorSurface)
-                        .error(R.color.colorSurface);
-
-                textFullName.setText(userDetail.getFull_name());
-                textUsername.setText(String.format("@%s", userDetail.getUsername()));
-                textTotalReview.setText(String.valueOf(userDetail.getTotal_review()));
-                textTotalFavorite.setText(String.valueOf(userDetail.getTotal_favorite()));
-                textTotalWatchlist.setText(String.valueOf(userDetail.getTotal_watchlist()));
-                textTotalFollower.setText(String.valueOf(totalFollower));
-                textTotalFollowing.setText(String.valueOf(userDetail.getTotal_following()));
-                Glide.with(context).load(userDetail.getProfile_picture()).apply(requestOptions).into(imageProfile);
-                progressBar.setVisibility(View.GONE);
-                scrollView.setVisibility(View.VISIBLE);
-                isLoadFirstTime = false;
+                // Isi
+                mTotalFollower = userDetail.getTotal_follower();
+                mTextFullName.setText(userDetail.getFull_name());
+                mTextUsername.setText(String.format("@%s", userDetail.getUsername()));
+                mTextTotalReview.setText(String.valueOf(userDetail.getTotal_review()));
+                mTextTotalFavorite.setText(String.valueOf(userDetail.getTotal_favorite()));
+                mTextTotalWatchlist.setText(String.valueOf(userDetail.getTotal_watchlist()));
+                mTextTotalFollower.setText(String.valueOf(mTotalFollower));
+                mTextTotalFollowing.setText(String.valueOf(userDetail.getTotal_following()));
+                Glide.with(mContext).load(userDetail.getProfile_picture()).into(mImageProfile);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.GONE);
+                mScrollView.setVisibility(View.VISIBLE);
+                mIsLoadFirstTimeSuccess = true;
             }
 
             @Override
-            public void onHasRecentFavorite(List<RecentFavorite> recentFavorites) {
-                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(context, recentFavorites, mOnRecentFavoriteClickListener);
-                recyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
-                recyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                recyclerRecentFavorite.setHasFixedSize(true);
-                recyclerRecentFavorite.setVisibility(View.VISIBLE);
-                imageEmptyRecentFavorite.setVisibility(View.GONE);
+            public void onHasRecentFavorite(List<RecentFavorite> recentFavoriteList) {
+                mRecentFavoriteList = new ArrayList<>();
+                mRecentFavoriteList.addAll(recentFavoriteList);
+                RecentFavoriteAdapter recentFavoriteAdapter = new RecentFavoriteAdapter(mContext, mRecentFavoriteList, mOnRecentFavoriteClickListener);
+                mRecyclerRecentFavorite.setAdapter(recentFavoriteAdapter);
+                mRecyclerRecentFavorite.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+                mRecyclerRecentFavorite.setHasFixedSize(true);
+                mRecyclerRecentFavorite.setVisibility(View.VISIBLE);
+                mImageEmptyRecentFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onHasRecentReview(List<RecentReview> recentReviews) {
-                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(context, recentReviews, mOnRecentReviewClickListener);
-                recyclerRecentReview.setAdapter(recentReviewAdapter);
-                recyclerRecentReview.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                recyclerRecentReview.setHasFixedSize(true);
-                recyclerRecentReview.setVisibility(View.VISIBLE);
-                imageEmptyRecentReview.setVisibility(View.GONE);
+            public void onHasRecentReview(List<RecentReview> recentReviewList) {
+                mRecentReviewList = new ArrayList<>();
+                mRecentReviewList.addAll(recentReviewList);
+                RecentReviewAdapter recentReviewAdapter = new RecentReviewAdapter(mContext, mRecentReviewList, mOnRecentReviewClickListener);
+                mRecyclerRecentReview.setAdapter(recentReviewAdapter);
+                mRecyclerRecentReview.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+                mRecyclerRecentReview.setHasFixedSize(true);
+                mRecyclerRecentReview.setVisibility(View.VISIBLE);
+                mImageEmptyRecentReview.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(String message) {
-                if (isLoadFirstTime) {
-                    progressBar.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.VISIBLE);
-                    textMessage.setText(message);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
                 } else {
-                    Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+
+        // Memberhentikan loading
+        mSwipeRefresh.setRefreshing(false);
     }
 
-    private void gotoUserReview(Context context, Integer userID) {
-        Intent intent = new Intent(context, UserReviewActivity.class);
-        intent.putExtra(Popularin.USER_ID, userID);
+    private void gotoFilmDetail(int id) {
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
         startActivity(intent);
     }
 
-    private void gotoUserFavorite(Context context, Integer userID) {
-        Intent intent = new Intent(context, UserFavoriteActivity.class);
-        intent.putExtra(Popularin.USER_ID, userID);
+    private void gotoReviewDetail(int id) {
+        Intent intent = new Intent(mContext, ReviewActivity.class);
+        intent.putExtra(Popularin.REVIEW_ID, id);
+        intent.putExtra(Popularin.IS_SELF, mIsSelf);
         startActivity(intent);
     }
 
-    private void gotoUserWatchlist(Context context, Integer userID) {
-        Intent intent = new Intent(context, UserWatchlistActivity.class);
-        intent.putExtra(Popularin.USER_ID, userID);
+    private void showFilmModal(int id, String title, String year, String poster) {
+        FilmModal filmModal = new FilmModal(id, title, year, poster);
+        filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
+    }
+
+    private void gotoUserReview(int id) {
+        Intent intent = new Intent(mContext, UserReviewActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
         startActivity(intent);
     }
 
-    private void gotoUserSocial(Context context, Integer userID, Integer viewPagerIndex) {
-        Intent intent = new Intent(context, SocialActivity.class);
-        intent.putExtra(Popularin.USER_ID, userID);
+    private void gotoUserFavorite(int id) {
+        Intent intent = new Intent(mContext, UserFavoriteActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
+    }
+
+    private void gotoUserWatchlist(int id) {
+        Intent intent = new Intent(mContext, UserWatchlistActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
+        startActivity(intent);
+    }
+
+    private void gotoUserSocial(int id, int viewPagerIndex) {
+        Intent intent = new Intent(mContext, SocialActivity.class);
+        intent.putExtra(Popularin.USER_ID, id);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, viewPagerIndex);
         startActivity(intent);
     }
 
-    private void gotoEditProfile(Context context) {
-        Intent intent = new Intent(context, EditProfileActivity.class);
+    private void gotoEditProfile() {
+        Intent intent = new Intent(mContext, EditProfileActivity.class);
         startActivity(intent);
     }
 
-    private void gotoEmptyAccount(Context context) {
-        Intent intent = new Intent(context, EmptyAccountActivity.class);
+    private void gotoEmptyAccount() {
+        Intent intent = new Intent(mContext, EmptyAccountActivity.class);
         startActivity(intent);
     }
 
@@ -322,29 +361,29 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
         LOADING
     }
 
-    private void setFollowingState(Boolean state) {
-        isFollowing = state;
-        if (state) {
-            totalFollower++;
+    private void setFollowingState(boolean isFollowing) {
+        mIsFollowing = isFollowing;
+        if (isFollowing) {
+            mTotalFollower++;
         } else {
-            totalFollower--;
+            mTotalFollower--;
         }
-        textTotalFollower.setText(String.valueOf(totalFollower));
+        mTextTotalFollower.setText(String.valueOf(mTotalFollower));
     }
 
-    private void setFollowButtonState(Boolean state, Enum<FollowingState> followingStateEnum) {
-        buttonFollow.setEnabled(state);
+    private void setFollowButtonState(boolean enable, Enum<FollowingState> followingStateEnum) {
+        mButtonFollow.setEnabled(enable);
         if (followingStateEnum == FollowingState.FOLLOWING) {
-            buttonFollow.setText(R.string.following);
+            mButtonFollow.setText(R.string.following);
         } else if (followingStateEnum == FollowingState.NOT_FOLLOWING) {
-            buttonFollow.setText(R.string.follow);
+            mButtonFollow.setText(R.string.follow);
         } else {
-            buttonFollow.setText(R.string.loading);
+            mButtonFollow.setText(R.string.loading);
         }
     }
 
-    private void followUser(Context context, Integer userID) {
-        FollowUserRequest followUserRequest = new FollowUserRequest(context, userID);
+    private void followUser(int id) {
+        FollowUserRequest followUserRequest = new FollowUserRequest(mContext, id);
         followUserRequest.sendRequest(new FollowUserRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -355,13 +394,13 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
             @Override
             public void onError(String message) {
                 setFollowButtonState(true, FollowingState.NOT_FOLLOWING);
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
-    private void unfollowUser(Context context, Integer userID) {
-        UnfollowUserRequest unfollowUserRequest = new UnfollowUserRequest(context, userID);
+    private void unfollowUser(int id) {
+        UnfollowUserRequest unfollowUserRequest = new UnfollowUserRequest(mContext, id);
         unfollowUserRequest.sendRequest(new UnfollowUserRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -372,7 +411,7 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
             @Override
             public void onError(String message) {
                 setFollowButtonState(true, FollowingState.FOLLOWING);
-                Snackbar.make(anchorLayout, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
     }

@@ -32,7 +32,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
     public interface OnClickListener {
         void onRecentReviewItemClick(int position);
 
-        void onRecentReviewPosterLongClick(int position);
+        void onRecentReviewItemLongClick(int position);
     }
 
     public int getDensity(int px) {
@@ -60,8 +60,8 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         Glide.with(mContext).load(filmPoster).into(holder.mImageFilmPoster);
 
         // Margin
-        int left = getDensity(8);
-        int right = getDensity(8);
+        int left = getDensity(4);
+        int right = getDensity(4);
 
         boolean isEdgeLeft = position == 0;
         boolean isEdgeRight = position == getItemCount() - 1;
@@ -97,7 +97,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
             mOnClickListener = onClickListener;
 
             itemView.setOnClickListener(this);
-            mImageFilmPoster.setOnLongClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -109,8 +109,8 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
 
         @Override
         public boolean onLongClick(View v) {
-            if (v == mImageFilmPoster) {
-                mOnClickListener.onRecentReviewPosterLongClick(getAdapterPosition());
+            if (v == itemView) {
+                mOnClickListener.onRecentReviewItemLongClick(getAdapterPosition());
             }
             return true;
         }
