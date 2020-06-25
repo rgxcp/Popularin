@@ -35,6 +35,9 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class EditReviewActivity extends AppCompatActivity implements android.app.DatePickerDialog.OnDateSetListener {
+    // Variable untuk fitur load
+    private boolean mIsLoading = true;
+
     // Variable member
     private float mRating;
     private EditText mInputReview;
@@ -89,7 +92,8 @@ public class EditReviewActivity extends AppCompatActivity implements android.app
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (ratingValidated() && reviewValidated()) {
+                if (ratingValidated() && reviewValidated() && !mIsLoading) {
+                    mIsLoading = true;
                     editReview(context, reviewID);
                     return true;
                 } else {
@@ -154,6 +158,9 @@ public class EditReviewActivity extends AppCompatActivity implements android.app
                 mTextMessage.setText(message);
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 
     private void getCurrentWatchDate(String watchDate) {
@@ -212,5 +219,8 @@ public class EditReviewActivity extends AppCompatActivity implements android.app
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

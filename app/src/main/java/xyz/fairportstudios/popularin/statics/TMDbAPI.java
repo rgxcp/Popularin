@@ -9,20 +9,4 @@ public class TMDbAPI {
     public static final String DISCOVER = BASE_URL + "/discover/movie";
     public static final String FILM = BASE_URL + "/movie/";
     public static final String SEARCH_FILM = BASE_URL + "/search/movie";
-    public static final Integer ACTION_ID = 28;
-    public static final Integer ADVENTURE_ID = 12;
-    public static final Integer ANIMATION_ID = 16;
-    public static final Integer COMEDY_ID = 35;
-    public static final Integer CRIME_ID = 80;
-    public static final Integer DOCUMENTARY_ID = 99;
-    public static final Integer DRAMA_ID = 18;
-    public static final Integer FAMILY_ID = 10751;
-    public static final Integer FANTASY_ID = 14;
-    public static final Integer FICTION_ID = 878;
-    public static final Integer HISTORY_ID = 36;
-    public static final Integer HORROR_ID = 27;
-    public static final Integer MYSTERY_ID = 9648;
-    public static final Integer ROMANCE_ID = 10749;
-    public static final Integer THRILLER_ID = 53;
-    public static final Integer WAR_ID = 10752;
 }

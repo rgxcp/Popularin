@@ -32,17 +32,17 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onReviewItemClick(int position);
 
-        void onUserProfileClick(int position);
+        void onReviewUserProfileClick(int position);
 
-        void onFilmPosterClick(int position);
+        void onReviewFilmPosterClick(int position);
 
-        void onFilmPosterLongClick(int position);
+        void onReviewFilmPosterLongClick(int position);
 
-        void onLikeClick(int position);
+        void onReviewLikeClick(int position);
 
-        void onCommentClick(int position);
+        void onReviewCommentClick(int position);
     }
 
     @NonNull
@@ -135,22 +135,22 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onReviewItemClick(getAdapterPosition());
             } else if (v == mImageUserProfile) {
-                mOnClickListener.onUserProfileClick(getAdapterPosition());
+                mOnClickListener.onReviewUserProfileClick(getAdapterPosition());
             } else if (v == mImageFilmPoster) {
-                mOnClickListener.onFilmPosterClick(getAdapterPosition());
+                mOnClickListener.onReviewFilmPosterClick(getAdapterPosition());
             } else if (v == mImageLike) {
-                mOnClickListener.onLikeClick(getAdapterPosition());
+                mOnClickListener.onReviewLikeClick(getAdapterPosition());
             } else if (v == mImageComment) {
-                mOnClickListener.onCommentClick(getAdapterPosition());
+                mOnClickListener.onReviewCommentClick(getAdapterPosition());
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
             if (v == mImageFilmPoster) {
-                mOnClickListener.onFilmPosterLongClick(getAdapterPosition());
+                mOnClickListener.onReviewFilmPosterLongClick(getAdapterPosition());
             }
             return true;
         }

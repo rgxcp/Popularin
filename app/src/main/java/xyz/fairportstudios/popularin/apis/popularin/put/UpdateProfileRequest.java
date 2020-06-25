@@ -42,7 +42,7 @@ public class UpdateProfileRequest {
     }
 
     public interface Callback {
-        void onSuccess(int id, String token);
+        void onSuccess();
 
         void onFailed(String message);
 
@@ -60,10 +60,7 @@ public class UpdateProfileRequest {
                     int status = responseObject.getInt("status");
 
                     if (status == 303) {
-                        JSONObject resultObject = responseObject.getJSONObject("result");
-                        int id = resultObject.getInt("id");
-                        String token = resultObject.getString("api_token");
-                        callback.onSuccess(id, token);
+                        callback.onSuccess();
                     } else if (status == 626) {
                         JSONArray resultArray = responseObject.getJSONArray("result");
                         String message = resultArray.getString(0);

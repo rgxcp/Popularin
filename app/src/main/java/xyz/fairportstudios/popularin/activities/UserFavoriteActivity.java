@@ -78,7 +78,6 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mFilmList = new ArrayList<>();
         mUserFavoriteRequest = new UserFavoriteRequest(mContext, userID);
         getUserFavorite(mStartPage, false);
 
@@ -115,21 +114,21 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onFilmItemClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterClick(int position) {
+    public void onFilmPosterClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterLongClick(int position) {
+    public void onFilmPosterLongClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getOriginal_title();
@@ -143,6 +142,7 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
             @Override
             public void onSuccess(int totalPage, List<Film> filmList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mFilmList = new ArrayList<>();
                     int insertIndex = mFilmList.size();
                     mFilmList.addAll(insertIndex, filmList);
                     mFilmAdapter = new FilmAdapter(mContext, mFilmList, mOnClickListener);
@@ -178,9 +178,9 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
                 }
                 mTextMessage.setVisibility(View.VISIBLE);
                 if (mIsSelf) {
-                    mTextMessage.setText(R.string.empty_self_favorite);
+                    mTextMessage.setText(R.string.empty_self_favorite_film);
                 } else {
-                    mTextMessage.setText(R.string.empty_user_favorite);
+                    mTextMessage.setText(R.string.empty_user_favorite_film);
                 }
             }
 
@@ -190,9 +190,9 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
                     if (mIsSelf) {
-                        mTextMessage.setText(R.string.empty_self_favorite);
+                        mTextMessage.setText(R.string.empty_self_favorite_film);
                     } else {
-                        mTextMessage.setText(R.string.empty_user_favorite);
+                        mTextMessage.setText(R.string.empty_user_favorite_film);
                     }
                 }
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();

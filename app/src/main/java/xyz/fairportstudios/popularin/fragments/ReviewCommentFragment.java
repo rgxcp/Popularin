@@ -96,10 +96,9 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
         mImageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isAuth) {
-                    if (!mIsLoading) {
-                        addComment();
-                    }
+                if (isAuth && !mIsLoading) {
+                    mIsLoading = true;
+                    addComment();
                 } else {
                     gotoEmptyAccount();
                 }
@@ -146,17 +145,18 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
     }
 
     @Override
-    public void onProfileClick(int position) {
+    public void onCommentProfileClick(int position) {
         Comment currentItem = mCommentList.get(position);
         int id = currentItem.getUser_id();
         gotoUserDetail(id);
     }
 
     @Override
-    public void onDeleteClick(int position) {
+    public void onCommentDeleteClick(int position) {
         Comment currentItem = mCommentList.get(position);
         int id = currentItem.getId();
         if (!mIsLoading) {
+            mIsLoading = true;
             deleteComment(id, position);
         }
     }

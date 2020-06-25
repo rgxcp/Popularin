@@ -85,8 +85,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private SpannableString getWelcomeMessage() {
-        String welcome = getString(R.string.sign_up_welcome);
-        SpannableString spannableString = new SpannableString(welcome);
+        String welcomeMessage = getString(R.string.sign_up_welcome_message);
+        SpannableString spannableString = new SpannableString(welcomeMessage);
         RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
         spannableString.setSpan(relativeSizeSpan, 0, 5, 0);
         return spannableString;

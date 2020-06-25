@@ -84,7 +84,6 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mReviewList = new ArrayList<>();
         mReviewRequest = new ReviewRequest(mContext);
         getReview(mStartPage, false);
 
@@ -122,7 +121,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onReviewItemClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -130,21 +129,21 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     @Override
-    public void onUserProfileClick(int position) {
+    public void onReviewUserProfileClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getUser_id();
         gotoUserDetail(id);
     }
 
     @Override
-    public void onFilmPosterClick(int position) {
+    public void onReviewFilmPosterClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getTmdb_id();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onFilmPosterLongClick(int position) {
+    public void onReviewFilmPosterLongClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getTmdb_id();
         String title = currentItem.getTitle();
@@ -154,7 +153,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     @Override
-    public void onLikeClick(int position) {
+    public void onReviewLikeClick(int position) {
         if (mIsAuth) {
             Review currentItem = mReviewList.get(position);
             int id = currentItem.getId();
@@ -175,7 +174,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
     }
 
     @Override
-    public void onCommentClick(int position) {
+    public void onReviewCommentClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -187,6 +186,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
             @Override
             public void onSuccess(int totalPage, List<Review> reviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mReviewList = new ArrayList<>();
                     int insertIndex = mReviewList.size();
                     mReviewList.addAll(insertIndex, reviewList);
                     mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnClickListener);

@@ -86,7 +86,6 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mFilmReviewList = new ArrayList<>();
         mFilmReviewFromAllRequest = new FilmReviewFromAllRequest(mContext, mFilmID);
         getFilmReviewFromAll(mStartPage, false);
 
@@ -118,7 +117,7 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onFilmReviewItemClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -126,14 +125,14 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     }
 
     @Override
-    public void onUserProfileClick(int position) {
+    public void onFilmReviewUserProfileClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
         int id = currentItem.getUser_id();
         gotoUserDetail(id);
     }
 
     @Override
-    public void onLikeClick(int position) {
+    public void onFilmReviewLikeClick(int position) {
         if (mIsAuth) {
             FilmReview currentItem = mFilmReviewList.get(position);
             int id = currentItem.getId();
@@ -154,7 +153,7 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     }
 
     @Override
-    public void onCommentClick(int position) {
+    public void onFilmReviewCommentClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -166,6 +165,7 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
             @Override
             public void onSuccess(int totalPage, List<FilmReview> filmReviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mFilmReviewList = new ArrayList<>();
                     int insertIndex = mFilmReviewList.size();
                     mFilmReviewList.addAll(insertIndex, filmReviewList);
                     mFilmReviewAdapter = new FilmReviewAdapter(mContext, mFilmReviewList, mOnClickListener);

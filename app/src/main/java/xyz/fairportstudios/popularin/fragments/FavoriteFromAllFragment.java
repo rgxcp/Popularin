@@ -73,7 +73,6 @@ public class FavoriteFromAllFragment extends Fragment implements UserAdapter.OnC
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mUserList = new ArrayList<>();
         mFavoriteFromAllRequest = new FavoriteFromAllRequest(mContext, mFilmID);
         getFavoriteFromAll(mStartPage, false);
 
@@ -105,7 +104,7 @@ public class FavoriteFromAllFragment extends Fragment implements UserAdapter.OnC
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onUserItemClick(int position) {
         User currentItem = mUserList.get(position);
         int id = currentItem.getId();
         gotoUserDetail(id);
@@ -116,6 +115,7 @@ public class FavoriteFromAllFragment extends Fragment implements UserAdapter.OnC
             @Override
             public void onSuccess(int totalPage, List<User> userList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mUserList = new ArrayList<>();
                     int insertIndex = mUserList.size();
                     mUserList.addAll(insertIndex, userList);
                     mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);

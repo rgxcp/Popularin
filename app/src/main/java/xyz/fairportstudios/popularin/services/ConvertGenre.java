@@ -6,6 +6,7 @@ import java.util.Map;
 public class ConvertGenre {
     public String getGenreForHumans(int id) {
         Map<Integer, String> genres = new HashMap<>();
+        genres.put(0, "Tanpa Genre");
         genres.put(12, "Petualangan");
         genres.put(14, "Fantasi");
         genres.put(16, "Animasi");

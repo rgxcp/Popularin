@@ -30,6 +30,9 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class AddReviewActivity extends AppCompatActivity implements android.app.DatePickerDialog.OnDateSetListener {
+    // Variable untuk fitur load
+    private boolean mIsLoading = false;
+
     // Variable member
     private float mRating;
     private EditText mInputReview;
@@ -84,7 +87,8 @@ public class AddReviewActivity extends AppCompatActivity implements android.app.
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (ratingValidated() && reviewValidated()) {
+                if (ratingValidated() && reviewValidated() && !mIsLoading) {
+                    mIsLoading = true;
                     addReview(context, filmID);
                     return true;
                 } else {
@@ -173,5 +177,8 @@ public class AddReviewActivity extends AppCompatActivity implements android.app.
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

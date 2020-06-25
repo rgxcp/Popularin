@@ -42,7 +42,6 @@ import xyz.fairportstudios.popularin.activities.UserWatchlistActivity;
 import xyz.fairportstudios.popularin.adapters.RecentFavoriteAdapter;
 import xyz.fairportstudios.popularin.adapters.RecentReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.AccountDetailRequest;
-import xyz.fairportstudios.popularin.apis.popularin.post.SignOutRequest;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.AccountDetail;
 import xyz.fairportstudios.popularin.models.RecentFavorite;
@@ -57,7 +56,6 @@ public class AccountFragment extends Fragment implements RecentFavoriteAdapter.O
 
     // Variable member
     private Context mContext;
-    private Button mButtonSignOut;
     private CoordinatorLayout mAnchorLayout;
     private ImageView mImageProfile;
     private ImageView mImageEmptyRecentFavorite;
@@ -89,7 +87,6 @@ public class AccountFragment extends Fragment implements RecentFavoriteAdapter.O
         mContext = getActivity();
 
         // Binding
-        mButtonSignOut = view.findViewById(R.id.button_fa_sign_out);
         mAnchorLayout = view.findViewById(R.id.anchor_fa_layout);
         mImageProfile = view.findViewById(R.id.image_fa_profile);
         mImageEmptyRecentFavorite = view.findViewById(R.id.image_fa_empty_recent_favorite);
@@ -108,6 +105,7 @@ public class AccountFragment extends Fragment implements RecentFavoriteAdapter.O
         mTextTotalFollowing = view.findViewById(R.id.text_fa_total_following);
         mTextMessage = view.findViewById(R.id.text_fa_message);
         Button buttonEditProfile = view.findViewById(R.id.button_fa_edit_profile);
+        Button buttonSignOut = view.findViewById(R.id.button_fa_sign_out);
         LinearLayout totalReviewLayout = view.findViewById(R.id.layout_fa_total_review);
         LinearLayout totalFavoriteLayout = view.findViewById(R.id.layout_fa_total_favorite);
         LinearLayout totalWatchlistLayout = view.findViewById(R.id.layout_fa_total_watchlist);
@@ -166,11 +164,11 @@ public class AccountFragment extends Fragment implements RecentFavoriteAdapter.O
             }
         });
 
-        mButtonSignOut.setOnClickListener(new View.OnClickListener() {
+        buttonSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSignOutButtonState(false);
-                signOut(auth);
+                auth.delAuth();
+                signOut();
             }
         });
 
@@ -327,32 +325,9 @@ public class AccountFragment extends Fragment implements RecentFavoriteAdapter.O
         startActivity(intent);
     }
 
-    private void setSignOutButtonState(boolean enable) {
-        mButtonSignOut.setEnabled(enable);
-        if (enable) {
-            mButtonSignOut.setText(R.string.sign_out);
-        } else {
-            mButtonSignOut.setText(R.string.loading);
-        }
-    }
-
-    private void signOut(final Auth auth) {
-        SignOutRequest signOutRequest = new SignOutRequest(mContext);
-        signOutRequest.sendRequest(new SignOutRequest.Callback() {
-            @Override
-            public void onSuccess() {
-                auth.delAuth();
-
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
-                Objects.requireNonNull(getActivity()).finish();
-            }
-
-            @Override
-            public void onError(String message) {
-                setSignOutButtonState(true);
-                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
-            }
-        });
+    private void signOut() {
+        Intent intent = new Intent(mContext, MainActivity.class);
+        startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
     }
 }

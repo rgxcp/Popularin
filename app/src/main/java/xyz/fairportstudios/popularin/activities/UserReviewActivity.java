@@ -84,7 +84,6 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mUserReviewList = new ArrayList<>();
         mUserReviewRequest = new UserReviewRequest(mContext, userID);
         getUserReview(mStartPage, false);
 
@@ -121,21 +120,21 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onUserReviewItemClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getId();
         gotoReviewDetail(id, mIsSelf);
     }
 
     @Override
-    public void onFilmPosterClick(int position) {
+    public void onUserReviewFilmPosterClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getTmdb_id();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onFilmPosterLongClick(int position) {
+    public void onUserReviewFilmPosterLongClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getTmdb_id();
         String title = currentItem.getTitle();
@@ -145,7 +144,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     }
 
     @Override
-    public void onLikeClick(int position) {
+    public void onUserReviewLikeClick(int position) {
         if (mIsAuth) {
             UserReview currentItem = mUserReviewList.get(position);
             int id = currentItem.getId();
@@ -166,7 +165,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     }
 
     @Override
-    public void onCommentClick(int position) {
+    public void onUserReviewCommentClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getId();
         gotoReviewComment(id, mIsSelf);
@@ -177,6 +176,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
             @Override
             public void onSuccess(int totalPage, List<UserReview> userReviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mUserReviewList = new ArrayList<>();
                     int insertIndex = mUserReviewList.size();
                     mUserReviewList.addAll(insertIndex, userReviewList);
                     mUserReviewAdapter = new UserReviewAdapter(mContext, mUserReviewList, mOnClickListener);

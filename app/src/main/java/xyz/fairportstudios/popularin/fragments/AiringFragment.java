@@ -66,7 +66,6 @@ public class AiringFragment extends Fragment implements FilmAdapter.OnClickListe
 
         // Mendapatkan data
         mOnClickListener = this;
-        mFilmList = new ArrayList<>();
         mAiringFilmRequest = new AiringFilmRequest(mContext);
         getAiringFilm(false);
 
@@ -89,21 +88,21 @@ public class AiringFragment extends Fragment implements FilmAdapter.OnClickListe
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onFilmItemClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterClick(int position) {
+    public void onFilmPosterClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterLongClick(int position) {
+    public void onFilmPosterLongClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getOriginal_title();
@@ -117,6 +116,7 @@ public class AiringFragment extends Fragment implements FilmAdapter.OnClickListe
             @Override
             public void onSuccess(List<Film> filmList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mFilmList = new ArrayList<>();
                     int insertIndex = mFilmList.size();
                     mFilmList.addAll(insertIndex, filmList);
                     mFilmAdapter = new FilmAdapter(mContext, mFilmList, mOnClickListener);
@@ -142,7 +142,7 @@ public class AiringFragment extends Fragment implements FilmAdapter.OnClickListe
             public void onNotFound() {
                 mProgressBar.setVisibility(View.GONE);
                 mTextMessage.setVisibility(View.VISIBLE);
-                mTextMessage.setText(R.string.empty_film_airing);
+                mTextMessage.setText(R.string.empty_airing_film);
             }
 
             @Override
@@ -150,7 +150,7 @@ public class AiringFragment extends Fragment implements FilmAdapter.OnClickListe
                 if (!mIsLoadFirstTimeSuccess) {
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    mTextMessage.setText(R.string.empty_film_airing);
+                    mTextMessage.setText(R.string.empty_airing_film);
                 }
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }

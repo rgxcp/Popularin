@@ -22,6 +22,9 @@ import xyz.fairportstudios.popularin.fragments.ReviewDetailFragment;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class ReviewActivity extends AppCompatActivity {
+    // Variable untuk fitur load
+    private boolean mIsLoading = false;
+
     // Variable member
     private Toolbar mToolbar;
 
@@ -77,7 +80,10 @@ public class ReviewActivity extends AppCompatActivity {
                         editReview(context, id);
                         return true;
                     case R.id.menu_rd_delete:
-                        deleteReview(context, id);
+                        if (!mIsLoading) {
+                            mIsLoading = true;
+                            deleteReview(context, id);
+                        }
                         return true;
                     default:
                         return false;
@@ -106,5 +112,8 @@ public class ReviewActivity extends AppCompatActivity {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

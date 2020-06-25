@@ -32,11 +32,11 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onFilmItemClick(int position);
 
-        void onPosterClick(int position);
+        void onFilmPosterClick(int position);
 
-        void onPosterLongClick(int position);
+        void onFilmPosterLongClick(int position);
     }
 
     @NonNull
@@ -91,16 +91,16 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onFilmItemClick(getAdapterPosition());
             } else if (v == mImagePoster) {
-                mOnClickListener.onPosterClick(getAdapterPosition());
+                mOnClickListener.onFilmPosterClick(getAdapterPosition());
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
             if (v == mImagePoster) {
-                mOnClickListener.onPosterLongClick(getAdapterPosition());
+                mOnClickListener.onFilmPosterLongClick(getAdapterPosition());
             }
             return true;
         }

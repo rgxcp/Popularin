@@ -95,7 +95,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:background="@color/colorSurface" />
 
         <RelativeLayout
@@ -170,7 +170,7 @@
             android:background="@color/colorBackground"
             android:fontFamily="@font/jost_regular"
             android:gravity="top"
-            android:hint="@string/input_review"
+            android:hint="@string/input_review_hint"
             android:inputType="textMultiLine"
             android:isScrollContainer="true"
             android:padding="16dp"

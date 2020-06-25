@@ -32,15 +32,15 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onUserReviewItemClick(int position);
 
-        void onFilmPosterClick(int position);
+        void onUserReviewFilmPosterClick(int position);
 
-        void onFilmPosterLongClick(int position);
+        void onUserReviewFilmPosterLongClick(int position);
 
-        void onLikeClick(int position);
+        void onUserReviewLikeClick(int position);
 
-        void onCommentClick(int position);
+        void onUserReviewCommentClick(int position);
     }
 
     @NonNull
@@ -126,20 +126,20 @@ public class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.Us
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onUserReviewItemClick(getAdapterPosition());
             } else if (v == mImageFilmPoster) {
-                mOnClickListener.onFilmPosterClick(getAdapterPosition());
+                mOnClickListener.onUserReviewFilmPosterClick(getAdapterPosition());
             } else if (v == mImageLike) {
-                mOnClickListener.onLikeClick(getAdapterPosition());
+                mOnClickListener.onUserReviewLikeClick(getAdapterPosition());
             } else if (v == mImageComment) {
-                mOnClickListener.onCommentClick(getAdapterPosition());
+                mOnClickListener.onUserReviewCommentClick(getAdapterPosition());
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
             if (v == mImageFilmPoster) {
-                mOnClickListener.onFilmPosterLongClick(getAdapterPosition());
+                mOnClickListener.onUserReviewFilmPosterLongClick(getAdapterPosition());
             }
             return true;
         }

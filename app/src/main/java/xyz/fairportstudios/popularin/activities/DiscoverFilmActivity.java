@@ -74,7 +74,6 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mFilmList = new ArrayList<>();
         mDiscoverFilmRequest = new DiscoverFilmRequest(mContext, genreID);
         discoverFilm(mStartPage, false);
 
@@ -111,14 +110,14 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onFilmGridItemClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onFilmGridItemLongClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getOriginal_title();
@@ -132,6 +131,7 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
             @Override
             public void onSuccess(int totalPage, List<Film> filmList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mFilmList = new ArrayList<>();
                     int insertIndex = mFilmList.size();
                     mFilmList.addAll(insertIndex, filmList);
                     mFilmGridAdapter = new FilmGridAdapter(mContext, mFilmList, mOnClickListener);

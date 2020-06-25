@@ -27,7 +27,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onGenreItemClick(int position);
     }
 
     public int getDensity(int px) {
@@ -102,7 +102,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onGenreItemClick(getAdapterPosition());
             }
         }
     }
