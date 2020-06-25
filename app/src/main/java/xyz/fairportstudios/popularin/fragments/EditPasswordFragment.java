@@ -26,7 +26,6 @@ import java.util.Objects;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.apis.popularin.put.UpdatePasswordRequest;
-import xyz.fairportstudios.popularin.preferences.Auth;
 
 public class EditPasswordFragment extends Fragment {
     // Variable member
@@ -76,8 +75,8 @@ public class EditPasswordFragment extends Fragment {
     }
 
     private SpannableString getWelcomeMessage() {
-        String welcome = getString(R.string.edit_password_welcome);
-        SpannableString spannableString = new SpannableString(welcome);
+        String welcomeMessage = getString(R.string.edit_password_welcome_message);
+        SpannableString spannableString = new SpannableString(welcomeMessage);
         RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(2f);
         spannableString.setSpan(relativeSizeSpan, 0, 4, 0);
         return spannableString;
@@ -132,10 +131,7 @@ public class EditPasswordFragment extends Fragment {
             UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest(context, mCurrentPassword, mNewPassword, mConfirmPassword);
             updatePasswordRequest.sendRequest(new UpdatePasswordRequest.Callback() {
                 @Override
-                public void onSuccess(int id, String token) {
-                    Auth auth = new Auth(context);
-                    auth.setAuth(id, token);
-
+                public void onSuccess() {
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                     Objects.requireNonNull(getActivity()).finishAffinity();

@@ -24,14 +24,14 @@ import xyz.fairportstudios.popularin.secrets.APIKey;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class SearchFilmRequest {
-    private Context context;
+    private Context mContext;
 
     public SearchFilmRequest(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     public interface Callback {
-        void onSuccess(List<Film> films);
+        void onSuccess(List<Film> filmList);
 
         void onNotFound();
 
@@ -61,13 +61,20 @@ public class SearchFilmRequest {
                             String language = indexObject.getString("original_language");
 
                             if (language.equals("id")) {
+                                JSONArray genreArray = indexObject.getJSONArray("genre_ids");
+                                int genreID = 0;
+                                if (!genreArray.isNull(0)) {
+                                    genreID = genreArray.getInt(0);
+                                }
+
                                 Film film = new Film(
                                         indexObject.getInt("id"),
-                                        indexObject.getJSONArray("genre_ids").getInt(0),
+                                        genreID,
                                         indexObject.getString("original_title"),
                                         indexObject.getString("release_date"),
                                         indexObject.getString("poster_path")
                                 );
+
                                 filmList.add(film);
                             }
                         }
@@ -82,7 +89,7 @@ public class SearchFilmRequest {
                     }
                 } catch (JSONException exception) {
                     exception.printStackTrace();
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -90,15 +97,15 @@ public class SearchFilmRequest {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 if (error instanceof NetworkError || error instanceof TimeoutError) {
-                    callback.onError(context.getString(R.string.network_error));
+                    callback.onError(mContext.getString(R.string.network_error));
                 } else if (error instanceof ServerError) {
-                    callback.onError(context.getString(R.string.server_error));
+                    callback.onError(mContext.getString(R.string.server_error));
                 } else {
-                    callback.onError(context.getString(R.string.general_error));
+                    callback.onError(mContext.getString(R.string.general_error));
                 }
             }
         });
 
-        Volley.newRequestQueue(context).add(searchFilm);
+        Volley.newRequestQueue(mContext).add(searchFilm);
     }
 }

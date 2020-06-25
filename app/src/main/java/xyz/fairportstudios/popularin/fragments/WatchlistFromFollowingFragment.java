@@ -108,14 +108,13 @@ public class WatchlistFromFollowingFragment extends Fragment implements UserAdap
             // Mendapatkan data awal
             mIsResumeFirstTime = false;
             mOnClickListener = this;
-            mUserList = new ArrayList<>();
             mWatchlistFromFollowingRequest = new WatchlistFromFollowingRequest(mContext, mFilmID);
             getWatchlistFromFollowing(mStartPage, false);
         }
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onUserItemClick(int position) {
         User currentItem = mUserList.get(position);
         int id = currentItem.getId();
         gotoUserDetail(id);
@@ -126,6 +125,7 @@ public class WatchlistFromFollowingFragment extends Fragment implements UserAdap
             @Override
             public void onSuccess(int totalPage, List<User> userList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mUserList = new ArrayList<>();
                     int insertIndex = mUserList.size();
                     mUserList.addAll(insertIndex, userList);
                     mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);

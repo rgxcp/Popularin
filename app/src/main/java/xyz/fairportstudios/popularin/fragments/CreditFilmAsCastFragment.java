@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -18,29 +19,43 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmGridAdapter;
+import xyz.fairportstudios.popularin.apis.tmdb.get.CreditDetailRequest;
 import xyz.fairportstudios.popularin.modals.FilmModal;
+import xyz.fairportstudios.popularin.models.CreditDetail;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class CreditFilmAsCastFragment extends Fragment implements FilmGridAdapter.OnClickListener {
+    // Variable untuk fitur onResume
+    private boolean mIsResumeFirstTime = true;
+
+    // Variable untuk fitur load
+    private boolean mIsLoadFirstTimeSuccess = false;
+
     // Variable member
     private Context mContext;
+    private CoordinatorLayout mAnchorLayout;
     private FilmGridAdapter.OnClickListener mOnClickListener;
+    private List<Film> mFilmAsCastList;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerFilm;
+    private SwipeRefreshLayout mSwipeRefresh;
     private TextView mTextMessage;
 
     // Variable constructor
-    private List<Film> mFilmAsCastList;
+    private int mCreditID;
 
-    public CreditFilmAsCastFragment(List<Film> filmAsCastList) {
-        mFilmAsCastList = filmAsCastList;
+    public CreditFilmAsCastFragment(int creditID) {
+        mCreditID = creditID;
     }
 
     @Nullable
@@ -52,20 +67,22 @@ public class CreditFilmAsCastFragment extends Fragment implements FilmGridAdapte
         mContext = getActivity();
 
         // Binding
+        mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
         mProgressBar = view.findViewById(R.id.pbr_rr_layout);
         mRecyclerFilm = view.findViewById(R.id.recycler_rr_layout);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
         mTextMessage = view.findViewById(R.id.text_rr_message);
-        final SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
-
-        // Mendapatkan data
-        mOnClickListener = this;
-        getFilmAsCast();
 
         // Activity
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefresh.setRefreshing(false);
+                if (!mIsLoadFirstTimeSuccess) {
+                    mSwipeRefresh.setRefreshing(true);
+                    getFilmAsCast();
+                } else {
+                    mSwipeRefresh.setRefreshing(false);
+                }
             }
         });
 
@@ -73,14 +90,25 @@ public class CreditFilmAsCastFragment extends Fragment implements FilmGridAdapte
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onResume() {
+        super.onResume();
+        if (mIsResumeFirstTime) {
+            // Mendapatkan data
+            mIsResumeFirstTime = false;
+            mOnClickListener = this;
+            getFilmAsCast();
+        }
+    }
+
+    @Override
+    public void onFilmGridItemClick(int position) {
         Film currentItem = mFilmAsCastList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onFilmGridItemLongClick(int position) {
         Film currentItem = mFilmAsCastList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getOriginal_title();
@@ -90,18 +118,41 @@ public class CreditFilmAsCastFragment extends Fragment implements FilmGridAdapte
     }
 
     private void getFilmAsCast() {
-        if (!mFilmAsCastList.isEmpty()) {
-            FilmGridAdapter filmGridAdapter = new FilmGridAdapter(mContext, mFilmAsCastList, mOnClickListener);
-            mRecyclerFilm.setAdapter(filmGridAdapter);
-            mRecyclerFilm.setLayoutManager(new GridLayoutManager(mContext, 4));
-            mRecyclerFilm.setHasFixedSize(true);
-            mRecyclerFilm.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-        } else {
-            mProgressBar.setVisibility(View.GONE);
-            mTextMessage.setVisibility(View.VISIBLE);
-            mTextMessage.setText(R.string.empty_credit_film_as_cast);
-        }
+        CreditDetailRequest creditDetailRequest = new CreditDetailRequest(mContext, mCreditID);
+        creditDetailRequest.sendRequest(new CreditDetailRequest.Callback() {
+            @Override
+            public void onSuccess(CreditDetail creditDetail, List<Film> filmAsCastList, List<Film> filmAsCrewList) {
+                if (!filmAsCastList.isEmpty()) {
+                    mFilmAsCastList = new ArrayList<>();
+                    mFilmAsCastList.addAll(filmAsCastList);
+                    FilmGridAdapter filmGridAdapter = new FilmGridAdapter(mContext, mFilmAsCastList, mOnClickListener);
+                    mRecyclerFilm.setAdapter(filmGridAdapter);
+                    mRecyclerFilm.setLayoutManager(new GridLayoutManager(mContext, 4));
+                    mRecyclerFilm.setHasFixedSize(true);
+                    mRecyclerFilm.setVisibility(View.VISIBLE);
+                    mTextMessage.setVisibility(View.GONE);
+                } else {
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(R.string.empty_credit_film_as_cast);
+                }
+                mProgressBar.setVisibility(View.GONE);
+                mIsLoadFirstTimeSuccess = true;
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!mIsLoadFirstTimeSuccess) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.VISIBLE);
+                    mTextMessage.setText(message);
+                } else {
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        // Memberhentikan loading
+        mSwipeRefresh.setRefreshing(false);
     }
 
     private void gotoFilmDetail(int id) {

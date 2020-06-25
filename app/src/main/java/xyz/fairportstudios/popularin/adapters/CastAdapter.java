@@ -30,7 +30,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
     }
 
     public interface OnClickListener {
-        void onCastClick(int position);
+        void onCastItemClick(int position);
     }
 
     public int getDensity(int px) {
@@ -102,7 +102,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onCastClick(getAdapterPosition());
+                mOnClickListener.onCastItemClick(getAdapterPosition());
             }
         }
     }

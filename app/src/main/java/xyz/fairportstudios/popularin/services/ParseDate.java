@@ -19,22 +19,37 @@ public class ParseDate {
         months.put("11", "November");
         months.put("12", "Desember");
 
-        String day = date.substring(8, 10);
-        String month = date.substring(5, 7);
-        String year = date.substring(0, 4);
-
-        return day + " " + months.get(month) + " " + year;
+        try {
+            String day = date.substring(8, 10);
+            String month = date.substring(5, 7);
+            String year = date.substring(0, 4);
+            return day + " " + months.get(month) + " " + year;
+        } catch (StringIndexOutOfBoundsException exception) {
+            return "Tanpa Tahun";
+        }
     }
 
     public String getDay(String date) {
-        return date.substring(8, 10);
+        try {
+            return date.substring(8, 10);
+        } catch (StringIndexOutOfBoundsException exception) {
+            return "01";
+        }
     }
 
     public String getMonth(String date) {
-        return date.substring(5, 7);
+        try {
+            return date.substring(5, 7);
+        } catch (StringIndexOutOfBoundsException exception) {
+            return "01";
+        }
     }
 
     public String getYear(String date) {
-        return date.substring(0, 4);
+        try {
+            return date.substring(0, 4);
+        } catch (StringIndexOutOfBoundsException exception) {
+            return "2020";
+        }
     }
 }

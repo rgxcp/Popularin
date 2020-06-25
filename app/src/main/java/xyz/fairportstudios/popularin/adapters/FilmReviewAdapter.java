@@ -30,13 +30,13 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onFilmReviewItemClick(int position);
 
-        void onUserProfileClick(int position);
+        void onFilmReviewUserProfileClick(int position);
 
-        void onLikeClick(int position);
+        void onFilmReviewLikeClick(int position);
 
-        void onCommentClick(int position);
+        void onFilmReviewCommentClick(int position);
     }
 
     @NonNull
@@ -119,13 +119,13 @@ public class FilmReviewAdapter extends RecyclerView.Adapter<FilmReviewAdapter.Fi
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onFilmReviewItemClick(getAdapterPosition());
             } else if (v == mImageUserProfile) {
-                mOnClickListener.onUserProfileClick(getAdapterPosition());
+                mOnClickListener.onFilmReviewUserProfileClick(getAdapterPosition());
             } else if (v == mImageLike) {
-                mOnClickListener.onLikeClick(getAdapterPosition());
+                mOnClickListener.onFilmReviewLikeClick(getAdapterPosition());
             } else if (v == mImageComment) {
-                mOnClickListener.onCommentClick(getAdapterPosition());
+                mOnClickListener.onFilmReviewCommentClick(getAdapterPosition());
             }
         }
     }

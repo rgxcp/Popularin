@@ -29,9 +29,9 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onFilmGridItemClick(int position);
 
-        void onItemLongClick(int position);
+        void onFilmGridItemLongClick(int position);
     }
 
     @NonNull
@@ -74,14 +74,14 @@ public class FilmGridAdapter extends RecyclerView.Adapter<FilmGridAdapter.FilmGr
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onFilmGridItemClick(getAdapterPosition());
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemLongClick(getAdapterPosition());
+                mOnClickListener.onFilmGridItemLongClick(getAdapterPosition());
             }
             return true;
         }

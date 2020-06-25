@@ -23,7 +23,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private List<Comment> mCommentList;
     private OnClickListener mOnClickListener;
 
-    public CommentAdapter(Context context, int authID, List<Comment> commentList, OnClickListener onClickListener) {
+    public CommentAdapter(
+            Context context,
+            int authID,
+            List<Comment> commentList,
+            OnClickListener onClickListener
+    ) {
         mContext = context;
         mAuthID = authID;
         mCommentList = commentList;
@@ -31,9 +36,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     public interface OnClickListener {
-        void onProfileClick(int position);
+        void onCommentProfileClick(int position);
 
-        void onDeleteClick(int position);
+        void onCommentDeleteClick(int position);
     }
 
     @NonNull
@@ -93,9 +98,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         @Override
         public void onClick(View v) {
             if (v == mImageProfile) {
-                mOnClickListener.onProfileClick(getAdapterPosition());
+                mOnClickListener.onCommentProfileClick(getAdapterPosition());
             } else if (v == mImageDelete) {
-                mOnClickListener.onDeleteClick(getAdapterPosition());
+                mOnClickListener.onCommentDeleteClick(getAdapterPosition());
             }
         }
     }

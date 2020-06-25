@@ -58,8 +58,8 @@ public class SocialActivity extends AppCompatActivity {
 
         // Tab pager
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        pagerAdapter.addFragment(new FollowerFragment(userID), getString(R.string.follower));
-        pagerAdapter.addFragment(new FollowingFragment(userID), getString(R.string.following));
+        pagerAdapter.addFragment(new FollowerFragment(userID, isSelf), getString(R.string.follower));
+        pagerAdapter.addFragment(new FollowingFragment(userID, isSelf), getString(R.string.following));
         if (isAuth && !isSelf) {
             pagerAdapter.addFragment(new MutualFragment(userID), getString(R.string.mutual));
         }

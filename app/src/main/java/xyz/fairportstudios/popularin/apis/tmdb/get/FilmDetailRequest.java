@@ -53,24 +53,39 @@ public class FilmDetailRequest {
                 try {
                     JSONObject creditObject = response.getJSONObject("credits");
                     JSONObject videoObject = response.getJSONObject("videos");
+                    JSONArray genreArray = response.getJSONArray("genres");
                     JSONArray castArray = creditObject.getJSONArray("cast");
                     JSONArray crewArray = creditObject.getJSONArray("crew");
                     JSONArray videoArray = videoObject.getJSONArray("results");
+                    int runtime;
+                    int genreID = 0;
+                    String videoKey = "";
+                    try {
+                        runtime = response.getInt("runtime");
+                    } catch (JSONException nullRuntime) {
+                        runtime = 0;
+                    }
+                    if (!genreArray.isNull(0)) {
+                        genreID = genreArray.getJSONObject(0).getInt("id");
+                    }
+                    if (!videoArray.isNull(0)) {
+                        videoKey = videoArray.getJSONObject(0).getString("key");
+                    }
 
                     // Detail
                     FilmDetail filmDetail = new FilmDetail(
-                            response.getJSONArray("genres").getInt(0),
-                            response.getInt("runtime"),
+                            genreID,
+                            runtime,
                             response.getString("original_title"),
                             response.getString("release_date"),
                             response.getString("overview"),
                             response.getString("poster_path"),
-                            videoArray.getJSONObject(0).getString("key")
+                            videoKey
                     );
 
                     // Cast
                     List<Cast> castList = new ArrayList<>();
-                    if (castArray.length() != 0) {
+                    if (!castArray.isNull(0)) {
                         for (int index = 0; index < castArray.length(); index++) {
                             JSONObject indexObject = castArray.getJSONObject(index);
 
@@ -87,7 +102,7 @@ public class FilmDetailRequest {
 
                     // Crew
                     List<Crew> crewList = new ArrayList<>();
-                    if (crewArray.length() != 0) {
+                    if (!crewArray.isNull(0)) {
                         for (int index = 0; index < crewArray.length(); index++) {
                             JSONObject indexObject = crewArray.getJSONObject(index);
 

@@ -51,6 +51,8 @@ public class CreditDetailRequest {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject movieCreditObject = response.getJSONObject("movie_credits");
+                    JSONArray castArray = movieCreditObject.getJSONArray("cast");
+                    JSONArray crewArray = movieCreditObject.getJSONArray("crew");
 
                     // Bio
                     CreditDetail creditDetail = new CreditDetail(
@@ -63,16 +65,21 @@ public class CreditDetailRequest {
 
                     // Cast
                     List<Film> filmAsCastList = new ArrayList<>();
-                    JSONArray castArray = movieCreditObject.getJSONArray("cast");
-                    if (castArray.length() != 0) {
+                    if (!castArray.isNull(0)) {
                         for (int index = 0; index < castArray.length(); index++) {
                             JSONObject indexObject = castArray.getJSONObject(index);
                             String language = indexObject.getString("original_language");
 
                             if (language.equals("id")) {
+                                JSONArray genreArray = indexObject.getJSONArray("genre_ids");
+                                int genreID = 0;
+                                if (!genreArray.isNull(0)) {
+                                    genreID = genreArray.getInt(0);
+                                }
+
                                 Film film = new Film(
                                         indexObject.getInt("id"),
-                                        indexObject.getJSONArray("genre_ids").getInt(0),
+                                        genreID,
                                         indexObject.getString("original_title"),
                                         indexObject.getString("release_date"),
                                         indexObject.getString("poster_path")
@@ -85,16 +92,21 @@ public class CreditDetailRequest {
 
                     // Crew
                     List<Film> filmAsCrewList = new ArrayList<>();
-                    JSONArray crewArray = movieCreditObject.getJSONArray("crew");
-                    if (crewArray.length() != 0) {
+                    if (!crewArray.isNull(0)) {
                         for (int index = 0; index < crewArray.length(); index++) {
                             JSONObject indexObject = crewArray.getJSONObject(index);
                             String language = indexObject.getString("original_language");
 
                             if (language.equals("id")) {
+                                JSONArray genreArray = indexObject.getJSONArray("genre_ids");
+                                int genreID = 0;
+                                if (!genreArray.isNull(0)) {
+                                    genreID = genreArray.getInt(0);
+                                }
+
                                 Film film = new Film(
                                         indexObject.getInt("id"),
-                                        indexObject.getJSONArray("genre_ids").getInt(0),
+                                        genreID,
                                         indexObject.getString("original_title"),
                                         indexObject.getString("release_date"),
                                         indexObject.getString("poster_path")

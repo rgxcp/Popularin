@@ -54,9 +54,11 @@ public class FollowerFragment extends Fragment implements UserAdapter.OnClickLis
 
     // Variable constructor
     private int mUserID;
+    private boolean mIsSelf;
 
-    public FollowerFragment(int userID) {
+    public FollowerFragment(int userID, boolean isSelf) {
         mUserID = userID;
+        mIsSelf = isSelf;
     }
 
     @Nullable
@@ -108,14 +110,13 @@ public class FollowerFragment extends Fragment implements UserAdapter.OnClickLis
             // Mendapatkan data awal
             mIsResumeFirstTime = false;
             mOnClickListener = this;
-            mUserList = new ArrayList<>();
             mUserFollowerRequest = new UserFollowerRequest(mContext, mUserID);
             getUserFollower(mStartPage, false);
         }
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onUserItemClick(int position) {
         User currentItem = mUserList.get(position);
         int id = currentItem.getId();
         gotoUserDetail(id);
@@ -126,6 +127,7 @@ public class FollowerFragment extends Fragment implements UserAdapter.OnClickLis
             @Override
             public void onSuccess(int totalPage, List<User> userList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mUserList = new ArrayList<>();
                     int insertIndex = mUserList.size();
                     mUserList.addAll(insertIndex, userList);
                     mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);
@@ -160,7 +162,11 @@ public class FollowerFragment extends Fragment implements UserAdapter.OnClickLis
                     mUserAdapter.notifyDataSetChanged();
                 }
                 mTextMessage.setVisibility(View.VISIBLE);
-                mTextMessage.setText(R.string.empty_follower);
+                if (mIsSelf) {
+                    mTextMessage.setText(R.string.empty_self_follower);
+                } else {
+                    mTextMessage.setText(R.string.empty_user_follower);
+                }
             }
 
             @Override

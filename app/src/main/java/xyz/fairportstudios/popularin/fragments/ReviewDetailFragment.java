@@ -133,6 +133,7 @@ public class ReviewDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isAuth && !mIsLoading) {
+                    mIsLoading = true;
                     if (!mIsLiked) {
                         likeReview();
                     } else {
@@ -283,6 +284,9 @@ public class ReviewDetailFragment extends Fragment {
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 
     private void unlikeReview() {
@@ -298,5 +302,8 @@ public class ReviewDetailFragment extends Fragment {
                 Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mIsLoading = false;
     }
 }

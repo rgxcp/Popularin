@@ -78,7 +78,6 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mFilmList = new ArrayList<>();
         mUserWatchlistRequest = new UserWatchlistRequest(mContext, userID);
         getUserWatchlist(mStartPage, false);
 
@@ -115,21 +114,21 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onFilmItemClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterClick(int position) {
+    public void onFilmPosterClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onPosterLongClick(int position) {
+    public void onFilmPosterLongClick(int position) {
         Film currentItem = mFilmList.get(position);
         int id = currentItem.getId();
         String title = currentItem.getOriginal_title();
@@ -143,6 +142,7 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
             @Override
             public void onSuccess(int totalPage, List<Film> filmList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mFilmList = new ArrayList<>();
                     int insertIndex = mFilmList.size();
                     mFilmList.addAll(insertIndex, filmList);
                     mFilmAdapter = new FilmAdapter(mContext, mFilmList, mOnClickListener);
@@ -178,7 +178,7 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
                 }
                 mTextMessage.setVisibility(View.VISIBLE);
                 if (mIsSelf) {
-                    mTextMessage.setText(R.string.empty_self_watchlist);
+                    mTextMessage.setText(R.string.empty_self_watchlist_film);
                 } else {
                     mTextMessage.setText(R.string.empty_user_watchlist);
                 }
@@ -190,7 +190,7 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
                     if (mIsSelf) {
-                        mTextMessage.setText(R.string.empty_self_watchlist);
+                        mTextMessage.setText(R.string.empty_self_watchlist_film);
                     } else {
                         mTextMessage.setText(R.string.empty_user_watchlist);
                     }

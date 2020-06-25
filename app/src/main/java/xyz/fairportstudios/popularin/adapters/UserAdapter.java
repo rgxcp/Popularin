@@ -29,7 +29,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public interface OnClickListener {
-        void onItemClick(int position);
+        void onUserItemClick(int position);
     }
 
     @NonNull
@@ -74,7 +74,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onItemClick(getAdapterPosition());
+                mOnClickListener.onUserItemClick(getAdapterPosition());
             }
         }
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +16,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,40 +38,43 @@ import xyz.fairportstudios.popularin.models.Cast;
 import xyz.fairportstudios.popularin.models.Crew;
 import xyz.fairportstudios.popularin.models.FilmDetail;
 import xyz.fairportstudios.popularin.models.FilmMetadata;
-import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.services.ConvertGenre;
 import xyz.fairportstudios.popularin.services.ConvertRuntime;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 import xyz.fairportstudios.popularin.statics.TMDbAPI;
 
 public class FilmDetailActivity extends AppCompatActivity implements CastAdapter.OnClickListener, CrewAdapter.OnClickListener {
-    private Chip chipGenre;
-    private Chip chipRuntime;
-    private Chip chipRating;
-    private CoordinatorLayout anchorLayout;
-    private ImageView imagePoster;
-    private ImageView imageEmptyOverview;
-    private Integer genreID;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerCast;
-    private RecyclerView recyclerCrew;
-    private String filmTitle;
-    private String filmYear;
-    private String filmPoster;
-    private String genreTitle;
-    private String youtubeKey;
-    private TextView textTotalReview;
-    private TextView textTotalFavorite;
-    private TextView textTotalWatchlist;
-    private TextView textOverview;
-    private TextView textMessage;
-    private Toolbar toolbar;
-
+    // Variable member
+    private int mGenreID;
     private Context mContext;
     private CastAdapter.OnClickListener mOnCastClickListener;
+    private Chip mChipGenre;
+    private Chip mChipRuntime;
+    private Chip mChipRating;
+    private CoordinatorLayout mAnchorLayout;
     private CrewAdapter.OnClickListener mOnCrewClickListener;
+    private ImageView mImagePoster;
+    private ImageView mImageEmptyOverview;
+    private ImageView mImageEmptyCast;
+    private ImageView mImageEmptyCrew;
     private List<Cast> mCastList;
     private List<Crew> mCrewList;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerCast;
+    private RecyclerView mRecyclerCrew;
+    private String mGenreTitle;
+    private String mFilmTitle;
+    private String mFilmYear;
+    private String mFilmPoster;
+    private String mYoutubeKey;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mTextTotalReview;
+    private TextView mTextTotalFavorite;
+    private TextView mTextTotalWatchlist;
+    private TextView mTextOverview;
+    private TextView mTextMessage;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,49 +83,51 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
 
         // Context
         mContext = FilmDetailActivity.this;
-        final Context context = FilmDetailActivity.this;
 
         // Binding
-        chipGenre = findViewById(R.id.chip_afd_genre);
-        chipRuntime = findViewById(R.id.chip_afd_runtime);
-        chipRating = findViewById(R.id.chip_afd_rating);
-        anchorLayout = findViewById(R.id.anchor_afd_layout);
-        imagePoster = findViewById(R.id.image_afd_poster);
-        imageEmptyOverview = findViewById(R.id.image_afd_empty_overview);
-        progressBar = findViewById(R.id.pbr_afd_layout);
-        recyclerCast = findViewById(R.id.recycler_afd_cast);
-        recyclerCrew = findViewById(R.id.recycler_afd_crew);
-        textTotalReview = findViewById(R.id.text_afd_total_review);
-        textTotalFavorite = findViewById(R.id.text_afd_total_favorite);
-        textTotalWatchlist = findViewById(R.id.text_afd_total_watchlist);
-        textOverview = findViewById(R.id.text_afd_overview);
-        textMessage = findViewById(R.id.text_afd_message);
-        toolbar = findViewById(R.id.toolbar_afd_layout);
+        mChipGenre = findViewById(R.id.chip_afd_genre);
+        mChipRuntime = findViewById(R.id.chip_afd_runtime);
+        mChipRating = findViewById(R.id.chip_afd_rating);
+        mAnchorLayout = findViewById(R.id.anchor_afd_layout);
+        mImagePoster = findViewById(R.id.image_afd_poster);
+        mImageEmptyOverview = findViewById(R.id.image_afd_empty_overview);
+        mImageEmptyCast = findViewById(R.id.image_afd_empty_cast);
+        mImageEmptyCrew = findViewById(R.id.image_afd_empty_crew);
+        mProgressBar = findViewById(R.id.pbr_afd_layout);
+        mRecyclerCast = findViewById(R.id.recycler_afd_cast);
+        mRecyclerCrew = findViewById(R.id.recycler_afd_crew);
+        mSwipeRefresh = findViewById(R.id.swipe_refresh_afd_layout);
+        mTextTotalReview = findViewById(R.id.text_afd_total_review);
+        mTextTotalFavorite = findViewById(R.id.text_afd_total_favorite);
+        mTextTotalWatchlist = findViewById(R.id.text_afd_total_watchlist);
+        mTextOverview = findViewById(R.id.text_afd_overview);
+        mTextMessage = findViewById(R.id.text_afd_message);
+        mToolbar = findViewById(R.id.toolbar_afd_layout);
         CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar_afd_layout);
         FloatingActionButton fab = findViewById(R.id.fab_afd_layout);
         ImageView imagePlayTrailer = findViewById(R.id.image_afd_play);
-        RelativeLayout totalReviewLayout = findViewById(R.id.layout_afd_total_review);
-        RelativeLayout totalFavoriteLayout = findViewById(R.id.layout_afd_total_favorite);
-        RelativeLayout totalWatchlistLayout = findViewById(R.id.layout_afd_total_watchlist);
+        ImageView imageReview = findViewById(R.id.image_afd_review);
+        ImageView imageFavorite = findViewById(R.id.image_afd_favorite);
+        ImageView imageWatchlist = findViewById(R.id.image_afd_watchlist);
 
         // Extra
         Intent intent = getIntent();
-        final Integer filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
+        final int filmID = intent.getIntExtra(Popularin.FILM_ID, 0);
 
         // Mengatur jenis font untuk collapsing toolbar
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.monument_extended_regular);
+        Typeface typeface = ResourcesCompat.getFont(mContext, R.font.monument_extended_regular);
         collapsingToolbar.setExpandedTitleTypeface(typeface);
 
         // Mendapatkan detail film
         mOnCastClickListener = this;
         mOnCrewClickListener = this;
-        getFilmDetail(context, filmID);
+        getFilmDetail(filmID);
 
         // Mendapatkan metadata film
-        getFilmMetadata(context, filmID);
+        getFilmMetadata(filmID);
 
         // Activity
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -133,145 +137,145 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
         imagePlayTrailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!youtubeKey.isEmpty()) {
-                    playTrailer(youtubeKey);
+                if (!mYoutubeKey.isEmpty()) {
+                    playTrailer(mYoutubeKey);
                 } else {
-                    searchTrailer(filmTitle.toLowerCase() + " trailer");
+                    searchTrailer(mFilmTitle.toLowerCase() + " trailer");
                 }
             }
         });
 
-        chipGenre.setOnClickListener(new View.OnClickListener() {
+        mChipGenre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoDiscoverFilm(context, genreID, genreTitle);
+                if (mGenreID != 0) {
+                    gotoDiscoverFilm(mGenreID, mGenreTitle);
+                }
             }
         });
 
-        totalReviewLayout.setOnClickListener(new View.OnClickListener() {
+        imageReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoFilmReview(context, filmID);
+                gotoFilmReview(filmID);
             }
         });
 
-        totalFavoriteLayout.setOnClickListener(new View.OnClickListener() {
+        imageFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoFavoritedBy(context, filmID);
+                gotoFavoritedBy(filmID);
             }
         });
 
-        totalWatchlistLayout.setOnClickListener(new View.OnClickListener() {
+        imageWatchlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoWatchlistedBy(context, filmID);
+                gotoWatchlistedBy(filmID);
             }
         });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFilmModal(filmID, filmTitle, filmYear, filmPoster);
+                showFilmModal(filmID);
+            }
+        });
+
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefresh.setRefreshing(true);
+                getFilmMetadata(filmID);
             }
         });
     }
 
     @Override
-    public void onCastClick(int position) {
+    public void onCastItemClick(int position) {
         Cast currentItem = mCastList.get(position);
         int id = currentItem.getId();
         gotoCredit(id, 1);
     }
 
     @Override
-    public void onCrewClick(int position) {
+    public void onCrewItemClick(int position) {
         Crew currentItem = mCrewList.get(position);
         int id = currentItem.getId();
         gotoCredit(id, 2);
     }
 
-    private void gotoCredit(int id, int index) {
-        Intent intent = new Intent(mContext, CreditDetailActivity.class);
-        intent.putExtra(Popularin.CREDIT_ID, id);
-        intent.putExtra(Popularin.VIEW_PAGER_INDEX, index);
-        startActivity(intent);
-    }
-
-    private void getFilmDetail(final Context context, Integer filmID) {
-        FilmDetailRequest filmDetailRequest = new FilmDetailRequest(context, filmID);
+    private void getFilmDetail(int id) {
+        FilmDetailRequest filmDetailRequest = new FilmDetailRequest(mContext, id);
         filmDetailRequest.sendRequest(new FilmDetailRequest.Callback() {
             @Override
-            public void onSuccess(FilmDetail filmDetail, List<Cast> casts, List<Crew> crews) {
-                mCastList = new ArrayList<>();
-                mCrewList = new ArrayList<>();
-                mCastList.addAll(casts);
-                mCrewList.addAll(crews);
-                // Setter
-                filmTitle = filmDetail.getOriginal_title();
-                genreID = filmDetail.getGenre_id();
-                youtubeKey = filmDetail.getVideo_key();
+            public void onSuccess(FilmDetail filmDetail, List<Cast> castList, List<Crew> crewList) {
+                // Parsing
+                mGenreID = filmDetail.getGenre_id();
+                mGenreTitle = new ConvertGenre().getGenreForHumans(mGenreID);
+                mFilmTitle = filmDetail.getOriginal_title();
+                mFilmYear = new ParseDate().getYear(filmDetail.getRelease_date());
+                mFilmPoster = filmDetail.getPoster_path();
+                mYoutubeKey = filmDetail.getVideo_key();
+                String runtime = new ConvertRuntime().getRuntimeForHumans(filmDetail.getRuntime());
                 String overview = filmDetail.getOverview();
 
-                // Parsing
-                filmYear = new ParseDate().getYear(filmDetail.getRelease_date());
-                filmPoster = TMDbAPI.BASE_LARGE_IMAGE_URL + filmDetail.getPoster_path();
-                genreTitle = new ConvertGenre().getGenreForHumans(genreID);
-                String runtime = new ConvertRuntime().getRuntimeForHumans(filmDetail.getRuntime());
-
-                // Request gambar
-                RequestOptions requestOptions = new RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.colorSurface)
-                        .error(R.color.colorSurface);
-
-                // Informasi film
-                toolbar.setTitle(filmTitle);
-                chipGenre.setText(genreTitle);
-                chipRuntime.setText(runtime);
+                // Detail
+                mToolbar.setTitle(mFilmTitle);
+                mChipGenre.setText(mGenreTitle);
+                mChipRuntime.setText(runtime);
                 if (!overview.isEmpty()) {
-                    textOverview.setVisibility(View.VISIBLE);
-                    textOverview.setText(overview);
-                } else {
-                    imageEmptyOverview.setVisibility(View.VISIBLE);
+                    mImageEmptyOverview.setVisibility(View.GONE);
+                    mTextOverview.setVisibility(View.VISIBLE);
+                    mTextOverview.setText(overview);
                 }
-                Glide.with(context).load(filmPoster).apply(requestOptions).into(imagePoster);
+                Glide.with(mContext).load(TMDbAPI.BASE_LARGE_IMAGE_URL + mFilmPoster).into(mImagePoster);
+                mProgressBar.setVisibility(View.GONE);
+                mAnchorLayout.setVisibility(View.VISIBLE);
 
-                // Pemain film
-                CastAdapter castAdapter = new CastAdapter(context, casts, mOnCastClickListener);
-                recyclerCast.setAdapter(castAdapter);
-                recyclerCast.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                recyclerCast.setHasFixedSize(true);
-                recyclerCast.setVisibility(View.VISIBLE);
+                // Cast
+                if (!castList.isEmpty()) {
+                    mCastList = new ArrayList<>();
+                    mCastList.addAll(castList);
+                    CastAdapter castAdapter = new CastAdapter(mContext, castList, mOnCastClickListener);
+                    mRecyclerCast.setAdapter(castAdapter);
+                    mRecyclerCast.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+                    mRecyclerCast.setHasFixedSize(true);
+                    mRecyclerCast.setVisibility(View.VISIBLE);
+                    mImageEmptyCast.setVisibility(View.GONE);
+                }
 
-                // Kru film
-                CrewAdapter crewAdapter = new CrewAdapter(context, crews, mOnCrewClickListener);
-                recyclerCrew.setAdapter(crewAdapter);
-                recyclerCrew.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                recyclerCrew.setHasFixedSize(true);
-                recyclerCrew.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                anchorLayout.setVisibility(View.VISIBLE);
+                // Crew
+                if (!crewList.isEmpty()) {
+                    mCrewList = new ArrayList<>();
+                    mCrewList.addAll(crewList);
+                    CrewAdapter crewAdapter = new CrewAdapter(mContext, crewList, mOnCrewClickListener);
+                    mRecyclerCrew.setAdapter(crewAdapter);
+                    mRecyclerCrew.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+                    mRecyclerCrew.setHasFixedSize(true);
+                    mRecyclerCrew.setVisibility(View.VISIBLE);
+                    mImageEmptyCrew.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onError(String message) {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(message);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(message);
             }
         });
     }
 
-    private void getFilmMetadata(Context context, Integer filmID) {
-        FilmMetadataRequest filmMetadataRequest = new FilmMetadataRequest(context, filmID);
+    private void getFilmMetadata(int id) {
+        FilmMetadataRequest filmMetadataRequest = new FilmMetadataRequest(mContext, id);
         filmMetadataRequest.sendRequest(new FilmMetadataRequest.Callback() {
             @Override
             public void onSuccess(FilmMetadata filmMetadata) {
-                chipRating.setText(String.format("%s/5", filmMetadata.getAverage_rating()));
-                textTotalReview.setText(String.format(Locale.getDefault(), "%d Ulasan", filmMetadata.getTotal_review()));
-                textTotalFavorite.setText(String.format(Locale.getDefault(), "%d Favorit", filmMetadata.getTotal_favorite()));
-                textTotalWatchlist.setText(String.format(Locale.getDefault(), "%d Watchlist", filmMetadata.getTotal_watchlist()));
+                mChipRating.setText(String.format("%s/5", filmMetadata.getAverage_rating()));
+                mTextTotalReview.setText(String.format(Locale.getDefault(), "%d Ulasan", filmMetadata.getTotal_review()));
+                mTextTotalFavorite.setText(String.format(Locale.getDefault(), "%d Favorit", filmMetadata.getTotal_favorite()));
+                mTextTotalWatchlist.setText(String.format(Locale.getDefault(), "%d Watchlist", filmMetadata.getTotal_watchlist()));
             }
 
             @Override
@@ -281,9 +285,19 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
 
             @Override
             public void onError(String message) {
-                Snackbar.make(anchorLayout, R.string.failed_retrieve_metadata, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAnchorLayout, R.string.failed_retrieve_metadata, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Memberhentikan loading
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoCredit(int id, int viewPagerIndex) {
+        Intent intent = new Intent(mContext, CreditDetailActivity.class);
+        intent.putExtra(Popularin.CREDIT_ID, id);
+        intent.putExtra(Popularin.VIEW_PAGER_INDEX, viewPagerIndex);
+        startActivity(intent);
     }
 
     private void playTrailer(String key) {
@@ -296,33 +310,33 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
         startActivity(intent);
     }
 
-    private void gotoDiscoverFilm(Context context, Integer genreID, String genreTitle) {
-        Intent intent = new Intent(context, DiscoverFilmActivity.class);
-        intent.putExtra(Popularin.GENRE_ID, genreID);
+    private void gotoDiscoverFilm(int id, String genreTitle) {
+        Intent intent = new Intent(mContext, DiscoverFilmActivity.class);
+        intent.putExtra(Popularin.GENRE_ID, id);
         intent.putExtra(Popularin.GENRE_TITLE, genreTitle);
         startActivity(intent);
     }
 
-    private void gotoFilmReview(Context context, Integer filmID) {
-        Intent intent = new Intent(context, FilmReviewActivity.class);
-        intent.putExtra(Popularin.FILM_ID, filmID);
+    private void gotoFilmReview(int id) {
+        Intent intent = new Intent(mContext, FilmReviewActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
         startActivity(intent);
     }
 
-    private void gotoFavoritedBy(Context context, Integer filmID) {
-        Intent intent = new Intent(context, FavoritedByActivity.class);
-        intent.putExtra(Popularin.FILM_ID, filmID);
+    private void gotoFavoritedBy(int id) {
+        Intent intent = new Intent(mContext, FavoritedByActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
         startActivity(intent);
     }
 
-    private void gotoWatchlistedBy(Context context, Integer filmID) {
-        Intent intent = new Intent(context, WatchlistedByActivity.class);
-        intent.putExtra(Popularin.FILM_ID, filmID);
+    private void gotoWatchlistedBy(int id) {
+        Intent intent = new Intent(mContext, WatchlistedByActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
         startActivity(intent);
     }
 
-    private void showFilmModal(Integer filmID, String filmTitle, String filmYear, String filmPoster) {
-        FilmModal filmModal = new FilmModal(filmID, filmTitle, filmYear, filmPoster);
+    private void showFilmModal(int id) {
+        FilmModal filmModal = new FilmModal(id, mFilmTitle, mFilmYear, mFilmPoster);
         filmModal.show(getSupportFragmentManager(), Popularin.FILM_MODAL);
     }
 }

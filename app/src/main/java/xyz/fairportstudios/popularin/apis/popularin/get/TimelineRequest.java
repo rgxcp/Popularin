@@ -38,8 +38,6 @@ public class TimelineRequest {
 
         void onNotFound();
 
-        void onUnauthenticated();
-
         void onError(String message);
     }
 
@@ -86,8 +84,6 @@ public class TimelineRequest {
                         callback.onSuccess(totalPage, reviewList);
                     } else if (status == 606) {
                         callback.onNotFound();
-                    } else if (status == 929) {
-                        callback.onUnauthenticated();
                     } else {
                         callback.onError(mContext.getString(R.string.general_error));
                     }

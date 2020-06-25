@@ -23,11 +23,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
-import xyz.fairportstudios.popularin.activities.MainActivity;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.ReviewAdapter;
@@ -82,7 +80,6 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
 
         // Mendapatkan data awal
         mOnClickListener = this;
-        mReviewList = new ArrayList<>();
         mTimelineRequest = new TimelineRequest(mContext);
         getTimeline(mStartPage, false);
 
@@ -120,7 +117,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onReviewItemClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -128,21 +125,21 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     @Override
-    public void onUserProfileClick(int position) {
+    public void onReviewUserProfileClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getUser_id();
         gotoUserDetail(id);
     }
 
     @Override
-    public void onFilmPosterClick(int position) {
+    public void onReviewFilmPosterClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getTmdb_id();
         gotoFilmDetail(id);
     }
 
     @Override
-    public void onFilmPosterLongClick(int position) {
+    public void onReviewFilmPosterLongClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getTmdb_id();
         String title = currentItem.getTitle();
@@ -152,7 +149,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     @Override
-    public void onLikeClick(int position) {
+    public void onReviewLikeClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
         boolean isLiked = currentItem.getIs_liked();
@@ -169,7 +166,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     }
 
     @Override
-    public void onCommentClick(int position) {
+    public void onReviewCommentClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
         boolean isSelf = currentItem.getUser_id() == mAuthID;
@@ -181,6 +178,7 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
             @Override
             public void onSuccess(int totalPage, List<Review> reviewList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mReviewList = new ArrayList<>();
                     int insertIndex = mReviewList.size();
                     mReviewList.addAll(insertIndex, reviewList);
                     mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnClickListener);
@@ -217,19 +215,6 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
                 }
                 mTextMessage.setVisibility(View.VISIBLE);
                 mTextMessage.setText(R.string.empty_timeline);
-            }
-
-            @Override
-            public void onUnauthenticated() {
-                mProgressBar.setVisibility(View.GONE);
-                mTextMessage.setVisibility(View.VISIBLE);
-                mTextMessage.setText(R.string.empty_timeline);
-                Snackbar.make(mAnchorLayout, R.string.un_sync_auth, Snackbar.LENGTH_INDEFINITE).setAction(R.string.sign_out, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        signOut();
-                    }
-                }).show();
             }
 
             @Override
@@ -323,15 +308,6 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
 
         // Memberhentikan loading
         mIsLoading = false;
-    }
-
-    private void signOut() {
-        Auth auth = new Auth(mContext);
-        auth.delAuth();
-
-        Intent intent = new Intent(mContext, MainActivity.class);
-        startActivity(intent);
-        Objects.requireNonNull(getActivity()).finish();
     }
 
     private void resetState() {

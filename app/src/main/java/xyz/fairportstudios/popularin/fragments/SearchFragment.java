@@ -3,7 +3,6 @@ package xyz.fairportstudios.popularin.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,33 +25,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmAdapter;
 import xyz.fairportstudios.popularin.adapters.UserAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.get.SearchUserRequest;
 import xyz.fairportstudios.popularin.apis.tmdb.get.SearchFilmRequest;
+import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Film;
 import xyz.fairportstudios.popularin.models.User;
+import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class SearchFragment extends Fragment implements UserAdapter.OnClickListener {
+public class SearchFragment extends Fragment implements FilmAdapter.OnClickListener, UserAdapter.OnClickListener {
     // Variable untuk fitur search
-    private Boolean isSearchFilmFirstTime;
-    private Boolean isSearchUserFirstTime;
+    private boolean mIsSearchFilmFirstTime = true;
+    private boolean mIsSearchUserFirstTime = true;
+    private boolean mIsLoadFilmFirstTimeSuccess = false;
+    private boolean mIsLoadUserFirstTimeSuccess = false;
 
     // Variable member
     private Context mContext;
-    private FilmAdapter filmAdapter;
-    private List<Film> filmList;
+    private FilmAdapter mFilmAdapter;
+    private List<Film> mFilmList;
     private List<User> mUserList;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerSearch;
-    private SearchFilmRequest searchFilmRequest;
-    private SearchUserRequest searchUserRequest;
-    private String searchQuery;
-    private TextView textMessage;
-    private UserAdapter userAdapter;
-    private UserAdapter.OnClickListener mOnClickListener;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerSearch;
+    private SearchFilmRequest mSearchFilmRequest;
+    private SearchUserRequest mSearchUserRequest;
+    private String mSearchQuery;
+    private TextView mTextMessage;
+    private UserAdapter mUserAdapter;
+    private FilmAdapter.OnClickListener mFilmOnClickListener = this;
+    private UserAdapter.OnClickListener mUserOnClickListener = this;
 
     @Nullable
     @Override
@@ -61,18 +68,13 @@ public class SearchFragment extends Fragment implements UserAdapter.OnClickListe
         mContext = getActivity();
 
         // Binding
-        progressBar = view.findViewById(R.id.pbr_fs_layout);
-        recyclerSearch = view.findViewById(R.id.recycler_fs_layout);
-        textMessage = view.findViewById(R.id.text_fs_message);
+        mProgressBar = view.findViewById(R.id.pbr_fs_layout);
+        mRecyclerSearch = view.findViewById(R.id.recycler_fs_layout);
+        mTextMessage = view.findViewById(R.id.text_fs_message);
         SearchView searchView = view.findViewById(R.id.search_fs_layout);
         final Chip chipSearchInFilm = view.findViewById(R.id.chip_fs_in_film);
         final Chip chipSearchInUser = view.findViewById(R.id.chip_fs_in_user);
         final LinearLayout searchInLayout = view.findViewById(R.id.layout_fs_search_in);
-
-        // Assign variable untuk fitur search setiap kali fragment di buat
-        mOnClickListener = this;
-        isSearchFilmFirstTime = true;
-        isSearchUserFirstTime = true;
 
         // Activity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -84,18 +86,17 @@ public class SearchFragment extends Fragment implements UserAdapter.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (!newText.equals("")) {
-                    searchQuery = newText;
-                    textMessage.setVisibility(View.GONE);
-                    recyclerSearch.setVisibility(View.GONE);
+                if (!newText.isEmpty()) {
+                    mSearchQuery = newText;
+                    mRecyclerSearch.setVisibility(View.GONE);
                     searchInLayout.setVisibility(View.VISIBLE);
-                    chipSearchInFilm.setText(String.format("Cari \"%s\" dalam film", searchQuery));
-                    chipSearchInUser.setText(String.format("Cari \"%s\" dalam pengguna", searchQuery));
+                    chipSearchInFilm.setText(String.format("Cari \"%s\" dalam film", mSearchQuery));
+                    chipSearchInUser.setText(String.format("Cari \"%s\" dalam pengguna", mSearchQuery));
                 } else {
                     searchInLayout.setVisibility(View.GONE);
-                    textMessage.setVisibility(View.GONE);
-                    recyclerSearch.setVisibility(View.VISIBLE);
+                    mRecyclerSearch.setVisibility(View.VISIBLE);
                 }
+                mTextMessage.setVisibility(View.GONE);
                 return true;
             }
         });
@@ -103,26 +104,24 @@ public class SearchFragment extends Fragment implements UserAdapter.OnClickListe
         chipSearchInFilm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSearchFilmFirstTime) {
-                    filmList = new ArrayList<>();
-                    searchFilmRequest = new SearchFilmRequest(mContext);
+                if (mIsSearchFilmFirstTime) {
+                    mSearchFilmRequest = new SearchFilmRequest(mContext);
                 }
                 searchInLayout.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                searchFilm(mContext, searchQuery);
+                mProgressBar.setVisibility(View.VISIBLE);
+                searchFilm(mSearchQuery);
             }
         });
 
         chipSearchInUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSearchUserFirstTime) {
-                    mUserList = new ArrayList<>();
-                    searchUserRequest = new SearchUserRequest(mContext);
+                if (mIsSearchUserFirstTime) {
+                    mSearchUserRequest = new SearchUserRequest(mContext);
                 }
                 searchInLayout.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                searchUser(searchQuery);
+                mProgressBar.setVisibility(View.VISIBLE);
+                searchUser(mSearchQuery);
             }
         });
 
@@ -130,92 +129,146 @@ public class SearchFragment extends Fragment implements UserAdapter.OnClickListe
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onDestroyView() {
+        super.onDestroyView();
+        resetState();
+    }
+
+    @Override
+    public void onFilmItemClick(int position) {
+        Film currentItem = mFilmList.get(position);
+        int id = currentItem.getId();
+        gotoFilmDetail(id);
+    }
+
+    @Override
+    public void onFilmPosterClick(int position) {
+        Film currentItem = mFilmList.get(position);
+        int id = currentItem.getId();
+        gotoFilmDetail(id);
+    }
+
+    @Override
+    public void onFilmPosterLongClick(int position) {
+        Film currentItem = mFilmList.get(position);
+        int id = currentItem.getId();
+        String title = currentItem.getOriginal_title();
+        String year = new ParseDate().getYear(currentItem.getRelease_date());
+        String poster = currentItem.getPoster_path();
+        showFilmModal(id, title, year, poster);
+    }
+
+    @Override
+    public void onUserItemClick(int position) {
         User currentItem = mUserList.get(position);
         int id = currentItem.getId();
         gotoUserDetail(id);
     }
 
-    private void searchFilm(final Context context, String query) {
-        searchFilmRequest.sendRequest(query, new SearchFilmRequest.Callback() {
+    private void searchFilm(String query) {
+        mSearchFilmRequest.sendRequest(query, new SearchFilmRequest.Callback() {
             @Override
-            public void onSuccess(List<Film> films) {
-                if (isSearchFilmFirstTime) {
-                    int insertIndex = filmList.size();
-                    filmList.addAll(insertIndex, films);
-                    filmAdapter = new FilmAdapter(context, filmList);
-                    recyclerSearch.setLayoutManager(new LinearLayoutManager(context));
-                    isSearchFilmFirstTime = false;
+            public void onSuccess(List<Film> filmList) {
+                if (mIsSearchFilmFirstTime || !mIsLoadFilmFirstTimeSuccess) {
+                    mFilmList = new ArrayList<>();
+                    int insertIndex = mFilmList.size();
+                    mFilmList.addAll(insertIndex, filmList);
+                    mFilmAdapter = new FilmAdapter(mContext, mFilmList, mFilmOnClickListener);
+                    mRecyclerSearch.setLayoutManager(new LinearLayoutManager(mContext));
+                    mIsLoadFilmFirstTimeSuccess = true;
                 } else {
-                    Log.i("TAG", "EXECUTED");
-                    filmList.clear();
-                    filmAdapter.notifyDataSetChanged();
-                    int insertIndex = filmList.size();
-                    filmList.addAll(insertIndex, films);
-                    filmAdapter.notifyItemRangeInserted(insertIndex, films.size());
+                    mFilmList.clear();
+                    mFilmAdapter.notifyDataSetChanged();
+                    int insertIndex = mFilmList.size();
+                    mFilmList.addAll(insertIndex, filmList);
+                    mFilmAdapter.notifyItemRangeInserted(insertIndex, filmList.size());
                 }
-                recyclerSearch.setAdapter(filmAdapter);
-                recyclerSearch.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                mRecyclerSearch.setAdapter(mFilmAdapter);
+                mRecyclerSearch.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onNotFound() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.empty_search_result);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_search_result);
             }
 
             @Override
             public void onError(String message) {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(message);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(message);
             }
         });
+
+        mIsSearchFilmFirstTime = false;
     }
 
     private void searchUser(String query) {
-        searchUserRequest.sendRequest(query, new SearchUserRequest.Callback() {
+        mSearchUserRequest.sendRequest(query, new SearchUserRequest.Callback() {
             @Override
-            public void onSuccess(List<User> users) {
-                if (isSearchUserFirstTime) {
+            public void onSuccess(List<User> userList) {
+                if (mIsSearchUserFirstTime || !mIsLoadUserFirstTimeSuccess) {
+                    mUserList = new ArrayList<>();
                     int insertIndex = mUserList.size();
-                    mUserList.addAll(insertIndex, users);
-                    userAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);
-                    recyclerSearch.setLayoutManager(new LinearLayoutManager(mContext));
-                    isSearchUserFirstTime = false;
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter = new UserAdapter(mContext, mUserList, mUserOnClickListener);
+                    mRecyclerSearch.setLayoutManager(new LinearLayoutManager(mContext));
+                    mIsLoadUserFirstTimeSuccess = true;
                 } else {
                     mUserList.clear();
-                    userAdapter.notifyDataSetChanged();
+                    mUserAdapter.notifyDataSetChanged();
                     int insertIndex = mUserList.size();
-                    mUserList.addAll(insertIndex, users);
-                    userAdapter.notifyItemRangeInserted(insertIndex, users.size());
+                    mUserList.addAll(insertIndex, userList);
+                    mUserAdapter.notifyItemRangeInserted(insertIndex, userList.size());
                 }
-                recyclerSearch.setAdapter(userAdapter);
-                recyclerSearch.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                mRecyclerSearch.setAdapter(mUserAdapter);
+                mRecyclerSearch.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onNotFound() {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(R.string.empty_search_result);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(R.string.empty_search_result);
             }
 
             @Override
             public void onError(String message) {
-                progressBar.setVisibility(View.GONE);
-                textMessage.setVisibility(View.VISIBLE);
-                textMessage.setText(message);
+                mProgressBar.setVisibility(View.GONE);
+                mTextMessage.setVisibility(View.VISIBLE);
+                mTextMessage.setText(message);
             }
         });
+
+        mIsSearchUserFirstTime = false;
+    }
+
+    private void gotoFilmDetail(int id) {
+        Intent intent = new Intent(mContext, FilmDetailActivity.class);
+        intent.putExtra(Popularin.FILM_ID, id);
+        startActivity(intent);
     }
 
     private void gotoUserDetail(int id) {
         Intent intent = new Intent(mContext, UserDetailActivity.class);
         intent.putExtra(Popularin.USER_ID, id);
         startActivity(intent);
+    }
+
+    private void showFilmModal(int id, String title, String year, String poster) {
+        FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
+        FilmModal filmModal = new FilmModal(id, title, year, poster);
+        filmModal.show(fragmentManager, Popularin.FILM_MODAL);
+    }
+
+    private void resetState() {
+        mIsSearchFilmFirstTime = true;
+        mIsSearchUserFirstTime = true;
+        mIsLoadFilmFirstTimeSuccess = false;
+        mIsLoadUserFirstTimeSuccess = false;
     }
 }

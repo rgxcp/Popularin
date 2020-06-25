@@ -109,7 +109,6 @@ public class FavoritedByActivity extends AppCompatActivity implements UserAdapte
 
             // Mendapatkan data awal
             mOnClickListener = this;
-            mUserList = new ArrayList<>();
             mFavoriteFromAllRequest = new FavoriteFromAllRequest(mContext, filmID);
             getFavoriteFromAll(mStartPage, false);
 
@@ -147,7 +146,7 @@ public class FavoritedByActivity extends AppCompatActivity implements UserAdapte
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onUserItemClick(int position) {
         User currentItem = mUserList.get(position);
         int id = currentItem.getId();
         gotoUserDetail(id);
@@ -158,6 +157,7 @@ public class FavoritedByActivity extends AppCompatActivity implements UserAdapte
             @Override
             public void onSuccess(int totalPage, List<User> userList) {
                 if (!mIsLoadFirstTimeSuccess) {
+                    mUserList = new ArrayList<>();
                     int insertIndex = mUserList.size();
                     mUserList.addAll(insertIndex, userList);
                     mUserAdapter = new UserAdapter(mContext, mUserList, mOnClickListener);

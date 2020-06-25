@@ -42,7 +42,7 @@ public class UpdatePasswordRequest {
     }
 
     public interface Callback {
-        void onSuccess(int id, String token);
+        void onSuccess();
 
         void onInvalidCurrentPassword();
 
@@ -62,10 +62,7 @@ public class UpdatePasswordRequest {
                     int status = responseObject.getInt("status");
 
                     if (status == 303) {
-                        JSONObject resultObject = responseObject.getJSONObject("result");
-                        int id = resultObject.getInt("id");
-                        String token = resultObject.getString("api_token");
-                        callback.onSuccess(id, token);
+                        callback.onSuccess();
                     } else if (status == 616) {
                         callback.onInvalidCurrentPassword();
                     } else if (status == 626) {

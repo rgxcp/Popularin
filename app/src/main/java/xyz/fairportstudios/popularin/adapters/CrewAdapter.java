@@ -30,7 +30,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
     }
 
     public interface OnClickListener {
-        void onCrewClick(int position);
+        void onCrewItemClick(int position);
     }
 
     public int getDensity(int px) {
@@ -102,7 +102,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                mOnClickListener.onCrewClick(getAdapterPosition());
+                mOnClickListener.onCrewItemClick(getAdapterPosition());
             }
         }
     }

@@ -58,10 +58,15 @@ public class DiscoverFilmRequest {
 
                     for (int index = 0; index < resultArray.length(); index++) {
                         JSONObject indexObject = resultArray.getJSONObject(index);
+                        JSONArray genreArray = indexObject.getJSONArray("genre_ids");
+                        int genreID = 0;
+                        if (!genreArray.isNull(0)) {
+                            genreID = genreArray.getInt(0);
+                        }
 
                         Film film = new Film(
                                 indexObject.getInt("id"),
-                                indexObject.getJSONArray("genre_ids").getInt(0),
+                                genreID,
                                 indexObject.getString("original_title"),
                                 indexObject.getString("release_date"),
                                 indexObject.getString("poster_path")
