@@ -8,8 +8,8 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 public class Auth {
     private Context mContext;
 
-    public Auth(Context mContext) {
-        this.mContext = mContext;
+    public Auth(Context context) {
+        mContext = context;
     }
 
     public boolean isAuth() {
