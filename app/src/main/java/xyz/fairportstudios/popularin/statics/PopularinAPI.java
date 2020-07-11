@@ -11,7 +11,6 @@ public class PopularinAPI {
     public static final String SEARCH_USER = BASE_URL + "/user/search/";
     public static final String SELF = BASE_URL + "/user/self";
     public static final String SIGN_IN = BASE_URL + "/user/signin";
-    public static final String SIGN_OUT = BASE_URL + "/user/signout";
     public static final String SIGN_UP = BASE_URL + "/user/signup";
     public static final String TIMELINE = BASE_URL + "/reviews/timeline";
     public static final String UPDATE_PASSWORD = BASE_URL + "/user/update/password";
