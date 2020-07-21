@@ -33,7 +33,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         void onCrewItemClick(int position);
     }
 
-    public int getDensity(int px) {
+    private int getDensity(int px) {
         float dp = px * mContext.getResources().getDisplayMetrics().density;
         return (int) dp;
     }

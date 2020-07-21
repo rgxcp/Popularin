@@ -35,7 +35,7 @@ public class RecentReviewAdapter extends RecyclerView.Adapter<RecentReviewAdapte
         void onRecentReviewItemLongClick(int position);
     }
 
-    public int getDensity(int px) {
+    private int getDensity(int px) {
         float dp = px * mContext.getResources().getDisplayMetrics().density;
         return (int) dp;
     }
