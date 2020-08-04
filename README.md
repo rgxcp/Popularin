@@ -12,10 +12,10 @@
 2. Run the app with emulator or real device.
 3. Do-what-you-want-with-it!
 
-## How to Use (Playstore)
-1. Search `pub: Fairport Studios` (case sensitive) on PlayStore and choose **Popoularin**, or;
+## How to Use (Play Store)
+1. Search `pub: Fairport Studios` (case sensitive) on Play Store and choose **Popoularin**, or;
 2. Search `"Popularin"` (with the double quote) specifically, or;
-3. Simply open this [link](https://bit.ly/Popularin "Popularin on PlayStore").
+3. Simply open this [link](https://bit.ly/Popularin "Popularin on Play Store").
 
 ## Changelog
 ### 1.1.0 (Ongoing)
@@ -24,6 +24,7 @@
 - Updating gradle version to 4.0.1
 - Updating swipe refresh layout version to 1.1.0
 - Refactoring getDensity method access modifiers
+- Adding genre list in timeline fragment
 ### 1.0.0
 - Firing up initial version of Popularin!
 
