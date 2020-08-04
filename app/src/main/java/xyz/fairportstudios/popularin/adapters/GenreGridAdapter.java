@@ -15,12 +15,12 @@ import java.util.List;
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.models.Genre;
 
-public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHolder> {
+public class GenreGridAdapter extends RecyclerView.Adapter<GenreGridAdapter.GenreGridViewHolder> {
     private Context mContext;
     private List<Genre> mGenreList;
     private OnClickListener mOnClickListener;
 
-    public GenreAdapter(Context context, List<Genre> genreList, OnClickListener onClickListener) {
+    public GenreGridAdapter(Context context, List<Genre> genreList, OnClickListener onClickListener) {
         mContext = context;
         mGenreList = genreList;
         mOnClickListener = onClickListener;
@@ -37,12 +37,12 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
 
     @NonNull
     @Override
-    public GenreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GenreViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recycler_genre, parent, false), mOnClickListener);
+    public GenreGridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new GenreGridViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recycler_genre_grid, parent, false), mOnClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GenreViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GenreGridViewHolder holder, int position) {
         // Posisi
         Genre currentItem = mGenreList.get(position);
 
@@ -84,16 +84,16 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         return mGenreList.size();
     }
 
-    static class GenreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class GenreGridViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageBackground;
         private TextView mTextTitle;
         private OnClickListener mOnClickListener;
 
-        GenreViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
+        GenreGridViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
 
-            mImageBackground = itemView.findViewById(R.id.image_rg_background);
-            mTextTitle = itemView.findViewById(R.id.text_rg_title);
+            mImageBackground = itemView.findViewById(R.id.image_rgg_background);
+            mTextTitle = itemView.findViewById(R.id.text_rgg_title);
             mOnClickListener = onClickListener;
 
             itemView.setOnClickListener(this);

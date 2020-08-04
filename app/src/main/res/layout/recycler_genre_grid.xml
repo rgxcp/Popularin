@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image_rg_background"
+            android:id="@+id/image_rgg_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@null"
@@ -23,7 +23,7 @@
             android:background="@drawable/bg_gradient_black" />
 
         <TextView
-            android:id="@+id/text_rg_title"
+            android:id="@+id/text_rgg_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/monument_extended_regular"

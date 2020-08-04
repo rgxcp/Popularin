@@ -20,13 +20,13 @@ import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
 import xyz.fairportstudios.popularin.activities.DiscoverFilmActivity;
-import xyz.fairportstudios.popularin.adapters.GenreAdapter;
+import xyz.fairportstudios.popularin.adapters.GenreGridAdapter;
 import xyz.fairportstudios.popularin.models.Genre;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class GenreFragment extends Fragment implements GenreAdapter.OnClickListener {
+public class GenreFragment extends Fragment implements GenreGridAdapter.OnClickListener {
     private Context mContext;
-    private GenreAdapter.OnClickListener mOnClickListener;
+    private GenreGridAdapter.OnClickListener mOnClickListener;
     private List<Genre> mGenreList;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerGenre;
@@ -86,8 +86,8 @@ public class GenreFragment extends Fragment implements GenreAdapter.OnClickListe
         mGenreList.add(new Genre(36, R.drawable.img_history, getString(R.string.genre_history)));
         mGenreList.add(new Genre(53, R.drawable.img_thriller, getString(R.string.genre_thriller)));
 
-        GenreAdapter genreAdapter = new GenreAdapter(mContext, mGenreList, mOnClickListener);
-        mRecyclerGenre.setAdapter(genreAdapter);
+        GenreGridAdapter genreGridAdapter = new GenreGridAdapter(mContext, mGenreList, mOnClickListener);
+        mRecyclerGenre.setAdapter(genreGridAdapter);
         mRecyclerGenre.setLayoutManager(new GridLayoutManager(mContext, 2));
         mRecyclerGenre.setHasFixedSize(true);
         mRecyclerGenre.setVisibility(View.VISIBLE);
