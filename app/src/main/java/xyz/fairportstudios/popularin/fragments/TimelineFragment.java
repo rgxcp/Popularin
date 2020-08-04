@@ -25,20 +25,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
+import xyz.fairportstudios.popularin.activities.DiscoverFilmActivity;
 import xyz.fairportstudios.popularin.activities.FilmDetailActivity;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
+import xyz.fairportstudios.popularin.adapters.GenreHorizontalAdapter;
 import xyz.fairportstudios.popularin.adapters.ReviewAdapter;
 import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.TimelineRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
 import xyz.fairportstudios.popularin.modals.FilmModal;
+import xyz.fairportstudios.popularin.models.Genre;
 import xyz.fairportstudios.popularin.models.Review;
 import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
-public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickListener {
+public class TimelineFragment extends Fragment implements GenreHorizontalAdapter.OnClickListener, ReviewAdapter.OnClickListener {
     // Variable untuk fitur load more
     private boolean mIsLoading = true;
     private boolean mIsLoadFirstTimeSuccess = false;
@@ -51,11 +54,14 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     private int mTotalLike;
     private Context mContext;
     private CoordinatorLayout mAnchorLayout;
+    private GenreHorizontalAdapter.OnClickListener mOnGenreClickListener;
+    private List<Genre> mGenreList;
     private List<Review> mReviewList;
     private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerGenre;
     private RecyclerView mRecyclerTimeline;
     private ReviewAdapter mReviewAdapter;
-    private ReviewAdapter.OnClickListener mOnClickListener;
+    private ReviewAdapter.OnClickListener mOnTimelineClickListener;
     private SwipeRefreshLayout mSwipeRefresh;
     private TextView mTextMessage;
     private TimelineRequest mTimelineRequest;
@@ -63,23 +69,28 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.reusable_recycler, container, false);
+        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
 
         // Context
         mContext = getActivity();
 
         // Binding
-        mAnchorLayout = view.findViewById(R.id.anchor_rr_layout);
-        mProgressBar = view.findViewById(R.id.pbr_rr_layout);
-        mRecyclerTimeline = view.findViewById(R.id.recycler_rr_layout);
-        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
-        mTextMessage = view.findViewById(R.id.text_rr_message);
+        mAnchorLayout = view.findViewById(R.id.anchor_ft_layout);
+        mProgressBar = view.findViewById(R.id.pbr_ft_layout);
+        mRecyclerGenre = view.findViewById(R.id.recycler_ft_genre);
+        mRecyclerTimeline = view.findViewById(R.id.recycler_ft_timeline);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_ft_layout);
+        mTextMessage = view.findViewById(R.id.text_ft_message);
 
         // Auth
         mAuthID = new Auth(mContext).getAuthID();
 
-        // Mendapatkan data awal
-        mOnClickListener = this;
+        // Menampilkan genre
+        mOnGenreClickListener = this;
+        showGenre();
+
+        // Mendapatkan data awal timeline
+        mOnTimelineClickListener = this;
         mTimelineRequest = new TimelineRequest(mContext);
         getTimeline(mStartPage, false);
 
@@ -114,6 +125,14 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
     public void onDestroyView() {
         super.onDestroyView();
         resetState();
+    }
+
+    @Override
+    public void onGenreItemClick(int position) {
+        Genre currentItem = mGenreList.get(position);
+        int id = currentItem.getId();
+        String title = currentItem.getTitle();
+        gotoDiscoverFilm(id, title);
     }
 
     @Override
@@ -173,6 +192,33 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
         gotoReviewComment(id, isSelf);
     }
 
+    private void showGenre() {
+        mGenreList = new ArrayList<>();
+        mGenreList.add(new Genre(28, R.drawable.img_action, getString(R.string.genre_action)));
+        mGenreList.add(new Genre(16, R.drawable.img_animation, getString(R.string.genre_animation)));
+        mGenreList.add(new Genre(99, R.drawable.img_documentary, getString(R.string.genre_documentary)));
+        mGenreList.add(new Genre(18, R.drawable.img_drama, getString(R.string.genre_drama)));
+        mGenreList.add(new Genre(14, R.drawable.img_fantasy, getString(R.string.genre_fantasy)));
+        mGenreList.add(new Genre(878, R.drawable.img_fiction, getString(R.string.genre_fiction)));
+        mGenreList.add(new Genre(27, R.drawable.img_horror, getString(R.string.genre_horror)));
+        mGenreList.add(new Genre(80, R.drawable.img_crime, getString(R.string.genre_crime)));
+        mGenreList.add(new Genre(10751, R.drawable.img_family, getString(R.string.genre_family)));
+        mGenreList.add(new Genre(35, R.drawable.img_comedy, getString(R.string.genre_comedy)));
+        mGenreList.add(new Genre(9648, R.drawable.img_mystery, getString(R.string.genre_mystery)));
+        mGenreList.add(new Genre(10752, R.drawable.img_war, getString(R.string.genre_war)));
+        mGenreList.add(new Genre(12, R.drawable.img_adventure, getString(R.string.genre_adventure)));
+        mGenreList.add(new Genre(10749, R.drawable.img_romance, getString(R.string.genre_romance)));
+        mGenreList.add(new Genre(36, R.drawable.img_history, getString(R.string.genre_history)));
+        mGenreList.add(new Genre(53, R.drawable.img_thriller, getString(R.string.genre_thriller)));
+
+        GenreHorizontalAdapter genreHorizontalAdapter = new GenreHorizontalAdapter(mContext, mGenreList, mOnGenreClickListener);
+        mRecyclerGenre.setAdapter(genreHorizontalAdapter);
+        mRecyclerGenre.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+        mRecyclerGenre.setHasFixedSize(true);
+        mRecyclerGenre.setNestedScrollingEnabled(false);
+        mRecyclerGenre.setVisibility(View.VISIBLE);
+    }
+
     private void getTimeline(int page, final boolean refreshPage) {
         mTimelineRequest.sendRequest(page, new TimelineRequest.Callback() {
             @Override
@@ -181,9 +227,10 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
                     mReviewList = new ArrayList<>();
                     int insertIndex = mReviewList.size();
                     mReviewList.addAll(insertIndex, reviewList);
-                    mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnClickListener);
+                    mReviewAdapter = new ReviewAdapter(mContext, mReviewList, mOnTimelineClickListener);
                     mRecyclerTimeline.setAdapter(mReviewAdapter);
                     mRecyclerTimeline.setLayoutManager(new LinearLayoutManager(mContext));
+                    mRecyclerTimeline.setNestedScrollingEnabled(false);
                     mRecyclerTimeline.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     mTotalPage = totalPage;
@@ -231,6 +278,13 @@ public class TimelineFragment extends Fragment implements ReviewAdapter.OnClickL
         // Memberhentikan loading
         mIsLoading = false;
         mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void gotoDiscoverFilm(int id, String title) {
+        Intent intent = new Intent(mContext, DiscoverFilmActivity.class);
+        intent.putExtra(Popularin.GENRE_ID, id);
+        intent.putExtra(Popularin.GENRE_TITLE, title);
+        startActivity(intent);
     }
 
     private void gotoReviewDetail(int id, boolean isSelf) {
