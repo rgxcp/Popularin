@@ -27,6 +27,8 @@
 - Adding genre list in timeline fragment
 - Refactoring passed list on cast & crew adapter constructor
 - Refactoring onError interface logic
+- Refactoring following fragment onResume feature variable name
+- Refactoring film review fragment logic
 ### 1.0.0
 - Firing up initial version of Popularin!
 
