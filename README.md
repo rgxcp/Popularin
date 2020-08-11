@@ -25,6 +25,7 @@
 - Updating swipe refresh layout version to 1.1.0
 - Refactoring getDensity method access modifiers
 - Adding genre list in timeline fragment
+- Refactoring passed list on cast & crew adapter constructor
 ### 1.0.0
 - Firing up initial version of Popularin!
 
