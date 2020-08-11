@@ -237,7 +237,7 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
                 if (!castList.isEmpty()) {
                     mCastList = new ArrayList<>();
                     mCastList.addAll(castList);
-                    CastAdapter castAdapter = new CastAdapter(mContext, castList, mOnCastClickListener);
+                    CastAdapter castAdapter = new CastAdapter(mContext, mCastList, mOnCastClickListener);
                     mRecyclerCast.setAdapter(castAdapter);
                     mRecyclerCast.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
                     mRecyclerCast.setHasFixedSize(true);
@@ -249,7 +249,7 @@ public class FilmDetailActivity extends AppCompatActivity implements CastAdapter
                 if (!crewList.isEmpty()) {
                     mCrewList = new ArrayList<>();
                     mCrewList.addAll(crewList);
-                    CrewAdapter crewAdapter = new CrewAdapter(mContext, crewList, mOnCrewClickListener);
+                    CrewAdapter crewAdapter = new CrewAdapter(mContext, mCrewList, mOnCrewClickListener);
                     mRecyclerCrew.setAdapter(crewAdapter);
                     mRecyclerCrew.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
                     mRecyclerCrew.setHasFixedSize(true);
