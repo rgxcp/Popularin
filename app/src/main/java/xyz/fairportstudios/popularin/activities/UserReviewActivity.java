@@ -224,13 +224,10 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
                 if (!mIsLoadFirstTimeSuccess) {
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    if (mIsSelf) {
-                        mTextMessage.setText(R.string.empty_self_review);
-                    } else {
-                        mTextMessage.setText(R.string.empty_user_review);
-                    }
+                    mTextMessage.setText(message);
+                } else {
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
 

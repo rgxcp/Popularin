@@ -250,9 +250,10 @@ public class FilmReviewActivity extends AppCompatActivity implements FilmReviewA
                 if (!mIsLoadFirstTimeSuccess) {
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    mTextMessage.setText(R.string.empty_film_review);
+                    mTextMessage.setText(message);
+                } else {
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
 

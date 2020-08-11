@@ -189,13 +189,10 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
                 if (!mIsLoadFirstTimeSuccess) {
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    if (mIsSelf) {
-                        mTextMessage.setText(R.string.empty_self_favorite_film);
-                    } else {
-                        mTextMessage.setText(R.string.empty_user_favorite_film);
-                    }
+                    mTextMessage.setText(message);
+                } else {
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
 

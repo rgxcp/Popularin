@@ -189,13 +189,10 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
                 if (!mIsLoadFirstTimeSuccess) {
                     mProgressBar.setVisibility(View.GONE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    if (mIsSelf) {
-                        mTextMessage.setText(R.string.empty_self_watchlist_film);
-                    } else {
-                        mTextMessage.setText(R.string.empty_user_watchlist);
-                    }
+                    mTextMessage.setText(message);
+                } else {
+                    Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(mAnchorLayout, message, Snackbar.LENGTH_LONG).show();
             }
         });
 
