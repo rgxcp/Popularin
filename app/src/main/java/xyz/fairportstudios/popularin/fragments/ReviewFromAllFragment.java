@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmReviewAdapter;
@@ -43,7 +42,6 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
     private int mTotalPage;
 
     // Variable member
-    private boolean mIsAuth;
     private int mAuthID;
     private int mTotalLike;
     private Context mContext;
@@ -80,9 +78,7 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
         mTextMessage = view.findViewById(R.id.text_rr_message);
 
         // Auth
-        Auth auth = new Auth(mContext);
-        mIsAuth = auth.isAuth();
-        mAuthID = auth.getAuthID();
+        mAuthID = new Auth(mContext).getAuthID();
 
         // Mendapatkan data awal
         mOnClickListener = this;
@@ -133,22 +129,18 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
 
     @Override
     public void onFilmReviewLikeClick(int position) {
-        if (mIsAuth) {
-            FilmReview currentItem = mFilmReviewList.get(position);
-            int id = currentItem.getId();
-            boolean isLiked = currentItem.getIs_liked();
-            mTotalLike = currentItem.getTotal_like();
+        FilmReview currentItem = mFilmReviewList.get(position);
+        int id = currentItem.getId();
+        boolean isLiked = currentItem.getIs_liked();
+        mTotalLike = currentItem.getTotal_like();
 
-            if (!mIsLoading) {
-                mIsLoading = true;
-                if (!isLiked) {
-                    likeReview(id, position);
-                } else {
-                    unlikeReview(id, position);
-                }
+        if (!mIsLoading) {
+            mIsLoading = true;
+            if (!isLiked) {
+                likeReview(id, position);
+            } else {
+                unlikeReview(id, position);
             }
-        } else {
-            gotoEmptyAccount();
         }
     }
 
@@ -284,10 +276,5 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
 
         // Memberhentikan loading
         mIsLoading = false;
-    }
-
-    private void gotoEmptyAccount() {
-        Intent intent = new Intent(mContext, EmptyAccountActivity.class);
-        startActivity(intent);
     }
 }

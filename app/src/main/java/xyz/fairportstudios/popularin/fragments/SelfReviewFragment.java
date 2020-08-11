@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.fairportstudios.popularin.R;
-import xyz.fairportstudios.popularin.activities.EmptyAccountActivity;
 import xyz.fairportstudios.popularin.activities.ReviewActivity;
 import xyz.fairportstudios.popularin.activities.UserDetailActivity;
 import xyz.fairportstudios.popularin.adapters.FilmReviewAdapter;
@@ -31,12 +30,11 @@ import xyz.fairportstudios.popularin.apis.popularin.delete.UnlikeReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.get.SelfFilmReviewRequest;
 import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
 import xyz.fairportstudios.popularin.models.FilmReview;
-import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.OnClickListener {
     // Variable untuk fitur onResume
-    private boolean isResumeFirstTime = true;
+    private boolean mIsResumeFirstTime = true;
 
     // Variable untuk fitur load more
     private boolean mIsLoading = true;
@@ -46,8 +44,6 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
     private int mTotalPage;
 
     // Variable member
-    private boolean mIsAuth;
-    private int mAuthID;
     private int mTotalLike;
     private Context mContext;
     private CoordinatorLayout mAnchorLayout;
@@ -82,11 +78,6 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
         mSwipeRefresh = view.findViewById(R.id.swipe_refresh_rr_layout);
         mTextMessage = view.findViewById(R.id.text_rr_message);
 
-        // Auth
-        Auth auth = new Auth(mContext);
-        mIsAuth = auth.isAuth();
-        mAuthID = auth.getAuthID();
-
         // Activity
         mRecyclerFilmReview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -117,9 +108,9 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
     @Override
     public void onResume() {
         super.onResume();
-        if (isResumeFirstTime) {
+        if (mIsResumeFirstTime) {
             // Mendapatkan data awal
-            isResumeFirstTime = false;
+            mIsResumeFirstTime = false;
             mOnClickListener = this;
             mSelfFilmReviewRequest = new SelfFilmReviewRequest(mContext, mFilmID);
             getSelfFilmReview(mStartPage, false);
@@ -130,8 +121,7 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
     public void onFilmReviewItemClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
         int id = currentItem.getId();
-        boolean isSelf = currentItem.getUser_id() == mAuthID;
-        gotoReviewDetail(id, isSelf);
+        gotoReviewDetail(id);
     }
 
     @Override
@@ -143,22 +133,18 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
 
     @Override
     public void onFilmReviewLikeClick(int position) {
-        if (mIsAuth) {
-            FilmReview currentItem = mFilmReviewList.get(position);
-            int id = currentItem.getId();
-            boolean isLiked = currentItem.getIs_liked();
-            mTotalLike = currentItem.getTotal_like();
+        FilmReview currentItem = mFilmReviewList.get(position);
+        int id = currentItem.getId();
+        boolean isLiked = currentItem.getIs_liked();
+        mTotalLike = currentItem.getTotal_like();
 
-            if (!mIsLoading) {
-                mIsLoading = true;
-                if (!isLiked) {
-                    likeReview(id, position);
-                } else {
-                    unlikeReview(id, position);
-                }
+        if (!mIsLoading) {
+            mIsLoading = true;
+            if (!isLiked) {
+                likeReview(id, position);
+            } else {
+                unlikeReview(id, position);
             }
-        } else {
-            gotoEmptyAccount();
         }
     }
 
@@ -166,8 +152,7 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
     public void onFilmReviewCommentClick(int position) {
         FilmReview currentItem = mFilmReviewList.get(position);
         int id = currentItem.getId();
-        boolean isSelf = currentItem.getUser_id() == mAuthID;
-        gotoReviewComment(id, isSelf);
+        gotoReviewComment(id);
     }
 
     private void getSelfFilmReview(int page, final boolean refreshPage) {
@@ -231,17 +216,17 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
         mSwipeRefresh.setRefreshing(false);
     }
 
-    private void gotoReviewDetail(int id, boolean isSelf) {
+    private void gotoReviewDetail(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.IS_SELF, true);
         startActivity(intent);
     }
 
-    private void gotoReviewComment(int id, boolean isSelf) {
+    private void gotoReviewComment(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.IS_SELF, true);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
         startActivity(intent);
     }
@@ -294,10 +279,5 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
 
         // Memberhentikan loading
         mIsLoading = false;
-    }
-
-    private void gotoEmptyAccount() {
-        Intent intent = new Intent(mContext, EmptyAccountActivity.class);
-        startActivity(intent);
     }
 }
