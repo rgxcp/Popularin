@@ -62,6 +62,7 @@ public class ReviewDetailFragment extends Fragment {
     private String mFilmTitle;
     private String mFilmYear;
     private String mFilmPoster;
+    private SwipeRefreshLayout mSwipeRefresh;
     private TextView mTextUsername;
     private TextView mTextFilmTitleYear;
     private TextView mTextReviewDate;
@@ -69,7 +70,6 @@ public class ReviewDetailFragment extends Fragment {
     private TextView mTextLikeStatus;
     private TextView mTextTotalLike;
     private TextView mTextMessage;
-    private SwipeRefreshLayout mSwipeRefresh;
 
     // Variable constructor
     private int mReviewID;
@@ -94,6 +94,7 @@ public class ReviewDetailFragment extends Fragment {
         mProgressBar = view.findViewById(R.id.pbr_frd_layout);
         mAnchorLayout = view.findViewById(R.id.anchor_frd_layout);
         mScrollView = view.findViewById(R.id.scroll_frd_layout);
+        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_frd_layout);
         mTextUsername = view.findViewById(R.id.text_frd_username);
         mTextFilmTitleYear = view.findViewById(R.id.text_frd_title_year);
         mTextReviewDate = view.findViewById(R.id.text_frd_date);
@@ -101,7 +102,6 @@ public class ReviewDetailFragment extends Fragment {
         mTextLikeStatus = view.findViewById(R.id.text_frd_like_status);
         mTextTotalLike = view.findViewById(R.id.text_frd_total_like);
         mTextMessage = view.findViewById(R.id.text_frd_message);
-        mSwipeRefresh = view.findViewById(R.id.swipe_refresh_frd_layout);
 
         // Auth
         final boolean isAuth = new Auth(mContext).isAuth();
@@ -257,8 +257,8 @@ public class ReviewDetailFragment extends Fragment {
         filmModal.show(fragmentManager, Popularin.FILM_MODAL);
     }
 
-    private void setLikeState(boolean isLiked) {
-        mIsLiked = isLiked;
+    private void setLikeState(boolean state) {
+        mIsLiked = state;
         if (mIsLiked) {
             mTotalLike++;
             mTextLikeStatus.setText(R.string.liked);
