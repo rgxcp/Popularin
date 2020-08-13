@@ -19,16 +19,9 @@
 
 ## Changelog
 ### 1.1.0 (Ongoing)
-- Refactoring auth class constructor variable name
-- Deleting unused variable on popularin api static class
 - Updating gradle version to 4.0.1
 - Updating swipe refresh layout version to 1.1.0
-- Refactoring getDensity method access modifiers
 - Adding genre list in timeline fragment
-- Refactoring passed list on cast & crew adapter constructor
-- Refactoring onError interface logic
-- Refactoring following fragment onResume feature variable name
-- Refactoring film review fragment logic
 ### 1.0.0
 - Firing up initial version of Popularin!
 
