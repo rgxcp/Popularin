@@ -87,7 +87,7 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
         // Auth
         Auth auth = new Auth(mContext);
         mAuthID = auth.getAuthID();
-        final boolean isAuth = new Auth(mContext).isAuth();
+        final boolean isAuth = auth.isAuth();
 
         // Text watcher
         mInputComment.addTextChangedListener(commentWatcher);
