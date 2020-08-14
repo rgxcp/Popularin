@@ -361,9 +361,9 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
         LOADING
     }
 
-    private void setFollowingState(boolean isFollowing) {
-        mIsFollowing = isFollowing;
-        if (isFollowing) {
+    private void setFollowingState(boolean state) {
+        mIsFollowing = state;
+        if (mIsFollowing) {
             mTotalFollower++;
         } else {
             mTotalFollower--;
@@ -371,8 +371,8 @@ public class UserDetailActivity extends AppCompatActivity implements RecentFavor
         mTextTotalFollower.setText(String.valueOf(mTotalFollower));
     }
 
-    private void setFollowButtonState(boolean enable, Enum<FollowingState> followingStateEnum) {
-        mButtonFollow.setEnabled(enable);
+    private void setFollowButtonState(boolean state, Enum<FollowingState> followingStateEnum) {
+        mButtonFollow.setEnabled(state);
         if (followingStateEnum == FollowingState.FOLLOWING) {
             mButtonFollow.setText(R.string.following);
         } else if (followingStateEnum == FollowingState.NOT_FOLLOWING) {
