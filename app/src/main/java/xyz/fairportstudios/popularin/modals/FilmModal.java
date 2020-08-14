@@ -30,10 +30,10 @@ import xyz.fairportstudios.popularin.statics.Popularin;
 
 public class FilmModal extends BottomSheetDialogFragment {
     // Variable member
-    private boolean inReview;
-    private boolean inFavorite;
-    private boolean inWatchlist;
-    private float lastRate;
+    private boolean mInReview;
+    private boolean mInFavorite;
+    private boolean mInWatchlist;
+    private float mLastRate;
     private ImageView mImageReview;
     private ImageView mImageFavorite;
     private ImageView mImageWatchlist;
@@ -82,7 +82,7 @@ public class FilmModal extends BottomSheetDialogFragment {
 
         // Mendapatkan status film
         if (isAuth) {
-            getFilmSelf(context, mFilmID);
+            getFilmSelf(context);
         }
 
         // Activity
@@ -102,10 +102,10 @@ public class FilmModal extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    if (!inFavorite) {
-                        addToFavorite(context, mFilmID);
+                    if (!mInFavorite) {
+                        addToFavorite(context);
                     } else {
-                        removeFromFavorite(context, mFilmID);
+                        removeFromFavorite(context);
                     }
                 } else {
                     gotoEmptyAccount(context);
@@ -118,10 +118,10 @@ public class FilmModal extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (isAuth) {
-                    if (!inWatchlist) {
-                        addToWatchlist(context, mFilmID);
+                    if (!mInWatchlist) {
+                        addToWatchlist(context);
                     } else {
-                        removeFromWatchlist(context, mFilmID);
+                        removeFromWatchlist(context);
                     }
                 } else {
                     gotoEmptyAccount(context);
@@ -134,8 +134,8 @@ public class FilmModal extends BottomSheetDialogFragment {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float newRate, boolean b) {
                 if (isAuth) {
-                    if (lastRate != newRate) {
-                        lastRate = newRate;
+                    if (mLastRate != newRate) {
+                        mLastRate = newRate;
                         addReview(context);
                         dismiss();
                     }
@@ -149,24 +149,24 @@ public class FilmModal extends BottomSheetDialogFragment {
         return view;
     }
 
-    private void getFilmSelf(final Context context, int id) {
-        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, id);
+    private void getFilmSelf(final Context context) {
+        FilmSelfRequest filmSelfRequest = new FilmSelfRequest(context, mFilmID);
         filmSelfRequest.sendRequest(new FilmSelfRequest.Callback() {
             @Override
             public void onSuccess(FilmSelf filmSelf) {
-                inReview = filmSelf.getIn_review();
-                inFavorite = filmSelf.getIn_favorite();
-                inWatchlist = filmSelf.getIn_watchlist();
-                lastRate = (float) filmSelf.getLast_rate();
-                mRatingBar.setRating(lastRate);
+                mInReview = filmSelf.getIn_review();
+                mInFavorite = filmSelf.getIn_favorite();
+                mInWatchlist = filmSelf.getIn_watchlist();
+                mLastRate = (float) filmSelf.getLast_rate();
+                mRatingBar.setRating(mLastRate);
 
-                if (inReview) {
+                if (mInReview) {
                     mImageReview.setImageResource(R.drawable.ic_fill_eye);
                 }
-                if (inFavorite) {
+                if (mInFavorite) {
                     mImageFavorite.setImageResource(R.drawable.ic_fill_heart);
                 }
-                if (inWatchlist) {
+                if (mInWatchlist) {
                     mImageWatchlist.setImageResource(R.drawable.ic_fill_watchlist);
                 }
             }
@@ -189,12 +189,12 @@ public class FilmModal extends BottomSheetDialogFragment {
         intent.putExtra(Popularin.FILM_TITLE, mFilmTitle);
         intent.putExtra(Popularin.FILM_YEAR, mFilmYear);
         intent.putExtra(Popularin.FILM_POSTER, mFilmPoster);
-        intent.putExtra(Popularin.RATING, lastRate);
+        intent.putExtra(Popularin.RATING, mLastRate);
         startActivity(intent);
     }
 
-    private void addToFavorite(final Context context, int id) {
-        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, id);
+    private void addToFavorite(final Context context) {
+        AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest(context, mFilmID);
         addFavoriteRequest.sendRequest(new AddFavoriteRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -208,8 +208,8 @@ public class FilmModal extends BottomSheetDialogFragment {
         });
     }
 
-    private void removeFromFavorite(final Context context, int id) {
-        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, id);
+    private void removeFromFavorite(final Context context) {
+        DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest(context, mFilmID);
         deleteFavoriteRequest.sendRequest(new DeleteFavoriteRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -223,8 +223,8 @@ public class FilmModal extends BottomSheetDialogFragment {
         });
     }
 
-    private void addToWatchlist(final Context context, int id) {
-        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, id);
+    private void addToWatchlist(final Context context) {
+        AddWatchlistRequest addWatchlistRequest = new AddWatchlistRequest(context, mFilmID);
         addWatchlistRequest.sendRequest(new AddWatchlistRequest.Callback() {
             @Override
             public void onSuccess() {
@@ -238,8 +238,8 @@ public class FilmModal extends BottomSheetDialogFragment {
         });
     }
 
-    private void removeFromWatchlist(final Context context, int id) {
-        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, id);
+    private void removeFromWatchlist(final Context context) {
+        DeleteWatchlistRequest deleteWatchlistRequest = new DeleteWatchlistRequest(context, mFilmID);
         deleteWatchlistRequest.sendRequest(new DeleteWatchlistRequest.Callback() {
             @Override
             public void onSuccess() {
