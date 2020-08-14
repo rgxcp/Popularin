@@ -123,7 +123,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     public void onUserReviewItemClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getId();
-        gotoReviewDetail(id, mIsSelf);
+        gotoReviewDetail(id);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
     public void onUserReviewCommentClick(int position) {
         UserReview currentItem = mUserReviewList.get(position);
         int id = currentItem.getId();
-        gotoReviewComment(id, mIsSelf);
+        gotoReviewComment(id);
     }
 
     private void getUserReview(int page, final boolean refreshPage) {
@@ -236,17 +236,17 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
         mSwipeRefresh.setRefreshing(false);
     }
 
-    private void gotoReviewDetail(int id, boolean isSelf) {
+    private void gotoReviewDetail(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.IS_SELF, mIsSelf);
         startActivity(intent);
     }
 
-    private void gotoReviewComment(int id, boolean isSelf) {
+    private void gotoReviewComment(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
+        intent.putExtra(Popularin.IS_SELF, mIsSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
         startActivity(intent);
     }
