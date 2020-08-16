@@ -100,7 +100,7 @@ public class AccountDetailRequest {
                         }
 
                         // Review
-                        if (totalReview != 0) {
+                        if (totalReview > 0) {
                             List<RecentReview> recentReviewList = new ArrayList<>();
                             JSONArray recentReviewArray = activityObject.getJSONArray("recent_reviews");
 
