@@ -61,10 +61,10 @@ public class SignUpActivity extends AppCompatActivity {
         textWelcome.setText(getWelcomeMessage());
 
         // Text watcher
-        mInputFullName.addTextChangedListener(signUpWatcher);
-        mInputUsername.addTextChangedListener(signUpWatcher);
-        mInputEmail.addTextChangedListener(signUpWatcher);
-        mInputPassword.addTextChangedListener(signUpWatcher);
+        mInputFullName.addTextChangedListener(mSignUpWatcher);
+        mInputUsername.addTextChangedListener(mSignUpWatcher);
+        mInputEmail.addTextChangedListener(mSignUpWatcher);
+        mInputPassword.addTextChangedListener(mSignUpWatcher);
 
         // Activity
         mButtonSignUp.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +92,7 @@ public class SignUpActivity extends AppCompatActivity {
         return spannableString;
     }
 
-    private TextWatcher signUpWatcher = new TextWatcher() {
+    private TextWatcher mSignUpWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             // Tidak digunakan
@@ -146,9 +146,9 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void setSignUpButtonState(boolean enable) {
-        mButtonSignUp.setEnabled(enable);
-        if (enable) {
+    private void setSignUpButtonState(boolean state) {
+        mButtonSignUp.setEnabled(state);
+        if (state) {
             mButtonSignUp.setText(R.string.sign_up);
         } else {
             mButtonSignUp.setText(R.string.loading);

@@ -66,9 +66,9 @@ public class EditProfileFragment extends Fragment {
         getSelfDetail(context);
 
         // Text watcher
-        mInputFullName.addTextChangedListener(editProfileWatcher);
-        mInputUsername.addTextChangedListener(editProfileWatcher);
-        mInputEmail.addTextChangedListener(editProfileWatcher);
+        mInputFullName.addTextChangedListener(mEditProfileWatcher);
+        mInputUsername.addTextChangedListener(mEditProfileWatcher);
+        mInputEmail.addTextChangedListener(mEditProfileWatcher);
 
         // Activity
         mButtonSaveProfile.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +97,7 @@ public class EditProfileFragment extends Fragment {
         return spannableString;
     }
 
-    private TextWatcher editProfileWatcher = new TextWatcher() {
+    private TextWatcher mEditProfileWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             // Tidak digunakan
@@ -155,9 +155,9 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private void setSaveProfileButtonState(boolean enable) {
-        mButtonSaveProfile.setEnabled(enable);
-        if (enable) {
+    private void setSaveProfileButtonState(boolean state) {
+        mButtonSaveProfile.setEnabled(state);
+        if (state) {
             mButtonSaveProfile.setText(R.string.save_profile);
         } else {
             mButtonSaveProfile.setText(R.string.loading);

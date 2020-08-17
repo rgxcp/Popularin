@@ -54,8 +54,8 @@ public class SignInActivity extends AppCompatActivity {
         textWelcome.setText(getWelcomeMessage());
 
         // Text watcher
-        mInputUsername.addTextChangedListener(signInWatcher);
-        mInputPassword.addTextChangedListener(signInWatcher);
+        mInputUsername.addTextChangedListener(mSignInWatcher);
+        mInputPassword.addTextChangedListener(mSignInWatcher);
 
         // Activity
         mButtonSignIn.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +83,7 @@ public class SignInActivity extends AppCompatActivity {
         return spannableString;
     }
 
-    private TextWatcher signInWatcher = new TextWatcher() {
+    private TextWatcher mSignInWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             // Tidak digunakan
@@ -102,9 +102,9 @@ public class SignInActivity extends AppCompatActivity {
         }
     };
 
-    private void setSignInButtonState(boolean enable) {
-        mButtonSignIn.setEnabled(enable);
-        if (enable) {
+    private void setSignInButtonState(boolean state) {
+        mButtonSignIn.setEnabled(state);
+        if (state) {
             mButtonSignIn.setText(R.string.sign_in);
         } else {
             mButtonSignIn.setText(R.string.loading);

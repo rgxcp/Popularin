@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Bottom navigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation_am_layout);
-        bottomNavigation.setOnNavigationItemSelectedListener(listener);
+        bottomNavigation.setOnNavigationItemSelectedListener(mListener);
 
         // Menampilkan fragment otomatis sesuai kondisi
         if (mIsAuth) {
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         sTimeBackPressed = System.currentTimeMillis();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener mListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {

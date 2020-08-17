@@ -58,9 +58,9 @@ public class EditPasswordFragment extends Fragment {
         textWelcome.setText(getWelcomeMessage());
 
         // Text watcher
-        mInputCurrentPassword.addTextChangedListener(editPasswordWatcher);
-        mInputNewPassword.addTextChangedListener(editPasswordWatcher);
-        mInputConfirmPassword.addTextChangedListener(editPasswordWatcher);
+        mInputCurrentPassword.addTextChangedListener(mEditPasswordWatcher);
+        mInputNewPassword.addTextChangedListener(mEditPasswordWatcher);
+        mInputConfirmPassword.addTextChangedListener(mEditPasswordWatcher);
 
         // Activity
         mButtonSavePassword.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +82,7 @@ public class EditPasswordFragment extends Fragment {
         return spannableString;
     }
 
-    private TextWatcher editPasswordWatcher = new TextWatcher() {
+    private TextWatcher mEditPasswordWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             // Tidak digunakan
@@ -117,9 +117,9 @@ public class EditPasswordFragment extends Fragment {
         }
     }
 
-    private void setSavePasswordButtonState(boolean enable) {
-        mButtonSavePassword.setEnabled(enable);
-        if (enable) {
+    private void setSavePasswordButtonState(boolean state) {
+        mButtonSavePassword.setEnabled(state);
+        if (state) {
             mButtonSavePassword.setText(R.string.save_password);
         } else {
             mButtonSavePassword.setText(R.string.loading);
