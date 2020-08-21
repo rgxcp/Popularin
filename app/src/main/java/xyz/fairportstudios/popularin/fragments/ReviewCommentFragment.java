@@ -90,7 +90,7 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
         final boolean isAuth = auth.isAuth();
 
         // Text watcher
-        mInputComment.addTextChangedListener(commentWatcher);
+        mInputComment.addTextChangedListener(mCommentWatcher);
 
         // Activity
         mImageSend.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +161,7 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
         }
     }
 
-    private TextWatcher commentWatcher = new TextWatcher() {
+    private TextWatcher mCommentWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // Tidak digunakan
@@ -204,6 +204,7 @@ public class ReviewCommentFragment extends Fragment implements CommentAdapter.On
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mCommentList.clear();
                         mCommentAdapter.notifyDataSetChanged();
                     }

@@ -170,6 +170,7 @@ public class ReviewFromAllFragment extends Fragment implements FilmReviewAdapter
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmReviewList.clear();
                         mFilmReviewAdapter.notifyDataSetChanged();
                     }

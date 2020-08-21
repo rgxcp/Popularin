@@ -219,6 +219,7 @@ public class FilmReviewActivity extends AppCompatActivity implements FilmReviewA
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmReviewList.clear();
                         mFilmReviewAdapter.notifyDataSetChanged();
                     }

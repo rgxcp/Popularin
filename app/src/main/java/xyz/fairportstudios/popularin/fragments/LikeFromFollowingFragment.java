@@ -138,6 +138,7 @@ public class LikeFromFollowingFragment extends Fragment implements UserAdapter.O
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

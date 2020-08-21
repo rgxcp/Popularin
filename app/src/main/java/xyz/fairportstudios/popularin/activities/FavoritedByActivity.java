@@ -170,6 +170,7 @@ public class FavoritedByActivity extends AppCompatActivity implements UserAdapte
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

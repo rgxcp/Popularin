@@ -138,6 +138,7 @@ public class MutualFragment extends Fragment implements UserAdapter.OnClickListe
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

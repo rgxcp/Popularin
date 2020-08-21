@@ -58,13 +58,6 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
         // Context
         mContext = UserFavoriteActivity.this;
 
-        // Extra
-        Intent intent = getIntent();
-        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
-
-        // Auth
-        mIsSelf = userID == new Auth(mContext).getAuthID();
-
         // Binding
         mProgressBar = findViewById(R.id.pbr_rtr_layout);
         mRecyclerFilm = findViewById(R.id.recycler_rtr_layout);
@@ -72,6 +65,13 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
         mSwipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
         mTextMessage = findViewById(R.id.text_aud_message);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
+
+        // Extra
+        Intent intent = getIntent();
+        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
+
+        // Auth
+        mIsSelf = userID == new Auth(mContext).getAuthID();
 
         // Toolbar
         toolbar.setTitle(R.string.favorite);
@@ -155,6 +155,7 @@ public class UserFavoriteActivity extends AppCompatActivity implements FilmAdapt
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmList.clear();
                         mFilmAdapter.notifyDataSetChanged();
                     }

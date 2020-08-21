@@ -57,7 +57,7 @@ public class LikedByActivity extends AppCompatActivity implements UserAdapter.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Binding
+        // Context
         mContext = LikedByActivity.this;
 
         // Extra
@@ -170,6 +170,7 @@ public class LikedByActivity extends AppCompatActivity implements UserAdapter.On
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

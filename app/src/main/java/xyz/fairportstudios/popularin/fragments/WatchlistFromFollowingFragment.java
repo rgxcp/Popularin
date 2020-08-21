@@ -138,6 +138,7 @@ public class WatchlistFromFollowingFragment extends Fragment implements UserAdap
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

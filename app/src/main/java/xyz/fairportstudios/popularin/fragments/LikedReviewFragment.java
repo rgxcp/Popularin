@@ -180,6 +180,7 @@ public class LikedReviewFragment extends Fragment implements FilmReviewAdapter.O
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmReviewList.clear();
                         mFilmReviewAdapter.notifyDataSetChanged();
                     }

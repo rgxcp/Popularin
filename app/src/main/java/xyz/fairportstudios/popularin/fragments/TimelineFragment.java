@@ -37,7 +37,6 @@ import xyz.fairportstudios.popularin.apis.popularin.post.LikeReviewRequest;
 import xyz.fairportstudios.popularin.modals.FilmModal;
 import xyz.fairportstudios.popularin.models.Genre;
 import xyz.fairportstudios.popularin.models.Review;
-import xyz.fairportstudios.popularin.preferences.Auth;
 import xyz.fairportstudios.popularin.services.ParseDate;
 import xyz.fairportstudios.popularin.statics.Popularin;
 
@@ -50,7 +49,6 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
     private int mTotalPage;
 
     // Variable member
-    private int mAuthID;
     private int mTotalLike;
     private Context mContext;
     private CoordinatorLayout mAnchorLayout;
@@ -81,9 +79,6 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
         mRecyclerTimeline = view.findViewById(R.id.recycler_ft_timeline);
         mSwipeRefresh = view.findViewById(R.id.swipe_refresh_ft_layout);
         mTextMessage = view.findViewById(R.id.text_ft_message);
-
-        // Auth
-        mAuthID = new Auth(mContext).getAuthID();
 
         // Menampilkan genre
         mOnGenreClickListener = this;
@@ -139,8 +134,7 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
     public void onReviewItemClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
-        boolean isSelf = currentItem.getUser_id() == mAuthID;
-        gotoReviewDetail(id, isSelf);
+        gotoReviewDetail(id);
     }
 
     @Override
@@ -188,8 +182,7 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
     public void onReviewCommentClick(int position) {
         Review currentItem = mReviewList.get(position);
         int id = currentItem.getId();
-        boolean isSelf = currentItem.getUser_id() == mAuthID;
-        gotoReviewComment(id, isSelf);
+        gotoReviewComment(id);
     }
 
     private void showGenre() {
@@ -238,6 +231,7 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mReviewList.clear();
                         mReviewAdapter.notifyDataSetChanged();
                     }
@@ -287,17 +281,15 @@ public class TimelineFragment extends Fragment implements GenreHorizontalAdapter
         startActivity(intent);
     }
 
-    private void gotoReviewDetail(int id, boolean isSelf) {
+    private void gotoReviewDetail(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
         startActivity(intent);
     }
 
-    private void gotoReviewComment(int id, boolean isSelf) {
+    private void gotoReviewComment(int id) {
         Intent intent = new Intent(mContext, ReviewActivity.class);
         intent.putExtra(Popularin.REVIEW_ID, id);
-        intent.putExtra(Popularin.IS_SELF, isSelf);
         intent.putExtra(Popularin.VIEW_PAGER_INDEX, 1);
         startActivity(intent);
     }

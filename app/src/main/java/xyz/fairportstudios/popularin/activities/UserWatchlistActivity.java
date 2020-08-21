@@ -58,13 +58,6 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
         // Context
         mContext = UserWatchlistActivity.this;
 
-        // Extra
-        Intent intent = getIntent();
-        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
-
-        // Auth
-        mIsSelf = userID == new Auth(mContext).getAuthID();
-
         // Binding
         mProgressBar = findViewById(R.id.pbr_rtr_layout);
         mRecyclerFilm = findViewById(R.id.recycler_rtr_layout);
@@ -72,6 +65,13 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
         mSwipeRefresh = findViewById(R.id.swipe_refresh_rtr_layout);
         mTextMessage = findViewById(R.id.text_aud_message);
         Toolbar toolbar = findViewById(R.id.toolbar_rtr_layout);
+
+        // Extra
+        Intent intent = getIntent();
+        int userID = intent.getIntExtra(Popularin.USER_ID, 0);
+
+        // Auth
+        mIsSelf = userID == new Auth(mContext).getAuthID();
 
         // Toolbar
         toolbar.setTitle(R.string.watchlist);
@@ -155,6 +155,7 @@ public class UserWatchlistActivity extends AppCompatActivity implements FilmAdap
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmList.clear();
                         mFilmAdapter.notifyDataSetChanged();
                     }

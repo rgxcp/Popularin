@@ -128,6 +128,7 @@ public class LikeFromAllFragment extends Fragment implements UserAdapter.OnClick
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

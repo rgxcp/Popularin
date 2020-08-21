@@ -199,6 +199,7 @@ public class ReviewFragment extends Fragment implements ReviewAdapter.OnClickLis
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mReviewList.clear();
                         mReviewAdapter.notifyDataSetChanged();
                     }

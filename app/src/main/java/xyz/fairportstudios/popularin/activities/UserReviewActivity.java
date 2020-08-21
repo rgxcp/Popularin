@@ -189,6 +189,7 @@ public class UserReviewActivity extends AppCompatActivity implements UserReviewA
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserReviewList.clear();
                         mUserReviewAdapter.notifyDataSetChanged();
                     }

@@ -128,6 +128,7 @@ public class FavoriteFromAllFragment extends Fragment implements UserAdapter.OnC
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }

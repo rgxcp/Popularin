@@ -144,6 +144,7 @@ public class DiscoverFilmActivity extends AppCompatActivity implements FilmGridA
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmList.clear();
                         mFilmGridAdapter.notifyDataSetChanged();
                     }

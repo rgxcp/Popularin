@@ -173,6 +173,7 @@ public class SelfReviewFragment extends Fragment implements FilmReviewAdapter.On
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mFilmReviewList.clear();
                         mFilmReviewAdapter.notifyDataSetChanged();
                     }

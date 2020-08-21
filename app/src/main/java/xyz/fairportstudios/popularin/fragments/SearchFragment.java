@@ -109,7 +109,7 @@ public class SearchFragment extends Fragment implements FilmAdapter.OnClickListe
                 }
                 searchInLayout.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                searchFilm(mSearchQuery);
+                searchFilm();
             }
         });
 
@@ -121,7 +121,7 @@ public class SearchFragment extends Fragment implements FilmAdapter.OnClickListe
                 }
                 searchInLayout.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                searchUser(mSearchQuery);
+                searchUser();
             }
         });
 
@@ -165,8 +165,8 @@ public class SearchFragment extends Fragment implements FilmAdapter.OnClickListe
         gotoUserDetail(id);
     }
 
-    private void searchFilm(String query) {
-        mSearchFilmRequest.sendRequest(query, new SearchFilmRequest.Callback() {
+    private void searchFilm() {
+        mSearchFilmRequest.sendRequest(mSearchQuery, new SearchFilmRequest.Callback() {
             @Override
             public void onSuccess(List<Film> filmList) {
                 if (mIsSearchFilmFirstTime || !mIsLoadFilmFirstTimeSuccess) {
@@ -206,8 +206,8 @@ public class SearchFragment extends Fragment implements FilmAdapter.OnClickListe
         mIsSearchFilmFirstTime = false;
     }
 
-    private void searchUser(String query) {
-        mSearchUserRequest.sendRequest(query, new SearchUserRequest.Callback() {
+    private void searchUser() {
+        mSearchUserRequest.sendRequest(mSearchQuery, new SearchUserRequest.Callback() {
             @Override
             public void onSuccess(List<User> userList) {
                 if (mIsSearchUserFirstTime || !mIsLoadUserFirstTimeSuccess) {

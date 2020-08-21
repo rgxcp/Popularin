@@ -140,6 +140,7 @@ public class FollowingFragment extends Fragment implements UserAdapter.OnClickLi
                 } else {
                     if (refreshPage) {
                         mCurrentPage = 1;
+                        mTotalPage = totalPage;
                         mUserList.clear();
                         mUserAdapter.notifyDataSetChanged();
                     }
