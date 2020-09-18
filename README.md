@@ -4,7 +4,8 @@
 **ID**: Sosial media film Indonesia.
 
 ## Status
-This project is deprecated. For further update and release, please visit the [Kotlin](https://github.com/rgxcp/PopularinKotlin) version.
+END OF LIFE  
+   For further update and release, please visit the [Kotlin](https://github.com/rgxcp/PopularinKotlin) version.  
 
 ## Requirements
 1. Android Studio
